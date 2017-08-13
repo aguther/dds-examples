@@ -1,0 +1,189 @@
+group 'com.github.aguther.dds.examples'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'idea'
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    jcenter()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
+sourceSets {
+    generated
+}
+
+dependencies {
+    // generated
+    generatedCompile files('/usr/lib/java/nddsjava.jar')
+
+    // main
+    compile sourceSets.generated.output
+    compile files('/usr/lib/java/nddsjava.jar')
+    compile files('/usr/lib/java/rticonnextmsg.jar')
+    compile 'org.slf4j:slf4j-api:1.7+'
+    compile 'org.slf4j:slf4j-simple:1.7+'
+    compile 'com.google.code.gson:gson:2.8.1'
+}
+
+jar {
+    from sourceSets.main.output
+    from sourceSets.generated.output
+}
+
+task compileIdl {
+    // define IDL directory
+    def idlDirectory = file('src/main/idl')
+
+    // ensure output directory is created
+    sourceSets.generated.java.srcDirs[0].mkdirs()
+
+    // compile IDL files
+    fileTree(dir: idlDirectory, include: "*.idl").each { File file ->
+        // define task name
+        def taskName = "compileIdl_" + idlDirectory.toPath().relativize(file.toPath()).toString().replaceAll(File.separator, "_")
+
+        // create task
+        task "$taskName"(type: Exec) {
+            inputs.files file
+            outputs.dir sourceSets.generated.java.srcDirs[0]
+            executable = 'rtiddsgen'
+            args = [
+                    '-unboundedSupport',
+                    '-replace',
+                    '-I', idlDirectory,
+                    '-language', 'Java',
+                    '-package', 'idl',
+                    '-d', sourceSets.generated.java.srcDirs[0],
+                    file
+            ]
+        }
+
+        // our current tasks depends on the created task
+        compileIdl.dependsOn "$taskName"
+    }
+}
+
+task cleanIdl(type: Delete) {
+    doLast {
+        sourceSets.generated.java.srcDirs[0].list().each {
+            f -> delete "${sourceSets.generated.java.srcDirs[0]}/${f}"
+        }
+    }
+}
+
+compileJava.dependsOn compileIdl
+clean.dependsOn cleanIdl
+
+task runShapePublisher(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.shape.Publisher'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runShapeSubscriber(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.shape.Subscriber'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runRequestReplyRequest(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.requestreply.Request'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runRequestReplyReply(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.requestreply.Reply'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runJson(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.json.Json'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runMutableBuffer(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.mutable.MutableBuffer'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runMutablePublisher(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.mutable.Publisher'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runMutableSubscriber(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.mutable.Subscriber'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}

@@ -1,0 +1,192 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2017 Andreas Guther
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.github.aguther.dds.examples.json;
+
+import com.github.aguther.dds.util.EnumTypeAdapterFactory;
+import com.github.aguther.dds.util.SequenceTypeAdapterFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Json {
+
+  private static final Logger log;
+
+  private static final Gson gson;
+
+  static {
+    log = LoggerFactory.getLogger(Json.class);
+
+    gson = new GsonBuilder()
+        .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
+        .registerTypeAdapterFactory(new SequenceTypeAdapterFactory())
+        .setPrettyPrinting()
+        .create();
+  }
+
+  public static void main(
+      String[] args
+  ) throws IOException {
+
+    // TODO: Exception is thrown when v2.unionType._d=THREE and json is converted to v1. Expected result: v1.unionType=ONE (default).
+
+    // convert v1 type to JSON and back
+    if (log.isInfoEnabled()) {
+      log.info("Converting v1 to json and back to v1");
+    }
+    convertToJsonAndBack(
+        getMutableTypeV1(),
+        idl.v1.MutableType.class,
+        true
+    );
+
+    // convert v2 type to JSON and back
+    if (log.isInfoEnabled()) {
+      log.info("Converting v2 to json and back to v2");
+    }
+    convertToJsonAndBack(
+        getMutableTypeV2(),
+        idl.v2.MutableType.class,
+        true
+    );
+
+    // convert v1 to v2 via JSON
+    if (log.isInfoEnabled()) {
+      log.info("Converting v1 to json and back to v2");
+    }
+    convertToJsonAndBack(
+        getMutableTypeV1(),
+        idl.v2.MutableType.class,
+        false
+    );
+
+    // convert v2 to v1 via JSON
+    if (log.isInfoEnabled()) {
+      log.info("Converting v2 to json and back to v1");
+    }
+    convertToJsonAndBack(
+        getMutableTypeV2(),
+        idl.v1.MutableType.class,
+        false
+    );
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <I, O> void convertToJsonAndBack(
+      I input,
+      Class outputClass,
+      boolean doComparison
+  ) {
+
+    // print sample
+    if (log.isInfoEnabled()) {
+      log.info("Input{}", input.toString());
+    }
+
+    // serialize input to json
+    String json = gson.toJson(input);
+
+    // print json
+    if (log.isInfoEnabled()) {
+      log.info("JSON:\n{}", json);
+    }
+
+    // deserialize from json
+    O output = (O) gson.fromJson(json, outputClass);
+
+    // print output
+    if (log.isInfoEnabled()) {
+      log.info("Output{}", output.toString());
+    }
+
+    // if requested, compare input and output
+    if (doComparison) {
+      if (input.equals(output)) {
+        log.info("Samples are equal!");
+      } else {
+        log.error("Samples are NOT equal!");
+      }
+    }
+  }
+
+  private static idl.v1.MutableType getMutableTypeV1() {
+    final idl.v1.MutableType sample = new idl.v1.MutableType();
+    sample.key = 10;
+
+    sample.unionType._d = idl.v1.UnionTypeDiscriminant.TWO;
+    sample.unionType.two.number = 2;
+    sample.unionType.two.text = "TWO";
+
+    for (int i = 0; i < sample.arrayType.length; i++) {
+      idl.v1.StructTwo nested = new idl.v1.StructTwo();
+      nested.number = i;
+      nested.text = Integer.toString(i);
+
+      sample.arrayType[i] = nested;
+    }
+
+    for (int i = 0; i < sample.sequenceType.getMaximum(); i++) {
+      idl.v1.StructTwo nested = new idl.v1.StructTwo();
+      nested.number = i;
+      nested.text = Integer.toString(i);
+
+      sample.sequenceType.add(nested);
+    }
+
+    return sample;
+  }
+
+  private static idl.v2.MutableType getMutableTypeV2() {
+
+    final idl.v2.MutableType sample = new idl.v2.MutableType();
+    sample.key = 10;
+
+    sample.unionType._d = idl.v2.UnionTypeDiscriminant.TWO;
+    sample.unionType.two.number = 2;
+    sample.unionType.two.text = "TWO";
+
+    for (int i = 0; i < sample.arrayType.length; i++) {
+      idl.v2.StructTwo nested = new idl.v2.StructTwo();
+      nested.number = i;
+      nested.text = Integer.toString(i);
+
+      sample.arrayType[i] = nested;
+    }
+
+    for (int i = 0; i < sample.sequenceType.getMaximum(); i++) {
+      idl.v2.StructTwo nested = new idl.v2.StructTwo();
+      nested.number = i;
+      nested.text = Integer.toString(i);
+
+      sample.sequenceType.add(nested);
+    }
+
+    sample.newNumber = Integer.MAX_VALUE;
+
+    return sample;
+  }
+}
