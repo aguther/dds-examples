@@ -33,6 +33,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7+'
     compile 'org.slf4j:slf4j-simple:1.7+'
     compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.esotericsoftware:reflectasm:1.11.+'
 }
 
 jar {

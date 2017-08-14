@@ -26,6 +26,7 @@ package com.github.aguther.dds.examples.json;
 
 import com.github.aguther.dds.util.EnumTypeAdapterFactory;
 import com.github.aguther.dds.util.SequenceTypeAdapterFactory;
+import com.github.aguther.dds.util.UnionTypeAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class Json {
     gson = new GsonBuilder()
         .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
         .registerTypeAdapterFactory(new SequenceTypeAdapterFactory())
+        .registerTypeAdapterFactory(new UnionTypeAdapterFactory())
         .setPrettyPrinting()
         .create();
   }
