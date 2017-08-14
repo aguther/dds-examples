@@ -51,6 +51,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
       TypeToken<T> typeToken
   ) {
 
+    // TODO: Clean up.
+
     // get raw type
     Class rawType = typeToken.getRawType();
 
@@ -158,6 +160,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
   private static class UnionTypeAdapter<T extends Union, E> extends TypeAdapter<T> {
 
+    private static final String DISCRIMINATOR_FIELD_NAME = "_d";
+
     private Class unionClass;
     private TypeAdapter<?> discriminatorTypeAdapter;
     private FieldAccess fieldAccess;
@@ -175,10 +179,6 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
       this.unionFieldInfoMap = unionFieldInfoMap;
     }
 
-    private static <P> P returnTypedValue(P value) {
-      return value;
-    }
-
     @Override
     public void write(
         JsonWriter out,
@@ -190,23 +190,26 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
         return;
       }
 
+      // TODO: Failure handling.
+
       out.beginObject();
 
       // get discriminator
-      String discriminator = fieldAccess.get(value, "_d").toString();
+      Object discriminator = fieldAccess.get(value, DISCRIMINATOR_FIELD_NAME);
 
       // write discriminator
-      out.name("_d");
-      out.value(discriminator);
+      out.name(DISCRIMINATOR_FIELD_NAME);
+      ((TypeAdapter<Object>) discriminatorTypeAdapter).write(out, discriminator);
 
       // get corresponding union field info
-      UnionFieldInfo unionFieldInfo = unionFieldInfoMap.get(discriminator);
-
-      // get value of field
-      Object fieldObject = fieldAccess.get(value, unionFieldInfo.fieldName);
+      UnionFieldInfo unionFieldInfo = unionFieldInfoMap.get(discriminator.toString());
 
       // write field
-      //unionFieldInfo.typeAdapter.write(out, fieldObject);
+      out.name(unionFieldInfo.fieldName);
+      ((TypeAdapter<Object>) unionFieldInfo.typeAdapter).write(
+          out,
+          fieldAccess.get(value, unionFieldInfo.fieldName)
+      );
 
       out.endObject();
     }
@@ -215,6 +218,9 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
     public T read(
         JsonReader in
     ) throws IOException {
+
+      // TODO: Failure handling.
+      // TODO: Handle case when discriminator value is not available -> return union with default values.
 
       if (in.peek() == JsonToken.NULL) {
         in.nextNull();
@@ -228,12 +234,12 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
         in.nextName();
         Object discriminatorObject = discriminatorTypeAdapter.read(in);
-        fieldAccess.set(union, "_d", discriminatorObject);
+        fieldAccess.set(union, DISCRIMINATOR_FIELD_NAME, discriminatorObject);
 
-//        in.nextName();
-//        UnionFieldInfo unionFieldInfo = unionFieldInfoMap.get(discriminatorObject.toString());
-//        Object fieldObject = unionFieldInfo.typeAdapter.read(in);
-//        fieldAccess.set(union, unionFieldInfo.fieldName, fieldObject);
+        in.nextName();
+        UnionFieldInfo unionFieldInfo = unionFieldInfoMap.get(discriminatorObject.toString());
+        Object fieldObject = unionFieldInfo.typeAdapter.read(in);
+        fieldAccess.set(union, unionFieldInfo.fieldName, fieldObject);
 
         in.endObject();
 
