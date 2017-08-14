@@ -54,8 +54,6 @@ public class Json {
       String[] args
   ) throws IOException {
 
-    // TODO: Exception is thrown when v2.unionType._d=THREE and json is converted to v1. Expected result: v1.unionType=ONE (default).
-
     // convert v1 type to JSON and back
     if (log.isInfoEnabled()) {
       log.info("Converting v1 to json and back to v1");

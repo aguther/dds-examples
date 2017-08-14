@@ -43,15 +43,31 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unchecked")
 public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
-  private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UnionTypeAdapterFactory.class);
+  private class UnionMemberInfo {
+
+    private int ordinal;
+    private String fieldName;
+    private Class fieldClass;
+    private TypeAdapter<?> typeAdapter;
+
+    UnionMemberInfo(
+        int ordinal,
+        String fieldName,
+        Class fieldClass,
+        TypeAdapter<?> typeAdapter
+    ) {
+      this.ordinal = ordinal;
+      this.fieldName = fieldName;
+      this.fieldClass = fieldClass;
+      this.typeAdapter = typeAdapter;
+    }
+  }
 
   @Override
   public <T> TypeAdapter<T> create(
       Gson gson,
       TypeToken<T> typeToken
   ) {
-
-    // TODO: Clean up.
 
     // get raw type
     Class rawType = typeToken.getRawType();
@@ -71,54 +87,53 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
       final TypeCode discriminatorTypeCode = unionTypeCode.discriminator_type();
 
       // detect any prefix package
-      final String unionTypeNameFromClass = rawType.getName();
-      final String unionTypeNameFromTypeCode = unionTypeCode.name().replace("::", ".");
-
       String packagePrefix = "";
-      final Pattern packagePrefixPattern = Pattern.compile(String.format("^(.*)%s$", unionTypeNameFromTypeCode));
-      final Matcher packagePrefixMatcher = packagePrefixPattern.matcher(unionTypeNameFromClass);
+      final Pattern packagePrefixPattern = Pattern.compile(
+          String.format("^(.*)%s$", unionTypeCode.name().replace("::", ".")));
+      final Matcher packagePrefixMatcher = packagePrefixPattern.matcher(rawType.getName());
       if (packagePrefixMatcher.matches()) {
         packagePrefix = packagePrefixMatcher.group(1);
       }
 
       // construct type name of discriminator
-      String discriminatorTypeName = packagePrefix.concat(discriminatorTypeCode.name().replace("::", "."));
+      String discriminatorTypeName = packagePrefix.concat(
+          discriminatorTypeCode.name().replace("::", "."));
       Class discriminatorClass = Class.forName(discriminatorTypeName);
 
       // create map with union information
-      Map<String, UnionFieldInfo> unionFieldInfoMap = new HashMap<>();
+      Map<String, UnionMemberInfo> unionMemberInfoMap = new HashMap<>();
 
       // iterate over discriminator values
       for (int i = 0; i < discriminatorTypeCode.member_count(); i++) {
-        // get enum string
-        String name = discriminatorTypeCode.member_name(i);
-        // get enum ordinal
-        int ordinal = discriminatorTypeCode.member_ordinal(i);
+        // get enum string and ordinal
+        String discriminatorString = discriminatorTypeCode.member_name(i);
+        int discriminatorOrdinal = discriminatorTypeCode.member_ordinal(i);
 
         // find corresponding field in union
-        int branchFieldNumber = unionTypeCode.find_member_by_label(ordinal);
-        String branchFieldName = unionTypeCode.member_name(branchFieldNumber);
+        int memberId = unionTypeCode.find_member_by_label(discriminatorOrdinal);
+        String memberName = unionTypeCode.member_name(memberId);
 
         // get type code of field
-        TypeCode branchFieldTypeCode = unionTypeCode.member_type(branchFieldNumber);
+        TypeCode memberTypeCode = unionTypeCode.member_type(memberId);
 
         // construct type name of field
-        String branchFieldTypeName = packagePrefix.concat(branchFieldTypeCode.name().replace("::", "."));
+        String memberTypeName = packagePrefix.concat(
+            memberTypeCode.name().replace("::", "."));
 
         // get class of field
-        Class branchFieldClass = Class.forName(branchFieldTypeName);
+        Class memberClass = Class.forName(memberTypeName);
 
         // get type adapter of field
-        TypeAdapter<?> branchFieldTypeAdapter = gson.getAdapter(branchFieldClass);
+        TypeAdapter<?> memberTypeAdapter = gson.getAdapter(memberClass);
 
         // create new union field info
-        unionFieldInfoMap.put(
-            name,
-            new UnionFieldInfo(
-                ordinal,
-                branchFieldName,
-                branchFieldClass,
-                branchFieldTypeAdapter
+        unionMemberInfoMap.put(
+            discriminatorString,
+            new UnionMemberInfo(
+                discriminatorOrdinal,
+                memberName,
+                memberClass,
+                memberTypeAdapter
             )
         );
       }
@@ -128,7 +143,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
           rawType,
           gson.getAdapter(discriminatorClass),
           FieldAccess.get(rawType),
-          unionFieldInfoMap
+          unionMemberInfoMap
       );
 
     } catch (Exception e) {
@@ -138,45 +153,25 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
     }
   }
 
-  private class UnionFieldInfo {
-
-    private int ordinal;
-    private String fieldName;
-    private Class fieldClass;
-    private TypeAdapter<?> typeAdapter;
-
-    UnionFieldInfo(
-        int ordinal,
-        String fieldName,
-        Class fieldClass,
-        TypeAdapter<?> typeAdapter
-    ) {
-      this.ordinal = ordinal;
-      this.fieldName = fieldName;
-      this.fieldClass = fieldClass;
-      this.typeAdapter = typeAdapter;
-    }
-  }
-
-  private static class UnionTypeAdapter<T extends Union, E> extends TypeAdapter<T> {
+  private static class UnionTypeAdapter<T extends Union> extends TypeAdapter<T> {
 
     private static final String DISCRIMINATOR_FIELD_NAME = "_d";
 
     private Class unionClass;
     private TypeAdapter<?> discriminatorTypeAdapter;
     private FieldAccess fieldAccess;
-    private Map<String, UnionFieldInfo> unionFieldInfoMap;
+    private Map<String, UnionMemberInfo> memberInfoMap;
 
     private UnionTypeAdapter(
         Class unionClass,
         TypeAdapter<?> discriminatorTypeAdapter,
         FieldAccess fieldAccess,
-        Map<String, UnionFieldInfo> unionFieldInfoMap
+        Map<String, UnionMemberInfo> memberInfoMap
     ) {
       this.unionClass = unionClass;
       this.discriminatorTypeAdapter = discriminatorTypeAdapter;
       this.fieldAccess = fieldAccess;
-      this.unionFieldInfoMap = unionFieldInfoMap;
+      this.memberInfoMap = memberInfoMap;
     }
 
     @Override
@@ -185,13 +180,13 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
         T value
     ) throws IOException {
 
+      // support null objects
       if (value == null) {
         out.nullValue();
         return;
       }
 
-      // TODO: Failure handling.
-
+      // assert begin of object
       out.beginObject();
 
       // get discriminator
@@ -202,15 +197,16 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
       ((TypeAdapter<Object>) discriminatorTypeAdapter).write(out, discriminator);
 
       // get corresponding union field info
-      UnionFieldInfo unionFieldInfo = unionFieldInfoMap.get(discriminator.toString());
+      UnionMemberInfo unionMemberInfo = memberInfoMap.get(discriminator.toString());
 
       // write field
-      out.name(unionFieldInfo.fieldName);
-      ((TypeAdapter<Object>) unionFieldInfo.typeAdapter).write(
+      out.name(unionMemberInfo.fieldName);
+      ((TypeAdapter<Object>) unionMemberInfo.typeAdapter).write(
           out,
-          fieldAccess.get(value, unionFieldInfo.fieldName)
+          fieldAccess.get(value, unionMemberInfo.fieldName)
       );
 
+      // assert end of object
       out.endObject();
     }
 
@@ -219,33 +215,75 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
         JsonReader in
     ) throws IOException {
 
-      // TODO: Failure handling.
-      // TODO: Handle case when discriminator value is not available -> return union with default values.
-
+      // support null objects
       if (in.peek() == JsonToken.NULL) {
         in.nextNull();
         return null;
       }
 
       try {
+        // assert begin of object
         in.beginObject();
 
+        // create new union with default values
         T union = (T) unionClass.newInstance();
 
-        in.nextName();
-        Object discriminatorObject = discriminatorTypeAdapter.read(in);
-        fieldAccess.set(union, DISCRIMINATOR_FIELD_NAME, discriminatorObject);
+        // gets populated when active branch is known
+        UnionMemberInfo unionMemberInfo = null;
 
-        in.nextName();
-        UnionFieldInfo unionFieldInfo = unionFieldInfoMap.get(discriminatorObject.toString());
-        Object fieldObject = unionFieldInfo.typeAdapter.read(in);
-        fieldAccess.set(union, unionFieldInfo.fieldName, fieldObject);
+        while (in.hasNext()) {
+          // get name of next item
+          String name = in.nextName();
 
+          if (DISCRIMINATOR_FIELD_NAME.equals(name)) {
+            // read discriminator
+            Object discriminatorObject = discriminatorTypeAdapter.read(in);
+
+            // if discriminator is not valid, return union with defaults
+            if (discriminatorObject == null) {
+              // skip remaining values
+              while (in.hasNext()) {
+                in.skipValue();
+              }
+
+              // assert end of object
+              in.endObject();
+
+              // return empty union with default values
+              return union;
+            }
+
+            // remember discriminator
+            unionMemberInfo = memberInfoMap.get(discriminatorObject.toString());
+
+            // set discriminator on union
+            fieldAccess.set(union, DISCRIMINATOR_FIELD_NAME, discriminatorObject);
+          } else if (unionMemberInfo != null
+              && unionMemberInfo.fieldName.equals(name)) {
+
+            Object fieldObject = unionMemberInfo.typeAdapter.read(in);
+            fieldAccess.set(union, unionMemberInfo.fieldName, fieldObject);
+          } else {
+            in.skipValue();
+          }
+        }
+
+        // assert end of object
         in.endObject();
 
+        // return result
         return union;
 
       } catch (Exception e) {
+        // skip remaining values
+        while (in.hasNext()) {
+          in.skipValue();
+        }
+
+        // assert end of object
+        in.endObject();
+
+        // we failed in converting the union
         return null;
       }
     }
