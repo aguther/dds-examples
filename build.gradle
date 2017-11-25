@@ -30,6 +30,7 @@ dependencies {
     compile sourceSets.generated.output
     compile files('/usr/lib/java/nddsjava.jar')
     compile files('/usr/lib/java/rticonnextmsg.jar')
+    compile files('/usr/lib/java/rtiroutingservice.jar')
     compile 'org.slf4j:slf4j-api:1.7+'
     compile 'org.slf4j:slf4j-simple:1.7+'
     compile 'com.google.code.gson:gson:2.8.1'
@@ -181,6 +182,19 @@ task runMutableSubscriber(type: JavaExec) {
     classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
     // set main class
     main = 'com.github.aguther.dds.examples.mutable.Subscriber'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runRouting(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.routing.Routing'
     // set working directory
     workingDir = '.'
     // jvm settings
