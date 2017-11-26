@@ -40,8 +40,8 @@ import com.rti.dds.publication.PublicationMatchedStatus;
 import com.rti.dds.publication.ReliableReaderActivityChangedStatus;
 import com.rti.dds.publication.ReliableWriterCacheChangedStatus;
 import com.rti.dds.publication.ServiceRequestAcceptedStatus;
-import idl.v1.UnionTypeDiscriminant;
 import idl.v1.MutableType;
+import idl.v1.UnionTypeDiscriminant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
