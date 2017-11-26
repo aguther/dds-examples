@@ -25,6 +25,10 @@
 package com.github.aguther.dds.examples.discovery;
 
 import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.infrastructure.RETCODE_NO_DATA;
+import com.rti.dds.subscription.InstanceStateKind;
+import com.rti.dds.subscription.SampleInfo;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,5 +54,34 @@ class SubscriptionObserver extends BuiltinTopicObserver {
       DomainParticipant domainParticipant) {
     // create the parent observer with the built-in subscription topic
     super(domainParticipant, SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME);
+  }
+
+  @Override
+  public void run() {
+    boolean hasMoreData = true;
+
+    do {
+      try {
+        // create data containers
+        SubscriptionBuiltinTopicData sample = new SubscriptionBuiltinTopicData();
+        SampleInfo sampleInfo = new SampleInfo();
+
+        // read next sample
+        dataReader.read_next_sample_untyped(sample, sampleInfo);
+
+        if (sampleInfo.valid_data) {
+          if (log.isInfoEnabled()) {
+            log.info("Discovered: {}", sampleInfo.instance_handle.toString());
+          }
+        } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
+          if (log.isInfoEnabled()) {
+            log.info("Disposed  : {}", sampleInfo.instance_handle.toString());
+          }
+        }
+      } catch (RETCODE_NO_DATA exception) {
+        hasMoreData = false;
+      }
+
+    } while (hasMoreData);
   }
 }

@@ -28,7 +28,6 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
-import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class implements an observer for publications.
  */
-class PublicationObserver extends BuiltinTopicObserver {
+class PublicationObserver extends BuiltinTopicObserver implements Runnable {
 
   private static final Logger log;
 
@@ -58,8 +57,7 @@ class PublicationObserver extends BuiltinTopicObserver {
   }
 
   @Override
-  public void on_data_available(DataReader dataReader) {
-
+  public void run() {
     boolean hasMoreData = true;
 
     do {
@@ -75,7 +73,7 @@ class PublicationObserver extends BuiltinTopicObserver {
           if (log.isInfoEnabled()) {
             log.info("Discovered: {}", sampleInfo.instance_handle.toString());
           }
-        } else if (sampleInfo.instance_state == InstanceStateKind.NOT_ALIVE_DISPOSED_INSTANCE_STATE) {
+        } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
           if (log.isInfoEnabled()) {
             log.info("Disposed  : {}", sampleInfo.instance_handle.toString());
           }

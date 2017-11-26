@@ -32,10 +32,12 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.DataReaderAdapter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class BuiltinTopicObserver extends DataReaderAdapter {
+class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
 
   private static final Logger log;
 
@@ -43,8 +45,9 @@ class BuiltinTopicObserver extends DataReaderAdapter {
     log = LoggerFactory.getLogger(BuiltinTopicObserver.class);
   }
 
+  private ExecutorService executorService;
   private DomainParticipant domainParticipant;
-  private DataReader dataReader;
+  DataReader dataReader;
 
   /**
    * Creates a new discovery observer.
@@ -75,6 +78,9 @@ class BuiltinTopicObserver extends DataReaderAdapter {
 
     // set listener on data reader so we get the data
     dataReader.set_listener(this, StatusKind.DATA_AVAILABLE_STATUS);
+
+    // create executor as single thread
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   /**
@@ -124,5 +130,12 @@ class BuiltinTopicObserver extends DataReaderAdapter {
     // here we get the information that data is available
     // now we need to inform our listeners that something new has been discovered
     log.trace("Method 'on_data_available' invoked.");
+    // trigger to read samples
+    executorService.execute(this);
+  }
+
+  @Override
+  public void run() {
+    // override this method to read data
   }
 }
