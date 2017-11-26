@@ -35,6 +35,7 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7+'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'com.esotericsoftware:reflectasm:1.11.+'
+    compile 'org.apache.commons:commons-lang3:3.7'
 }
 
 jar {
@@ -195,6 +196,19 @@ task runRouting(type: JavaExec) {
     classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
     // set main class
     main = 'com.github.aguther.dds.examples.routing.Routing'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runDiscovery(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.discovery.Discovery'
     // set working directory
     workingDir = '.'
     // jvm settings
