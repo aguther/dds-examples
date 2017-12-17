@@ -30,13 +30,15 @@ import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class implements an observer for publications.
  */
-class PublicationObserver extends BuiltinTopicObserver implements Runnable {
+public class PublicationObserver extends BuiltinTopicObserver implements Runnable {
 
   private static final Logger log;
 
@@ -44,16 +46,38 @@ class PublicationObserver extends BuiltinTopicObserver implements Runnable {
     log = LoggerFactory.getLogger(PublicationObserver.class);
   }
 
+  private final Object listenerLock;
+  private final List<PublicationObserverListener> listenerList;
+
   /**
    * Creates a new observer for publications.
    *
    * @param domainParticipant DomainParticipant to use
    * @throws IllegalArgumentException Thrown in case of an error
    */
-  PublicationObserver(
+  public PublicationObserver(
       DomainParticipant domainParticipant) {
+
     // create the parent observer with the built-in publication topic
     super(domainParticipant, PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME);
+
+    // create list for listenerList with lock
+    listenerLock = new Object();
+    listenerList = new ArrayList<>();
+  }
+
+  public void addListener(PublicationObserverListener listener) {
+    synchronized (listenerLock) {
+      if (!listenerList.contains(listener)) {
+        listenerList.add(listener);
+      }
+    }
+  }
+
+  public void removeListener(PublicationObserverListener listener) {
+    synchronized (listenerLock) {
+      listenerList.remove(listener);
+    }
   }
 
   @Override
@@ -70,12 +94,16 @@ class PublicationObserver extends BuiltinTopicObserver implements Runnable {
         dataReader.read_next_sample_untyped(sample, sampleInfo);
 
         if (sampleInfo.valid_data) {
-          if (log.isInfoEnabled()) {
-            log.info("Discovered: {}", sampleInfo.instance_handle.toString());
+          synchronized (listenerLock) {
+            for (PublicationObserverListener listener : listenerList) {
+              listener.publicationDiscovered(sampleInfo.instance_handle, sample);
+            }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
-          if (log.isInfoEnabled()) {
-            log.info("Disposed  : {}", sampleInfo.instance_handle.toString());
+          synchronized (listenerLock) {
+            for (PublicationObserverListener listener : listenerList) {
+              listener.publicationLost(sampleInfo.instance_handle);
+            }
           }
         }
       } catch (RETCODE_NO_DATA exception) {

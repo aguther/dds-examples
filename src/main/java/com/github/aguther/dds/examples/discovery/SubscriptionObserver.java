@@ -30,13 +30,15 @@ import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class implements an observer for subscriptions.
  */
-class SubscriptionObserver extends BuiltinTopicObserver {
+public class SubscriptionObserver extends BuiltinTopicObserver {
 
   private static final Logger log;
 
@@ -44,16 +46,37 @@ class SubscriptionObserver extends BuiltinTopicObserver {
     log = LoggerFactory.getLogger(Discovery.class);
   }
 
+  private final Object listenerLock;
+  private final List<SubscriptionObserverListener> listenerList;
+
   /**
    * Creates a new observer for subscriptions.
    *
    * @param domainParticipant DomainParticipant to use
    * @throws IllegalArgumentException Thrown in case of an error
    */
-  SubscriptionObserver(
+  public SubscriptionObserver(
       DomainParticipant domainParticipant) {
     // create the parent observer with the built-in subscription topic
     super(domainParticipant, SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME);
+
+    // create list for listenerList with lock
+    listenerLock = new Object();
+    listenerList = new ArrayList<>();
+  }
+
+  public void addListener(SubscriptionObserverListener listener) {
+    synchronized (listenerLock) {
+      if (!listenerList.contains(listener)) {
+        listenerList.add(listener);
+      }
+    }
+  }
+
+  public void removeListener(SubscriptionObserverListener listener) {
+    synchronized (listenerLock) {
+      listenerList.remove(listener);
+    }
   }
 
   @Override
@@ -70,12 +93,16 @@ class SubscriptionObserver extends BuiltinTopicObserver {
         dataReader.read_next_sample_untyped(sample, sampleInfo);
 
         if (sampleInfo.valid_data) {
-          if (log.isInfoEnabled()) {
-            log.info("Discovered: {}", sampleInfo.instance_handle.toString());
+          synchronized (listenerLock) {
+            for (SubscriptionObserverListener listener : listenerList) {
+              listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);
+            }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
-          if (log.isInfoEnabled()) {
-            log.info("Disposed  : {}", sampleInfo.instance_handle.toString());
+          synchronized (listenerLock) {
+            for (SubscriptionObserverListener listener : listenerList) {
+              listener.subscriptionLost(sampleInfo.instance_handle);
+            }
           }
         }
       } catch (RETCODE_NO_DATA exception) {
