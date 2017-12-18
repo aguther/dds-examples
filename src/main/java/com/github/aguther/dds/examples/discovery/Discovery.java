@@ -66,12 +66,16 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
         null,
         StatusKind.STATUS_MASK_NONE);
 
+    // create route observer
+    RouteObserver routeObserver = new RouteObserver();
     // create new publication observer
     PublicationObserver publicationObserver = new PublicationObserver(domainParticipant);
     publicationObserver.addListener(discovery);
+    publicationObserver.addListener(routeObserver);
     // create new subscription observer
     SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipant);
     subscriptionObserver.addListener(discovery);
+    subscriptionObserver.addListener(routeObserver);
 
     // enable domain participant
     domainParticipant.enable();
