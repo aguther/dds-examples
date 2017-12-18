@@ -24,9 +24,11 @@
 
 package com.github.aguther.dds.examples.discovery;
 
+import com.github.aguther.dds.examples.discovery.TopicRoute.Direction;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.StringSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import java.util.HashMap;
@@ -50,44 +52,17 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   }
 
   @Override
-
   public void publicationDiscovered(
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    synchronized (mappingLock) {
-      // create topic session if first item discovered
-      if (!mapping.containsKey(data.topic_name)) {
-        mapping.put(data.topic_name, ArrayListMultimap.create());
-      }
-
-      // create routes for all partitions we discovered
-      if (data.partition.name.isEmpty()) {
-        // create topic route object
-        TopicRoute topicRoute = new TopicRoute(data.topic_name, data.type_name, "");
-
-        // check if topic route is about to be created
-        if (!mapping.get(data.topic_name).containsKey(topicRoute)) {
-          log.info("Route is new");
-        }
-
-        // add instance handle to topic route
-        mapping.get(data.topic_name).put(topicRoute, instanceHandle);
-      } else {
-        for (Object partition : data.partition.name) {
-          // create topic route object
-          TopicRoute topicRoute = new TopicRoute(data.topic_name, data.type_name, partition.toString());
-
-          // check if topic route is about to be created
-          if (!mapping.get(data.topic_name).containsKey(topicRoute)) {
-            log.info("Route is new");
-          }
-
-          // add instance handle to topic route
-          mapping.get(data.topic_name).put(topicRoute, instanceHandle);
-        }
-      }
-    }
+    handleDiscovered(
+        instanceHandle,
+        Direction.OUT,
+        data.topic_name,
+        data.type_name,
+        data.partition.name
+    );
   }
 
   @Override
@@ -95,39 +70,13 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    synchronized (mappingLock) {
-      // delete routes for all partitions we lost
-      if (data.partition.name.isEmpty()) {
-        // create topic route object
-        TopicRoute topicRoute = new TopicRoute(data.topic_name, data.type_name, "");
-
-        // remove instance handle from topic route
-        mapping.get(data.topic_name).put(topicRoute, instanceHandle);
-
-        // check if route was deleted
-        if (!mapping.get(data.topic_name).containsKey(topicRoute)) {
-          log.info("Route is deleted");
-        }
-      } else {
-        for (Object partition : data.partition.name) {
-          // create topic route object
-          TopicRoute topicRoute = new TopicRoute(data.topic_name, data.type_name, partition.toString());
-
-          // remove instance handle from topic route
-          mapping.get(data.topic_name).remove(topicRoute, instanceHandle);
-
-          // check if route is deleted
-          if (!mapping.get(data.topic_name).containsKey(topicRoute)) {
-            log.info("Route is deleted");
-          }
-        }
-      }
-
-      // delete topic session if last items was removed
-      if (mapping.get(data.topic_name).isEmpty()) {
-        mapping.remove(data.topic_name);
-      }
-    }
+    handleLost(
+        instanceHandle,
+        Direction.OUT,
+        data.topic_name,
+        data.type_name,
+        data.partition.name
+    );
   }
 
   @Override
@@ -135,8 +84,13 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    synchronized (mappingLock) {
-    }
+    handleDiscovered(
+        instanceHandle,
+        Direction.IN,
+        data.topic_name,
+        data.type_name,
+        data.partition.name
+    );
   }
 
   @Override
@@ -144,7 +98,140 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
+    handleLost(
+        instanceHandle,
+        Direction.IN,
+        data.topic_name,
+        data.type_name,
+        data.partition.name
+    );
+  }
+
+  private void handleDiscovered(
+      InstanceHandle_t instanceHandle,
+      Direction direction,
+      String topicName,
+      String typeName,
+      StringSeq partitions
+  ) {
     synchronized (mappingLock) {
+      // create topic session if first item discovered
+      if (!mapping.containsKey(topicName)) {
+        mapping.put(topicName, ArrayListMultimap.create());
+      }
+
+      // create routes for all partitions we discovered
+      if (partitions.isEmpty()) {
+        // create topic route object
+        TopicRoute topicRoute = new TopicRoute(
+            direction,
+            topicName,
+            typeName,
+            ""
+        );
+
+        // check if topic route is about to be created
+        if (!mapping.get(topicName).containsKey(topicRoute)) {
+          log.info(
+              "New topic route: direction='{}', topic='{}', type='{}', partition='{}'",
+              topicRoute.getDirection(),
+              topicRoute.getTopic(),
+              topicRoute.getType(),
+              topicRoute.getPartition()
+          );
+        }
+
+        // add instance handle to topic route
+        mapping.get(topicName).put(topicRoute, instanceHandle);
+      } else {
+        for (Object partition : partitions) {
+          // create topic route object
+          TopicRoute topicRoute = new TopicRoute(
+              direction,
+              topicName,
+              typeName,
+              partition.toString()
+          );
+
+          // check if topic route is about to be created
+          if (!mapping.get(topicName).containsKey(topicRoute)) {
+            log.info(
+                "New topic route: direction='{}', topic='{}', type='{}', partition='{}'",
+                topicRoute.getDirection(),
+                topicRoute.getTopic(),
+                topicRoute.getType(),
+                topicRoute.getPartition()
+            );
+          }
+
+          // add instance handle to topic route
+          mapping.get(topicName).put(topicRoute, instanceHandle);
+        }
+      }
+    }
+  }
+
+  private void handleLost(
+      InstanceHandle_t instanceHandle,
+      Direction direction,
+      String topicName,
+      String typeName,
+      StringSeq partitions
+  ) {
+    synchronized (mappingLock) {
+      // delete routes for all partitions we lost
+      if (partitions.isEmpty()) {
+        // create topic route object
+        TopicRoute topicRoute = new TopicRoute(
+            direction,
+            topicName,
+            typeName,
+            ""
+        );
+
+        // remove instance handle from topic route
+        mapping.get(topicName).put(topicRoute, instanceHandle);
+
+        // check if route was deleted
+        if (!mapping.get(topicName).containsKey(topicRoute)) {
+          log.info(
+              "Delete topic route: direction='{}', topic='{}', type='{}', partition='{}'",
+              topicRoute.getDirection(),
+              topicRoute.getTopic(),
+              topicRoute.getType(),
+              topicRoute.getPartition()
+          );
+        }
+      } else {
+        for (Object partition : partitions) {
+          // create topic route object
+          TopicRoute topicRoute = new TopicRoute(
+              direction,
+              topicName,
+              typeName,
+              partition.toString()
+          );
+
+          // remove instance handle from topic route
+          mapping.get(topicName).remove(topicRoute, instanceHandle);
+
+          // check if route is deleted
+          if (!mapping.get(topicName).containsKey(topicRoute)) {
+            log.info(
+                "Delete topic route: direction='{}', topic='{}', type='{}', partition='{}'",
+                topicRoute.getDirection(),
+                topicRoute.getTopic(),
+                topicRoute.getType(),
+                topicRoute.getPartition()
+            );
+          }
+        }
+      }
+
+      // delete topic session if last items was removed
+      if (mapping.get(topicName).isEmpty()) {
+        mapping.remove(topicName);
+      }
     }
   }
 }

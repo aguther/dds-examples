@@ -28,42 +28,41 @@ import java.util.Objects;
 
 class TopicRoute {
 
+  enum Direction {
+    OUT, IN
+  }
+
+  private Direction direction;
   private String topic;
   private String type;
   private String partition;
 
-  public TopicRoute(
+  TopicRoute(
+      Direction direction,
       String topic,
       String type,
       String partition
   ) {
+    this.direction = direction;
     this.topic = topic;
     this.type = type;
     this.partition = partition;
+  }
+
+  public Direction getDirection() {
+    return direction;
   }
 
   public String getTopic() {
     return topic;
   }
 
-  public void setTopic(String topic) {
-    this.topic = topic;
-  }
-
   public String getType() {
     return type;
   }
 
-  public void setType(String type) {
-    this.type = type;
-  }
-
   public String getPartition() {
     return partition;
-  }
-
-  public void setPartition(String partition) {
-    this.partition = partition;
   }
 
   @Override
@@ -76,14 +75,15 @@ class TopicRoute {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TopicRoute topicRoute = (TopicRoute) o;
-    return Objects.equals(topic, topicRoute.topic) &&
-        Objects.equals(type, topicRoute.type) &&
-        Objects.equals(partition, topicRoute.partition);
+    TopicRoute that = (TopicRoute) o;
+    return direction == that.direction &&
+        Objects.equals(topic, that.topic) &&
+        Objects.equals(type, that.type) &&
+        Objects.equals(partition, that.partition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(topic, type, partition);
+    return Objects.hash(direction, topic, type, partition);
   }
 }
