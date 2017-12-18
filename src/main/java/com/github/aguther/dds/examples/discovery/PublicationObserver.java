@@ -25,12 +25,14 @@
 package com.github.aguther.dds.examples.discovery;
 
 import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     log = LoggerFactory.getLogger(PublicationObserver.class);
   }
 
+  private final HashMap<InstanceHandle_t, PublicationBuiltinTopicData> sampleCache;
+
   private final Object listenerLock;
   private final List<PublicationObserverListener> listenerList;
 
@@ -60,6 +64,9 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
 
     // create the parent observer with the built-in publication topic
     super(domainParticipant, PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME);
+
+    // initialize sample cache
+    sampleCache = new HashMap<>();
 
     // create list for listenerList with lock
     listenerLock = new Object();
@@ -94,15 +101,23 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
         dataReader.read_next_sample_untyped(sample, sampleInfo);
 
         if (sampleInfo.valid_data) {
+          // cache sample for the lost event
+          sampleCache.put(sampleInfo.instance_handle, sample);
+
+          // call listeners
           synchronized (listenerLock) {
             for (PublicationObserverListener listener : listenerList) {
               listener.publicationDiscovered(sampleInfo.instance_handle, sample);
             }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
+          // get sample from cached data
+          sample = sampleCache.remove(sampleInfo.instance_handle);
+
+          // call listeners
           synchronized (listenerLock) {
             for (PublicationObserverListener listener : listenerList) {
-              listener.publicationLost(sampleInfo.instance_handle);
+              listener.publicationLost(sampleInfo.instance_handle, sample);
             }
           }
         }

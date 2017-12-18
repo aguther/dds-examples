@@ -130,7 +130,10 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
   }
 
   @Override
-  public void publicationDiscovered(InstanceHandle_t instanceHandle, PublicationBuiltinTopicData data) {
+  public void publicationDiscovered(
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  ) {
     log.info(
         "Discovered Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
         InstanceHandleToString(instanceHandle),
@@ -141,15 +144,24 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
   }
 
   @Override
-  public void publicationLost(InstanceHandle_t instanceHandle) {
+  public void publicationLost(
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  ) {
     log.info(
-        "Lost Publication       : instance='{}'",
-        InstanceHandleToString(instanceHandle)
+        "Lost Publication       : instance='{}', topic='{}', type='{}', partitions='{}'",
+        InstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        PartitionQosPolicyToString(data.partition)
     );
   }
 
   @Override
-  public void subscriptionDiscovered(InstanceHandle_t instanceHandle, SubscriptionBuiltinTopicData data) {
+  public void subscriptionDiscovered(
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
+  ) {
     log.info(
         "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
         InstanceHandleToString(instanceHandle),
@@ -160,13 +172,16 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
   }
 
   @Override
-  public void subscriptionLost(InstanceHandle_t instanceHandle) {
-
+  public void subscriptionLost(
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
+  ) {
     log.info(
-        "Lost Subscription      : instance='{}'",
-        InstanceHandleToString(instanceHandle)
+        "Lost Subscription      : instance='{}', topic='{}', type='{}', partitions='{}'",
+        InstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        PartitionQosPolicyToString(data.partition)
     );
   }
-
-
 }

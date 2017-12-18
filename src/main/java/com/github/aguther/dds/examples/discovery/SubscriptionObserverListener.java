@@ -11,6 +11,7 @@ public interface SubscriptionObserverListener {
   );
 
   public void subscriptionLost(
-      InstanceHandle_t instanceHandle
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
   );
 }

@@ -11,6 +11,7 @@ public interface PublicationObserverListener {
   );
 
   public void publicationLost(
-      InstanceHandle_t instanceHandle
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
   );
 }

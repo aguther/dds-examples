@@ -103,7 +103,8 @@ public class Routing {
 
         @Override
         public void publicationLost(
-            InstanceHandle_t instanceHandle
+            InstanceHandle_t instanceHandle,
+            PublicationBuiltinTopicData data
         ) {
           log.info(
               "Lost Publication       : instance='{}'",
