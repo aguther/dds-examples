@@ -53,32 +53,42 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
     // register shutdown hook
     registerShutdownHook();
 
+    // create domain participant for administration interface
+    DomainParticipant domainParticipantAdministration = DomainParticipantFactory.get_instance().create_participant(
+        0,
+        DomainParticipantFactory.PARTICIPANT_QOS_DEFAULT,
+        null,
+        StatusKind.STATUS_MASK_NONE);
+
+    // create routing service administration
+    RoutingServiceCommander routingServiceCommander = new RoutingServiceCommander(domainParticipantAdministration);
+
     // do not auto-enable entities to ensure we do not miss any discovery data
     DomainParticipantFactoryQos domainParticipantFactoryQos = new DomainParticipantFactoryQos();
     DomainParticipantFactory.get_instance().get_qos(domainParticipantFactoryQos);
     domainParticipantFactoryQos.entity_factory.autoenable_created_entities = false;
     DomainParticipantFactory.get_instance().set_qos(domainParticipantFactoryQos);
 
-    // create domain participant
-    DomainParticipant domainParticipant = DomainParticipantFactory.get_instance().create_participant(
+    // create domain participant for discovery
+    DomainParticipant domainParticipantDiscovery = DomainParticipantFactory.get_instance().create_participant(
         0,
         DomainParticipantFactory.PARTICIPANT_QOS_DEFAULT,
         null,
         StatusKind.STATUS_MASK_NONE);
 
     // create route observer
-    RouteObserver routeObserver = new RouteObserver();
+    RouteObserver routeObserver = new RouteObserver(domainParticipantDiscovery, routingServiceCommander);
     // create new publication observer
-    PublicationObserver publicationObserver = new PublicationObserver(domainParticipant);
+    PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
     publicationObserver.addListener(discovery);
     publicationObserver.addListener(routeObserver);
     // create new subscription observer
-    SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipant);
+    SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
     subscriptionObserver.addListener(discovery);
     subscriptionObserver.addListener(routeObserver);
 
     // enable domain participant
-    domainParticipant.enable();
+    domainParticipantDiscovery.enable();
 
     while (!shouldTerminate) {
       Thread.sleep(1000);
@@ -89,7 +99,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
     subscriptionObserver.close();
 
     // shutdown DDS
-    DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
+    DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
     DomainParticipantFactory.finalize_instance();
   }
 
@@ -138,7 +148,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    log.info(
+    log.debug(
         "Discovered Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
         InstanceHandleToString(instanceHandle),
         data.topic_name,
@@ -152,7 +162,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    log.info(
+    log.debug(
         "Lost Publication       : instance='{}', topic='{}', type='{}', partitions='{}'",
         InstanceHandleToString(instanceHandle),
         data.topic_name,
@@ -166,7 +176,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    log.info(
+    log.debug(
         "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
         InstanceHandleToString(instanceHandle),
         data.topic_name,
@@ -180,7 +190,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    log.info(
+    log.debug(
         "Lost Subscription      : instance='{}', topic='{}', type='{}', partitions='{}'",
         InstanceHandleToString(instanceHandle),
         data.topic_name,

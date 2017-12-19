@@ -26,6 +26,7 @@ package com.github.aguther.dds.examples.routing;
 
 import com.github.aguther.dds.examples.discovery.PublicationObserver;
 import com.github.aguther.dds.examples.discovery.PublicationObserverListener;
+import com.github.aguther.dds.util.Slf4jDdsLogger;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantFactoryQos;
@@ -35,6 +36,7 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +55,20 @@ public class Routing {
     // register shutdown hook
     registerShutdownHook();
 
+    // register logger DDS messages
+    try {
+      Slf4jDdsLogger.createRegisterLogger();
+    } catch (IOException e) {
+      log.error("Failed to create and register DDS logging device.", e);
+      return;
+    }
+
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
     routingServiceProperty.cfgFile = "routing.xml";
     routingServiceProperty.serviceName = "dds-examples-routing";
     routingServiceProperty.applicationName = routingServiceProperty.serviceName;
+    routingServiceProperty.serviceVerbosity = 3;
 
     // create routing service instance
     try (RoutingService routingService = new RoutingService(routingServiceProperty)) {
@@ -65,6 +76,7 @@ public class Routing {
       // start routing service
       routingService.start();
 
+/*
       // disable auto enable
       DomainParticipantFactoryQos domainParticipantFactoryQos = new DomainParticipantFactoryQos();
       DomainParticipantFactory.get_instance().get_qos(domainParticipantFactoryQos);
@@ -113,6 +125,7 @@ public class Routing {
 
       // enable participant
       domainParticipant.enable();
+*/
 
       while (!shouldTerminate) {
         Thread.sleep(1000);

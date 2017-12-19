@@ -26,29 +26,31 @@ package com.github.aguther.dds.examples.discovery;
 
 import java.util.Objects;
 
-class TopicRoute {
+class Session {
 
-  enum Direction {
-    OUT, IN
-  }
-
-  private Direction direction;
   private String topic;
+  private String partition;
 
-  TopicRoute(
-      Direction direction,
+  Session(
       String topic
   ) {
-    this.direction = direction;
-    this.topic = topic;
+    this(topic, "");
   }
 
-  public Direction getDirection() {
-    return direction;
+  Session(
+      String topic,
+      String partition
+  ) {
+    this.topic = topic;
+    this.partition = partition;
   }
 
   public String getTopic() {
     return topic;
+  }
+
+  public String getPartition() {
+    return partition;
   }
 
   @Override
@@ -61,13 +63,14 @@ class TopicRoute {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TopicRoute that = (TopicRoute) o;
-    return direction == that.direction &&
-        Objects.equals(topic, that.topic);
+    Session session = (Session) o;
+    return Objects.equals(topic, session.topic) &&
+        Objects.equals(partition, session.partition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(direction, topic);
+
+    return Objects.hash(topic, partition);
   }
 }
