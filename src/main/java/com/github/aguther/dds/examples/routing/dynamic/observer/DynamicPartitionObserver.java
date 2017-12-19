@@ -120,12 +120,8 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       PublicationBuiltinTopicData data
   ) {
     // ignore the publication?
-    synchronized (filterLock) {
-      for (DynamicPartitionObserverFilter filter : filterList) {
-        if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
-          return;
-        }
-      }
+    if (ignorePublication(instanceHandle, data)) {
+      return;
     }
 
     // handle discovered entity
@@ -143,12 +139,8 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       PublicationBuiltinTopicData data
   ) {
     // ignore the publication?
-    synchronized (filterLock) {
-      for (DynamicPartitionObserverFilter filter : filterList) {
-        if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
-          return;
-        }
-      }
+    if (ignorePublication(instanceHandle, data)) {
+      return;
     }
 
     // handle lost entity
@@ -166,12 +158,8 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       SubscriptionBuiltinTopicData data
   ) {
     // ignore the publication?
-    synchronized (filterLock) {
-      for (DynamicPartitionObserverFilter filter : filterList) {
-        if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
-          return;
-        }
-      }
+    if (ignoreSubscription(instanceHandle, data)) {
+      return;
     }
 
     // handle discovered entity
@@ -189,12 +177,8 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       SubscriptionBuiltinTopicData data
   ) {
     // ignore the publication?
-    synchronized (filterLock) {
-      for (DynamicPartitionObserverFilter filter : filterList) {
-        if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
-          return;
-        }
-      }
+    if (ignoreSubscription(instanceHandle, data)) {
+      return;
     }
 
     // handle lost entity
@@ -215,6 +199,10 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
     synchronized (mappingLock) {
       // create routes for all partitions we discovered
       if (partitions.isEmpty()) {
+        // ignore partition?
+        if (ignorePartition(topicName, "")) {
+          return;
+        }
         // add instance handle to map
         addInstanceHandleToMap(
             instanceHandle,
@@ -223,6 +211,10 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         );
       } else {
         for (Object partition : partitions) {
+          // ignore partition?
+          if (ignorePartition(topicName, partition.toString())) {
+            continue;
+          }
           // add instance handle to map
           addInstanceHandleToMap(
               instanceHandle,
@@ -243,6 +235,10 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
     synchronized (mappingLock) {
       // delete routes for all partitions we lost
       if (partitions.isEmpty()) {
+        // ignore partition?
+        if (ignorePartition(topicName, "")) {
+          return;
+        }
         // remove instance handle from map
         removeInstanceHandleFromMap(
             instanceHandle,
@@ -251,6 +247,10 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         );
       } else {
         for (Object partition : partitions) {
+          // ignore partition?
+          if (ignorePartition(topicName, partition.toString())) {
+            return;
+          }
           // remove instance handle from map
           removeInstanceHandleFromMap(
               instanceHandle,
@@ -260,6 +260,66 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         }
       }
     }
+  }
+
+  private boolean ignorePublication(
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  ) {
+    synchronized (filterLock) {
+      for (DynamicPartitionObserverFilter filter : filterList) {
+        if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
+          if (log.isDebugEnabled()) {
+            log.debug(
+                "Publication topic='{}', instanceHandle='{}' ignored",
+                data.topic_name,
+                instanceHandle);
+          }
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean ignoreSubscription(
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
+  ) {
+    synchronized (filterLock) {
+      for (DynamicPartitionObserverFilter filter : filterList) {
+        if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
+          if (log.isDebugEnabled()) {
+            log.debug(
+                "Subscription topic='{}', instanceHandle='{}' ignored",
+                data.topic_name,
+                instanceHandle);
+          }
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean ignorePartition(
+      String topicName,
+      String partition
+  ) {
+    synchronized (filterLock) {
+      for (DynamicPartitionObserverFilter filter : filterList) {
+        if (filter.ignorePartition(partition)) {
+          if (log.isDebugEnabled()) {
+            log.debug(
+                "Partition topic='{}' name='{}' ignored",
+                topicName,
+                partition);
+          }
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private void addInstanceHandleToMap(

@@ -26,7 +26,10 @@ package com.github.aguther.dds.examples.routing;
 
 import com.github.aguther.dds.examples.discovery.observer.PublicationObserver;
 import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserver;
-import com.github.aguther.dds.examples.routing.dynamic.IgnoreRtiTopicsAndRoutingServiceEntitiesFilter;
+import com.github.aguther.dds.examples.routing.dynamic.RoutingServiceEntitiesFilter;
+import com.github.aguther.dds.examples.routing.dynamic.RoutingServiceGroupEntitiesFilter;
+import com.github.aguther.dds.examples.routing.dynamic.RtiTopicFilter;
+import com.github.aguther.dds.examples.routing.dynamic.WildcardPartitionFilter;
 import com.github.aguther.dds.examples.routing.dynamic.command.RoutingServiceCommander;
 import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
@@ -130,8 +133,11 @@ public class DynamicRouting {
 
     // create dynamic partition observer
     DynamicPartitionObserver dynamicPartitionObserver = new DynamicPartitionObserver(domainParticipantDiscovery);
-    // add filter to dynamic partition observer
-    dynamicPartitionObserver.addFilter(new IgnoreRtiTopicsAndRoutingServiceEntitiesFilter(ROUTING_SERVICE_NAME));
+    // add filters to dynamic partition observer
+    dynamicPartitionObserver.addFilter(new RtiTopicFilter());
+    dynamicPartitionObserver.addFilter(new RoutingServiceEntitiesFilter());
+    dynamicPartitionObserver.addFilter(new RoutingServiceGroupEntitiesFilter(ROUTING_SERVICE_NAME));
+    dynamicPartitionObserver.addFilter(new WildcardPartitionFilter());
     // add listener to dynamic partition observer
     dynamicPartitionObserver.addListener(new DynamicRoutingCommander(routingServiceCommander, ROUTING_SERVICE_NAME));
 

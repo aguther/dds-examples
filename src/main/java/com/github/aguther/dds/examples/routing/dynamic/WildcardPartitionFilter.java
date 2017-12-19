@@ -22,29 +22,44 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer;
+package com.github.aguther.dds.examples.routing.dynamic;
 
+import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
+import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.PropertyQosPolicyHelper;
+import com.rti.dds.infrastructure.Property_t;
+import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import com.rti.dds.topic.BuiltinTopicKey_t;
 
-public interface DynamicPartitionObserverFilter {
+public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
 
+  @Override
   public boolean ignorePublication(
       DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
-  );
+  ) {
+    return false;
+  }
 
+  @Override
   public boolean ignoreSubscription(
       DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
-  );
+  ) {
+    return false;
+  }
 
+  @Override
   public boolean ignorePartition(
       String partition
-  );
-
+  ) {
+    return (partition.contains("*"));
+  }
 }

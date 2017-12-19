@@ -36,15 +36,7 @@ import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
 
-public class IgnoreRtiTopicsAndRoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
-
-  private final String groupName;
-
-  public IgnoreRtiTopicsAndRoutingServiceEntitiesFilter(
-      String groupName
-  ) {
-    this.groupName = groupName;
-  }
+public class RtiTopicFilter implements DynamicPartitionObserverFilter {
 
   @Override
   public boolean ignorePublication(
@@ -52,7 +44,7 @@ public class IgnoreRtiTopicsAndRoutingServiceEntitiesFilter implements DynamicPa
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    return ignore(domainParticipant, data.topic_name, data.participant_key);
+    return ignore(data.topic_name);
   }
 
   @Override
@@ -61,66 +53,20 @@ public class IgnoreRtiTopicsAndRoutingServiceEntitiesFilter implements DynamicPa
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    return ignore(domainParticipant, data.topic_name, data.participant_key);
+    return ignore(data.topic_name);
   }
 
-  private boolean ignore(
-      DomainParticipant domainParticipant,
-      String topicName,
-      BuiltinTopicKey_t participantKey
+  @Override
+  public boolean ignorePartition(
+      String partition
   ) {
-    // ignore all rti internal topics
-    if (topicName.startsWith("rti")) {
-      return true;
-    }
-
-    // get data of parent domain participant
-    ParticipantBuiltinTopicData participantData = getParticipantBuiltinTopicData(
-        domainParticipant, participantKey);
-
-    // check if participant belongs to a routing service
-    if (participantData != null) {
-      // check if participant belongs to a routing service
-      if (participantData.service.kind != ServiceQosPolicyKind.ROUTING_SERVICE_QOS) {
-        return false;
-      }
-
-      // get group name of routing service
-      Property_t property = PropertyQosPolicyHelper.lookup_property(
-          participantData.property,
-          "rti.routing_service.group_name"
-      );
-
-      // when participant is part of routing service group ignore it
-      return (property != null && (property.value.equals(groupName)));
-    }
-
-    // do not ignore
     return false;
   }
 
-  private ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      DomainParticipant domainParticipant,
-      BuiltinTopicKey_t participantKey
+  private boolean ignore(
+      String topicName
   ) {
-    // get discovered participants
-    InstanceHandleSeq participantHandles = new InstanceHandleSeq();
-    domainParticipant.get_discovered_participants(participantHandles);
-
-    // iterate over handles
-    ParticipantBuiltinTopicData participantData = new ParticipantBuiltinTopicData();
-    for (Object participantHandle : participantHandles) {
-      domainParticipant.get_discovered_participant_data(
-          participantData,
-          (InstanceHandle_t) participantHandle
-      );
-
-      if (participantData.key.equals(participantKey)) {
-        return participantData;
-      }
-    }
-
-    // nothing found
-    return null;
+    // ignore all rti topics
+    return topicName.startsWith("rti");
   }
 }
