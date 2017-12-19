@@ -26,7 +26,7 @@ package com.github.aguther.dds.examples.routing;
 
 import com.github.aguther.dds.examples.discovery.observer.PublicationObserver;
 import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserver;
-import com.github.aguther.dds.examples.routing.dynamic.command.RouteCommander;
+import com.github.aguther.dds.examples.routing.dynamic.IgnoreRtiTopicsAndRoutingServiceEntitiesFilter;
 import com.github.aguther.dds.examples.routing.dynamic.command.RoutingServiceCommander;
 import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
@@ -123,7 +123,7 @@ public class DynamicRouting {
     // add filter to dynamic partition observer
     dynamicPartitionObserver.addFilter(new IgnoreRtiTopicsAndRoutingServiceEntitiesFilter(ROUTING_SERVICE_NAME));
     // add listener to dynamic partition observer
-    dynamicPartitionObserver.addListener(new RouteCommander(routingServiceCommander, ROUTING_SERVICE_NAME));
+    dynamicPartitionObserver.addListener(new DynamicRoutingCommander(routingServiceCommander, ROUTING_SERVICE_NAME));
 
     // create new publication observer
     PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);

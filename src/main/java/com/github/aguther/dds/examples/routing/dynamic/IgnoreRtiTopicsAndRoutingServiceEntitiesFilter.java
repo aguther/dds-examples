@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing;
+package com.github.aguther.dds.examples.routing.dynamic;
 
 import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.rti.dds.domain.DomainParticipant;

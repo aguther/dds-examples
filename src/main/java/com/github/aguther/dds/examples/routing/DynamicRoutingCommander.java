@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.command;
+package com.github.aguther.dds.examples.routing;
 
+import com.github.aguther.dds.examples.routing.dynamic.command.RoutingServiceCommander;
 import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverListener;
 import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
 import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
@@ -36,7 +37,7 @@ import idl.RTI.RoutingService.Administration.CommandResponseKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RouteCommander implements DynamicPartitionObserverListener {
+public class DynamicRoutingCommander implements DynamicPartitionObserverListener {
 
   private static final Duration_t REQUEST_TIMEOUT;
 
@@ -44,13 +45,13 @@ public class RouteCommander implements DynamicPartitionObserverListener {
 
   static {
     REQUEST_TIMEOUT = new Duration_t(10, 0);
-    log = LoggerFactory.getLogger(RouteCommander.class);
+    log = LoggerFactory.getLogger(DynamicRoutingCommander.class);
   }
 
   private final RoutingServiceCommander routingServiceCommander;
   private final String targetRouter;
 
-  public RouteCommander(
+  public DynamicRoutingCommander(
       RoutingServiceCommander routingServiceCommander,
       String targetRouter
   ) {
