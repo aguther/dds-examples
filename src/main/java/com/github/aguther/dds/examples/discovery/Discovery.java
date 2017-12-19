@@ -77,7 +77,10 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
         StatusKind.STATUS_MASK_NONE);
 
     // create route observer
-    RouteObserver routeObserver = new RouteObserver(domainParticipantDiscovery, routingServiceCommander);
+    RouteObserver routeObserver = new RouteObserver(domainParticipantDiscovery);
+    // add filter to route observer
+    routeObserver.addFilter(new IgnoreRtiTopicsAndRoutingServiceEntitiesFilter());
+    routeObserver.addListener(new RouteCommander(routingServiceCommander, "dds-examples-routing"));
     // create new publication observer
     PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
     publicationObserver.addListener(discovery);

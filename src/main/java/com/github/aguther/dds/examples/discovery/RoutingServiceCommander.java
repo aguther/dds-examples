@@ -44,11 +44,9 @@ import org.slf4j.LoggerFactory;
 public class RoutingServiceCommander {
 
   private static final Logger log;
-  private static final Duration_t MAX_WAIT;
 
   static {
     log = LoggerFactory.getLogger(RoutingServiceCommander.class);
-    MAX_WAIT = new Duration_t(1, 0);
   }
 
   private final Requester<CommandRequest, CommandResponse> requester;
@@ -109,12 +107,6 @@ public class RoutingServiceCommander {
 
   public CommandRequest createCommandRequest() {
     return new CommandRequest();
-  }
-
-  public CommandResponse sendRequest(
-      CommandRequest commandRequest
-  ) {
-    return sendRequest(commandRequest, MAX_WAIT);
   }
 
   public CommandResponse sendRequest(

@@ -28,47 +28,88 @@ import com.github.aguther.dds.examples.discovery.TopicRoute.Direction;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.rti.dds.domain.DomainParticipant;
-import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
-import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
-import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.infrastructure.StringSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
-import com.rti.dds.topic.BuiltinTopicKey_t;
-import idl.RTI.RoutingService.Administration.CommandKind;
-import idl.RTI.RoutingService.Administration.CommandRequest;
-import idl.RTI.RoutingService.Administration.CommandResponse;
-import idl.RTI.RoutingService.Administration.CommandResponseKind;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RouteObserver implements PublicationObserverListener, SubscriptionObserverListener {
 
   private static final Logger log;
-  private static final String TARGET_ROUTER;
 
   static {
     log = LoggerFactory.getLogger(RouteObserver.class);
-    TARGET_ROUTER = "dds-examples-routing";
   }
+
+  private final DomainParticipant domainParticipant;
 
   private final Object mappingLock;
   private final HashMap<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
 
-  private final DomainParticipant domainParticipant;
-  private final RoutingServiceCommander routingServiceCommander;
+  private final Object filterLock;
+  private final List<RouteObserverFilter> filterList;
+
+  private final Object listenerLock;
+  private final List<RouteObserverListener> listenerList;
+  private final ExecutorService listenerExecutor;
 
   public RouteObserver(
-      DomainParticipant domainParticipant,
-      RoutingServiceCommander routingServiceCommander
+      DomainParticipant domainParticipant
   ) {
-    mappingLock = new Object();
-    mapping = new HashMap<>();
-
     this.domainParticipant = domainParticipant;
-    this.routingServiceCommander = routingServiceCommander;
+
+    mapping = new HashMap<>();
+    mappingLock = new Object();
+
+    filterLock = new Object();
+    filterList = new ArrayList<>();
+
+    listenerLock = new Object();
+    listenerList = new ArrayList<>();
+    listenerExecutor = Executors.newSingleThreadExecutor();
+  }
+
+  public void addListener(
+      RouteObserverListener listener
+  ) {
+    synchronized (listenerLock) {
+      if (!listenerList.contains(listener)) {
+        listenerList.add(listener);
+      }
+    }
+  }
+
+  public void removeListener(
+      RouteObserverListener listener
+  ) {
+    synchronized (listenerLock) {
+      listenerList.remove(listener);
+    }
+  }
+
+  public void addFilter(
+      RouteObserverFilter filter
+  ) {
+    synchronized (filterLock) {
+      if (!filterList.contains(filter)) {
+        filterList.add(filter);
+      }
+    }
+  }
+
+  public void removeFilter(
+      RouteObserverFilter filter
+  ) {
+    synchronized (filterLock) {
+      filterList.remove(filter);
+    }
   }
 
   @Override
@@ -76,10 +117,16 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    if (shouldIgnore(data.topic_name, data.participant_key)) {
-      return;
+    // ignore the publication?
+    synchronized (filterLock) {
+      for (RouteObserverFilter filter : filterList) {
+        if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
+          return;
+        }
+      }
     }
 
+    // handle discovered entity
     handleDiscovered(
         instanceHandle,
         Direction.OUT,
@@ -93,10 +140,16 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    if (shouldIgnore(data.topic_name, data.participant_key)) {
-      return;
+    // ignore the publication?
+    synchronized (filterLock) {
+      for (RouteObserverFilter filter : filterList) {
+        if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
+          return;
+        }
+      }
     }
 
+    // handle lost entity
     handleLost(
         instanceHandle,
         Direction.OUT,
@@ -110,10 +163,16 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    if (shouldIgnore(data.topic_name, data.participant_key)) {
-      return;
+    // ignore the publication?
+    synchronized (filterLock) {
+      for (RouteObserverFilter filter : filterList) {
+        if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
+          return;
+        }
+      }
     }
 
+    // handle discovered entity
     handleDiscovered(
         instanceHandle,
         Direction.IN,
@@ -127,61 +186,22 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    if (shouldIgnore(data.topic_name, data.participant_key)) {
-      return;
+    // ignore the publication?
+    synchronized (filterLock) {
+      for (RouteObserverFilter filter : filterList) {
+        if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
+          return;
+        }
+      }
     }
 
+    // handle lost entity
     handleLost(
         instanceHandle,
         Direction.IN,
         data.topic_name,
         data.partition.name
     );
-  }
-
-  private boolean shouldIgnore(
-      String topicName,
-      BuiltinTopicKey_t participantKey
-  ) {
-    // ignore all rti internal topics
-    if (topicName.startsWith("rti")) {
-      return true;
-    }
-
-    // get data of parent domain participant
-    ParticipantBuiltinTopicData participantData = getParticipantBuiltinTopicData(participantKey);
-
-    // check if participant belongs to a routing service
-    if (participantData != null) {
-      return (participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS);
-    }
-
-    // do not ignore
-    return false;
-  }
-
-  private ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      BuiltinTopicKey_t participantKey
-  ) {
-    // get discovered participants
-    InstanceHandleSeq participantHandles = new InstanceHandleSeq();
-    domainParticipant.get_discovered_participants(participantHandles);
-
-    // iterate over handles
-    ParticipantBuiltinTopicData participantData = new ParticipantBuiltinTopicData();
-    for (Object participantHandle : participantHandles) {
-      domainParticipant.get_discovered_participant_data(
-          participantData,
-          (InstanceHandle_t) participantHandle
-      );
-
-      if (participantData.key.equals(participantKey)) {
-        return participantData;
-      }
-    }
-
-    // nothing found
-    return null;
   }
 
   private void handleDiscovered(
@@ -193,63 +213,20 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
     synchronized (mappingLock) {
       // create routes for all partitions we discovered
       if (partitions.isEmpty()) {
-        // create session
-        Session session = new Session(topicName, "");
-        // create topic session if first item discovered
-        if (!mapping.containsKey(session)) {
-          mapping.put(session, ArrayListMultimap.create());
-          log.info(
-              "Create session: topic='{}', partition='{}'",
-              session.getTopic(),
-              session.getPartition()
-          );
-          createSession(session);
-        }
-
-        // create topic route object
-        TopicRoute topicRoute = new TopicRoute(direction, topicName);
-        // check if topic route is about to be created
-        if (!mapping.get(session).containsKey(topicRoute)) {
-          log.info(
-              "Create route: topic='{}', partition='{}', direction='{}'",
-              session.getTopic(),
-              session.getPartition(),
-              topicRoute.getDirection()
-          );
-          createTopicRoute(direction, topicName, "");
-        }
-        // add instance handle to topic route
-        mapping.get(session).put(topicRoute, instanceHandle);
-
+        // add instance handle to map
+        addInstanceHandleToMap(
+            instanceHandle,
+            new Session(topicName, ""),
+            new TopicRoute(direction, topicName)
+        );
       } else {
         for (Object partition : partitions) {
-          // create session
-          Session session = new Session(topicName, partition.toString());
-          // create topic session if first item discovered
-          if (!mapping.containsKey(session)) {
-            mapping.put(session, ArrayListMultimap.create());
-            log.info(
-                "Create session: topic='{}', partition='{}'",
-                session.getTopic(),
-                session.getPartition()
-            );
-            createSession(session);
-          }
-
-          // create topic route object
-          TopicRoute topicRoute = new TopicRoute(direction, topicName);
-          // check if topic route is about to be created
-          if (!mapping.get(session).containsKey(topicRoute)) {
-            log.info(
-                "Create route: topic='{}', partition='{}', direction='{}'",
-                session.getTopic(),
-                session.getPartition(),
-                topicRoute.getDirection()
-            );
-            createTopicRoute(direction, topicName, partition.toString());
-          }
-          // add instance handle to topic route
-          mapping.get(session).put(topicRoute, instanceHandle);
+          // add instance handle to map
+          addInstanceHandleToMap(
+              instanceHandle,
+              new Session(topicName, partition.toString()),
+              new TopicRoute(direction, topicName)
+          );
         }
       }
     }
@@ -264,251 +241,116 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
     synchronized (mappingLock) {
       // delete routes for all partitions we lost
       if (partitions.isEmpty()) {
-        // create session
-        Session session = new Session(topicName, "");
-        // create topic route object
-        TopicRoute topicRoute = new TopicRoute(direction, topicName);
-
-        // remove instance handle from topic route
-        mapping.get(session).remove(topicRoute, instanceHandle);
-
-        // check if route was deleted
-        if (!mapping.get(session).containsKey(topicRoute)) {
-          log.info(
-              "Delete route: topic='{}', partition='{}', direction='{}'",
-              session.getTopic(),
-              session.getPartition(),
-              topicRoute.getDirection()
-          );
-          deleteTopicRoute(direction, topicName, "");
-        }
-
-        // delete topic session if last items was removed
-        if (mapping.get(session).isEmpty()) {
-          mapping.remove(session);
-          log.info(
-              "Delete session: topic='{}', partition='{}'",
-              session.getTopic(),
-              session.getPartition()
-          );
-          deleteSession(session);
-        }
+        // remove instance handle from map
+        removeInstanceHandleFromMap(
+            instanceHandle,
+            new Session(topicName, ""),
+            new TopicRoute(direction, topicName)
+        );
       } else {
         for (Object partition : partitions) {
-          // create session
-          Session session = new Session(topicName, partition.toString());
-          // create topic route object
-          TopicRoute topicRoute = new TopicRoute(direction, topicName);
-
-          // remove instance handle from topic route
-          mapping.get(session).remove(topicRoute, instanceHandle);
-
-          // check if route is deleted
-          if (!mapping.get(session).containsKey(topicRoute)) {
-            log.info(
-                "Delete route: topic='{}', partition='{}', direction='{}'",
-                session.getTopic(),
-                session.getPartition(),
-                topicRoute.getDirection()
-            );
-            deleteTopicRoute(direction, topicName, partition.toString());
-          }
-
-          // delete topic session if last items was removed
-          if (mapping.get(session).isEmpty()) {
-            mapping.remove(session);
-            log.info(
-                "Delete session: topic='{}', partition='{}'",
-                session.getTopic(),
-                session.getPartition()
-            );
-            deleteSession(session);
-          }
+          // remove instance handle from map
+          removeInstanceHandleFromMap(
+              instanceHandle,
+              new Session(topicName, partition.toString()),
+              new TopicRoute(direction, topicName)
+          );
         }
       }
+    }
+  }
+
+  private void addInstanceHandleToMap(
+      InstanceHandle_t instanceHandle,
+      Session session,
+      TopicRoute topicRoute
+  ) {
+    // create topic session if first item discovered
+    if (!mapping.containsKey(session)) {
+      mapping.put(session, ArrayListMultimap.create());
+      createSession(session);
+    }
+
+    // check if topic route is about to be created
+    if (!mapping.get(session).containsKey(topicRoute)) {
+      createTopicRoute(session, topicRoute);
+    }
+
+    // add instance handle to topic route
+    mapping.get(session).put(topicRoute, instanceHandle);
+  }
+
+  private void removeInstanceHandleFromMap(
+      InstanceHandle_t instanceHandle,
+      Session session,
+      TopicRoute topicRoute
+  ) {
+    // remove instance handle from topic route
+    mapping.get(session).remove(topicRoute, instanceHandle);
+
+    // check if route was deleted
+    if (!mapping.get(session).containsKey(topicRoute)) {
+      deleteTopicRoute(session, topicRoute);
+    }
+
+    // delete topic session if last items was removed
+    if (mapping.get(session).isEmpty()) {
+      mapping.remove(session);
+      deleteSession(session);
     }
   }
 
   private void createSession(
       Session session
   ) {
-    // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
-    commandRequest.target_router = TARGET_ROUTER;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = "Default";
-    commandRequest.command.entity_desc.xml_url.content = String
-        .format(
-            "str://\"<session name=\"%1$s\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%2$s</element></name></partition></subscriber_qos></session>\"",
-            String.format("%s(%s)", session.getTopic(), session.getPartition()),
-            session.getPartition());
-    commandRequest.command.entity_desc.xml_url.is_final = true;
-
-    // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
-
-    // reply received?
-    if (reply == null) {
-      log.error(
-          "No reply received when creating session for topic '{};{}'",
-          session.getTopic(),
-          session.getPartition()
-      );
-      return;
-    }
-    // reply success or failed?
-    if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Created session for topic='{}', partition='{}'",
-          session.getTopic(),
-          session.getPartition()
-      );
-    } else {
-      log.error(
-          "Failed to create session for topic='{}', partition='{}', reason: {}, {}",
-          session.getTopic(),
-          session.getPartition(),
-          reply.kind,
-          reply.message
-      );
-    }
+    // invoke listener
+    listenerExecutor.submit(() -> {
+      synchronized (listenerLock) {
+        for (RouteObserverListener listener : listenerList) {
+          listener.createSession(session);
+        }
+      }
+    });
   }
 
   private void deleteSession(
       Session session
   ) {
-    // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
-    commandRequest.target_router = TARGET_ROUTER;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = String.format(
-        "Default::%s", String.format("%s(%s)", session.getTopic(), session.getPartition()));
-
-    // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
-
-    // reply received?
-    if (reply == null) {
-      log.error(
-          "No reply received when deleting session for topic='{}', partition='{}'",
-          session.getTopic(),
-          session.getPartition()
-      );
-      return;
-    }
-    // reply success or failed?
-    if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Deleted session for topic='{}', partition='{}'",
-          session.getTopic(),
-          session.getPartition()
-      );
-    } else {
-      log.error(
-          "Failed to delete session for topic='{}', partition='{}', reason: {}, {}",
-          session.getTopic(),
-          session.getPartition(),
-          reply.kind,
-          reply.message
-      );
-    }
+    // invoke listener
+    listenerExecutor.submit(() -> {
+      synchronized (listenerLock) {
+        for (RouteObserverListener listener : listenerList) {
+          listener.deleteSession(session);
+        }
+      }
+    });
   }
 
   private void createTopicRoute(
-      Direction direction,
-      String topicName,
-      String partition
+      Session session,
+      TopicRoute topicRoute
   ) {
-    // detect input participant
-    int inputParticipant = direction == Direction.OUT ? 1 : 2;
-
-    // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
-    commandRequest.target_router = TARGET_ROUTER;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = String.format("Default::%s(%s)", topicName, partition);
-    commandRequest.command.entity_desc.xml_url.content = String.format(
-        "str://\"<auto_topic_route name=\"%1$s\"><input participant=\"%2$d\"><allow_topic_name_filter>%3$s</allow_topic_name_filter><datareader_qos base_name=\"QosLibrary::Base\"/></input><output><allow_topic_name_filter>%3$s</allow_topic_name_filter><datawriter_qos base_name=\"QosLibrary::Base\"/></output></auto_topic_route>\"",
-        direction.toString(),
-        inputParticipant,
-        topicName);
-    commandRequest.command.entity_desc.xml_url.is_final = true;
-
-    // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
-
-    // reply received?
-    if (reply == null) {
-      log.error(
-          "No reply received when creating route for topic='{}', partition='{}', direction='{}'",
-          topicName,
-          partition,
-          direction.toString()
-      );
-      return;
-    }
-    // reply success or failed?
-    if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Created route for topic='{}', partition='{}', direction='{}'",
-          topicName,
-          partition,
-          direction.toString()
-      );
-    } else {
-      log.error(
-          "Failed to create route for topic='{}', partition='{}', direction='{}', reason: {}, {}",
-          topicName,
-          partition,
-          direction.toString(),
-          reply.kind,
-          reply.message
-      );
-    }
+    // invoke listener
+    listenerExecutor.submit(() -> {
+      synchronized (listenerLock) {
+        for (RouteObserverListener listener : listenerList) {
+          listener.createTopicRoute(session, topicRoute);
+        }
+      }
+    });
   }
 
   private void deleteTopicRoute(
-      Direction direction,
-      String topicName,
-      String partition
+      Session session,
+      TopicRoute topicRoute
   ) {
-    // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
-    commandRequest.target_router = TARGET_ROUTER;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = String.format(
-        "Default::%1$s(%2$s)::%3$s", topicName, partition, direction.toString());
-
-    // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
-
-    // reply received?
-    if (reply == null) {
-      log.error(
-          "No reply received when deleting route for topic='{}', partition='{}', direction='{}'",
-          topicName,
-          partition,
-          direction.toString()
-      );
-      return;
-    }
-    // reply success or failed?
-    if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Deleted route for topic='{}', partition='{}', direction='{}'",
-          topicName,
-          partition,
-          direction.toString()
-      );
-    } else {
-      log.error(
-          "Failed to delete route for topic='{}', partition='{}', direction='{}', reason: {}, {}",
-          topicName,
-          partition,
-          direction.toString(),
-          reply.kind,
-          reply.message
-      );
-    }
+    // invoke listener
+    listenerExecutor.submit(() -> {
+      synchronized (listenerLock) {
+        for (RouteObserverListener listener : listenerList) {
+          listener.deleteTopicRoute(session, topicRoute);
+        }
+      }
+    });
   }
 }
