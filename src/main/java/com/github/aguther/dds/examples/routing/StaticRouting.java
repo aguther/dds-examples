@@ -57,7 +57,7 @@ public class StaticRouting {
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
     routingServiceProperty.cfgFile = "routing.xml";
-    routingServiceProperty.serviceName = "dds-examples-routing";
+    routingServiceProperty.serviceName = "dds-examples-routing-static";
     routingServiceProperty.applicationName = routingServiceProperty.serviceName;
     routingServiceProperty.serviceVerbosity = 3;
 

@@ -52,7 +52,7 @@ public class DynamicRouting {
   private static boolean shouldTerminate;
 
   static {
-    ROUTING_SERVICE_NAME = "dds-examples-routing";
+    ROUTING_SERVICE_NAME = "dds-examples-routing-dynamic";
 
     log = LoggerFactory.getLogger(DynamicRouting.class);
   }
