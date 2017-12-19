@@ -34,12 +34,10 @@
         <auto_topic_route name="Square">
           <input participant="1">
             <allow_topic_name_filter>Square</allow_topic_name_filter>
-            <allow_registered_type_name_filter>ShapeType*</allow_registered_type_name_filter>
             <datareader_qos base_name="QosLibrary::Base"/>
           </input>
           <output>
             <allow_topic_name_filter>Square</allow_topic_name_filter>
-            <allow_registered_type_name_filter>ShapeType*</allow_registered_type_name_filter>
             <datawriter_qos base_name="QosLibrary::Base"/>
           </output>
         </auto_topic_route>
