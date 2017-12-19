@@ -38,7 +38,7 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    return ignore(data.topic_name);
+    return isRtiTopic(data.topic_name);
   }
 
   @Override
@@ -47,7 +47,7 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    return ignore(data.topic_name);
+    return isRtiTopic(data.topic_name);
   }
 
   @Override
@@ -57,7 +57,7 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
     return false;
   }
 
-  private boolean ignore(
+  private boolean isRtiTopic(
       String topicName
   ) {
     // ignore all rti topics
