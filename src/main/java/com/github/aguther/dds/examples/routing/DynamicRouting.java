@@ -70,6 +70,8 @@ public class DynamicRouting {
       return;
     }
 
+    log.info("Starting routing service");
+
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
     routingServiceProperty.cfgFile = "routing.xml";
@@ -82,6 +84,7 @@ public class DynamicRouting {
 
       // start routing service
       routingService.start();
+      log.info("Routing service was started");
 
       // start dynamic routing
       startupDynamicRouting();
@@ -103,6 +106,8 @@ public class DynamicRouting {
   }
 
   private static void startupDynamicRouting() {
+    log.info("Starting dynamic routing");
+
     // create domain participant for administration interface
     DomainParticipant domainParticipantAdministration = createRemoteAdministrationDomainParticipant(0);
 
@@ -110,7 +115,12 @@ public class DynamicRouting {
     RoutingServiceCommander routingServiceCommander = new RoutingServiceCommander(domainParticipantAdministration);
 
     // wait for routing service to be discovered
-    routingServiceCommander.waitForRoutingService(ROUTING_SERVICE_NAME, new Duration_t(10, 0));
+    log.info("Waiting for remote administration interface of routing service to be discovered");
+    if (routingServiceCommander.waitForRoutingService(ROUTING_SERVICE_NAME, new Duration_t(30, 0))) {
+      log.info("Remote administration interface of routing service was discovered");
+    } else {
+      log.error("Remote administration interface of routing service could not be discovered within time out");
+    }
 
     // disable auto enable of entities
     AutoEnableCreatedEntitiesHelper.disable();
@@ -138,6 +148,8 @@ public class DynamicRouting {
 
     // auto enable entities
     AutoEnableCreatedEntitiesHelper.enable();
+
+    log.info("Dynamic routing was started");
   }
 
   private static DomainParticipant createRemoteAdministrationDomainParticipant(
