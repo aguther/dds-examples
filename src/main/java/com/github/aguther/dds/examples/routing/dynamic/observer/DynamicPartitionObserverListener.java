@@ -1,6 +1,6 @@
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.routing.dynamic.observer;
 
-public interface RouteObserverListener {
+public interface DynamicPartitionObserverListener {
 
   public void createSession(
       Session session

@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.routing.dynamic.observer;
 
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
-public interface RouteObserverFilter {
+public interface DynamicPartitionObserverFilter {
 
   public boolean ignorePublication(
       DomainParticipant domainParticipant,

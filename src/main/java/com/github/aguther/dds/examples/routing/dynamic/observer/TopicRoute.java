@@ -22,20 +22,52 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.routing.dynamic.observer;
 
-import com.rti.dds.infrastructure.InstanceHandle_t;
-import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import java.util.Objects;
 
-public interface SubscriptionObserverListener {
+public class TopicRoute {
 
-  public void subscriptionDiscovered(
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
-  );
+  public enum Direction {
+    OUT, IN
+  }
 
-  public void subscriptionLost(
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
-  );
+  private Direction direction;
+  private String topic;
+
+  public TopicRoute(
+      Direction direction,
+      String topic
+  ) {
+    this.direction = direction;
+    this.topic = topic;
+  }
+
+  public Direction getDirection() {
+    return direction;
+  }
+
+  public String getTopic() {
+    return topic;
+  }
+
+  @Override
+  public boolean equals(
+      Object o
+  ) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TopicRoute that = (TopicRoute) o;
+    return direction == that.direction &&
+        Objects.equals(topic, that.topic);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(direction, topic);
+  }
 }

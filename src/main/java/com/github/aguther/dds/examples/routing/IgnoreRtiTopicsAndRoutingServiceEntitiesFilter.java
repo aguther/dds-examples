@@ -22,18 +22,29 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.routing;
 
+import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.PropertyQosPolicyHelper;
+import com.rti.dds.infrastructure.Property_t;
 import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
 
-public class IgnoreRtiTopicsAndRoutingServiceEntitiesFilter implements RouteObserverFilter {
+public class IgnoreRtiTopicsAndRoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
+
+  private final String groupName;
+
+  public IgnoreRtiTopicsAndRoutingServiceEntitiesFilter(
+      String groupName
+  ) {
+    this.groupName = groupName;
+  }
 
   @Override
   public boolean ignorePublication(
@@ -69,7 +80,19 @@ public class IgnoreRtiTopicsAndRoutingServiceEntitiesFilter implements RouteObse
 
     // check if participant belongs to a routing service
     if (participantData != null) {
-      return (participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS);
+      // check if participant belongs to a routing service
+      if (participantData.service.kind != ServiceQosPolicyKind.ROUTING_SERVICE_QOS) {
+        return false;
+      }
+
+      // get group name of routing service
+      Property_t property = PropertyQosPolicyHelper.lookup_property(
+          participantData.property,
+          "rti.routing_service.group_name"
+      );
+
+      // when participant is part of routing service group ignore it
+      return (property != null && (property.value.equals(groupName)));
     }
 
     // do not ignore

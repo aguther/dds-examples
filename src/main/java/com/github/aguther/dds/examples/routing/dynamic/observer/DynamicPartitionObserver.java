@@ -22,9 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.routing.dynamic.observer;
 
-import com.github.aguther.dds.examples.discovery.TopicRoute.Direction;
+import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute.Direction;
+import com.github.aguther.dds.examples.discovery.observer.PublicationObserverListener;
+import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserverListener;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.rti.dds.domain.DomainParticipant;
@@ -40,12 +42,12 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RouteObserver implements PublicationObserverListener, SubscriptionObserverListener {
+public class DynamicPartitionObserver implements PublicationObserverListener, SubscriptionObserverListener {
 
   private static final Logger log;
 
   static {
-    log = LoggerFactory.getLogger(RouteObserver.class);
+    log = LoggerFactory.getLogger(DynamicPartitionObserver.class);
   }
 
   private final DomainParticipant domainParticipant;
@@ -54,13 +56,13 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   private final HashMap<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
 
   private final Object filterLock;
-  private final List<RouteObserverFilter> filterList;
+  private final List<DynamicPartitionObserverFilter> filterList;
 
   private final Object listenerLock;
-  private final List<RouteObserverListener> listenerList;
+  private final List<DynamicPartitionObserverListener> listenerList;
   private final ExecutorService listenerExecutor;
 
-  public RouteObserver(
+  public DynamicPartitionObserver(
       DomainParticipant domainParticipant
   ) {
     this.domainParticipant = domainParticipant;
@@ -77,7 +79,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   }
 
   public void addListener(
-      RouteObserverListener listener
+      DynamicPartitionObserverListener listener
   ) {
     synchronized (listenerLock) {
       if (!listenerList.contains(listener)) {
@@ -87,7 +89,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   }
 
   public void removeListener(
-      RouteObserverListener listener
+      DynamicPartitionObserverListener listener
   ) {
     synchronized (listenerLock) {
       listenerList.remove(listener);
@@ -95,7 +97,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   }
 
   public void addFilter(
-      RouteObserverFilter filter
+      DynamicPartitionObserverFilter filter
   ) {
     synchronized (filterLock) {
       if (!filterList.contains(filter)) {
@@ -105,7 +107,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   }
 
   public void removeFilter(
-      RouteObserverFilter filter
+      DynamicPartitionObserverFilter filter
   ) {
     synchronized (filterLock) {
       filterList.remove(filter);
@@ -119,7 +121,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   ) {
     // ignore the publication?
     synchronized (filterLock) {
-      for (RouteObserverFilter filter : filterList) {
+      for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
           return;
         }
@@ -142,7 +144,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   ) {
     // ignore the publication?
     synchronized (filterLock) {
-      for (RouteObserverFilter filter : filterList) {
+      for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
           return;
         }
@@ -165,7 +167,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   ) {
     // ignore the publication?
     synchronized (filterLock) {
-      for (RouteObserverFilter filter : filterList) {
+      for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
           return;
         }
@@ -188,7 +190,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
   ) {
     // ignore the publication?
     synchronized (filterLock) {
-      for (RouteObserverFilter filter : filterList) {
+      for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
           return;
         }
@@ -306,7 +308,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerLock) {
-        for (RouteObserverListener listener : listenerList) {
+        for (DynamicPartitionObserverListener listener : listenerList) {
           listener.createSession(session);
         }
       }
@@ -319,7 +321,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerLock) {
-        for (RouteObserverListener listener : listenerList) {
+        for (DynamicPartitionObserverListener listener : listenerList) {
           listener.deleteSession(session);
         }
       }
@@ -333,7 +335,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerLock) {
-        for (RouteObserverListener listener : listenerList) {
+        for (DynamicPartitionObserverListener listener : listenerList) {
           listener.createTopicRoute(session, topicRoute);
         }
       }
@@ -347,7 +349,7 @@ public class RouteObserver implements PublicationObserverListener, SubscriptionO
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerLock) {
-        for (RouteObserverListener listener : listenerList) {
+        for (DynamicPartitionObserverListener listener : listenerList) {
           listener.deleteTopicRoute(session, topicRoute);
         }
       }

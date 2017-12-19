@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.discovery.observer;
 
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
@@ -87,7 +87,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
    * Clean-up resources of this object, in this case remove the listener from the data reader we
    * are bound to.
    */
-  void close() {
+  public void close() {
     // remove listener from data reader
     dataReader.set_listener(null, StatusKind.STATUS_MASK_NONE);
   }

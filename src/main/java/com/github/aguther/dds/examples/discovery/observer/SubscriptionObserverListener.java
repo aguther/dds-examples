@@ -22,20 +22,20 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.discovery.observer;
 
 import com.rti.dds.infrastructure.InstanceHandle_t;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
-public interface PublicationObserverListener {
+public interface SubscriptionObserverListener {
 
-  public void publicationDiscovered(
+  public void subscriptionDiscovered(
       InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      SubscriptionBuiltinTopicData data
   );
 
-  public void publicationLost(
+  public void subscriptionLost(
       InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      SubscriptionBuiltinTopicData data
   );
 }

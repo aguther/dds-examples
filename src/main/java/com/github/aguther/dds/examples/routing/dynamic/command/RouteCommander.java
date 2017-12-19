@@ -22,9 +22,13 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.routing.dynamic.command;
 
-import com.github.aguther.dds.examples.discovery.TopicRoute.Direction;
+import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverListener;
+import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
+import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
+import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute.Direction;
+import com.rti.dds.infrastructure.Duration_t;
 import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
@@ -32,11 +36,14 @@ import idl.RTI.RoutingService.Administration.CommandResponseKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RouteCommander implements RouteObserverListener {
+public class RouteCommander implements DynamicPartitionObserverListener {
+
+  private static final Duration_t REQUEST_TIMEOUT;
 
   private static final Logger log;
 
   static {
+    REQUEST_TIMEOUT = new Duration_t(10, 0);
     log = LoggerFactory.getLogger(RouteCommander.class);
   }
 
@@ -74,7 +81,8 @@ public class RouteCommander implements RouteObserverListener {
     commandRequest.command.entity_desc.xml_url.is_final = true;
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
+    CommandResponse reply = routingServiceCommander.sendRequest(
+        commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
     if (reply == null) {
@@ -121,7 +129,8 @@ public class RouteCommander implements RouteObserverListener {
         "Default::%s", String.format("%s(%s)", session.getTopic(), session.getPartition()));
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
+    CommandResponse reply = routingServiceCommander.sendRequest(
+        commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
     if (reply == null) {
@@ -179,7 +188,8 @@ public class RouteCommander implements RouteObserverListener {
     commandRequest.command.entity_desc.xml_url.is_final = true;
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
+    CommandResponse reply = routingServiceCommander.sendRequest(
+        commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
     if (reply == null) {
@@ -231,7 +241,8 @@ public class RouteCommander implements RouteObserverListener {
         "Default::%1$s(%2$s)::%3$s", session.getTopic(), session.getPartition(), topicRoute.getDirection().toString());
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(commandRequest);
+    CommandResponse reply = routingServiceCommander.sendRequest(
+        commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
     if (reply == null) {

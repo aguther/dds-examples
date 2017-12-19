@@ -24,6 +24,10 @@
 
 package com.github.aguther.dds.examples.discovery;
 
+import com.github.aguther.dds.examples.discovery.observer.PublicationObserver;
+import com.github.aguther.dds.examples.discovery.observer.PublicationObserverListener;
+import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserver;
+import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserverListener;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantFactoryQos;
@@ -53,16 +57,6 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
     // register shutdown hook
     registerShutdownHook();
 
-    // create domain participant for administration interface
-    DomainParticipant domainParticipantAdministration = DomainParticipantFactory.get_instance().create_participant(
-        0,
-        DomainParticipantFactory.PARTICIPANT_QOS_DEFAULT,
-        null,
-        StatusKind.STATUS_MASK_NONE);
-
-    // create routing service administration
-    RoutingServiceCommander routingServiceCommander = new RoutingServiceCommander(domainParticipantAdministration);
-
     // do not auto-enable entities to ensure we do not miss any discovery data
     DomainParticipantFactoryQos domainParticipantFactoryQos = new DomainParticipantFactoryQos();
     DomainParticipantFactory.get_instance().get_qos(domainParticipantFactoryQos);
@@ -76,19 +70,12 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
         null,
         StatusKind.STATUS_MASK_NONE);
 
-    // create route observer
-    RouteObserver routeObserver = new RouteObserver(domainParticipantDiscovery);
-    // add filter to route observer
-    routeObserver.addFilter(new IgnoreRtiTopicsAndRoutingServiceEntitiesFilter());
-    routeObserver.addListener(new RouteCommander(routingServiceCommander, "dds-examples-routing"));
     // create new publication observer
     PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
     publicationObserver.addListener(discovery);
-    publicationObserver.addListener(routeObserver);
     // create new subscription observer
     SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
     subscriptionObserver.addListener(discovery);
-    subscriptionObserver.addListener(routeObserver);
 
     // enable domain participant
     domainParticipantDiscovery.enable();
@@ -113,7 +100,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
     }));
   }
 
-  private String InstanceHandleToString(
+  private String convertInstanceHandleToString(
       InstanceHandle_t instanceHandle
   ) {
     StringBuilder stringBuilder = new StringBuilder();
@@ -128,7 +115,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
     return stringBuilder.toString();
   }
 
-  private String PartitionQosPolicyToString(
+  private String convertPartitionQosPolicyToString(
       PartitionQosPolicy partitionQosPolicy
   ) {
     StringBuilder stringBuilder = new StringBuilder();
@@ -151,13 +138,15 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    log.debug(
-        "Discovered Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
-        InstanceHandleToString(instanceHandle),
-        data.topic_name,
-        data.type_name,
-        PartitionQosPolicyToString(data.partition)
-    );
+    if (log.isInfoEnabled()) {
+      log.info(
+          "Discovered Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
+          convertInstanceHandleToString(instanceHandle),
+          data.topic_name,
+          data.type_name,
+          convertPartitionQosPolicyToString(data.partition)
+      );
+    }
   }
 
   @Override
@@ -165,13 +154,15 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    log.debug(
-        "Lost Publication       : instance='{}', topic='{}', type='{}', partitions='{}'",
-        InstanceHandleToString(instanceHandle),
-        data.topic_name,
-        data.type_name,
-        PartitionQosPolicyToString(data.partition)
-    );
+    if (log.isInfoEnabled()) {
+      log.info(
+          "Lost Publication       : instance='{}', topic='{}', type='{}', partitions='{}'",
+          convertInstanceHandleToString(instanceHandle),
+          data.topic_name,
+          data.type_name,
+          convertPartitionQosPolicyToString(data.partition)
+      );
+    }
   }
 
   @Override
@@ -179,13 +170,15 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    log.debug(
-        "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
-        InstanceHandleToString(instanceHandle),
-        data.topic_name,
-        data.type_name,
-        PartitionQosPolicyToString(data.partition)
-    );
+    if (log.isInfoEnabled()) {
+      log.info(
+          "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
+          convertInstanceHandleToString(instanceHandle),
+          data.topic_name,
+          data.type_name,
+          convertPartitionQosPolicyToString(data.partition)
+      );
+    }
   }
 
   @Override
@@ -193,12 +186,14 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    log.debug(
-        "Lost Subscription      : instance='{}', topic='{}', type='{}', partitions='{}'",
-        InstanceHandleToString(instanceHandle),
-        data.topic_name,
-        data.type_name,
-        PartitionQosPolicyToString(data.partition)
-    );
+    if (log.isInfoEnabled()) {
+      log.info(
+          "Lost Subscription      : instance='{}', topic='{}', type='{}', partitions='{}'",
+          convertInstanceHandleToString(instanceHandle),
+          data.topic_name,
+          data.type_name,
+          convertPartitionQosPolicyToString(data.partition)
+      );
+    }
   }
 }

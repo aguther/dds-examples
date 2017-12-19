@@ -192,11 +192,24 @@ task runMutableSubscriber(type: JavaExec) {
     systemProperties System.getProperties()
 }
 
-task runRouting(type: JavaExec) {
+task runStaticRouting(type: JavaExec) {
     // set classpath
     classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
     // set main class
-    main = 'com.github.aguther.dds.examples.routing.Routing'
+    main = 'com.github.aguther.dds.examples.routing.StaticRouting'
+    // set working directory
+    workingDir = '.'
+    // jvm settings
+    jvmArgs = ['-Xmx4096m']
+    // set system properties
+    systemProperties System.getProperties()
+}
+
+task runDynamicRouting(type: JavaExec) {
+    // set classpath
+    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+    // set main class
+    main = 'com.github.aguther.dds.examples.routing.DynamicRouting'
     // set working directory
     workingDir = '.'
     // jvm settings

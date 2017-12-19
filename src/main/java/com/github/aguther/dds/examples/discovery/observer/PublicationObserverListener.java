@@ -22,55 +22,20 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.discovery.observer;
 
-import java.util.Objects;
+import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 
-class Session {
+public interface PublicationObserverListener {
 
-  private String topic;
-  private String partition;
+  public void publicationDiscovered(
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  );
 
-  Session(
-      String topic
-  ) {
-    this(topic, "");
-  }
-
-  Session(
-      String topic,
-      String partition
-  ) {
-    this.topic = topic;
-    this.partition = partition;
-  }
-
-  public String getTopic() {
-    return topic;
-  }
-
-  public String getPartition() {
-    return partition;
-  }
-
-  @Override
-  public boolean equals(
-      Object o
-  ) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Session session = (Session) o;
-    return Objects.equals(topic, session.topic) &&
-        Objects.equals(partition, session.partition);
-  }
-
-  @Override
-  public int hashCode() {
-
-    return Objects.hash(topic, partition);
-  }
+  public void publicationLost(
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  );
 }

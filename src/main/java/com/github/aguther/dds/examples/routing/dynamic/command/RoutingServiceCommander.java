@@ -22,16 +22,18 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery;
+package com.github.aguther.dds.examples.routing.dynamic.command;
 
 import com.rti.connext.infrastructure.Sample;
 import com.rti.connext.requestreply.Requester;
 import com.rti.connext.requestreply.RequesterParams;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantQos;
+import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.Duration_t;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
-import com.rti.dds.publication.DataWriterQos;
+import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import idl.RTI.RoutingService.Administration.COMMAND_REQUEST_TOPIC_NAME;
 import idl.RTI.RoutingService.Administration.COMMAND_RESPONSE_TOPIC_NAME;
 import idl.RTI.RoutingService.Administration.CommandRequest;
@@ -85,19 +87,45 @@ public class RoutingServiceCommander {
     requester = new Requester<>(requesterParams);
   }
 
-  public boolean waitForMatchedSubscriptions() {
-    try {
-      // holds instance handles of matched subscriptions
-      InstanceHandleSeq handles = new InstanceHandleSeq();
+  public boolean waitForRoutingService(
+      String targetRouter,
+      Duration_t timeOut
+  ) {
+    // create participant name for target router according RTI conventions
+    String participantNameTargetRouter = String.format("RTI Routing Service: %s", targetRouter);
 
-      do {
+    try {
+      // variables to store the data
+      InstanceHandleSeq instanceHandles = new InstanceHandleSeq();
+      ParticipantBuiltinTopicData participantData = new ParticipantBuiltinTopicData();
+
+      // store start time
+      long startTime = System.currentTimeMillis();
+      // determine end time
+      long endTime = startTime + timeOut.sec * 1000L + timeOut.nanosec / 1000000L;
+
+      while (System.currentTimeMillis() < endTime) {
         // get matched subscriptions
-        requester.getRequestDataWriter().get_matched_subscriptions(handles);
+        requester.getRequestDataWriter().get_matched_subscriptions(instanceHandles);
+
+        // iterate over instance handles
+        for (Object participantHandle : instanceHandles) {
+          // get participant data of subscription
+          requester.getRequestDataWriter().get_matched_subscription_participant_data(
+              participantData,
+              (InstanceHandle_t) participantHandle
+          );
+
+          // check if related participant is from routing service
+          if (participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS
+              && participantData.participant_name.name.equals(participantNameTargetRouter)) {
+            break;
+          }
+        }
 
         // wait some time
-        Thread.sleep(200);
-
-      } while (handles.isEmpty());
+        Thread.sleep(500);
+      }
 
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
