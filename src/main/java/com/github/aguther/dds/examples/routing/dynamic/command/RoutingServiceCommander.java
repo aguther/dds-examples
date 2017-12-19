@@ -91,8 +91,23 @@ public class RoutingServiceCommander {
       String targetRouter,
       Duration_t timeOut
   ) {
+    return waitForRoutingService(
+        targetRouter,
+        timeOut,
+        new Duration_t(0, 250000000)
+    );
+  }
+
+  public boolean waitForRoutingService(
+      String targetRouter,
+      Duration_t timeOut,
+      Duration_t sleepTime
+  ) {
     // create participant name for target router according RTI conventions
     String participantNameTargetRouter = String.format("RTI Routing Service: %s", targetRouter);
+
+    // calculate sleep time
+    long sleepTimeMillis = sleepTime.sec * 1000L + sleepTime.nanosec / 1000000L;
 
     try {
       // variables to store the data
@@ -123,8 +138,8 @@ public class RoutingServiceCommander {
           }
         }
 
-        // wait some time
-        Thread.sleep(500);
+        // sleep for some time
+        Thread.sleep(sleepTimeMillis);
       }
 
     } catch (InterruptedException e) {
