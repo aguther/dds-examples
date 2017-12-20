@@ -31,19 +31,19 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
 public interface DynamicPartitionObserverFilter {
 
-  public boolean ignorePublication(
+  boolean ignorePublication(
       DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   );
 
-  public boolean ignoreSubscription(
+  boolean ignoreSubscription(
       DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   );
 
-  public boolean ignorePartition(
+  boolean ignorePartition(
       String partition
   );
 

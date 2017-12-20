@@ -29,12 +29,12 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
 public interface SubscriptionObserverListener {
 
-  public void subscriptionDiscovered(
+  void subscriptionDiscovered(
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   );
 
-  public void subscriptionLost(
+  void subscriptionLost(
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   );
