@@ -99,7 +99,8 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
    * @return If found, the participant data otherwise null.
    */
   ParticipantBuiltinTopicData getParticipantBuiltinTopicDataFromPublication(
-      PublicationBuiltinTopicData publicationBuiltinTopicData) {
+      PublicationBuiltinTopicData publicationBuiltinTopicData
+  ) {
     // instance handle sequence
     InstanceHandleSeq handles = new InstanceHandleSeq();
 
@@ -126,7 +127,9 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
   }
 
   @Override
-  public void on_data_available(DataReader dataReader) {
+  public void on_data_available(
+      DataReader dataReader
+  ) {
     // here we get the information that data is available
     // now we need to inform our listeners that something new has been discovered
     log.trace("Method 'on_data_available' invoked.");

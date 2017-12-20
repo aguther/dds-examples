@@ -27,10 +27,16 @@ package com.github.aguther.dds.examples.discovery.observer;
 import com.github.aguther.dds.examples.discovery.Discovery;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.RETCODE_ERROR;
+import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
+import com.rti.dds.subscription.SampleInfoSeq;
+import com.rti.dds.subscription.SampleStateKind;
+import com.rti.dds.subscription.ViewStateKind;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataSeq;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,15 +79,35 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     listenerList = new ArrayList<>();
   }
 
-  public void addListener(SubscriptionObserverListener listener) {
+  public void addListener(
+      SubscriptionObserverListener listener
+  ) {
+    addListener(listener, true);
+  }
+
+  public void addListener(
+      SubscriptionObserverListener listener,
+      boolean deliverReadSamples
+  ) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Provided listener must not be null");
+    }
     synchronized (listenerLock) {
       if (!listenerList.contains(listener)) {
         listenerList.add(listener);
+        if (deliverReadSamples) {
+          deliverReadSamples(listener);
+        }
       }
     }
   }
 
-  public void removeListener(SubscriptionObserverListener listener) {
+  public void removeListener(
+      SubscriptionObserverListener listener
+  ) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Provided listener must not be null");
+    }
     synchronized (listenerLock) {
       listenerList.remove(listener);
     }
@@ -126,5 +152,58 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       }
 
     } while (hasMoreData);
+  }
+
+  private void deliverReadSamples(
+      SubscriptionObserverListener listener
+  ) {
+    // variables to store data
+    SampleInfo sampleInfo = new SampleInfo();
+    SampleInfoSeq sampleInfoSeq = new SampleInfoSeq();
+    SubscriptionBuiltinTopicDataSeq sampleSeq = new SubscriptionBuiltinTopicDataSeq();
+
+    try {
+      // read samples that have already been read
+      dataReader.read_untyped(
+          sampleSeq,
+          sampleInfoSeq,
+          Integer.MAX_VALUE,
+          SampleStateKind.READ_SAMPLE_STATE,
+          ViewStateKind.ANY_VIEW_STATE,
+          InstanceStateKind.ANY_INSTANCE_STATE
+      );
+
+      // iterate over samples
+      for (int i = 0; i < sampleSeq.size(); i++) {
+        // is data valid?
+        if (sampleInfoSeq.get(i).valid_data) {
+          // copy sample info
+          sampleInfo.copy_from(sampleInfoSeq.get(i));
+
+          // publication data does not need copy
+          SubscriptionBuiltinTopicData sample = (SubscriptionBuiltinTopicData) sampleSeq.get(i);
+
+          // add to sample cache if necessary
+          if (!sampleCache.containsKey(sampleInfo.instance_handle)) {
+            sampleCache.put(sampleInfo.instance_handle, sample);
+          }
+
+          // invoke listener if provided
+          listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);
+        }
+      }
+    } catch (RETCODE_NOT_ENABLED notEnabled) {
+      // yet there is no way to directly detect that the domain participant is not yet enabled
+      // and therefore this error is expected when a listener is added but the related domain participant
+      // is not yet enabled
+    } catch (RETCODE_NO_DATA noData) {
+      if (log.isTraceEnabled()) {
+        log.trace("No more data available to read; {}", noData);
+      }
+    } catch (RETCODE_ERROR error) {
+      log.error("Error getting already read samples; {}", error);
+    } finally {
+      dataReader.return_loan_untyped(sampleSeq, sampleInfoSeq);
+    }
   }
 }

@@ -125,9 +125,6 @@ public class DynamicRouting {
       log.error("Remote administration interface of routing service could not be discovered within time out");
     }
 
-    // disable auto enable of entities
-    AutoEnableCreatedEntitiesHelper.disable();
-
     // create domain participant for discovery
     DomainParticipant domainParticipantDiscovery = createDiscoveryDomainParticipant(0);
 
@@ -143,17 +140,14 @@ public class DynamicRouting {
 
     // create new publication observer
     PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
-    publicationObserver.addListener(dynamicPartitionObserver);
+    publicationObserver.addListener(dynamicPartitionObserver, false);
 
     // create new subscription observer
     SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
-    subscriptionObserver.addListener(dynamicPartitionObserver);
+    subscriptionObserver.addListener(dynamicPartitionObserver, false);
 
     // enable domain participant
     domainParticipantDiscovery.enable();
-
-    // auto enable entities
-    AutoEnableCreatedEntitiesHelper.enable();
 
     log.info("Dynamic routing was started");
   }
@@ -167,7 +161,16 @@ public class DynamicRouting {
   private static DomainParticipant createDiscoveryDomainParticipant(
       int domainId
   ) {
-    return createDomainParticipant(domainId, "RTI Routing Service: discovery");
+    // disable auto-enable -> THIS IS CRUCIAL TO WORK CORRECTLY
+    AutoEnableCreatedEntitiesHelper.disable();
+
+    // create discovery participant
+    DomainParticipant domainParticipant = createDomainParticipant(domainId, "RTI Routing Service: discovery");
+
+    // enable auto-enable
+    AutoEnableCreatedEntitiesHelper.enable();
+
+    return domainParticipant;
   }
 
   private static DomainParticipant createDomainParticipant(

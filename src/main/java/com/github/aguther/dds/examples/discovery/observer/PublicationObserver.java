@@ -26,11 +26,17 @@ package com.github.aguther.dds.examples.discovery.observer;
 
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.RETCODE_ERROR;
+import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
+import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
+import com.rti.dds.subscription.SampleInfoSeq;
+import com.rti.dds.subscription.SampleStateKind;
+import com.rti.dds.subscription.ViewStateKind;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,15 +79,35 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     listenerList = new ArrayList<>();
   }
 
-  public void addListener(PublicationObserverListener listener) {
+  public void addListener(
+      PublicationObserverListener listener
+  ) {
+    addListener(listener, true);
+  }
+
+  public void addListener(
+      PublicationObserverListener listener,
+      boolean deliverReadSamples
+  ) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Provided listener must not be null");
+    }
     synchronized (listenerLock) {
       if (!listenerList.contains(listener)) {
         listenerList.add(listener);
+        if (deliverReadSamples) {
+          deliverReadSamples(listener);
+        }
       }
     }
   }
 
-  public void removeListener(PublicationObserverListener listener) {
+  public void removeListener(
+      PublicationObserverListener listener
+  ) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Provided listener must not be null");
+    }
     synchronized (listenerLock) {
       listenerList.remove(listener);
     }
@@ -126,5 +152,58 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       }
 
     } while (hasMoreData);
+  }
+
+  private void deliverReadSamples(
+      PublicationObserverListener listener
+  ) {
+    // variables to store data
+    SampleInfo sampleInfo = new SampleInfo();
+    SampleInfoSeq sampleInfoSeq = new SampleInfoSeq();
+    PublicationBuiltinTopicDataSeq sampleSeq = new PublicationBuiltinTopicDataSeq();
+
+    try {
+      // read samples that have already been read
+      dataReader.read_untyped(
+          sampleSeq,
+          sampleInfoSeq,
+          Integer.MAX_VALUE,
+          SampleStateKind.READ_SAMPLE_STATE,
+          ViewStateKind.ANY_VIEW_STATE,
+          InstanceStateKind.ANY_INSTANCE_STATE
+      );
+
+      // iterate over samples
+      for (int i = 0; i < sampleSeq.size(); i++) {
+        // is data valid?
+        if (sampleInfoSeq.get(i).valid_data) {
+          // copy sample info
+          sampleInfo.copy_from(sampleInfoSeq.get(i));
+
+          // publication data does not need copy
+          PublicationBuiltinTopicData sample = (PublicationBuiltinTopicData) sampleSeq.get(i);
+
+          // add to sample cache if necessary
+          if (!sampleCache.containsKey(sampleInfo.instance_handle)) {
+            sampleCache.put(sampleInfo.instance_handle, sample);
+          }
+
+          // invoke listener
+          listener.publicationDiscovered(sampleInfo.instance_handle, sample);
+        }
+      }
+    } catch (RETCODE_NOT_ENABLED notEnabled) {
+      // yet there is no way to directly detect that the domain participant is not yet enabled
+      // and therefore this error is expected when a listener is added but the related domain participant
+      // is not yet enabled
+    } catch (RETCODE_NO_DATA noData) {
+      if (log.isTraceEnabled()) {
+        log.trace("No more data available to read; {}", noData);
+      }
+    } catch (RETCODE_ERROR error) {
+      log.error("Error getting already read samples; {}", error);
+    } finally {
+      dataReader.return_loan_untyped(sampleSeq, sampleInfoSeq);
+    }
   }
 }
