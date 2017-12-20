@@ -238,7 +238,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
         topicRoute.getDirection()
     );
 
-    synchronized (sessionCommandsLock) {
+    synchronized (topicRouteCommandsLock) {
       // create session command
       TopicRouteCommand topicRouteCommand = new TopicRouteCommand(session, topicRoute, CommandType.CREATE);
       // when another command is in the pipeline, cancel it
@@ -318,9 +318,9 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
         topicRoute.getDirection()
     );
 
-    synchronized (sessionCommandsLock) {
+    synchronized (topicRouteCommandsLock) {
       // create session command
-      TopicRouteCommand topicRouteCommand = new TopicRouteCommand(session, topicRoute, CommandType.CREATE);
+      TopicRouteCommand topicRouteCommand = new TopicRouteCommand(session, topicRoute, CommandType.DELETE);
       // when another command is in the pipeline, cancel it
       if (topicRouteCommands.containsKey(topicRouteCommand)) {
         topicRouteCommands.remove(topicRouteCommand).cancel(false);
