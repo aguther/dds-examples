@@ -24,6 +24,9 @@
 
 package com.github.aguther.dds.examples.requestreply;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.rti.connext.infrastructure.Sample;
 import com.rti.connext.requestreply.Requester;
 import com.rti.dds.infrastructure.Duration_t;
@@ -54,15 +57,9 @@ public class RequestSender implements Runnable {
       int replyWaitTime,
       int sleepTime
   ) {
-    if (requester == null) {
-      throw new IllegalArgumentException("Requester must not be null!");
-    }
-    if (replyWaitTime < 0) {
-      throw new IllegalArgumentException("ResponseWaitTime must be greater or equal to 0.");
-    }
-    if (sleepTime < 0) {
-      throw new IllegalArgumentException("SleepTime must be greater or equal to 0.");
-    }
+    checkNotNull(requester);
+    checkArgument(replyWaitTime >= 0);
+    checkArgument(sleepTime >= 0);
 
     this.requester = requester;
     this.replyWaitTime = replyWaitTime;

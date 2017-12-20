@@ -24,6 +24,8 @@
 
 package com.github.aguther.dds.examples.shape;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.subscription.DataReader;
@@ -50,9 +52,7 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
   ShapeTypeExtendedListener(
       DataReader dataReader
   ) {
-    if (dataReader == null) {
-      throw new IllegalArgumentException("DataReader must not be null!");
-    }
+    checkNotNull(dataReader);
 
     // set this as listener
     this.dataReader = dataReader;

@@ -24,6 +24,8 @@
 
 package com.github.aguther.dds.examples.discovery.observer;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.RETCODE_ERROR;
@@ -89,9 +91,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       PublicationObserverListener listener,
       boolean deliverReadSamples
   ) {
-    if (listener == null) {
-      throw new IllegalArgumentException("Provided listener must not be null");
-    }
+    checkNotNull(listener);
+
     synchronized (listenerLock) {
       if (!listenerList.contains(listener)) {
         listenerList.add(listener);
@@ -105,9 +106,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   public void removeListener(
       PublicationObserverListener listener
   ) {
-    if (listener == null) {
-      throw new IllegalArgumentException("Provided listener must not be null");
-    }
+    checkNotNull(listener);
+
     synchronized (listenerLock) {
       listenerList.remove(listener);
     }

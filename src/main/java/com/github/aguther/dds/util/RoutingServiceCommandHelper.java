@@ -24,6 +24,8 @@
 
 package com.github.aguther.dds.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.rti.connext.infrastructure.Sample;
 import com.rti.connext.requestreply.Requester;
 import com.rti.connext.requestreply.RequesterParams;
@@ -61,9 +63,7 @@ public class RoutingServiceCommandHelper {
       DomainParticipant domainParticipant
   ) {
     // check input parameters
-    if (domainParticipant == null) {
-      throw new IllegalArgumentException("DomainParticipant must not be null.");
-    }
+    checkNotNull(domainParticipant);
 
     // get host and app id from wire protocol of domain participant
     DomainParticipantQos domainParticipantQos = new DomainParticipantQos();

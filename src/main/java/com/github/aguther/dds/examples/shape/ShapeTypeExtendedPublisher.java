@@ -24,6 +24,9 @@
 
 package com.github.aguther.dds.examples.shape;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.Cookie_t;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -84,15 +87,9 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       DataWriter dataWriter,
       int sleepTime
   ) {
-    if (shapeAttributes == null) {
-      throw new IllegalArgumentException("ShareAttributes must not be null!");
-    }
-    if (dataWriter == null) {
-      throw new IllegalArgumentException("DataWriter must not be null!");
-    }
-    if (sleepTime < 0) {
-      throw new IllegalArgumentException("SleepTime must be greater or equal to 0.");
-    }
+    checkNotNull(shapeAttributes);
+    checkNotNull(dataWriter);
+    checkArgument(sleepTime >= 0);
 
     this.shapeAttributes = shapeAttributes;
     this.dataWriter = dataWriter;

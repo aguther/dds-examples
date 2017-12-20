@@ -24,6 +24,10 @@
 
 package com.github.aguther.dds.examples.discovery.observer;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.base.Strings;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
@@ -59,13 +63,9 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
   BuiltinTopicObserver(
       final DomainParticipant domainParticipant,
       final String topicName) {
-    // check the input parameters
-    if (domainParticipant == null) {
-      throw new IllegalArgumentException("DomainParticipant must not be null.");
-    }
-    if (org.apache.commons.lang3.StringUtils.isBlank(topicName)) {
-      throw new IllegalArgumentException("TopicName must not be blank.");
-    }
+    // check arguments
+    checkNotNull(domainParticipant);
+    checkArgument(!Strings.isNullOrEmpty(topicName));
 
     // remember domain participant
     this.domainParticipant = domainParticipant;

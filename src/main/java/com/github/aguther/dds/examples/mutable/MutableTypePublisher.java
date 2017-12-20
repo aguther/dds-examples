@@ -24,6 +24,9 @@
 
 package com.github.aguther.dds.examples.mutable;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.Cookie_t;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -74,12 +77,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
       DataWriter dataWriter,
       int sleepTime
   ) {
-    if (dataWriter == null) {
-      throw new IllegalArgumentException("DataWriter must not be null!");
-    }
-    if (sleepTime < 0) {
-      throw new IllegalArgumentException("SleepTime must be greater or equal to 0.");
-    }
+    checkNotNull(dataWriter);
+    checkArgument(sleepTime >= 0);
 
     this.dataWriter = dataWriter;
     this.sleepTime = sleepTime;
