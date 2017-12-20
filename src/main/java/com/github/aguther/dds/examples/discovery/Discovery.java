@@ -28,6 +28,7 @@ import com.github.aguther.dds.examples.discovery.observer.PublicationObserver;
 import com.github.aguther.dds.examples.discovery.observer.PublicationObserverListener;
 import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserver;
 import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserverListener;
+import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantFactoryQos;
@@ -58,10 +59,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
     registerShutdownHook();
 
     // do not auto-enable entities to ensure we do not miss any discovery data
-    DomainParticipantFactoryQos domainParticipantFactoryQos = new DomainParticipantFactoryQos();
-    DomainParticipantFactory.get_instance().get_qos(domainParticipantFactoryQos);
-    domainParticipantFactoryQos.entity_factory.autoenable_created_entities = false;
-    DomainParticipantFactory.get_instance().set_qos(domainParticipantFactoryQos);
+    AutoEnableCreatedEntitiesHelper.disable();
 
     // create domain participant for discovery
     DomainParticipant domainParticipantDiscovery = DomainParticipantFactory.get_instance().create_participant(
