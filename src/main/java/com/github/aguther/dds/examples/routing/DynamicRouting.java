@@ -26,11 +26,13 @@ package com.github.aguther.dds.examples.routing;
 
 import com.github.aguther.dds.examples.discovery.observer.PublicationObserver;
 import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserver;
+import com.github.aguther.dds.examples.routing.dynamic.command.DynamicPartitionCommanderProviderImpl;
+import com.github.aguther.dds.examples.routing.dynamic.command.DynamicPartitionCommander;
 import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RoutingServiceEntitiesFilter;
 import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
 import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RtiTopicFilter;
 import com.github.aguther.dds.examples.routing.dynamic.observer.filter.WildcardPartitionFilter;
-import com.github.aguther.dds.examples.routing.dynamic.command.RoutingServiceCommander;
+import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.github.aguther.dds.util.Slf4jDdsLogger;
@@ -115,11 +117,11 @@ public class DynamicRouting {
     DomainParticipant domainParticipantAdministration = createRemoteAdministrationDomainParticipant(0);
 
     // create routing service administration
-    RoutingServiceCommander routingServiceCommander = new RoutingServiceCommander(domainParticipantAdministration);
+    RoutingServiceCommandHelper routingServiceCommandHelper = new RoutingServiceCommandHelper(domainParticipantAdministration);
 
     // wait for routing service to be discovered
     log.info("Waiting for remote administration interface of routing service to be discovered");
-    if (routingServiceCommander.waitForRoutingService(ROUTING_SERVICE_NAME, new Duration_t(30, 0))) {
+    if (routingServiceCommandHelper.waitForRoutingService(ROUTING_SERVICE_NAME, new Duration_t(30, 0))) {
       log.info("Remote administration interface of routing service was discovered");
     } else {
       log.error("Remote administration interface of routing service could not be discovered within time out");
@@ -136,7 +138,8 @@ public class DynamicRouting {
     dynamicPartitionObserver.addFilter(new RoutingServiceGroupEntitiesFilter(ROUTING_SERVICE_NAME));
     dynamicPartitionObserver.addFilter(new WildcardPartitionFilter());
     // add listener to dynamic partition observer
-    dynamicPartitionObserver.addListener(new DynamicRoutingCommander(routingServiceCommander, ROUTING_SERVICE_NAME));
+    dynamicPartitionObserver.addListener(new DynamicPartitionCommander(
+        routingServiceCommandHelper, new DynamicPartitionCommanderProviderImpl(), ROUTING_SERVICE_NAME));
 
     // create new publication observer
     PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);

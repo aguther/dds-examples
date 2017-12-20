@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.command;
+package com.github.aguther.dds.util;
 
 import com.rti.connext.infrastructure.Sample;
 import com.rti.connext.requestreply.Requester;
@@ -43,12 +43,12 @@ import idl.RTI.RoutingService.Administration.CommandResponseTypeSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RoutingServiceCommander {
+public class RoutingServiceCommandHelper {
 
   private static final Logger log;
 
   static {
-    log = LoggerFactory.getLogger(RoutingServiceCommander.class);
+    log = LoggerFactory.getLogger(RoutingServiceCommandHelper.class);
   }
 
   private final Requester<CommandRequest, CommandResponse> requester;
@@ -57,7 +57,7 @@ public class RoutingServiceCommander {
   private int idApplication;
   private int idInvocationCounter;
 
-  public RoutingServiceCommander(
+  public RoutingServiceCommandHelper(
       DomainParticipant domainParticipant
   ) {
     // check input parameters

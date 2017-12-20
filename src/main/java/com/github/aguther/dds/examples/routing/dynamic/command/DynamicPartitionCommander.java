@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing;
+package com.github.aguther.dds.examples.routing.dynamic.command;
 
-import com.github.aguther.dds.examples.routing.dynamic.command.RoutingServiceCommander;
+import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverListener;
 import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
 import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
-import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute.Direction;
 import com.rti.dds.infrastructure.Duration_t;
 import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
@@ -37,7 +36,7 @@ import idl.RTI.RoutingService.Administration.CommandResponseKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DynamicRoutingCommander implements DynamicPartitionObserverListener {
+public class DynamicPartitionCommander implements DynamicPartitionObserverListener {
 
   private static final Duration_t REQUEST_TIMEOUT;
 
@@ -45,17 +44,21 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
 
   static {
     REQUEST_TIMEOUT = new Duration_t(10, 0);
-    log = LoggerFactory.getLogger(DynamicRoutingCommander.class);
+    log = LoggerFactory.getLogger(DynamicPartitionCommander.class);
   }
 
-  private final RoutingServiceCommander routingServiceCommander;
+  private final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider;
+  private final RoutingServiceCommandHelper routingServiceCommandHelper;
   private final String targetRouter;
 
-  public DynamicRoutingCommander(
-      RoutingServiceCommander routingServiceCommander,
+
+  public DynamicPartitionCommander(
+      RoutingServiceCommandHelper routingServiceCommandHelper,
+      DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
       String targetRouter
   ) {
-    this.routingServiceCommander = routingServiceCommander;
+    this.routingServiceCommandHelper = routingServiceCommandHelper;
+    this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
     this.targetRouter = targetRouter;
   }
 
@@ -70,19 +73,16 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
     );
 
     // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
+    CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
     commandRequest.target_router = targetRouter;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = "Default";
-    commandRequest.command.entity_desc.xml_url.content = String
-        .format(
-            "str://\"<session name=\"%1$s\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%2$s</element></name></partition></subscriber_qos></session>\"",
-            String.format("%s(%s)", session.getTopic(), session.getPartition()),
-            session.getPartition());
+    commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider.getSessionParent(session);
     commandRequest.command.entity_desc.xml_url.is_final = true;
+    commandRequest.command.entity_desc.xml_url.content
+        = dynamicPartitionCommanderProvider.getSessionConfiguration(session);
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(
+    CommandResponse reply = routingServiceCommandHelper.sendRequest(
         commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
@@ -96,11 +96,13 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
     }
     // reply success or failed?
     if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Created session for topic='{}', partition='{}'",
-          session.getTopic(),
-          session.getPartition()
-      );
+      if (log.isInfoEnabled()) {
+        log.info(
+            "Created session for topic='{}', partition='{}'",
+            session.getTopic(),
+            session.getPartition()
+        );
+      }
     } else {
       log.error(
           "Failed to create session for topic='{}', partition='{}', reason: {}, {}",
@@ -123,14 +125,13 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
     );
 
     // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
+    CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
     commandRequest.target_router = targetRouter;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = String.format(
-        "Default::%s", String.format("%s(%s)", session.getTopic(), session.getPartition()));
+    commandRequest.command.entity_name = dynamicPartitionCommanderProvider.getSessionEntityName(session);
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(
+    CommandResponse reply = routingServiceCommandHelper.sendRequest(
         commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
@@ -144,11 +145,13 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
     }
     // reply success or failed?
     if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Deleted session for topic='{}', partition='{}'",
-          session.getTopic(),
-          session.getPartition()
-      );
+      if (log.isInfoEnabled()) {
+        log.info(
+            "Deleted session for topic='{}', partition='{}'",
+            session.getTopic(),
+            session.getPartition()
+        );
+      }
     } else {
       log.error(
           "Failed to delete session for topic='{}', partition='{}', reason: {}, {}",
@@ -172,24 +175,17 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
         topicRoute.getDirection()
     );
 
-    // detect input participant
-    int inputParticipant = topicRoute.getDirection() == Direction.OUT ? 1 : 2;
-
     // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
+    CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
     commandRequest.target_router = targetRouter;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = String
-        .format("Default::%s(%s)", session.getTopic(), session.getPartition());
-    commandRequest.command.entity_desc.xml_url.content = String.format(
-        "str://\"<auto_topic_route name=\"%1$s\"><input participant=\"%2$d\"><allow_topic_name_filter>%3$s</allow_topic_name_filter><datareader_qos base_name=\"QosLibrary::Base\"/></input><output><allow_topic_name_filter>%3$s</allow_topic_name_filter><datawriter_qos base_name=\"QosLibrary::Base\"/></output></auto_topic_route>\"",
-        topicRoute.getDirection().toString(),
-        inputParticipant,
-        session.getTopic());
+    commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider.getSessionEntityName(session);
     commandRequest.command.entity_desc.xml_url.is_final = true;
+    commandRequest.command.entity_desc.xml_url.content
+        = dynamicPartitionCommanderProvider.getTopicRouteConfiguration(session, topicRoute);
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(
+    CommandResponse reply = routingServiceCommandHelper.sendRequest(
         commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
@@ -204,12 +200,14 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
     }
     // reply success or failed?
     if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Created route for topic='{}', partition='{}', direction='{}'",
-          session.getTopic(),
-          session.getPartition(),
-          topicRoute.getDirection().toString()
-      );
+      if (log.isInfoEnabled()) {
+        log.info(
+            "Created route for topic='{}', partition='{}', direction='{}'",
+            session.getTopic(),
+            session.getPartition(),
+            topicRoute.getDirection().toString()
+        );
+      }
     } else {
       log.error(
           "Failed to create route for topic='{}', partition='{}', direction='{}', reason: {}, {}",
@@ -235,14 +233,13 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
     );
 
     // create request
-    CommandRequest commandRequest = routingServiceCommander.createCommandRequest();
+    CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
     commandRequest.target_router = targetRouter;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = String.format(
-        "Default::%1$s(%2$s)::%3$s", session.getTopic(), session.getPartition(), topicRoute.getDirection().toString());
+    commandRequest.command.entity_name = dynamicPartitionCommanderProvider.getTopicRouteEntityName(session, topicRoute);
 
     // send request
-    CommandResponse reply = routingServiceCommander.sendRequest(
+    CommandResponse reply = routingServiceCommandHelper.sendRequest(
         commandRequest, REQUEST_TIMEOUT);
 
     // reply received?
@@ -257,12 +254,14 @@ public class DynamicRoutingCommander implements DynamicPartitionObserverListener
     }
     // reply success or failed?
     if (reply.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      log.info(
-          "Deleted route for topic='{}', partition='{}', direction='{}'",
-          session.getTopic(),
-          session.getPartition(),
-          topicRoute.getDirection().toString()
-      );
+      if (log.isInfoEnabled()) {
+        log.info(
+            "Deleted route for topic='{}', partition='{}', direction='{}'",
+            session.getTopic(),
+            session.getPartition(),
+            topicRoute.getDirection().toString()
+        );
+      }
     } else {
       log.error(
           "Failed to delete route for topic='{}', partition='{}', direction='{}', reason: {}, {}",
