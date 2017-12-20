@@ -146,7 +146,7 @@ public class DynamicRouting {
     SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
     subscriptionObserver.addListener(dynamicPartitionObserver, false);
 
-    // enable domain participant
+    // enable discovery domain participant
     domainParticipantDiscovery.enable();
 
     log.info("Dynamic routing was started");
