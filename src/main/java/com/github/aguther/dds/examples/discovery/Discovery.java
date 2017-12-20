@@ -31,7 +31,6 @@ import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserverLi
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
-import com.rti.dds.domain.DomainParticipantFactoryQos;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.PartitionQosPolicy;
 import com.rti.dds.infrastructure.StatusKind;

@@ -24,10 +24,10 @@
 
 package com.github.aguther.dds.examples.routing.dynamic.command;
 
-import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverListener;
 import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
 import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
+import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import com.rti.dds.infrastructure.Duration_t;
 import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
