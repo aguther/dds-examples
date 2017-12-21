@@ -64,8 +64,8 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
       final DomainParticipant domainParticipant,
       final String topicName) {
     // check arguments
-    checkNotNull(domainParticipant);
-    checkArgument(!Strings.isNullOrEmpty(topicName));
+    checkNotNull(domainParticipant, "DomainParticipant must not be null");
+    checkArgument(!Strings.isNullOrEmpty(topicName), "Topic name must not be empty or null");
 
     // remember domain participant
     this.domainParticipant = domainParticipant;

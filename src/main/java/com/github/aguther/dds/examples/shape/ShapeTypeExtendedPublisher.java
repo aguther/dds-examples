@@ -87,9 +87,9 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       DataWriter dataWriter,
       int sleepTime
   ) {
-    checkNotNull(shapeAttributes);
-    checkNotNull(dataWriter);
-    checkArgument(sleepTime >= 0);
+    checkNotNull(shapeAttributes, "Shape attributes must not be null");
+    checkNotNull(dataWriter, "DataWriter must not be null");
+    checkArgument(sleepTime >= 0, "Sleep time expected to be 0 or greater");
 
     this.shapeAttributes = shapeAttributes;
     this.dataWriter = dataWriter;

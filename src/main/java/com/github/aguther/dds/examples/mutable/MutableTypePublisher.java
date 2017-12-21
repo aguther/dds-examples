@@ -77,8 +77,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
       DataWriter dataWriter,
       int sleepTime
   ) {
-    checkNotNull(dataWriter);
-    checkArgument(sleepTime >= 0);
+    checkNotNull(dataWriter, "DataWriter must not be null");
+    checkArgument(sleepTime >= 0, "Sleep time expected to be 0 or greater");
 
     this.dataWriter = dataWriter;
     this.sleepTime = sleepTime;

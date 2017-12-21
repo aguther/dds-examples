@@ -90,7 +90,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       SubscriptionObserverListener listener,
       boolean deliverReadSamples
   ) {
-    checkNotNull(listener);
+    checkNotNull(listener, "Listener must not be null");
 
     synchronized (listenerList) {
       if (!listenerList.contains(listener)) {
@@ -105,7 +105,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   public void removeListener(
       SubscriptionObserverListener listener
   ) {
-    checkNotNull(listener);
+    checkNotNull(listener, "Listener must not be null");
     listenerList.remove(listener);
   }
 

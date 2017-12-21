@@ -90,7 +90,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       PublicationObserverListener listener,
       boolean deliverReadSamples
   ) {
-    checkNotNull(listener);
+    checkNotNull(listener, "Listener must not be null");
 
     synchronized (listenerList) {
       if (!listenerList.contains(listener)) {
@@ -105,7 +105,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   public void removeListener(
       PublicationObserverListener listener
   ) {
-    checkNotNull(listener);
+    checkNotNull(listener, "Listener must not be null");
     listenerList.remove(listener);
   }
 

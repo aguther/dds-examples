@@ -52,7 +52,7 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
   ShapeTypeExtendedListener(
       DataReader dataReader
   ) {
-    checkNotNull(dataReader);
+    checkNotNull(dataReader, "DataReader must not be null");
 
     // set this as listener
     this.dataReader = dataReader;

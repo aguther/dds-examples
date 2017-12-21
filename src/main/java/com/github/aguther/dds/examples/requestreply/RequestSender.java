@@ -57,9 +57,9 @@ public class RequestSender implements Runnable {
       int replyWaitTime,
       int sleepTime
   ) {
-    checkNotNull(requester);
-    checkArgument(replyWaitTime >= 0);
-    checkArgument(sleepTime >= 0);
+    checkNotNull(requester, "Requester must not be null");
+    checkArgument(replyWaitTime >= 0, "Time to wait for reply must be 0 or greater");
+    checkArgument(sleepTime >= 0, "Time to sleep must be 0 or greater");
 
     this.requester = requester;
     this.replyWaitTime = replyWaitTime;

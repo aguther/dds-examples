@@ -64,7 +64,7 @@ public class RoutingServiceCommandHelper {
       DomainParticipant domainParticipant
   ) {
     // check input parameters
-    checkNotNull(domainParticipant);
+    checkNotNull(domainParticipant, "DomainParticipant must not be null");
 
     // get host and app id from wire protocol of domain participant
     DomainParticipantQos domainParticipantQos = new DomainParticipantQos();
