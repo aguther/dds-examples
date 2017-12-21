@@ -40,8 +40,10 @@ import com.rti.dds.subscription.SampleInfoSeq;
 import com.rti.dds.subscription.SampleStateKind;
 import com.rti.dds.subscription.ViewStateKind;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +58,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     log = LoggerFactory.getLogger(PublicationObserver.class);
   }
 
-  private final HashMap<InstanceHandle_t, PublicationBuiltinTopicData> sampleCache;
-
-  private final Object listenerLock;
+  private final Map<InstanceHandle_t, PublicationBuiltinTopicData> sampleCache;
   private final List<PublicationObserverListener> listenerList;
 
   /**
@@ -74,11 +74,10 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     super(domainParticipant, PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME);
 
     // initialize sample cache
-    sampleCache = new HashMap<>();
+    sampleCache = Collections.synchronizedMap(new HashMap<>());
 
     // create list for listenerList with lock
-    listenerLock = new Object();
-    listenerList = new ArrayList<>();
+    listenerList = Collections.synchronizedList(new ArrayList<>());
   }
 
   public void addListener(
@@ -93,7 +92,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   ) {
     checkNotNull(listener);
 
-    synchronized (listenerLock) {
+    synchronized (listenerList) {
       if (!listenerList.contains(listener)) {
         listenerList.add(listener);
         if (deliverReadSamples) {
@@ -107,10 +106,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       PublicationObserverListener listener
   ) {
     checkNotNull(listener);
-
-    synchronized (listenerLock) {
-      listenerList.remove(listener);
-    }
+    listenerList.remove(listener);
   }
 
   @Override
@@ -131,7 +127,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
           sampleCache.put(sampleInfo.instance_handle, sample);
 
           // call listeners
-          synchronized (listenerLock) {
+          synchronized (listenerList) {
             for (PublicationObserverListener listener : listenerList) {
               listener.publicationDiscovered(sampleInfo.instance_handle, sample);
             }
@@ -141,7 +137,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
           sample = sampleCache.remove(sampleInfo.instance_handle);
 
           // call listeners
-          synchronized (listenerLock) {
+          synchronized (listenerList) {
             for (PublicationObserverListener listener : listenerList) {
               listener.publicationLost(sampleInfo.instance_handle, sample);
             }
@@ -182,11 +178,6 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
 
           // publication data does not need copy
           PublicationBuiltinTopicData sample = (PublicationBuiltinTopicData) sampleSeq.get(i);
-
-          // add to sample cache if necessary
-          if (!sampleCache.containsKey(sampleInfo.instance_handle)) {
-            sampleCache.put(sampleInfo.instance_handle, sample);
-          }
 
           // invoke listener
           listener.publicationDiscovered(sampleInfo.instance_handle, sample);

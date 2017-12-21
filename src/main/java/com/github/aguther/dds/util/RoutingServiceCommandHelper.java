@@ -42,6 +42,7 @@ import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandRequestTypeSupport;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseTypeSupport;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +155,8 @@ public class RoutingServiceCommandHelper {
 
   public CommandResponse sendRequest(
       CommandRequest commandRequest,
-      Duration_t timeOut
+      long timeOut,
+      TimeUnit timeUnit
   ) {
     // set identification
     commandRequest.id.host = idHost;
@@ -168,7 +170,10 @@ public class RoutingServiceCommandHelper {
     Sample<CommandResponse> reply = requester.createReplySample();
 
     // wait for reply
-    boolean replyReceived = requester.receiveReply(reply, timeOut);
+    boolean replyReceived = requester.receiveReply(
+        reply,
+        DurationFactory.from(timeOut, timeUnit)
+    );
 
     // return result
     return replyReceived ? reply.getData() : null;

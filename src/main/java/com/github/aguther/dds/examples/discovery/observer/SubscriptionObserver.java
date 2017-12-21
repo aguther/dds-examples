@@ -41,8 +41,10 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataSeq;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +59,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     log = LoggerFactory.getLogger(Discovery.class);
   }
 
-  private final HashMap<InstanceHandle_t, SubscriptionBuiltinTopicData> sampleCache;
-
-  private final Object listenerLock;
+  private final Map<InstanceHandle_t, SubscriptionBuiltinTopicData> sampleCache;
   private final List<SubscriptionObserverListener> listenerList;
 
   /**
@@ -74,11 +74,10 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     super(domainParticipant, SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME);
 
     // initialize sample cache
-    sampleCache = new HashMap<>();
+    sampleCache = Collections.synchronizedMap(new HashMap<>());
 
     // create list for listenerList with lock
-    listenerLock = new Object();
-    listenerList = new ArrayList<>();
+    listenerList = Collections.synchronizedList(new ArrayList<>());
   }
 
   public void addListener(
@@ -93,7 +92,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   ) {
     checkNotNull(listener);
 
-    synchronized (listenerLock) {
+    synchronized (listenerList) {
       if (!listenerList.contains(listener)) {
         listenerList.add(listener);
         if (deliverReadSamples) {
@@ -107,10 +106,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       SubscriptionObserverListener listener
   ) {
     checkNotNull(listener);
-
-    synchronized (listenerLock) {
-      listenerList.remove(listener);
-    }
+    listenerList.remove(listener);
   }
 
   @Override
@@ -131,7 +127,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           sampleCache.put(sampleInfo.instance_handle, sample);
 
           // call listeners
-          synchronized (listenerLock) {
+          synchronized (listenerList) {
             for (SubscriptionObserverListener listener : listenerList) {
               listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);
             }
@@ -141,7 +137,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           sample = sampleCache.remove(sampleInfo.instance_handle);
 
           // call listeners
-          synchronized (listenerLock) {
+          synchronized (listenerList) {
             for (SubscriptionObserverListener listener : listenerList) {
               listener.subscriptionLost(sampleInfo.instance_handle, sample);
             }
@@ -182,11 +178,6 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
 
           // publication data does not need copy
           SubscriptionBuiltinTopicData sample = (SubscriptionBuiltinTopicData) sampleSeq.get(i);
-
-          // add to sample cache if necessary
-          if (!sampleCache.containsKey(sampleInfo.instance_handle)) {
-            sampleCache.put(sampleInfo.instance_handle, sample);
-          }
 
           // invoke listener if provided
           listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);

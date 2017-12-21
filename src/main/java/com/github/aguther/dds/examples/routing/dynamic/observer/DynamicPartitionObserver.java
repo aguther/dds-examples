@@ -35,8 +35,10 @@ import com.rti.dds.infrastructure.StringSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.slf4j.Logger;
@@ -52,13 +54,8 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
 
   private final DomainParticipant domainParticipant;
 
-  private final Object mappingLock;
-  private final HashMap<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
-
-  private final Object filterLock;
+  private final Map<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
   private final List<DynamicPartitionObserverFilter> filterList;
-
-  private final Object listenerLock;
   private final List<DynamicPartitionObserverListener> listenerList;
   private final ExecutorService listenerExecutor;
 
@@ -67,21 +64,16 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   ) {
     this.domainParticipant = domainParticipant;
 
-    mapping = new HashMap<>();
-    mappingLock = new Object();
-
-    filterLock = new Object();
-    filterList = new ArrayList<>();
-
-    listenerLock = new Object();
-    listenerList = new ArrayList<>();
+    mapping = Collections.synchronizedMap(new HashMap<>());
+    filterList = Collections.synchronizedList(new ArrayList<>());
+    listenerList = Collections.synchronizedList(new ArrayList<>());
     listenerExecutor = Executors.newSingleThreadExecutor();
   }
 
   public void addListener(
       DynamicPartitionObserverListener listener
   ) {
-    synchronized (listenerLock) {
+    synchronized (listenerList) {
       if (!listenerList.contains(listener)) {
         listenerList.add(listener);
       }
@@ -91,15 +83,13 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   public void removeListener(
       DynamicPartitionObserverListener listener
   ) {
-    synchronized (listenerLock) {
-      listenerList.remove(listener);
-    }
+    listenerList.remove(listener);
   }
 
   public void addFilter(
       DynamicPartitionObserverFilter filter
   ) {
-    synchronized (filterLock) {
+    synchronized (filterList) {
       if (!filterList.contains(filter)) {
         filterList.add(filter);
       }
@@ -109,9 +99,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   public void removeFilter(
       DynamicPartitionObserverFilter filter
   ) {
-    synchronized (filterLock) {
-      filterList.remove(filter);
-    }
+    filterList.remove(filter);
   }
 
   @Override
@@ -196,7 +184,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       String topicName,
       StringSeq partitions
   ) {
-    synchronized (mappingLock) {
+    synchronized (mapping) {
       // create routes for all partitions we discovered
       if (partitions.isEmpty()) {
         // ignore partition?
@@ -232,7 +220,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       String topicName,
       StringSeq partitions
   ) {
-    synchronized (mappingLock) {
+    synchronized (mapping) {
       // delete routes for all partitions we lost
       if (partitions.isEmpty()) {
         // ignore partition?
@@ -266,7 +254,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
-    synchronized (filterLock) {
+    synchronized (filterList) {
       for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
           if (log.isDebugEnabled()) {
@@ -286,7 +274,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
-    synchronized (filterLock) {
+    synchronized (filterList) {
       for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
           if (log.isDebugEnabled()) {
@@ -306,7 +294,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       String topicName,
       String partition
   ) {
-    synchronized (filterLock) {
+    synchronized (filterList) {
       for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignorePartition(partition)) {
           if (log.isDebugEnabled()) {
@@ -367,7 +355,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   ) {
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerLock) {
+      synchronized (listenerList) {
         for (DynamicPartitionObserverListener listener : listenerList) {
           listener.createSession(session);
         }
@@ -380,7 +368,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   ) {
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerLock) {
+      synchronized (listenerList) {
         for (DynamicPartitionObserverListener listener : listenerList) {
           listener.deleteSession(session);
         }
@@ -394,7 +382,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   ) {
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerLock) {
+      synchronized (listenerList) {
         for (DynamicPartitionObserverListener listener : listenerList) {
           listener.createTopicRoute(session, topicRoute);
         }
@@ -408,7 +396,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   ) {
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerLock) {
+      synchronized (listenerList) {
         for (DynamicPartitionObserverListener listener : listenerList) {
           listener.deleteTopicRoute(session, topicRoute);
         }
