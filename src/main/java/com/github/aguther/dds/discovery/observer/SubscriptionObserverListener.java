@@ -22,45 +22,20 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer.filter;
+package com.github.aguther.dds.discovery.observer;
 
-import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverFilter;
-import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
-public class RtiTopicFilter implements DynamicPartitionObserverFilter {
+public interface SubscriptionObserverListener {
 
-  @Override
-  public boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
-  ) {
-    return isRtiTopic(data.topic_name);
-  }
-
-  @Override
-  public boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
+  void subscriptionDiscovered(
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
-  ) {
-    return isRtiTopic(data.topic_name);
-  }
+  );
 
-  @Override
-  public boolean ignorePartition(
-      String partition
-  ) {
-    return false;
-  }
-
-  private boolean isRtiTopic(
-      String topicName
-  ) {
-    // ignore all rti topics
-    return topicName.startsWith("rti");
-  }
+  void subscriptionLost(
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
+  );
 }

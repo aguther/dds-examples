@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery.observer;
+package com.github.aguther.dds.discovery.observer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

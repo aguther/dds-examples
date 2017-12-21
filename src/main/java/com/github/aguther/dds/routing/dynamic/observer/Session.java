@@ -22,20 +22,55 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery.observer;
+package com.github.aguther.dds.routing.dynamic.observer;
 
-import com.rti.dds.infrastructure.InstanceHandle_t;
-import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import java.util.Objects;
 
-public interface SubscriptionObserverListener {
+public class Session {
 
-  void subscriptionDiscovered(
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
-  );
+  private String topic;
+  private String partition;
 
-  void subscriptionLost(
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
-  );
+  public Session(
+      String topic
+  ) {
+    this(topic, "");
+  }
+
+  public Session(
+      String topic,
+      String partition
+  ) {
+    this.topic = topic;
+    this.partition = partition;
+  }
+
+  public String getTopic() {
+    return topic;
+  }
+
+  public String getPartition() {
+    return partition;
+  }
+
+  @Override
+  public boolean equals(
+      Object o
+  ) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Session session = (Session) o;
+    return Objects.equals(topic, session.topic) &&
+        Objects.equals(partition, session.partition);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(topic, partition);
+  }
 }

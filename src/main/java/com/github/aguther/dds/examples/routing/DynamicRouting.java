@@ -24,15 +24,15 @@
 
 package com.github.aguther.dds.examples.routing;
 
-import com.github.aguther.dds.examples.discovery.observer.PublicationObserver;
-import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserver;
-import com.github.aguther.dds.examples.routing.dynamic.command.DynamicPartitionCommander;
-import com.github.aguther.dds.examples.routing.dynamic.command.DynamicPartitionCommanderProviderImpl;
-import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserver;
-import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RoutingServiceEntitiesFilter;
-import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
-import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RtiTopicFilter;
-import com.github.aguther.dds.examples.routing.dynamic.observer.filter.WildcardPartitionFilter;
+import com.github.aguther.dds.discovery.observer.PublicationObserver;
+import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
+import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
+import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommanderProviderImpl;
+import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
+import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceEntitiesFilter;
+import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
+import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
+import com.github.aguther.dds.routing.dynamic.observer.filter.WildcardPartitionFilter;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import com.github.aguther.dds.util.Slf4jDdsLogger;

@@ -22,41 +22,52 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.command;
+package com.github.aguther.dds.routing.dynamic.observer;
 
-import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
-import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
+import java.util.Objects;
 
-public interface DynamicPartitionCommanderProvider {
+public class TopicRoute {
 
-  String getSessionParent(
-      Session session
-  );
+  public enum Direction {
+    OUT, IN
+  }
 
-  String getSessionName(
-      Session session
-  );
+  private Direction direction;
+  private String topic;
 
-  String getSessionEntityName(
-      Session session
-  );
+  public TopicRoute(
+      Direction direction,
+      String topic
+  ) {
+    this.direction = direction;
+    this.topic = topic;
+  }
 
-  String getSessionConfiguration(
-      Session session
-  );
+  public Direction getDirection() {
+    return direction;
+  }
 
-  String getTopicRouteName(
-      Session session,
-      TopicRoute topicRoute
-  );
+  public String getTopic() {
+    return topic;
+  }
 
-  String getTopicRouteEntityName(
-      Session session,
-      TopicRoute topicRoute
-  );
+  @Override
+  public boolean equals(
+      Object o
+  ) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TopicRoute that = (TopicRoute) o;
+    return direction == that.direction &&
+        Objects.equals(topic, that.topic);
+  }
 
-  String getTopicRouteConfiguration(
-      Session session,
-      TopicRoute topicRoute
-  );
+  @Override
+  public int hashCode() {
+    return Objects.hash(direction, topic);
+  }
 }

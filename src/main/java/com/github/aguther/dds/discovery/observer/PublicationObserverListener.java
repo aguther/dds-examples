@@ -22,38 +22,20 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer.filter;
+package com.github.aguther.dds.discovery.observer;
 
-import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverFilter;
-import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
-import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
-public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
+public interface PublicationObserverListener {
 
-  @Override
-  public boolean ignorePublication(
-      DomainParticipant domainParticipant,
+  void publicationDiscovered(
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
-  ) {
-    return false;
-  }
+  );
 
-  @Override
-  public boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
+  void publicationLost(
       InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
-  ) {
-    return false;
-  }
-
-  @Override
-  public boolean ignorePartition(
-      String partition
-  ) {
-    return (partition.contains("*"));
-  }
+      PublicationBuiltinTopicData data
+  );
 }

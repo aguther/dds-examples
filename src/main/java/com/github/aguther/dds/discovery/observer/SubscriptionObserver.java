@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.discovery.observer;
+package com.github.aguther.dds.discovery.observer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -31,14 +31,14 @@ import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.RETCODE_ERROR;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
 import com.rti.dds.subscription.SampleInfoSeq;
 import com.rti.dds.subscription.SampleStateKind;
 import com.rti.dds.subscription.ViewStateKind;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataSeq;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,30 +48,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements an observer for publications.
+ * This class implements an observer for subscriptions.
  */
-public class PublicationObserver extends BuiltinTopicObserver implements Runnable {
+public class SubscriptionObserver extends BuiltinTopicObserver {
 
   private static final Logger log;
 
   static {
-    log = LoggerFactory.getLogger(PublicationObserver.class);
+    log = LoggerFactory.getLogger(SubscriptionObserver.class);
   }
 
-  private final Map<InstanceHandle_t, PublicationBuiltinTopicData> sampleCache;
-  private final List<PublicationObserverListener> listenerList;
+  private final Map<InstanceHandle_t, SubscriptionBuiltinTopicData> sampleCache;
+  private final List<SubscriptionObserverListener> listenerList;
 
   /**
-   * Creates a new observer for publications.
+   * Creates a new observer for subscriptions.
    *
    * @param domainParticipant DomainParticipant to use
    * @throws IllegalArgumentException Thrown in case of an error
    */
-  public PublicationObserver(
+  public SubscriptionObserver(
       DomainParticipant domainParticipant) {
-
-    // create the parent observer with the built-in publication topic
-    super(domainParticipant, PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME);
+    // create the parent observer with the built-in subscription topic
+    super(domainParticipant, SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME);
 
     // initialize sample cache
     sampleCache = Collections.synchronizedMap(new HashMap<>());
@@ -81,13 +80,13 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   }
 
   public void addListener(
-      PublicationObserverListener listener
+      SubscriptionObserverListener listener
   ) {
     addListener(listener, true);
   }
 
   public void addListener(
-      PublicationObserverListener listener,
+      SubscriptionObserverListener listener,
       boolean deliverReadSamples
   ) {
     checkNotNull(listener, "Listener must not be null");
@@ -103,7 +102,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   }
 
   public void removeListener(
-      PublicationObserverListener listener
+      SubscriptionObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
     listenerList.remove(listener);
@@ -116,7 +115,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     do {
       try {
         // create data containers
-        PublicationBuiltinTopicData sample = new PublicationBuiltinTopicData();
+        SubscriptionBuiltinTopicData sample = new SubscriptionBuiltinTopicData();
         SampleInfo sampleInfo = new SampleInfo();
 
         // read next sample
@@ -128,8 +127,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
 
           // call listeners
           synchronized (listenerList) {
-            for (PublicationObserverListener listener : listenerList) {
-              listener.publicationDiscovered(sampleInfo.instance_handle, sample);
+            for (SubscriptionObserverListener listener : listenerList) {
+              listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);
             }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
@@ -138,8 +137,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
 
           // call listeners
           synchronized (listenerList) {
-            for (PublicationObserverListener listener : listenerList) {
-              listener.publicationLost(sampleInfo.instance_handle, sample);
+            for (SubscriptionObserverListener listener : listenerList) {
+              listener.subscriptionLost(sampleInfo.instance_handle, sample);
             }
           }
         }
@@ -151,12 +150,12 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   }
 
   private void deliverReadSamples(
-      PublicationObserverListener listener
+      SubscriptionObserverListener listener
   ) {
     // variables to store data
     SampleInfo sampleInfo = new SampleInfo();
     SampleInfoSeq sampleInfoSeq = new SampleInfoSeq();
-    PublicationBuiltinTopicDataSeq sampleSeq = new PublicationBuiltinTopicDataSeq();
+    SubscriptionBuiltinTopicDataSeq sampleSeq = new SubscriptionBuiltinTopicDataSeq();
 
     try {
       // read samples that have already been read
@@ -177,10 +176,10 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
           sampleInfo.copy_from(sampleInfoSeq.get(i));
 
           // publication data does not need copy
-          PublicationBuiltinTopicData sample = (PublicationBuiltinTopicData) sampleSeq.get(i);
+          SubscriptionBuiltinTopicData sample = (SubscriptionBuiltinTopicData) sampleSeq.get(i);
 
-          // invoke listener
-          listener.publicationDiscovered(sampleInfo.instance_handle, sample);
+          // invoke listener if provided
+          listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);
         }
       }
     } catch (RETCODE_NOT_ENABLED notEnabled) {

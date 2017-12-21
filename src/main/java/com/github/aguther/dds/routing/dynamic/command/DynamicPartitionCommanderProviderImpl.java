@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.command;
+package com.github.aguther.dds.routing.dynamic.command;
 
-import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
-import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
-import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute.Direction;
+import com.github.aguther.dds.routing.dynamic.observer.Session;
+import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
+import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 
 public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCommanderProvider {
 

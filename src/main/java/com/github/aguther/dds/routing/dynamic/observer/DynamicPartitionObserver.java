@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer;
+package com.github.aguther.dds.routing.dynamic.observer;
 
-import com.github.aguther.dds.examples.discovery.observer.PublicationObserverListener;
-import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserverListener;
-import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute.Direction;
+import com.github.aguther.dds.discovery.observer.PublicationObserverListener;
+import com.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
+import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.rti.dds.domain.DomainParticipant;

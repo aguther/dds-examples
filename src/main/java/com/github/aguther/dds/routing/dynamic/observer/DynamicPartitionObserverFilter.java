@@ -22,55 +22,29 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer;
+package com.github.aguther.dds.routing.dynamic.observer;
 
-import java.util.Objects;
+import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
-public class Session {
+public interface DynamicPartitionObserverFilter {
 
-  private String topic;
-  private String partition;
+  boolean ignorePublication(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  );
 
-  public Session(
-      String topic
-  ) {
-    this(topic, "");
-  }
+  boolean ignoreSubscription(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
+  );
 
-  public Session(
-      String topic,
+  boolean ignorePartition(
       String partition
-  ) {
-    this.topic = topic;
-    this.partition = partition;
-  }
+  );
 
-  public String getTopic() {
-    return topic;
-  }
-
-  public String getPartition() {
-    return partition;
-  }
-
-  @Override
-  public boolean equals(
-      Object o
-  ) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Session session = (Session) o;
-    return Objects.equals(topic, session.topic) &&
-        Objects.equals(partition, session.partition);
-  }
-
-  @Override
-  public int hashCode() {
-
-    return Objects.hash(topic, partition);
-  }
 }

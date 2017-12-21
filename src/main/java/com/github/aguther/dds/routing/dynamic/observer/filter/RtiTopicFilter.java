@@ -22,52 +22,45 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer;
+package com.github.aguther.dds.routing.dynamic.observer.filter;
 
-import java.util.Objects;
+import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
+import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
+import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
-public class TopicRoute {
+public class RtiTopicFilter implements DynamicPartitionObserverFilter {
 
-  public enum Direction {
-    OUT, IN
-  }
-
-  private Direction direction;
-  private String topic;
-
-  public TopicRoute(
-      Direction direction,
-      String topic
+  @Override
+  public boolean ignorePublication(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
   ) {
-    this.direction = direction;
-    this.topic = topic;
-  }
-
-  public Direction getDirection() {
-    return direction;
-  }
-
-  public String getTopic() {
-    return topic;
+    return isRtiTopic(data.topic_name);
   }
 
   @Override
-  public boolean equals(
-      Object o
+  public boolean ignoreSubscription(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
   ) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    TopicRoute that = (TopicRoute) o;
-    return direction == that.direction &&
-        Objects.equals(topic, that.topic);
+    return isRtiTopic(data.topic_name);
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(direction, topic);
+  public boolean ignorePartition(
+      String partition
+  ) {
+    return false;
+  }
+
+  private boolean isRtiTopic(
+      String topicName
+  ) {
+    // ignore all rti topics
+    return topicName.startsWith("rti");
   }
 }

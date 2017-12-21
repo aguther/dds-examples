@@ -22,29 +22,41 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer;
+package com.github.aguther.dds.routing.dynamic.command;
 
-import com.rti.dds.domain.DomainParticipant;
-import com.rti.dds.infrastructure.InstanceHandle_t;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
-import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import com.github.aguther.dds.routing.dynamic.observer.Session;
+import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 
-public interface DynamicPartitionObserverFilter {
+public interface DynamicPartitionCommanderProvider {
 
-  boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+  String getSessionParent(
+      Session session
   );
 
-  boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+  String getSessionName(
+      Session session
   );
 
-  boolean ignorePartition(
-      String partition
+  String getSessionEntityName(
+      Session session
   );
 
+  String getSessionConfiguration(
+      Session session
+  );
+
+  String getTopicRouteName(
+      Session session,
+      TopicRoute topicRoute
+  );
+
+  String getTopicRouteEntityName(
+      Session session,
+      TopicRoute topicRoute
+  );
+
+  String getTopicRouteConfiguration(
+      Session session,
+      TopicRoute topicRoute
+  );
 }

@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.command;
+package com.github.aguther.dds.routing.dynamic.command;
 
-import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverListener;
-import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
-import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
+import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverListener;
+import com.github.aguther.dds.routing.dynamic.observer.Session;
+import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;

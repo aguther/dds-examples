@@ -1,4 +1,4 @@
-package com.github.aguther.dds.examples.routing.dynamic.observer;
+package com.github.aguther.dds.routing.dynamic.observer;
 
 public interface DynamicPartitionObserverListener {
 

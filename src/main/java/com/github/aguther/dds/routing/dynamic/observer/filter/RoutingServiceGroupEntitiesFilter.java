@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.routing.dynamic.observer.filter;
+package com.github.aguther.dds.routing.dynamic.observer.filter;
 
-import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartitionObserverFilter;
+import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.InstanceHandle_t;

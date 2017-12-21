@@ -24,10 +24,10 @@
 
 package com.github.aguther.dds.examples.discovery;
 
-import com.github.aguther.dds.examples.discovery.observer.PublicationObserver;
-import com.github.aguther.dds.examples.discovery.observer.PublicationObserverListener;
-import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserver;
-import com.github.aguther.dds.examples.discovery.observer.SubscriptionObserverListener;
+import com.github.aguther.dds.discovery.observer.PublicationObserver;
+import com.github.aguther.dds.discovery.observer.PublicationObserverListener;
+import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
+import com.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
