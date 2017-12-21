@@ -32,6 +32,7 @@ import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,10 +61,8 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
   private final RoutingServiceCommandHelper routingServiceCommandHelper;
   private final String targetRouter;
 
-  private final Map<SessionCommand, ScheduledFuture> sessionCommands;
-  private final Map<TopicRouteCommand, ScheduledFuture> topicRouteCommands;
-
   private final ScheduledExecutorService executorService;
+  private final Map<SimpleEntry<Session, TopicRoute>, ScheduledFuture> activeCommands;
 
   private long requestTimeout;
   private TimeUnit requestTimeoutTimeUnit;
@@ -117,8 +116,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
     this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
     this.targetRouter = targetRouter;
 
-    sessionCommands = Collections.synchronizedMap(new HashMap<>());
-    topicRouteCommands = Collections.synchronizedMap(new HashMap<>());
+    activeCommands = Collections.synchronizedMap(new HashMap<>());
 
     executorService = Executors.newSingleThreadScheduledExecutor();
 
@@ -138,22 +136,19 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
         session.getPartition()
     );
 
-    synchronized (sessionCommands) {
-      // create session command
-      SessionCommand sessionCommand = new SessionCommand(
-          session,
-          CommandType.CREATE
-      );
+    synchronized (activeCommands) {
+      // create command
+      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, null);
 
       // when another command is scheduled, cancel it
-      if (sessionCommands.containsKey(sessionCommand)) {
-        sessionCommands.remove(sessionCommand).cancel(false);
+      if (activeCommands.containsKey(command)) {
+        activeCommands.remove(command).cancel(false);
       }
       // schedule creation of session
-      ScheduledFuture sessionCommandFuture = executorService.scheduleWithFixedDelay(
+      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendCreateSession(session)) {
-              sessionCommands.remove(sessionCommand).cancel(false);
+              activeCommands.remove(command).cancel(false);
             }
           },
           0,
@@ -162,7 +157,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       );
 
       // add command to scheduled commands
-      sessionCommands.put(sessionCommand, sessionCommandFuture);
+      activeCommands.put(command, commandFuture);
     }
   }
 
@@ -176,22 +171,19 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
         session.getPartition()
     );
 
-    synchronized (sessionCommands) {
-      // create session command
-      SessionCommand sessionCommand = new SessionCommand(
-          session,
-          CommandType.DELETE
-      );
+    synchronized (activeCommands) {
+      // create command
+      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, null);
 
       // when another command is scheduled, cancel it
-      if (sessionCommands.containsKey(sessionCommand)) {
-        sessionCommands.remove(sessionCommand).cancel(false);
+      if (activeCommands.containsKey(command)) {
+        activeCommands.remove(command).cancel(false);
       }
       // schedule creation of session
-      ScheduledFuture sessionCommandFuture = executorService.scheduleWithFixedDelay(
+      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendDeleteSession(session)) {
-              sessionCommands.remove(sessionCommand).cancel(false);
+              activeCommands.remove(command).cancel(false);
             }
           },
           0,
@@ -200,7 +192,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       );
 
       // add command to scheduled commands
-      sessionCommands.put(sessionCommand, sessionCommandFuture);
+      activeCommands.put(command, commandFuture);
     }
   }
 
@@ -216,24 +208,20 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
         topicRoute.getDirection()
     );
 
-    synchronized (topicRouteCommands) {
-      // create session command
-      TopicRouteCommand topicRouteCommand = new TopicRouteCommand(
-          session,
-          topicRoute,
-          CommandType.CREATE
-      );
+    synchronized (activeCommands) {
+      // create command
+      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, topicRoute);
 
       // when another command is scheduled, cancel it
-      if (topicRouteCommands.containsKey(topicRouteCommand)) {
-        topicRouteCommands.remove(topicRouteCommand).cancel(false);
+      if (activeCommands.containsKey(command)) {
+        activeCommands.remove(command).cancel(false);
       }
 
       // schedule creation of session
-      ScheduledFuture topicRouteCommandFuture = executorService.scheduleWithFixedDelay(
+      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendCreateTopicRoute(session, topicRoute)) {
-              topicRouteCommands.remove(topicRouteCommand).cancel(false);
+              activeCommands.remove(command).cancel(false);
             }
           },
           0,
@@ -242,7 +230,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       );
 
       // add command to scheduled commands
-      topicRouteCommands.put(topicRouteCommand, topicRouteCommandFuture);
+      activeCommands.put(command, commandFuture);
     }
   }
 
@@ -258,24 +246,20 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
         topicRoute.getDirection()
     );
 
-    synchronized (topicRouteCommands) {
-      // create session command
-      TopicRouteCommand topicRouteCommand = new TopicRouteCommand(
-          session,
-          topicRoute,
-          CommandType.DELETE
-      );
+    synchronized (activeCommands) {
+      // create command
+      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, topicRoute);
 
       // when another command is scheduled, cancel it
-      if (topicRouteCommands.containsKey(topicRouteCommand)) {
-        topicRouteCommands.remove(topicRouteCommand).cancel(false);
+      if (activeCommands.containsKey(command)) {
+        activeCommands.remove(command).cancel(false);
       }
 
       // schedule creation of session
-      ScheduledFuture topicRouteCommandFuture = executorService.scheduleWithFixedDelay(
+      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendDeleteTopicRoute(session, topicRoute)) {
-              topicRouteCommands.remove(topicRouteCommand).cancel(false);
+              activeCommands.remove(command).cancel(false);
             }
           },
           0,
@@ -284,7 +268,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       );
 
       // add command to scheduled commands
-      topicRouteCommands.put(topicRouteCommand, topicRouteCommandFuture);
+      activeCommands.put(command, commandFuture);
     }
   }
 
