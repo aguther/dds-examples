@@ -56,7 +56,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   private static final Logger log;
 
   static {
-    log = LoggerFactory.getLogger(Discovery.class);
+    log = LoggerFactory.getLogger(SubscriptionObserver.class);
   }
 
   private final Map<InstanceHandle_t, SubscriptionBuiltinTopicData> sampleCache;
