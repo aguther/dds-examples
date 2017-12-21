@@ -144,6 +144,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       if (activeCommands.containsKey(command)) {
         activeCommands.remove(command).cancel(false);
       }
+
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
@@ -179,6 +180,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       if (activeCommands.containsKey(command)) {
         activeCommands.remove(command).cancel(false);
       }
+
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
