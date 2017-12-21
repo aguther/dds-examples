@@ -34,7 +34,6 @@ import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RoutingSe
 import com.github.aguther.dds.examples.routing.dynamic.observer.filter.RtiTopicFilter;
 import com.github.aguther.dds.examples.routing.dynamic.observer.filter.WildcardPartitionFilter;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
-import com.github.aguther.dds.util.DurationFactory;
 import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import com.github.aguther.dds.util.Slf4jDdsLogger;
 import com.rti.dds.domain.DomainParticipant;
@@ -46,7 +45,6 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

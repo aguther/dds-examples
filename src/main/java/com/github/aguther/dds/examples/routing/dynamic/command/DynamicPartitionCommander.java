@@ -28,12 +28,10 @@ import com.github.aguther.dds.examples.routing.dynamic.observer.DynamicPartition
 import com.github.aguther.dds.examples.routing.dynamic.observer.Session;
 import com.github.aguther.dds.examples.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.util.RoutingServiceCommandHelper;
-import com.rti.dds.infrastructure.Duration_t;
 import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
-import java.sql.Time;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,14 +44,14 @@ import org.slf4j.LoggerFactory;
 
 public class DynamicPartitionCommander implements DynamicPartitionObserverListener {
 
-  private static final int REQUEST_TIMEOUT_SECONDS;
-  private static final int RETRY_DELAY_SECONDS;
+  private static final int DEFAULT_REQUEST_TIMEOUT_SECONDS;
+  private static final int DEFAULT_RETRY_DELAY_SECONDS;
 
   private static final Logger log;
 
   static {
-    REQUEST_TIMEOUT_SECONDS = 10;
-    RETRY_DELAY_SECONDS = 10;
+    DEFAULT_REQUEST_TIMEOUT_SECONDS = 10;
+    DEFAULT_RETRY_DELAY_SECONDS = 10;
 
     log = LoggerFactory.getLogger(DynamicPartitionCommander.class);
   }
@@ -67,10 +65,53 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
 
   private final ScheduledExecutorService executorService;
 
+  private long requestTimeout;
+  private TimeUnit requestTimeoutTimeUnit;
+  private long retryDelay;
+  private TimeUnit retryDelayTimeUnit;
+
   public DynamicPartitionCommander(
       RoutingServiceCommandHelper routingServiceCommandHelper,
       DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
       String targetRouter
+  ) {
+    this(
+        routingServiceCommandHelper,
+        dynamicPartitionCommanderProvider,
+        targetRouter,
+        DEFAULT_RETRY_DELAY_SECONDS,
+        TimeUnit.SECONDS,
+        DEFAULT_REQUEST_TIMEOUT_SECONDS,
+        TimeUnit.SECONDS
+    );
+  }
+
+  public DynamicPartitionCommander(
+      RoutingServiceCommandHelper routingServiceCommandHelper,
+      DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      String targetRouter,
+      long retryDelay,
+      TimeUnit retryDelayTimeUnit
+  ) {
+    this(
+        routingServiceCommandHelper,
+        dynamicPartitionCommanderProvider,
+        targetRouter,
+        retryDelay,
+        retryDelayTimeUnit,
+        DEFAULT_REQUEST_TIMEOUT_SECONDS,
+        TimeUnit.SECONDS
+    );
+  }
+
+  public DynamicPartitionCommander(
+      RoutingServiceCommandHelper routingServiceCommandHelper,
+      DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      String targetRouter,
+      long retryDelay,
+      TimeUnit retryDelayTimeUnit,
+      long requestTimeout,
+      TimeUnit requestTimeoutTimeUnit
   ) {
     this.routingServiceCommandHelper = routingServiceCommandHelper;
     this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
@@ -80,6 +121,11 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
     topicRouteCommands = Collections.synchronizedMap(new HashMap<>());
 
     executorService = Executors.newSingleThreadScheduledExecutor();
+
+    this.requestTimeout = requestTimeout;
+    this.requestTimeoutTimeUnit = requestTimeoutTimeUnit;
+    this.retryDelay = retryDelay;
+    this.retryDelayTimeUnit = retryDelayTimeUnit;
   }
 
   @Override
@@ -111,8 +157,8 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
             }
           },
           0,
-          RETRY_DELAY_SECONDS,
-          TimeUnit.SECONDS
+          retryDelay,
+          retryDelayTimeUnit
       );
 
       // add command to scheduled commands
@@ -149,8 +195,8 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
             }
           },
           0,
-          RETRY_DELAY_SECONDS,
-          TimeUnit.SECONDS
+          retryDelay,
+          retryDelayTimeUnit
       );
 
       // add command to scheduled commands
@@ -191,8 +237,8 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
             }
           },
           0,
-          RETRY_DELAY_SECONDS,
-          TimeUnit.SECONDS
+          retryDelay,
+          retryDelayTimeUnit
       );
 
       // add command to scheduled commands
@@ -233,8 +279,8 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
             }
           },
           0,
-          RETRY_DELAY_SECONDS,
-          TimeUnit.SECONDS
+          retryDelay,
+          retryDelayTimeUnit
       );
 
       // add command to scheduled commands
@@ -341,8 +387,8 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
     // send request and get response
     CommandResponse commandResponse = routingServiceCommandHelper.sendRequest(
         commandRequest,
-        REQUEST_TIMEOUT_SECONDS,
-        TimeUnit.SECONDS
+        requestTimeout,
+        requestTimeoutTimeUnit
     );
 
     // check response
