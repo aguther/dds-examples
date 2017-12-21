@@ -29,6 +29,9 @@ import java.util.concurrent.TimeUnit;
 
 public class DurationFactory {
 
+  private DurationFactory() {
+  }
+
   public static Duration_t from(
       long duration,
       TimeUnit durationTimeUnit

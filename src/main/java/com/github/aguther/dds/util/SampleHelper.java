@@ -31,6 +31,9 @@ import com.rti.dds.typecode.TypeCode;
 
 public class SampleHelper {
 
+  private SampleHelper() {
+  }
+
   public static <T> byte[] createCdrBufferForSample(
       final TypeSupportImpl typeSupportImpl,
       final T sample

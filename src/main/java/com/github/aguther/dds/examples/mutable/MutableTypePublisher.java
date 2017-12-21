@@ -214,18 +214,18 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
   @Override
   public void on_destination_unreachable(
       DataWriter dataWriter,
-      InstanceHandle_t instanceHandle_t,
-      Locator_t locator_t
+      InstanceHandle_t instanceHandle,
+      Locator_t locator
   ) {
     if (log.isInfoEnabled()) {
-      log.info("{}; {}", instanceHandle_t.toString(), locator_t.toString());
+      log.info("{}; {}", instanceHandle.toString(), locator.toString());
     }
   }
 
   @Override
   public Object on_data_request(
       DataWriter dataWriter,
-      Cookie_t cookie_t
+      Cookie_t cookie
   ) {
     return null;
   }
@@ -234,30 +234,30 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
   public void on_data_return(
       DataWriter dataWriter,
       Object o,
-      Cookie_t cookie_t
+      Cookie_t cookie
   ) {
     if (log.isDebugEnabled()) {
-      log.debug("{} {}", o.toString(), cookie_t.toString());
+      log.debug("{} {}", o.toString(), cookie.toString());
     }
   }
 
   @Override
   public void on_sample_removed(
       DataWriter dataWriter,
-      Cookie_t cookie_t
+      Cookie_t cookie
   ) {
     if (log.isWarnEnabled()) {
-      log.warn("{}", cookie_t.toString());
+      log.warn("{}", cookie.toString());
     }
   }
 
   @Override
   public void on_instance_replaced(
       DataWriter dataWriter,
-      InstanceHandle_t instanceHandle_t
+      InstanceHandle_t instanceHandle
   ) {
     if (log.isWarnEnabled()) {
-      log.warn("{}", instanceHandle_t.toString());
+      log.warn("{}", instanceHandle.toString());
     }
   }
 

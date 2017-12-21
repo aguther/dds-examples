@@ -117,14 +117,14 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
   ) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append('[');
-    {
-      for (int i = 0; i < partitionQosPolicy.name.getMaximum(); ++i) {
-        stringBuilder.append(partitionQosPolicy.name.get(i));
-        if (i < (partitionQosPolicy.name.getMaximum() - 1)) {
-          stringBuilder.append(",");
-        }
+
+    for (int i = 0; i < partitionQosPolicy.name.getMaximum(); ++i) {
+      stringBuilder.append(partitionQosPolicy.name.get(i));
+      if (i < (partitionQosPolicy.name.getMaximum() - 1)) {
+        stringBuilder.append(",");
       }
     }
+
     stringBuilder.append(']');
 
     return stringBuilder.toString();

@@ -134,10 +134,9 @@ public class MutableTypeListener implements DataReaderListener {
           log.warn("Invalid sample received.");
         }
       } catch (RETCODE_NO_DATA ex) {
-        log.trace("{}", ex);
-        break;
-      } catch (RuntimeException ex) {
-        log.error("{}", ex);
+        if (log.isTraceEnabled()) {
+          log.trace("{}", ex);
+        }
         break;
       }
 

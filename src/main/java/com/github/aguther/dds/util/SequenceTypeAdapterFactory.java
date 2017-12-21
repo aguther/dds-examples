@@ -103,11 +103,11 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
       }
 
       out.beginArray();
-      {
-        for (Object aValue : value) {
-          typeAdapter.write(out, (E) aValue);
-        }
+
+      for (Object aValue : value) {
+        typeAdapter.write(out, (E) aValue);
       }
+
       out.endArray();
     }
 
@@ -125,11 +125,11 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
         T sequence = (T) clazz.newInstance();
 
         in.beginArray();
-        {
-          while (in.hasNext()) {
-            sequence.add(typeAdapter.read(in));
-          }
+
+        while (in.hasNext()) {
+          sequence.add(typeAdapter.read(in));
         }
+
         in.endArray();
 
         return sequence;

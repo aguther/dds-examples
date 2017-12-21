@@ -29,7 +29,6 @@ import com.github.aguther.dds.util.SequenceTypeAdapterFactory;
 import com.github.aguther.dds.util.UnionTypeAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +51,7 @@ public class Json {
 
   public static void main(
       String[] args
-  ) throws IOException {
+  ) {
 
     // convert v1 type to JSON and back
     if (log.isInfoEnabled()) {

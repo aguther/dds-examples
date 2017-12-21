@@ -45,20 +45,15 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
   private class UnionMemberInfo {
 
-    private int ordinal;
     private String fieldName;
-    private Class fieldClass;
     private TypeAdapter<?> typeAdapter;
 
     UnionMemberInfo(
-        int ordinal,
+//        int ordinal,
         String fieldName,
-        Class fieldClass,
         TypeAdapter<?> typeAdapter
     ) {
-      this.ordinal = ordinal;
       this.fieldName = fieldName;
-      this.fieldClass = fieldClass;
       this.typeAdapter = typeAdapter;
     }
   }
@@ -130,9 +125,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
         unionMemberInfoMap.put(
             discriminatorString,
             new UnionMemberInfo(
-                discriminatorOrdinal,
                 memberName,
-                memberClass,
                 memberTypeAdapter
             )
         );
@@ -217,62 +210,16 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
       // support null objects
       if (in.peek() == JsonToken.NULL) {
+        // consume object
         in.nextNull();
+
+        // return null
         return null;
       }
 
       try {
-        // assert begin of object
-        in.beginObject();
-
-        // create new union with default values
-        T union = (T) unionClass.newInstance();
-
-        // gets populated when active branch is known
-        UnionMemberInfo unionMemberInfo = null;
-
-        while (in.hasNext()) {
-          // get name of next item
-          String name = in.nextName();
-
-          if (DISCRIMINATOR_FIELD_NAME.equals(name)) {
-            // read discriminator
-            Object discriminatorObject = discriminatorTypeAdapter.read(in);
-
-            // if discriminator is not valid, return union with defaults
-            if (discriminatorObject == null) {
-              // skip remaining values
-              while (in.hasNext()) {
-                in.skipValue();
-              }
-
-              // assert end of object
-              in.endObject();
-
-              // return empty union with default values
-              return union;
-            }
-
-            // remember discriminator
-            unionMemberInfo = memberInfoMap.get(discriminatorObject.toString());
-
-            // set discriminator on union
-            fieldAccess.set(union, DISCRIMINATOR_FIELD_NAME, discriminatorObject);
-          } else if (unionMemberInfo != null
-              && unionMemberInfo.fieldName.equals(name)) {
-
-            Object fieldObject = unionMemberInfo.typeAdapter.read(in);
-            fieldAccess.set(union, unionMemberInfo.fieldName, fieldObject);
-          } else {
-            in.skipValue();
-          }
-        }
-
-        // assert end of object
-        in.endObject();
-
-        // return result
-        return union;
+        // try to read union
+        return readUnion(in);
 
       } catch (Exception e) {
         // skip remaining values
@@ -286,6 +233,63 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
         // we failed in converting the union
         return null;
       }
+    }
+
+    private T readUnion(
+        JsonReader in
+    ) throws IOException, InstantiationException, IllegalAccessException {
+
+      // assert begin of object
+      in.beginObject();
+
+      // create new union with default values
+      T union = (T) unionClass.newInstance();
+
+      // gets populated when active branch is known
+      UnionMemberInfo unionMemberInfo = null;
+
+      while (in.hasNext()) {
+        // get name of next item
+        String name = in.nextName();
+
+        if (DISCRIMINATOR_FIELD_NAME.equals(name)) {
+          // read discriminator
+          Object discriminatorObject = discriminatorTypeAdapter.read(in);
+
+          // if discriminator is not valid, return union with defaults
+          if (discriminatorObject == null) {
+            // skip remaining values
+            while (in.hasNext()) {
+              in.skipValue();
+            }
+
+            // assert end of object
+            in.endObject();
+
+            // return empty union with default values
+            return union;
+          }
+
+          // remember discriminator
+          unionMemberInfo = memberInfoMap.get(discriminatorObject.toString());
+
+          // set discriminator on union
+          fieldAccess.set(union, DISCRIMINATOR_FIELD_NAME, discriminatorObject);
+        } else if (unionMemberInfo != null
+            && unionMemberInfo.fieldName.equals(name)) {
+
+          Object fieldObject = unionMemberInfo.typeAdapter.read(in);
+          fieldAccess.set(union, unionMemberInfo.fieldName, fieldObject);
+        } else {
+          in.skipValue();
+        }
+      }
+
+      // assert end of object
+      in.endObject();
+
+      // return result
+      return union;
     }
   }
 }

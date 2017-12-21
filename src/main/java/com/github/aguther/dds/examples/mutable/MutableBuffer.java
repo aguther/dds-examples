@@ -26,7 +26,6 @@ package com.github.aguther.dds.examples.mutable;
 
 import com.github.aguther.dds.util.SampleHelper;
 import com.rti.dds.topic.TypeSupportImpl;
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +39,7 @@ public class MutableBuffer {
 
   public static void main(
       String[] args
-  ) throws IOException, InstantiationException, IllegalAccessException {
+  ) throws InstantiationException, IllegalAccessException {
 
     // create first type
     if (log.isInfoEnabled()) {

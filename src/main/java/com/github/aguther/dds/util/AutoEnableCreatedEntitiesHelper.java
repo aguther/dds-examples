@@ -5,6 +5,9 @@ import com.rti.dds.domain.DomainParticipantFactoryQos;
 
 public class AutoEnableCreatedEntitiesHelper {
 
+  private AutoEnableCreatedEntitiesHelper() {
+  }
+
   public static void enable() {
     switchValueTo(true);
   }

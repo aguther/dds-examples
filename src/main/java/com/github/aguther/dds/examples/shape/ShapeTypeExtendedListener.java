@@ -139,9 +139,6 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
       } catch (RETCODE_NO_DATA ex) {
         log.trace("{}", ex);
         break;
-      } catch (RuntimeException ex) {
-        log.error("{}", ex);
-        break;
       }
 
     } while (sampleInfo.valid_data);
