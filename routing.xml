@@ -2,6 +2,112 @@
 <dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/5.3.0/rti_routing_service.xsd">
 
+  <adapter_library name="dds-examples-routing-adapter-adapters">
+
+    <java_adapter_plugin name="EmptyAdapter">
+      <class_name>com.github.aguther.dds.routing.adapter.empty.EmptyAdapter</class_name>
+    </java_adapter_plugin>
+
+    <java_adapter_plugin name="DynamicRoutingAdapter">
+      <class_name>com.github.aguther.dds.routing.adapter.dynamic.DynamicRoutingAdapter</class_name>
+    </java_adapter_plugin>
+
+  </adapter_library>
+
+  <routing_service name="dds-examples-routing-adapter" group_name="dds-examples-routing-adapter">
+
+    <administration>
+      <domain_id>0</domain_id>
+      <distributed_logger>
+        <enabled>true</enabled>
+        <echo_to_stdout>true</echo_to_stdout>
+      </distributed_logger>
+      <participant_qos base_name="QosLibrary::Base"/>
+    </administration>
+
+    <monitoring>
+      <enabled>true</enabled>
+      <domain_id>0</domain_id>
+      <ignore_initialization_failure>true</ignore_initialization_failure>
+      <participant_qos base_name="QosLibrary::Base"/>
+    </monitoring>
+
+    <jvm>
+      <class_path>
+        <element>$(RTI_ROUTING_ADAPTER)</element>
+      </class_path>
+    </jvm>
+
+    <domain_route name="Adapter">
+      <entity_monitoring>
+        <enabled>false</enabled>
+      </entity_monitoring>
+      <connection_1 plugin_name="dds-examples-routing-adapter-adapters::DynamicRoutingAdapter">
+        <property>
+          <value>
+            <element>
+              <name>dynamic_routing_adapter.administration.domain_id</name>
+              <value>0</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.administration.discovery.wait_time</name>
+              <value>10000</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.discovery.domain_id</name>
+              <value>0</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.configuration.domain_route_name</name>
+              <value>Default</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.configuration.Shape.allow_topic_name_filter</name>
+              <value>Square|Circle|Triangle</value>
+            </element>
+            <!--<element>
+              <name>dynamic_routing_adapter.configuration.Shape.deny_topic_name_filter</name>
+              <value></value>
+            </element>-->
+            <element>
+              <name>dynamic_routing_adapter.configuration.Shape.allow_partition_name_filter</name>
+              <value>A|B|C|D</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.configuration.Shape.deny_partition_name_filter</name>
+              <value>.*\*</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.configuration.Shape.datareader_qos</name>
+              <value>
+                <![CDATA[<datareader_qos><reliability><kind>RELIABLE_RELIABILITY_QOS</kind></reliability></datareader_qos>]]>
+              </value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.configuration.Shape.datawriter_qos</name>
+              <value>
+                <![CDATA[<datawriter_qos><reliability><kind>RELIABLE_RELIABILITY_QOS</kind></reliability></datawriter_qos>]]>
+              </value>
+            </element>
+          </value>
+        </property>
+      </connection_1>
+      <connection_2 plugin_name="dds-examples-routing-adapter-adapters::EmptyAdapter"/>
+    </domain_route>
+
+    <domain_route name="Default">
+      <participant_1>
+        <domain_id>0</domain_id>
+        <participant_qos base_name="QosLibrary::Base"/>
+      </participant_1>
+      <participant_2>
+        <domain_id>1</domain_id>
+        <participant_qos base_name="QosLibrary::Base"/>
+      </participant_2>
+    </domain_route>
+
+  </routing_service>
+
   <routing_service name="dds-examples-routing-static" group_name="dds-examples-routing-static">
 
     <administration>

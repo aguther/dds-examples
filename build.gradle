@@ -31,6 +31,7 @@ dependencies {
     compile files('/usr/lib/java/nddsjava.jar')
     compile files('/usr/lib/java/rticonnextmsg.jar')
     compile files('/usr/lib/java/rtiroutingservice.jar')
+    compile files('/usr/lib/java/rtirsadapter.jar')
     compile 'org.slf4j:slf4j-api:1.7+'
     compile 'org.slf4j:slf4j-log4j12:1.7+'
     compile 'com.google.code.gson:gson:2.8.1'
@@ -87,6 +88,12 @@ task cleanIdl(type: Delete) {
 
 compileJava.dependsOn compileIdl
 clean.dependsOn cleanIdl
+
+task copyRuntimeLibraries(type: Copy) {
+    into "$buildDir/libs-runtime"
+    from configurations.runtime
+    exclude('idl')
+}
 
 task runShapePublisher(type: JavaExec) {
     // set classpath
@@ -216,6 +223,16 @@ task runDynamicRouting(type: JavaExec) {
     jvmArgs = ['-Xmx4096m']
     // set system properties
     systemProperties System.getProperties()
+}
+
+task runAdapterRouting(type: Exec) {
+    dependsOn build, copyRuntimeLibraries
+
+    // set working directory
+    workingDir = '.'
+
+    // executable
+    executable = "/usr/bin/rtiroutingservice -cfgFile routing.xml -cfgName dds-examples-routing-adapter -verbosity 1"
 }
 
 task runDiscovery(type: JavaExec) {
