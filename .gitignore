@@ -7,4 +7,5 @@
 *.log
 bin
 build
+out
 src/generated
