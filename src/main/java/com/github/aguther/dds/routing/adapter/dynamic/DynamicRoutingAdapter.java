@@ -44,11 +44,11 @@ public class DynamicRoutingAdapter implements Adapter {
   public DynamicRoutingAdapter(
       Properties properties
   ) {
-    // do nothing
-    if (log.isInfoEnabled()) {
+    // do nothing but logging of received properties
+    if (log.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
-        log.info(
-            "key='{}', value='{}'",
+        log.debug(
+            "Property key='{}', value='{}'",
             key,
             properties.getProperty(key)
         );

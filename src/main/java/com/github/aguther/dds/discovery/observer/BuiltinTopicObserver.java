@@ -27,13 +27,10 @@ package com.github.aguther.dds.discovery.observer;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.aguther.dds.util.DomainParticipantHelper;
 import com.google.common.base.Strings;
 import com.rti.dds.domain.DomainParticipant;
-import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
-import com.rti.dds.infrastructure.InstanceHandleSeq;
-import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.StatusKind;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.DataReaderAdapter;
 import java.io.Closeable;
@@ -42,6 +39,10 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class allows the observation of a built-in topic.
+ * Built-in topics are used to track discovery information like domain participants, publications and subscriptions.
+ */
 class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runnable {
 
   private static final Logger log;
@@ -50,32 +51,27 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
     log = LoggerFactory.getLogger(BuiltinTopicObserver.class);
   }
 
-  private ExecutorService executorService;
-  private DomainParticipant domainParticipant;
   DataReader dataReader;
+  private ExecutorService executorService;
 
   /**
-   * Creates a new discovery observer.
+   * Instantiates a new Builtin topic observer.
    *
-   * @param domainParticipant DomainParticipant to bind to.
-   * @param topicName Topic that should be observed.
-   * @throws IllegalArgumentException Whenever an error occurs.
+   * @param domainParticipant the domain participant
+   * @param topicName the topic name
    */
   BuiltinTopicObserver(
       final DomainParticipant domainParticipant,
       final String topicName) {
     // check arguments
     checkNotNull(domainParticipant, "DomainParticipant must not be null");
+    checkArgument(!DomainParticipantHelper.isEnabled(domainParticipant),
+        "DomainParticipant must not be enabled to guarantee correct function.");
     checkArgument(!Strings.isNullOrEmpty(topicName), "Topic name must not be empty or null");
-
-    // remember domain participant
-    this.domainParticipant = domainParticipant;
 
     // get the data reader of the topic
     dataReader = domainParticipant.get_builtin_subscriber().lookup_datareader(topicName);
-    if (dataReader == null) {
-      throw new IllegalArgumentException(String.format("Failed to get data reader for topic '%s'", topicName));
-    }
+    checkNotNull(dataReader, "Failed to get data reader for topic '%s'", topicName);
 
     // set listener on data reader so we get the data
     dataReader.set_listener(this, StatusKind.DATA_AVAILABLE_STATUS);
@@ -85,8 +81,8 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   }
 
   /**
-   * Clean-up resources of this object, in this case remove the listener from the data reader we
-   * are bound to.
+   * Clean-up resources of this object, in this case remove the listener from
+   * the data reader we are bound to and shutdown the executor service.
    */
   public void close() {
     // remove listener from data reader
@@ -96,39 +92,11 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   }
 
   /**
-   * Get the participant data for a given publication data.
+   * This function is invoked by the middleware in a special thread whenever data is available.
+   * For this reason, it must not be blocked.
    *
-   * @param publicationBuiltinTopicData Publication data
-   * @return If found, the participant data otherwise null.
+   * Reading data should be done in the run method that is being invoked in a separate thread.
    */
-  ParticipantBuiltinTopicData getParticipantBuiltinTopicDataFromPublication(
-      PublicationBuiltinTopicData publicationBuiltinTopicData
-  ) {
-    // instance handle sequence
-    InstanceHandleSeq handles = new InstanceHandleSeq();
-
-    // get discovered participants
-    domainParticipant.get_discovered_participants(handles);
-
-    for (Object handleObject : handles) {
-      // create data object
-      ParticipantBuiltinTopicData participantData = new ParticipantBuiltinTopicData();
-
-      // get participant data for instance
-      domainParticipant.get_discovered_participant_data(
-          participantData,
-          (InstanceHandle_t) handleObject);
-
-      // check if this is the participant we are searching for
-      if (participantData.key.equals(publicationBuiltinTopicData.participant_key)) {
-        return participantData;
-      }
-    }
-
-    // we did not find the participant data
-    return null;
-  }
-
   @Override
   public void on_data_available(
       DataReader dataReader
@@ -143,5 +111,6 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   @Override
   public void run() {
     // override this method to read data
+    log.trace("Method 'run' invoked.");
   }
 }

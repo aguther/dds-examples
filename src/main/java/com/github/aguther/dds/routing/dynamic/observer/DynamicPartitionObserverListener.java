@@ -24,6 +24,9 @@
 
 package com.github.aguther.dds.routing.dynamic.observer;
 
+/**
+ *
+ */
 public interface DynamicPartitionObserverListener {
 
   public void createSession(

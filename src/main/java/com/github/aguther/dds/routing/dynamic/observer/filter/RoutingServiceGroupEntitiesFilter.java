@@ -25,6 +25,7 @@
 package com.github.aguther.dds.routing.dynamic.observer.filter;
 
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
+import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -75,8 +76,10 @@ public class RoutingServiceGroupEntitiesFilter extends RoutingServiceEntitiesFil
       BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
-    ParticipantBuiltinTopicData participantData = getParticipantBuiltinTopicData(
-        domainParticipant, participantKey);
+    ParticipantBuiltinTopicData participantData = BuiltinTopicHelper.getParticipantBuiltinTopicData(
+        domainParticipant,
+        participantKey
+    );
 
     if (participantData != null) {
       // get group name of routing service

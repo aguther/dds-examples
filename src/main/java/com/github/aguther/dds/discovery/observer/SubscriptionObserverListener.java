@@ -27,13 +27,28 @@ package com.github.aguther.dds.discovery.observer;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
+/**
+ * Callback interface to get notified when a subscription is discovered or lost.
+ */
 public interface SubscriptionObserverListener {
 
+  /**
+   * Invoked when a new subscription has been discovered.
+   *
+   * @param instanceHandle instance handle of subscription for identification
+   * @param data subscription data
+   */
   void subscriptionDiscovered(
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   );
 
+  /**
+   * Invoked when a subscription has been lost.
+   *
+   * @param instanceHandle instance handle of subscription for identification
+   * @param data subscription data
+   */
   void subscriptionLost(
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data

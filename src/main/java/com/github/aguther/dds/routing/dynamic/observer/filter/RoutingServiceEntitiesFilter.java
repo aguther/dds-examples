@@ -25,9 +25,9 @@
 package com.github.aguther.dds.routing.dynamic.observer.filter;
 
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
+import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
-import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
@@ -66,36 +66,13 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
       BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
-    ParticipantBuiltinTopicData participantData = getParticipantBuiltinTopicData(
-        domainParticipant, participantKey);
+    ParticipantBuiltinTopicData participantData = BuiltinTopicHelper.getParticipantBuiltinTopicData(
+        domainParticipant,
+        participantKey
+    );
 
     // check if participant belongs to a routing service
     return (participantData != null
         && participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS);
-  }
-
-  protected ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      DomainParticipant domainParticipant,
-      BuiltinTopicKey_t participantKey
-  ) {
-    // get discovered participants
-    InstanceHandleSeq participantHandles = new InstanceHandleSeq();
-    domainParticipant.get_discovered_participants(participantHandles);
-
-    // iterate over handles
-    ParticipantBuiltinTopicData participantData = new ParticipantBuiltinTopicData();
-    for (Object participantHandle : participantHandles) {
-      domainParticipant.get_discovered_participant_data(
-          participantData,
-          (InstanceHandle_t) participantHandle
-      );
-
-      if (participantData.key.equals(participantKey)) {
-        return participantData;
-      }
-    }
-
-    // nothing found
-    return null;
   }
 }

@@ -62,10 +62,9 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   private final List<PublicationObserverListener> listenerList;
 
   /**
-   * Creates a new observer for publications.
+   * Instantiates a new Publication observer.
    *
-   * @param domainParticipant DomainParticipant to use
-   * @throws IllegalArgumentException Thrown in case of an error
+   * @param domainParticipant the domain participant
    */
   public PublicationObserver(
       DomainParticipant domainParticipant) {
@@ -86,12 +85,23 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     super.close();
   }
 
+  /**
+   * Add listener.
+   *
+   * @param listener the listener
+   */
   public void addListener(
       PublicationObserverListener listener
   ) {
     addListener(listener, true);
   }
 
+  /**
+   * Add listener.
+   *
+   * @param listener the listener
+   * @param deliverReadSamples true to deliver already read samples
+   */
   public void addListener(
       PublicationObserverListener listener,
       boolean deliverReadSamples
@@ -108,6 +118,11 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     }
   }
 
+  /**
+   * Remove listener.
+   *
+   * @param listener the listener
+   */
   public void removeListener(
       PublicationObserverListener listener
   ) {
@@ -156,6 +171,11 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     } while (hasMoreData);
   }
 
+  /**
+   * Reads and delivers already read samples for new listeners.
+   *
+   * @param listener the listener
+   */
   private void deliverReadSamples(
       PublicationObserverListener listener
   ) {

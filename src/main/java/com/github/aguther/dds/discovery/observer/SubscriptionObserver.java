@@ -85,12 +85,23 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     super.close();
   }
 
+  /**
+   * Add listener.
+   *
+   * @param listener the listener
+   */
   public void addListener(
       SubscriptionObserverListener listener
   ) {
     addListener(listener, true);
   }
 
+  /**
+   * Add listener.
+   *
+   * @param listener the listener
+   * @param deliverReadSamples true to deliver already read samples
+   */
   public void addListener(
       SubscriptionObserverListener listener,
       boolean deliverReadSamples
@@ -107,6 +118,11 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     }
   }
 
+  /**
+   * Remove listener.
+   *
+   * @param listener the listener
+   */
   public void removeListener(
       SubscriptionObserverListener listener
   ) {
@@ -155,6 +171,11 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     } while (hasMoreData);
   }
 
+  /**
+   * Reads and delivers already read samples for new listeners.
+   *
+   * @param listener the listener
+   */
   private void deliverReadSamples(
       SubscriptionObserverListener listener
   ) {

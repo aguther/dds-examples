@@ -45,6 +45,14 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class implements a observer for publications and subscriptions. When a publication or
+ * subscription is discovered, it determines if a session or topic route needs to be created
+ * and invokes it's listeners accordingly.
+ *
+ * This can be used to provide a function to dynamically route topics based on their partition
+ * without loosing their origin (this happens when using asterisk or multiple partitions).
+ */
 public class DynamicPartitionObserver implements Closeable, PublicationObserverListener, SubscriptionObserverListener {
 
   private static final Logger log;
@@ -60,6 +68,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   private final List<DynamicPartitionObserverListener> listenerList;
   private final ExecutorService listenerExecutor;
 
+  /**
+   * Instantiates a new Dynamic partition observer.
+   *
+   * @param domainParticipant the domain participant
+   */
   public DynamicPartitionObserver(
       DomainParticipant domainParticipant
   ) {
@@ -77,6 +90,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     listenerExecutor.shutdownNow();
   }
 
+  /**
+   * Add listener.
+   *
+   * @param listener the listener
+   */
   public void addListener(
       DynamicPartitionObserverListener listener
   ) {
@@ -87,12 +105,22 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
   }
 
+  /**
+   * Remove listener.
+   *
+   * @param listener the listener
+   */
   public void removeListener(
       DynamicPartitionObserverListener listener
   ) {
     listenerList.remove(listener);
   }
 
+  /**
+   * Add filter.
+   *
+   * @param filter the filter
+   */
   public void addFilter(
       DynamicPartitionObserverFilter filter
   ) {
@@ -103,6 +131,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
   }
 
+  /**
+   * Remove filter.
+   *
+   * @param filter the filter
+   */
   public void removeFilter(
       DynamicPartitionObserverFilter filter
   ) {
@@ -189,6 +222,15 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     );
   }
 
+  /**
+   * Handles the discovery of a publication/subscription.
+   *
+   * @param instanceHandle instance handle for identification
+   * @param direction direction (OUT for publications, IN for subscriptions)
+   * @param topicName topic name
+   * @param typeName type name
+   * @param partitions partitions
+   */
   private void handleDiscovered(
       InstanceHandle_t instanceHandle,
       Direction direction,
@@ -226,6 +268,15 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
   }
 
+  /**
+   * Handles the loss of a publication/subscription.
+   *
+   * @param instanceHandle instance handle for identification
+   * @param direction direction (OUT for publications, IN for subscriptions)
+   * @param topicName topic name
+   * @param typeName type name
+   * @param partitions partitions
+   */
   private void handleLost(
       InstanceHandle_t instanceHandle,
       Direction direction,
@@ -263,6 +314,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
   }
 
+  /**
+   * Returns if a publication should be ignored using registered DynamicPartitionObserverFilter implementations.
+   *
+   * @param instanceHandle instance handle for identification
+   * @param data publication data
+   * @return true if publication should be ignored, false if not
+   */
   private boolean ignorePublication(
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
@@ -284,6 +342,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     return false;
   }
 
+  /**
+   * Returns if a subscriptions should be ignored using registered DynamicPartitionObserverFilter implementations.
+   *
+   * @param instanceHandle instance handle for identification
+   * @param data subscriptions data
+   * @return true if subscriptions should be ignored, false if not
+   */
   private boolean ignoreSubscription(
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
@@ -305,6 +370,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     return false;
   }
 
+  /**
+   * Returns if a partition should be ignored using the registered DynamicPartitionObserverFilter implementations.
+   *
+   * @param topicName topic name
+   * @param partition partition
+   * @return true if publication should be ignored, false if not
+   */
   private boolean ignorePartition(
       String topicName,
       String partition
@@ -325,6 +397,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     return false;
   }
 
+  /**
+   * Adds a instance handle to the mapping, triggers creation of sessions and routes if needed.
+   *
+   * @param instanceHandle instance handle for identification
+   * @param session session
+   * @param topicRoute topic route
+   */
   private void addInstanceHandleToMap(
       InstanceHandle_t instanceHandle,
       Session session,
@@ -345,6 +424,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     mapping.get(session).put(topicRoute, instanceHandle);
   }
 
+  /**
+   * Removes a instance handle from the mapping, triggers deletion of sessions and routes if needed.
+   *
+   * @param instanceHandle instance handle for identification
+   * @param session session
+   * @param topicRoute topic route
+   */
   private void removeInstanceHandleFromMap(
       InstanceHandle_t instanceHandle,
       Session session,
@@ -372,6 +458,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
   }
 
+  /**
+   * Triggers the creation of a session by invoking the corresponding listener interface.
+   *
+   * @param session session that should be created
+   */
   private void createSession(
       Session session
   ) {
@@ -392,6 +483,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     });
   }
 
+  /**
+   * Triggers the deletion of a session by invoking the corresponding listener interface.
+   *
+   * @param session session that should be deleted
+   */
   private void deleteSession(
       Session session
   ) {
@@ -412,6 +508,12 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     });
   }
 
+  /**
+   * Triggers the creation of a topic route by invoking the corresponding listener interface.
+   *
+   * @param session session belonging to the topic route
+   * @param topicRoute topic route that should be created
+   */
   private void createTopicRoute(
       Session session,
       TopicRoute topicRoute
@@ -435,6 +537,12 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     });
   }
 
+  /**
+   * Triggers the deletion of a topic route by invoking the corresponding listener interface.
+   *
+   * @param session session belonging to the topic route
+   * @param topicRoute topic route that should be deleted
+   */
   private void deleteTopicRoute(
       Session session,
       TopicRoute topicRoute

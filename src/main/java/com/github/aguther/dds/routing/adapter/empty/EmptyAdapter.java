@@ -58,6 +58,6 @@ public class EmptyAdapter implements Adapter {
 
   @Override
   public Version getVersion() {
-    return new Version(1, 2, 3, 4);
+    return new Version(1, 0, 0, 0);
   }
 }

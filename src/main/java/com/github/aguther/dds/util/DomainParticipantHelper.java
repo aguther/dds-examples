@@ -22,35 +22,40 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.discovery.observer;
+package com.github.aguther.dds.util;
 
-import com.rti.dds.infrastructure.InstanceHandle_t;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
+import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.infrastructure.InstanceHandleSeq;
+import com.rti.dds.infrastructure.RETCODE_ERROR;
+import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 
-/**
- * Callback interface to get notified when a publication is discovered or lost.
- */
-public interface PublicationObserverListener {
+public class DomainParticipantHelper {
 
-  /**
-   * Invoked when a new publication has been discovered.
-   *
-   * @param instanceHandle instance handle of publication for identification
-   * @param data publication data
-   */
-  void publicationDiscovered(
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
-  );
+  private DomainParticipantHelper() {
+  }
 
   /**
-   * Invoked when a new publication has been discovered.
+   * Checks if a provided domain participant is enabled or not.
    *
-   * @param instanceHandle instance handle of publication for identification
-   * @param data publication data
+   * @param domainParticipant DomainParticipant that should be checked
+   * @return True if enabled, false if not enabled
    */
-  void publicationLost(
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
-  );
+  public static boolean isEnabled(
+      DomainParticipant domainParticipant
+  ) {
+    try {
+      // try to get discovered participants; this call will trigger
+      // a specific exception if the domain participant is not enabled
+      InstanceHandleSeq instanceHandleSeq = new InstanceHandleSeq();
+      domainParticipant.get_discovered_participants(instanceHandleSeq);
+    } catch (RETCODE_NOT_ENABLED notEnabled) {
+      // domain participant is not enabled
+      return false;
+    } catch (RETCODE_ERROR error) {
+      // we got an error, but it seems to be enabled
+      return true;
+    }
+    // domain participant is enabled
+    return true;
+  }
 }
