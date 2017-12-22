@@ -44,14 +44,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// dynamic_routing_adapter.configuration.domain_route_name
-// dynamic_routing_adapter.configuration.X.allow_topic_name_filter
-// dynamic_routing_adapter.configuration.X.deny_topic_name_filter
-// dynamic_routing_adapter.configuration.X.allow_partition_name_filter
-// dynamic_routing_adapter.configuration.X.deny_partition_name_filter
-// dynamic_routing_adapter.configuration.X.datareader_qos
-// dynamic_routing_adapter.configuration.X.datawriter_qos
-
 public class ConfigurationFilter implements DynamicPartitionObserverFilter, DynamicPartitionCommanderProvider {
 
   private static final Logger log;
