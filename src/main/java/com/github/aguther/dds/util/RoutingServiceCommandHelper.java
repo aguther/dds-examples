@@ -167,6 +167,9 @@ public class RoutingServiceCommandHelper {
     commandRequest.id.app = idApplication;
     commandRequest.id.invocation = ++idInvocationCounter;
 
+    // logging
+    logCommandRequest(commandRequest);
+
     // send request
     requester.sendRequest(commandRequest);
 
@@ -179,7 +182,45 @@ public class RoutingServiceCommandHelper {
         DurationFactory.from(timeOut, timeUnit)
     );
 
+    // logging
+    logCommandResponse(reply, replyReceived);
+
     // return result
     return replyReceived ? reply.getData() : null;
+  }
+
+  private void logCommandRequest(
+      CommandRequest commandRequest
+  ) {
+    // trace logs
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "CommandRequest {}",
+          commandRequest.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
+      );
+    }
+    // debug logs
+    if (log.isDebugEnabled()) {
+      log.debug(
+          "CommandRequest.command.entity_desc.xml_url.content.length()='{}'",
+          commandRequest.command.entity_desc.xml_url.content.length()
+      );
+    }
+  }
+
+  private void logCommandResponse(
+      Sample<CommandResponse> reply,
+      boolean replyReceived
+  ) {
+    // trace logs
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "CommandResponse {}",
+          replyReceived ?
+              reply.getData().toString().replace(
+                  "\n", "").replaceAll("[ ]{2,}", " ")
+              : "<no response received>"
+      );
+    }
   }
 }

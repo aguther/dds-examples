@@ -412,8 +412,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // success?
     if (commandResponse.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      if (log.isInfoEnabled()) {
-        log.info(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "Success request='{}', {}",
             commandRequest.command._d,
             identification
