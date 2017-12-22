@@ -73,7 +73,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
     if (log.isDebugEnabled()) {
       for (Entry<String, Configuration> entry : configurations.entrySet()) {
         log.debug(
-            "key='{}', allow_topic='{}', deny_topic='{}', allow_partition='{}', deny_partition='{}', readerQos='{}', writerQos='{}'",
+            "key='{}', allow_topic_name_filter='{}', deny_topic_name_filter='{}', allow_partition_name_filter='{}', deny_partition_name_filter='{}', qos.topic_route='{}', qos.input='{}', qos.output='{}'",
             entry.getKey(),
             entry.getValue().getAllowTopicNameFilter() != null ?
                 entry.getValue().getAllowTopicNameFilter().pattern() : "",
@@ -83,8 +83,9 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
                 entry.getValue().getAllowPartitionNameFilter().pattern() : "",
             entry.getValue().getDenyPartitionNameFilter() != null ?
                 entry.getValue().getDenyPartitionNameFilter().pattern() : "",
-            entry.getValue().getDatareaderQos(),
-            entry.getValue().getDatawriterQos()
+            entry.getValue().getQosTopicRoute(),
+            entry.getValue().getQosInput(),
+            entry.getValue().getQosOutput()
         );
       }
     }
@@ -128,12 +129,16 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
           configurations.get(identifier).setDenyPartitionNameFilter(
               Pattern.compile(entry.getValue().toString()));
           break;
-        case "datareader_qos":
-          configurations.get(identifier).setDatareaderQos(
+        case "qos.topic_route":
+          configurations.get(identifier).setTopicRouteQosQos(
               entry.getValue().toString());
           break;
-        case "datawriter_qos":
-          configurations.get(identifier).setDatawriterQos(
+        case "qos.input":
+          configurations.get(identifier).setQosInput(
+              entry.getValue().toString());
+          break;
+        case "qos.output":
+          configurations.get(identifier).setQosOutput(
               entry.getValue().toString());
           break;
         default:
@@ -263,13 +268,14 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
     checkNotNull(configuration);
 
     return String.format(
-        "str://\"<topic_route name=\"%1$s\" enabled=\"true\"><input participant=\"%2$d\"><creation_mode>IMMEDIATE</creation_mode><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%5$s</input><output><creation_mode>IMMEDIATE</creation_mode><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%6$s</output></topic_route>\"",
+        "str://\"<topic_route name=\"%1$s\" enabled=\"true\">%5$s<input participant=\"%2$d\"><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%6$s</input><output><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%7$s</output></topic_route>\"",
         getTopicRouteName(session, topicRoute),
         topicRoute.getDirection() == Direction.OUT ? 1 : 2,
         session.getTopic(),
         topicRoute.getType(),
-        configuration.getDatareaderQos(),
-        configuration.getDatawriterQos()
+        configuration.getQosTopicRoute(),
+        configuration.getQosInput(),
+        configuration.getQosOutput()
     );
   }
 }

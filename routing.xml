@@ -78,15 +78,21 @@
               <value>.*\*</value>
             </element>
             <element>
-              <name>dynamic_routing_adapter.configuration.Shape.datareader_qos</name>
+              <name>dynamic_routing_adapter.configuration.Shape.qos.topic_route</name>
               <value>
-                <![CDATA[<datareader_qos><reliability><kind>RELIABLE_RELIABILITY_QOS</kind></reliability></datareader_qos>]]>
+                <![CDATA[<publish_with_original_info>true</publish_with_original_info><publish_with_original_timestamp>true</publish_with_original_timestamp>]]>
               </value>
             </element>
             <element>
-              <name>dynamic_routing_adapter.configuration.Shape.datawriter_qos</name>
+              <name>dynamic_routing_adapter.configuration.Shape.qos.input</name>
               <value>
-                <![CDATA[<datawriter_qos><reliability><kind>RELIABLE_RELIABILITY_QOS</kind></reliability></datawriter_qos>]]>
+                <![CDATA[<creation_mode>IMMEDIATE</creation_mode><datareader_qos><reliability><kind>RELIABLE_RELIABILITY_QOS</kind></reliability></datareader_qos>]]>
+              </value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.configuration.Shape.qos.output</name>
+              <value>
+                <![CDATA[<creation_mode>IMMEDIATE</creation_mode><datawriter_qos><reliability><kind>RELIABLE_RELIABILITY_QOS</kind></reliability></datawriter_qos>]]>
               </value>
             </element>
           </value>

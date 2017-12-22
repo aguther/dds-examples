@@ -33,8 +33,9 @@ public class Configuration {
   private Pattern denyTopicNameFilter;
   private Pattern allowPartitionNameFilter;
   private Pattern denyPartitionNameFilter;
-  private String datareaderQos = "";
-  private String datawriterQos = "";
+  private String topicRouteQos = "";
+  private String inputQos = "";
+  private String outputQos = "";
 
   public Pattern getAllowTopicNameFilter() {
     return allowTopicNameFilter;
@@ -76,24 +77,34 @@ public class Configuration {
     this.denyPartitionNameFilter = denyPartitionNameFilter;
   }
 
-  public String getDatareaderQos() {
-    return datareaderQos;
+  public String getQosTopicRoute() {
+    return topicRouteQos;
   }
 
-  public void setDatareaderQos(
-      String datareaderQos
+  public void setTopicRouteQosQos(
+      String topicRouteQos
   ) {
-    this.datareaderQos = datareaderQos;
+    this.topicRouteQos = topicRouteQos;
   }
 
-  public String getDatawriterQos() {
-    return datawriterQos;
+  public String getQosInput() {
+    return inputQos;
   }
 
-  public void setDatawriterQos(
-      String datawriterQos
+  public void setQosInput(
+      String inputQos
   ) {
-    this.datawriterQos = datawriterQos;
+    this.inputQos = inputQos;
+  }
+
+  public String getQosOutput() {
+    return outputQos;
+  }
+
+  public void setQosOutput(
+      String outputQos
+  ) {
+    this.outputQos = outputQos;
   }
 
   @Override
@@ -109,8 +120,9 @@ public class Configuration {
         Objects.equals(denyTopicNameFilter, that.denyTopicNameFilter) &&
         Objects.equals(allowPartitionNameFilter, that.allowPartitionNameFilter) &&
         Objects.equals(denyPartitionNameFilter, that.denyPartitionNameFilter) &&
-        Objects.equals(datareaderQos, that.datareaderQos) &&
-        Objects.equals(datawriterQos, that.datawriterQos);
+        Objects.equals(topicRouteQos, that.topicRouteQos) &&
+        Objects.equals(inputQos, that.inputQos) &&
+        Objects.equals(outputQos, that.outputQos);
   }
 
   @Override
@@ -118,7 +130,7 @@ public class Configuration {
 
     return Objects
         .hash(allowTopicNameFilter, denyTopicNameFilter, allowPartitionNameFilter, denyPartitionNameFilter,
-            datareaderQos,
-            datawriterQos);
+            topicRouteQos,
+            inputQos, outputQos);
   }
 }
