@@ -33,7 +33,6 @@ import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;

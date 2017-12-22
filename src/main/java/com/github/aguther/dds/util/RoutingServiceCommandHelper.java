@@ -32,7 +32,6 @@ import com.rti.connext.requestreply.RequesterParams;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantQos;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
-import com.rti.dds.infrastructure.Duration_t;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.ServiceQosPolicyKind;

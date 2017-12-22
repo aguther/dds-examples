@@ -33,8 +33,6 @@ import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
 

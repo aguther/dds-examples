@@ -25,9 +25,7 @@
 package com.github.aguther.dds.routing.adapter.empty;
 
 import com.rti.routingservice.adapter.StreamReader;
-import com.rti.routingservice.adapter.StreamReaderListener;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
-import com.rti.routingservice.adapter.infrastructure.StreamInfo;
 import java.util.List;
 import java.util.Properties;
 

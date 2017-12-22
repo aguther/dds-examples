@@ -39,7 +39,6 @@ import com.github.aguther.dds.util.Slf4jDdsLogger;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantQos;
-import com.rti.dds.infrastructure.Duration_t;
 import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.infrastructure.StatusKind;
 import com.rti.routingservice.RoutingService;
