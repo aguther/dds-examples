@@ -137,7 +137,8 @@ public class RoutingServiceCommandHelper {
           // check if related participant is from routing service
           if (participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS
               && participantData.participant_name.name.equals(participantNameTargetRouter)) {
-            break;
+            // we discovered the target routing service
+            return true;
           }
         }
 
@@ -148,7 +149,9 @@ public class RoutingServiceCommandHelper {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
-    return true;
+
+    // we did not discover the target routing service
+    return false;
   }
 
   public CommandRequest createCommandRequest() {
