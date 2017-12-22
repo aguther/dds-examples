@@ -65,7 +65,8 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
       Properties properties
   ) {
     configurations = new HashMap<>();
-    patternConfigurationItem = Pattern.compile("dynamic_routing_adapter\\.configuration\\.(.*)\\.(.*)");
+    patternConfigurationItem = Pattern.compile(
+        "dynamic_routing_adapter\\.configuration\\.([A-Za-z0-9_]*)\\.([A-Za-z0-9._]*)");
 
     domainRouteName = properties.getProperty(PROPERTY_DOMAIN_ROUTE_NAME);
     loadConfiguration(properties);
