@@ -34,6 +34,8 @@ import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.StringSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,7 +46,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DynamicPartitionObserver implements PublicationObserverListener, SubscriptionObserverListener {
+public class DynamicPartitionObserver implements Closeable, PublicationObserverListener, SubscriptionObserverListener {
 
   private static final Logger log;
 
@@ -68,6 +70,12 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
     filterList = Collections.synchronizedList(new ArrayList<>());
     listenerList = Collections.synchronizedList(new ArrayList<>());
     listenerExecutor = Executors.newSingleThreadExecutor();
+  }
+
+  @Override
+  public void close() {
+    listenerList.clear();
+    listenerExecutor.shutdownNow();
   }
 
   public void addListener(
@@ -117,6 +125,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         instanceHandle,
         Direction.OUT,
         data.topic_name,
+        data.type_name,
         data.partition.name
     );
   }
@@ -136,6 +145,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         instanceHandle,
         Direction.OUT,
         data.topic_name,
+        data.type_name,
         data.partition.name
     );
   }
@@ -155,6 +165,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         instanceHandle,
         Direction.IN,
         data.topic_name,
+        data.type_name,
         data.partition.name
     );
   }
@@ -174,6 +185,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         instanceHandle,
         Direction.IN,
         data.topic_name,
+        data.type_name,
         data.partition.name
     );
   }
@@ -182,6 +194,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       InstanceHandle_t instanceHandle,
       Direction direction,
       String topicName,
+      String typeName,
       StringSeq partitions
   ) {
     synchronized (mapping) {
@@ -195,7 +208,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         addInstanceHandleToMap(
             instanceHandle,
             new Session(topicName, ""),
-            new TopicRoute(direction, topicName)
+            new TopicRoute(direction, topicName, typeName)
         );
       } else {
         for (Object partition : partitions) {
@@ -207,7 +220,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
           addInstanceHandleToMap(
               instanceHandle,
               new Session(topicName, partition.toString()),
-              new TopicRoute(direction, topicName)
+              new TopicRoute(direction, topicName, typeName)
           );
         }
       }
@@ -218,6 +231,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       InstanceHandle_t instanceHandle,
       Direction direction,
       String topicName,
+      String typeName,
       StringSeq partitions
   ) {
     synchronized (mapping) {
@@ -231,7 +245,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         removeInstanceHandleFromMap(
             instanceHandle,
             new Session(topicName, ""),
-            new TopicRoute(direction, topicName)
+            new TopicRoute(direction, topicName, typeName)
         );
       } else {
         for (Object partition : partitions) {
@@ -243,7 +257,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
           removeInstanceHandleFromMap(
               instanceHandle,
               new Session(topicName, partition.toString()),
-              new TopicRoute(direction, topicName)
+              new TopicRoute(direction, topicName, typeName)
           );
         }
       }
@@ -259,8 +273,9 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
           if (log.isDebugEnabled()) {
             log.debug(
-                "Publication topic='{}', instanceHandle='{}' ignored",
+                "Publication topic='{}', type='{}', instance='{}' ignored",
                 data.topic_name,
+                data.type_name,
                 instanceHandle);
           }
           return true;
@@ -279,8 +294,9 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
           if (log.isDebugEnabled()) {
             log.debug(
-                "Subscription topic='{}', instanceHandle='{}' ignored",
+                "Subscription topic='{}', type='{}', instance='{}' ignored",
                 data.topic_name,
+                data.type_name,
                 instanceHandle);
           }
           return true;
@@ -299,7 +315,7 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
         if (filter.ignorePartition(partition)) {
           if (log.isDebugEnabled()) {
             log.debug(
-                "Partition topic='{}' name='{}' ignored",
+                "Partition topic='{}', name='{}' ignored",
                 topicName,
                 partition);
           }
@@ -353,6 +369,13 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   private void createSession(
       Session session
   ) {
+    if (log.isDebugEnabled()) {
+      log.debug(
+          "Calling 'createSession' on listeners with topic='{}', partition='{}'",
+          session.getTopic(),
+          session.getPartition()
+      );
+    }
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerList) {
@@ -366,6 +389,13 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
   private void deleteSession(
       Session session
   ) {
+    if (log.isDebugEnabled()) {
+      log.debug(
+          "Calling 'deleteSession' on listeners with topic='{}', partition='{}'",
+          session.getTopic(),
+          session.getPartition()
+      );
+    }
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerList) {
@@ -380,6 +410,15 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       Session session,
       TopicRoute topicRoute
   ) {
+    if (log.isDebugEnabled()) {
+      log.debug(
+          "Calling 'createTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
+          session.getTopic(),
+          topicRoute.getType(),
+          session.getPartition(),
+          topicRoute.getDirection()
+      );
+    }
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerList) {
@@ -394,6 +433,15 @@ public class DynamicPartitionObserver implements PublicationObserverListener, Su
       Session session,
       TopicRoute topicRoute
   ) {
+    if (log.isDebugEnabled()) {
+      log.debug(
+          "Calling 'deleteTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
+          session.getTopic(),
+          topicRoute.getType(),
+          session.getPartition(),
+          topicRoute.getDirection()
+      );
+    }
     // invoke listener
     listenerExecutor.submit(() -> {
       synchronized (listenerList) {

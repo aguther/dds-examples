@@ -32,6 +32,8 @@ import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DynamicPartitionCommander implements DynamicPartitionObserverListener {
+public class DynamicPartitionCommander implements Closeable, DynamicPartitionObserverListener {
 
   private static final int DEFAULT_REQUEST_TIMEOUT_SECONDS;
   private static final int DEFAULT_RETRY_DELAY_SECONDS;
@@ -127,6 +129,11 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
   }
 
   @Override
+  public void close() {
+    executorService.shutdownNow();
+  }
+
+  @Override
   public void createSession(
       Session session
   ) {
@@ -204,8 +211,9 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       TopicRoute topicRoute
   ) {
     log.info(
-        "Create route: topic='{}', partition='{}', direction='{}'",
+        "Create route: topic='{}', type='{}', partition='{}', direction='{}'",
         session.getTopic(),
+        topicRoute.getType(),
         session.getPartition(),
         topicRoute.getDirection()
     );
@@ -242,8 +250,9 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
       TopicRoute topicRoute
   ) {
     log.info(
-        "Delete route: topic='{}', partition='{}', direction='{}'",
+        "Delete route: topic='{}', type='{}', partition='{}', direction='{}'",
         session.getTopic(),
+        topicRoute.getType(),
         session.getPartition(),
         topicRoute.getDirection()
     );
@@ -290,7 +299,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
     return sendRequest(
         commandRequest,
         String.format(
-            "topic='%s', partition='%s'",
+            "entity='Session', topic='%s', partition='%s'",
             session.getTopic(),
             session.getPartition()
         )
@@ -310,7 +319,7 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
     return sendRequest(
         commandRequest,
         String.format(
-            "topic='%s', partition='%s'",
+            "entity='Session', topic='%s', partition='%s'",
             session.getTopic(),
             session.getPartition()
         )
@@ -335,8 +344,9 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
     return sendRequest(
         commandRequest,
         String.format(
-            "topic='%s', partition='%s', direction='%s'",
+            "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
             session.getTopic(),
+            topicRoute.getType(),
             session.getPartition(),
             topicRoute.getDirection().toString()
         )
@@ -358,8 +368,9 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
     return sendRequest(
         commandRequest,
         String.format(
-            "topic='%s', partition='%s', direction='%s'",
+            "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
             session.getTopic(),
+            topicRoute.getType(),
             session.getPartition(),
             topicRoute.getDirection().toString()
         )

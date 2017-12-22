@@ -139,8 +139,13 @@ public class DynamicRouting {
     dynamicPartitionObserver.addFilter(new RoutingServiceGroupEntitiesFilter(ROUTING_SERVICE_NAME));
     dynamicPartitionObserver.addFilter(new WildcardPartitionFilter());
     // add listener to dynamic partition observer
-    dynamicPartitionObserver.addListener(new DynamicPartitionCommander(
-        routingServiceCommandHelper, new DynamicPartitionCommanderProviderImpl(), ROUTING_SERVICE_NAME));
+    dynamicPartitionObserver.addListener(
+        new DynamicPartitionCommander(
+            routingServiceCommandHelper,
+            new DynamicPartitionCommanderProviderImpl("Default"),
+            ROUTING_SERVICE_NAME
+        )
+    );
 
     // create new publication observer
     PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);

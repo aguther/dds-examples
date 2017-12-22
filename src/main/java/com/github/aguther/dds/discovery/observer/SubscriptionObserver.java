@@ -79,6 +79,12 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     listenerList = Collections.synchronizedList(new ArrayList<>());
   }
 
+  @Override
+  public void close() {
+    listenerList.clear();
+    super.close();
+  }
+
   public void addListener(
       SubscriptionObserverListener listener
   ) {

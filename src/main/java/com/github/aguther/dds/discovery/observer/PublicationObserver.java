@@ -80,6 +80,12 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
     listenerList = Collections.synchronizedList(new ArrayList<>());
   }
 
+  @Override
+  public void close() {
+    listenerList.clear();
+    super.close();
+  }
+
   public void addListener(
       PublicationObserverListener listener
   ) {

@@ -36,12 +36,14 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.DataReaderAdapter;
+import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
+class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runnable {
 
   private static final Logger log;
 
@@ -90,6 +92,8 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
   public void close() {
     // remove listener from data reader
     dataReader.set_listener(null, StatusKind.STATUS_MASK_NONE);
+    // shutdown executor
+    executorService.shutdownNow();
   }
 
   /**
@@ -134,7 +138,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Runnable {
     // now we need to inform our listeners that something new has been discovered
     log.trace("Method 'on_data_available' invoked.");
     // trigger to read samples
-    executorService.execute(this);
+    executorService.submit(this);
   }
 
   @Override

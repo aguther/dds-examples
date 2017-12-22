@@ -33,16 +33,20 @@ import com.rti.dds.infrastructure.Property_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RoutingServiceGroupEntitiesFilter extends RoutingServiceEntitiesFilter implements
     DynamicPartitionObserverFilter {
 
   private final String groupName;
+  private final Map<BuiltinTopicKey_t, ParticipantBuiltinTopicData> cache;
 
   public RoutingServiceGroupEntitiesFilter(
       String groupName
   ) {
     this.groupName = groupName;
+    cache = new HashMap<>();
   }
 
   @Override

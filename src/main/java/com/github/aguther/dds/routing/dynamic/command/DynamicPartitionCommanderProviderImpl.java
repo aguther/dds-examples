@@ -30,11 +30,19 @@ import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 
 public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCommanderProvider {
 
+  private String domainRouteName;
+
+  public DynamicPartitionCommanderProviderImpl(
+      String domainRouteName
+  ) {
+    this.domainRouteName = domainRouteName;
+  }
+
   @Override
   public String getSessionParent(
       Session session
   ) {
-    return "Default";
+    return domainRouteName;
   }
 
   @Override

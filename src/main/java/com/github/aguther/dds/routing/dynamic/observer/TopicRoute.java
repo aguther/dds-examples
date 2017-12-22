@@ -34,13 +34,16 @@ public class TopicRoute {
 
   private Direction direction;
   private String topic;
+  private String type;
 
   public TopicRoute(
       Direction direction,
-      String topic
+      String topic,
+      String type
   ) {
     this.direction = direction;
     this.topic = topic;
+    this.type = type;
   }
 
   public Direction getDirection() {
@@ -49,6 +52,10 @@ public class TopicRoute {
 
   public String getTopic() {
     return topic;
+  }
+
+  public String getType() {
+    return type;
   }
 
   @Override
@@ -63,11 +70,12 @@ public class TopicRoute {
     }
     TopicRoute that = (TopicRoute) o;
     return direction == that.direction &&
-        Objects.equals(topic, that.topic);
+        Objects.equals(topic, that.topic) &&
+        Objects.equals(type, that.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(direction, topic);
+    return Objects.hash(direction, topic, type);
   }
 }
