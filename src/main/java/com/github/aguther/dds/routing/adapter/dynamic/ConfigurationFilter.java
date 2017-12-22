@@ -154,6 +154,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
+    checkNotNull(data);
     return (getMatchingConfiguration(data.topic_name) == null);
   }
 
@@ -163,6 +164,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
+    checkNotNull(data);
     return (getMatchingConfiguration(data.topic_name) == null);
   }
 
