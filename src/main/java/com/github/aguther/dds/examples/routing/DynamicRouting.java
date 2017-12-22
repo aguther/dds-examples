@@ -45,6 +45,7 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +123,7 @@ public class DynamicRouting {
 
     // wait for routing service to be discovered
     log.info("Waiting for remote administration interface of routing service to be discovered");
-    if (routingServiceCommandHelper.waitForRoutingService(ROUTING_SERVICE_NAME, new Duration_t(30, 0))) {
+    if (routingServiceCommandHelper.waitForRoutingService(ROUTING_SERVICE_NAME, 30, TimeUnit.SECONDS)) {
       log.info("Remote administration interface of routing service was discovered");
     } else {
       log.error("Remote administration interface of routing service could not be discovered within time out");

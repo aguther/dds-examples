@@ -90,25 +90,27 @@ public class RoutingServiceCommandHelper {
 
   public boolean waitForRoutingService(
       String targetRouter,
-      Duration_t timeOut
+      long timeOut,
+      TimeUnit timeOutUnit
   ) {
     return waitForRoutingService(
         targetRouter,
         timeOut,
-        new Duration_t(0, 250000000)
+        timeOutUnit,
+        250L,
+        TimeUnit.MILLISECONDS
     );
   }
 
   public boolean waitForRoutingService(
       String targetRouter,
-      Duration_t timeOut,
-      Duration_t sleepTime
+      long timeOut,
+      TimeUnit timeOutUnit,
+      long sleepTime,
+      TimeUnit sleepTimeUnit
   ) {
     // create participant name for target router according RTI conventions
     String participantNameTargetRouter = String.format("RTI Routing Service: %s", targetRouter);
-
-    // calculate sleep time
-    long sleepTimeMillis = sleepTime.sec * 1000L + sleepTime.nanosec / 1000000L;
 
     try {
       // variables to store the data
@@ -118,7 +120,7 @@ public class RoutingServiceCommandHelper {
       // store start time
       long startTime = System.currentTimeMillis();
       // determine end time
-      long endTime = startTime + timeOut.sec * 1000L + timeOut.nanosec / 1000000L;
+      long endTime = startTime + timeOutUnit.toMillis(timeOut);
 
       while (System.currentTimeMillis() < endTime) {
         // get matched subscriptions
@@ -140,7 +142,7 @@ public class RoutingServiceCommandHelper {
         }
 
         // sleep for some time
-        Thread.sleep(sleepTimeMillis);
+        sleepTimeUnit.sleep(sleepTime);
       }
 
     } catch (InterruptedException e) {
