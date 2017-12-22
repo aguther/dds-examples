@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/5.3.0/rti_routing_service.xsd">
+
+  <routing_service name="dds-examples-routing-dynamic" group_name="dds-examples-routing-dynamic">
+
+    <administration>
+      <domain_id>0</domain_id>
+      <distributed_logger>
+        <enabled>true</enabled>
+        <echo_to_stdout>true</echo_to_stdout>
+      </distributed_logger>
+      <participant_qos base_name="QosLibrary::Base"/>
+    </administration>
+
+    <monitoring>
+      <enabled>true</enabled>
+      <domain_id>0</domain_id>
+      <ignore_initialization_failure>true</ignore_initialization_failure>
+      <participant_qos base_name="QosLibrary::Base"/>
+    </monitoring>
+
+    <domain_route name="Default">
+      <participant_1>
+        <domain_id>0</domain_id>
+        <participant_qos base_name="QosLibrary::Base"/>
+      </participant_1>
+      <participant_2>
+        <domain_id>1</domain_id>
+        <participant_qos base_name="QosLibrary::Base"/>
+      </participant_2>
+    </domain_route>
+
+  </routing_service>
+
+</dds>

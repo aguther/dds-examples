@@ -236,7 +236,7 @@ task runAdapterRouting(type: Exec) {
     workingDir = '.'
 
     // executable
-    executable = "/usr/bin/rtiroutingservice -cfgFile routing.xml -cfgName dds-examples-routing-adapter -verbosity 1"
+    executable = "/usr/bin/rtiroutingservice -cfgFile routing-adapter.xml -cfgName dds-examples-routing-adapter -verbosity 1"
 }
 
 task runDiscovery(type: JavaExec) {

@@ -79,7 +79,7 @@ public class DynamicRouting {
 
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
-    routingServiceProperty.cfgFile = "routing.xml";
+    routingServiceProperty.cfgFile = "routing-dynamic.xml";
     routingServiceProperty.serviceName = ROUTING_SERVICE_NAME;
     routingServiceProperty.applicationName = routingServiceProperty.serviceName;
     routingServiceProperty.serviceVerbosity = 3;
