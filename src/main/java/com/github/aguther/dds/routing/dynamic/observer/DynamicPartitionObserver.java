@@ -351,6 +351,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       Session session,
       TopicRoute topicRoute
   ) {
+    // ensure session and topic route are existing
+    // otherwise we have nothing do to
+    if (!mapping.containsKey(session)
+        || !mapping.get(session).containsKey(topicRoute)) {
+      return;
+    }
+
     // remove instance handle from topic route
     mapping.get(session).remove(topicRoute, instanceHandle);
 

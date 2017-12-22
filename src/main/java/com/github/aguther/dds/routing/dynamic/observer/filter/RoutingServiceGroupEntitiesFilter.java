@@ -40,13 +40,11 @@ public class RoutingServiceGroupEntitiesFilter extends RoutingServiceEntitiesFil
     DynamicPartitionObserverFilter {
 
   private final String groupName;
-  private final Map<BuiltinTopicKey_t, ParticipantBuiltinTopicData> cache;
 
   public RoutingServiceGroupEntitiesFilter(
       String groupName
   ) {
     this.groupName = groupName;
-    cache = new HashMap<>();
   }
 
   @Override

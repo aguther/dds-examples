@@ -38,12 +38,6 @@ import java.util.Map;
 
 public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
 
-  private final Map<BuiltinTopicKey_t, ParticipantBuiltinTopicData> cache;
-
-  public RoutingServiceEntitiesFilter() {
-    cache = new HashMap<>();
-  }
-
   @Override
   public boolean ignorePublication(
       DomainParticipant domainParticipant,
@@ -86,11 +80,6 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
       DomainParticipant domainParticipant,
       BuiltinTopicKey_t participantKey
   ) {
-    // check in cache
-    if (cache.containsKey(participantKey)) {
-      return cache.get(participantKey);
-    }
-
     // get discovered participants
     InstanceHandleSeq participantHandles = new InstanceHandleSeq();
     domainParticipant.get_discovered_participants(participantHandles);
@@ -104,7 +93,6 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
       );
 
       if (participantData.key.equals(participantKey)) {
-        cache.put(participantKey, participantData);
         return participantData;
       }
     }
