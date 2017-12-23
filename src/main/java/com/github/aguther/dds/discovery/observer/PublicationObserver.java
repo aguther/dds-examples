@@ -64,7 +64,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
   /**
    * Instantiates a new Publication observer.
    *
-   * @param domainParticipant the domain participant
+   * @param domainParticipant the domain participant (that is not yet enabled)
    */
   public PublicationObserver(
       DomainParticipant domainParticipant) {

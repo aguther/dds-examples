@@ -57,7 +57,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   /**
    * Instantiates a new Builtin topic observer.
    *
-   * @param domainParticipant the domain participant
+   * @param domainParticipant the domain participant (that is not yet enabled)
    * @param topicName the topic name
    */
   BuiltinTopicObserver(

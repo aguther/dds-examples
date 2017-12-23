@@ -64,8 +64,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   /**
    * Creates a new observer for subscriptions.
    *
-   * @param domainParticipant DomainParticipant to use
-   * @throws IllegalArgumentException Thrown in case of an error
+   * @param domainParticipant the domain participant (that is not yet enabled)
    */
   public SubscriptionObserver(
       DomainParticipant domainParticipant) {

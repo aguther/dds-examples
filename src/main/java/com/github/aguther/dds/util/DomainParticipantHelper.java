@@ -37,6 +37,9 @@ public class DomainParticipantHelper {
   /**
    * Checks if a provided domain participant is enabled or not.
    *
+   * IMPORTANT: this method triggers a DDS error message that can be safely ignored:
+   * "DDS_DomainParticipant_get_discovered_participants:not enabled"
+   *
    * @param domainParticipant DomainParticipant that should be checked
    * @return True if enabled, false if not enabled
    */
