@@ -30,7 +30,7 @@ public class PropertyFactory {
 
   public static final int ADMINISTRATION_DOMAIN_ID = 1;
   public static final int DISCOVERY_DOMAIN_ID = 2;
-  public static final int ADMINISTRATION_DISCOVERY_WAIT_TIME = 10000;
+  public static final int ADMINISTRATION_DISCOVERY_WAIT_TIME = 250;
   public static final String CONFIGURATION_DOMAIN_ROUTE_NAME = "DomainRouteTest";
 
   private PropertyFactory() {
