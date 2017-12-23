@@ -27,34 +27,84 @@ package com.github.aguther.dds.routing.dynamic.command;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 
+/**
+ * Callback interface to get information and configuration for the creation and deletion of sessions and topic routes.
+ */
 public interface DynamicPartitionCommanderProvider {
 
+  /**
+   * Invoked to get the parent entity name of a session.
+   *
+   * @param session session for which the parent is needed
+   * @apiNote "ExampleDomainRoute"
+   */
   String getSessionParent(
       Session session
   );
 
+  /**
+   * Invoked to get the name of a session.
+   *
+   * @param session session for which the name is needed
+   * @apiNote "ExampleSession(Partition)"
+   */
   String getSessionName(
       Session session
   );
 
+  /**
+   * Invoked to get the full entity name of a session including the parents.
+   * Must be in-line with the routing service API.
+   *
+   * @param session session for which the full entity name is needed
+   * @apiNote "ExampleDomainRoute::ExampleSession(Partition)"
+   */
   String getSessionEntityName(
       Session session
   );
 
+  /**
+   * Invoked to get the configuration of a session.
+   *
+   * @param session session for which the configuration is needed
+   * @apiNote "str://"<session name=\"ExampleSession(Partition)\">[...]</session>"
+   */
   String getSessionConfiguration(
       Session session
   );
 
+  /**
+   * Invoked to get the name of a topic route.
+   *
+   * @param session session of topic route
+   * @param topicRoute topic route for which the full entity name is needed
+   * @apiNote "ExampleTopicRoute"
+   */
   String getTopicRouteName(
       Session session,
       TopicRoute topicRoute
   );
 
+  /**
+   * Invoked to get the full entity name of a topic route including the parents.
+   * Must be in-line with the routing service API.
+   *
+   * @param session session of topic route
+   * @param topicRoute topic route for which the full entity name is needed
+   * @apiNote "ExampleDomainRoute::ExampleSession(Partition)::ExampleTopicRoute"
+   */
   String getTopicRouteEntityName(
       Session session,
       TopicRoute topicRoute
   );
 
+  /**
+   * Invoked to get the configuration of a topic route.
+   *
+   * @param session session of topic route
+   * @param topicRoute topic route for which the configuration is needed
+   * @apiNote "str://\"<auto_topic_route name=\"ExampleTopicRoute\">[...]</auto_topic_route>\""
+   */
   String getTopicRouteConfiguration(
       Session session,
       TopicRoute topicRoute

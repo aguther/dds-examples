@@ -25,23 +25,45 @@
 package com.github.aguther.dds.routing.dynamic.observer;
 
 /**
- *
+ * Callback interface to get notified when a session or topic route should be created or deleted.
  */
 public interface DynamicPartitionObserverListener {
 
+  /**
+   * Invoked when a session should be created.
+   *
+   * @param session session to create
+   */
   void createSession(
       Session session
   );
 
+  /**
+   * Invoked when a session should be deleted.
+   *
+   * @param session session to delete
+   */
   void deleteSession(
       Session session
   );
 
+  /**
+   * Invoked when a topic route should be created.
+   *
+   * @param session session of topic route
+   * @param topicRoute topic route to create
+   */
   void createTopicRoute(
       Session session,
       TopicRoute topicRoute
   );
 
+  /**
+   * Invoked when a topic route should be deleted.
+   *
+   * @param session session of topic route
+   * @param topicRoute topic route to delete
+   */
   void deleteTopicRoute(
       Session session,
       TopicRoute topicRoute
