@@ -112,7 +112,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
         TimeUnit.MILLISECONDS)) {
       log.info("Remote administration interface of routing service was discovered");
     } else {
-      log.error("Remote administration interface of routing service could not be discovered within time out");
+      log.warn("Remote administration interface of routing service could not be discovered within time out");
     }
 
     // create domain participant for discovery
