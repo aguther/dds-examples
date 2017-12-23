@@ -132,8 +132,6 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
 
   @Override
   public void run() {
-    boolean hasMoreData = true;
-
     do {
       try {
         // create data containers
@@ -172,11 +170,14 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
             }
           }
         }
-      } catch (RETCODE_NO_DATA exception) {
-        hasMoreData = false;
+      } catch (RETCODE_NO_DATA noData) {
+        log.trace("No more data available to read");
+        return;
+      } catch (RETCODE_ERROR error) {
+        log.error("Error reading sample; {}", error);
+        return;
       }
-
-    } while (hasMoreData);
+    } while (true);
   }
 
   /**
@@ -226,9 +227,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       // and therefore this error is expected when a listener is added but the related domain participant
       // is not yet enabled
     } catch (RETCODE_NO_DATA noData) {
-      if (log.isTraceEnabled()) {
-        log.trace("No more data available to read; {}", noData);
-      }
+      log.trace("No more data available to read");
     } catch (RETCODE_ERROR error) {
       log.error("Error getting already read samples; {}", error);
     } finally {

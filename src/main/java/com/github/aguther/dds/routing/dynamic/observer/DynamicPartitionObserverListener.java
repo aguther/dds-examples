@@ -29,20 +29,20 @@ package com.github.aguther.dds.routing.dynamic.observer;
  */
 public interface DynamicPartitionObserverListener {
 
-  public void createSession(
+  void createSession(
       Session session
   );
 
-  public void deleteSession(
+  void deleteSession(
       Session session
   );
 
-  public void createTopicRoute(
+  void createTopicRoute(
       Session session,
       TopicRoute topicRoute
   );
 
-  public void deleteTopicRoute(
+  void deleteTopicRoute(
       Session session,
       TopicRoute topicRoute
   );
