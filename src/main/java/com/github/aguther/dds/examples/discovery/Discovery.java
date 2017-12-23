@@ -132,6 +132,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
 
   @Override
   public void publicationDiscovered(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
@@ -148,6 +149,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
 
   @Override
   public void publicationLost(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
@@ -164,6 +166,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
 
   @Override
   public void subscriptionDiscovered(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
@@ -180,6 +183,7 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
 
   @Override
   public void subscriptionLost(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {

@@ -132,7 +132,7 @@ public class DynamicRouting {
     DomainParticipant domainParticipantDiscovery = createDiscoveryDomainParticipant(0);
 
     // create dynamic partition observer
-    DynamicPartitionObserver dynamicPartitionObserver = new DynamicPartitionObserver(domainParticipantDiscovery);
+    DynamicPartitionObserver dynamicPartitionObserver = new DynamicPartitionObserver();
     // add filters to dynamic partition observer
     dynamicPartitionObserver.addFilter(new RtiTopicFilter());
     dynamicPartitionObserver.addFilter(new RoutingServiceEntitiesFilter());

@@ -24,6 +24,7 @@
 
 package com.github.aguther.dds.discovery.observer;
 
+import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 
@@ -35,10 +36,12 @@ public interface PublicationObserverListener {
   /**
    * Invoked when a new publication has been discovered.
    *
+   * @param domainParticipant domain participant used for discovery
    * @param instanceHandle instance handle of publication for identification
    * @param data publication data
    */
   void publicationDiscovered(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   );
@@ -46,10 +49,12 @@ public interface PublicationObserverListener {
   /**
    * Invoked when a new publication has been discovered.
    *
+   * @param domainParticipant domain participant used for discovery
    * @param instanceHandle instance handle of publication for identification
    * @param data publication data
    */
   void publicationLost(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   );

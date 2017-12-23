@@ -149,7 +149,11 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           // call listeners
           synchronized (listenerList) {
             for (SubscriptionObserverListener listener : listenerList) {
-              listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);
+              listener.subscriptionDiscovered(
+                  domainParticipant,
+                  sampleInfo.instance_handle,
+                  sample
+              );
             }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
@@ -159,7 +163,11 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           // call listeners
           synchronized (listenerList) {
             for (SubscriptionObserverListener listener : listenerList) {
-              listener.subscriptionLost(sampleInfo.instance_handle, sample);
+              listener.subscriptionLost(
+                  domainParticipant,
+                  sampleInfo.instance_handle,
+                  sample
+              );
             }
           }
         }
@@ -205,7 +213,11 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           SubscriptionBuiltinTopicData sample = (SubscriptionBuiltinTopicData) sampleSeq.get(i);
 
           // invoke listener if provided
-          listener.subscriptionDiscovered(sampleInfo.instance_handle, sample);
+          listener.subscriptionDiscovered(
+              domainParticipant,
+              sampleInfo.instance_handle,
+              sample
+          );
         }
       }
     } catch (RETCODE_NOT_ENABLED notEnabled) {

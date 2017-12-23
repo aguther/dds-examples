@@ -51,6 +51,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
     log = LoggerFactory.getLogger(BuiltinTopicObserver.class);
   }
 
+  DomainParticipant domainParticipant;
   DataReader dataReader;
   private ExecutorService executorService;
 
@@ -68,6 +69,9 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
     checkArgument(!DomainParticipantHelper.isEnabled(domainParticipant),
         "DomainParticipant must not be enabled to guarantee correct function.");
     checkArgument(!Strings.isNullOrEmpty(topicName), "Topic name must not be empty or null");
+
+    // keep reference to domain participant
+    this.domainParticipant = domainParticipant;
 
     // get the data reader of the topic
     dataReader = domainParticipant.get_builtin_subscriber().lookup_datareader(topicName);

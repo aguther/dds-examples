@@ -37,6 +37,7 @@ import com.rti.dds.topic.BuiltinTopicKey_t;
 public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
 
   @Override
+
   public boolean ignorePublication(
       DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,

@@ -123,7 +123,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
     ConfigurationFilter configurationFilter = new ConfigurationFilter(properties);
 
     // create dynamic partition observer
-    dynamicPartitionObserver = new DynamicPartitionObserver(domainParticipantDiscovery);
+    dynamicPartitionObserver = new DynamicPartitionObserver();
     // filter out RTI topics
     dynamicPartitionObserver.addFilter(new RtiTopicFilter());
     // filter out routing service entities

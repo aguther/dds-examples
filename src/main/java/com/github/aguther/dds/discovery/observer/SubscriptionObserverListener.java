@@ -24,6 +24,7 @@
 
 package com.github.aguther.dds.discovery.observer;
 
+import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
@@ -35,10 +36,12 @@ public interface SubscriptionObserverListener {
   /**
    * Invoked when a new subscription has been discovered.
    *
+   * @param domainParticipant domain participant used for discovery
    * @param instanceHandle instance handle of subscription for identification
    * @param data subscription data
    */
   void subscriptionDiscovered(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   );
@@ -46,10 +49,12 @@ public interface SubscriptionObserverListener {
   /**
    * Invoked when a subscription has been lost.
    *
+   * @param domainParticipant domain participant used for discovery
    * @param instanceHandle instance handle of subscription for identification
    * @param data subscription data
    */
   void subscriptionLost(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   );

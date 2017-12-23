@@ -61,8 +61,6 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     log = LoggerFactory.getLogger(DynamicPartitionObserver.class);
   }
 
-  private final DomainParticipant domainParticipant;
-
   private final Map<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
   private final List<DynamicPartitionObserverFilter> filterList;
   private final List<DynamicPartitionObserverListener> listenerList;
@@ -70,14 +68,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   /**
    * Instantiates a new Dynamic partition observer.
-   *
-   * @param domainParticipant the domain participant
    */
-  public DynamicPartitionObserver(
-      DomainParticipant domainParticipant
-  ) {
-    this.domainParticipant = domainParticipant;
-
+  public DynamicPartitionObserver() {
     mapping = Collections.synchronizedMap(new HashMap<>());
     filterList = Collections.synchronizedList(new ArrayList<>());
     listenerList = Collections.synchronizedList(new ArrayList<>());
@@ -144,11 +136,12 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   @Override
   public void publicationDiscovered(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
     // ignore the publication?
-    if (ignorePublication(instanceHandle, data)) {
+    if (ignorePublication(domainParticipant, instanceHandle, data)) {
       return;
     }
 
@@ -164,11 +157,12 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   @Override
   public void publicationLost(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
     // ignore the publication?
-    if (ignorePublication(instanceHandle, data)) {
+    if (ignorePublication(domainParticipant, instanceHandle, data)) {
       return;
     }
 
@@ -184,11 +178,12 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   @Override
   public void subscriptionDiscovered(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
     // ignore the publication?
-    if (ignoreSubscription(instanceHandle, data)) {
+    if (ignoreSubscription(domainParticipant, instanceHandle, data)) {
       return;
     }
 
@@ -204,11 +199,12 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   @Override
   public void subscriptionLost(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
     // ignore the publication?
-    if (ignoreSubscription(instanceHandle, data)) {
+    if (ignoreSubscription(domainParticipant, instanceHandle, data)) {
       return;
     }
 
@@ -322,6 +318,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @return true if publication should be ignored, false if not
    */
   private boolean ignorePublication(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
@@ -350,6 +347,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @return true if subscriptions should be ignored, false if not
    */
   private boolean ignoreSubscription(
+      DomainParticipant domainParticipant,
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
