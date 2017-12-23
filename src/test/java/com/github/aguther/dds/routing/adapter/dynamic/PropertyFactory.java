@@ -43,15 +43,15 @@ public class PropertyFactory {
     // fill data
     properties.put(
         "dynamic_routing_adapter.administration.domain_id",
-        ADMINISTRATION_DOMAIN_ID
+        Integer.toString(ADMINISTRATION_DOMAIN_ID)
     );
     properties.put(
         "dynamic_routing_adapter.administration.discovery.wait_time",
-        ADMINISTRATION_DISCOVERY_WAIT_TIME
+        Integer.toString(ADMINISTRATION_DISCOVERY_WAIT_TIME)
     );
     properties.put(
         "dynamic_routing_adapter.discovery.domain_id",
-        DISCOVERY_DOMAIN_ID
+        Integer.toString(DISCOVERY_DOMAIN_ID)
     );
     properties.put(
         "dynamic_routing_adapter.configuration.domain_route_name",

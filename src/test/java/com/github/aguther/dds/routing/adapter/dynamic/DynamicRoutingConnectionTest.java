@@ -24,67 +24,35 @@
 
 package com.github.aguther.dds.routing.adapter.dynamic;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class DynamicRoutingConnectionTest {
 
+  private DynamicRoutingConnection dynamicRoutingConnection;
+
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
+    // create dynamic routing connection
+    dynamicRoutingConnection = new DynamicRoutingConnection(
+        "routing-service",
+        "routing-service-group",
+        PropertyFactory.create()
+    );
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
+    // shutdown connection
+    dynamicRoutingConnection.close();
   }
 
   @Test
-  public void createSession() {
-  }
-
-  @Test
-  public void deleteSession() {
-  }
-
-  @Test
-  public void createStreamReader() {
-  }
-
-  @Test
-  public void deleteStreamReader() {
-  }
-
-  @Test
-  public void createStreamWriter() {
-  }
-
-  @Test
-  public void deleteStreamWriter() {
-  }
-
-  @Test
-  public void getAttributes() {
-  }
-
-  @Test
-  public void update() {
-  }
-
-  @Test
-  public void getInputStreamDiscoveryReader() {
-  }
-
-  @Test
-  public void getOutputStreamDiscoveryReader() {
-  }
-
-  @Test
-  public void copyTypeRepresentation() {
-  }
-
-  @Test
-  public void deleteTypeRepresentation() {
+  public void connection() {
+    assertNotNull(dynamicRoutingConnection);
   }
 }
