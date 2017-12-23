@@ -174,12 +174,14 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
       String partition
   ) {
     for (Configuration configuration : configurations.values()) {
+      // when a deny filter is available check if it matches
       if (configuration.getDenyPartitionNameFilter() != null
           && configuration.getDenyPartitionNameFilter().matcher(partition).matches()) {
         continue;
       }
-      if (configuration.getAllowPartitionNameFilter() != null
-          && configuration.getAllowPartitionNameFilter().matcher(partition).matches()) {
+      // when no allow filter is available allow all partitions, otherwise check if it matches
+      if (configuration.getAllowPartitionNameFilter() == null
+          || configuration.getAllowPartitionNameFilter().matcher(partition).matches()) {
         return false;
       }
     }
@@ -190,12 +192,14 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
       String topicName
   ) {
     for (Configuration configuration : configurations.values()) {
+      // when a deny filter is available check if it matches
       if (configuration.getDenyTopicNameFilter() != null
           && configuration.getDenyTopicNameFilter().matcher(topicName).matches()) {
         continue;
       }
-      if (configuration.getAllowTopicNameFilter() != null
-          && configuration.getAllowTopicNameFilter().matcher(topicName).matches()) {
+      // when no allow filter is available allow all topics, otherwise check if it matches
+      if (configuration.getAllowTopicNameFilter() == null
+          || configuration.getAllowTopicNameFilter().matcher(topicName).matches()) {
         return configuration;
       }
     }
