@@ -28,6 +28,14 @@ import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 
+/**
+ * Provider with the following naming schemas:
+ * - Sessions: "Topic(Partition)"
+ * - Topic Routes: "OUT", "IN"
+ *
+ * A session's publisher and subscriber QoS is using the partition.
+ * Topic routes are configured as "auto_topic_route".
+ */
 public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCommanderProvider {
 
   private String domainRouteName;

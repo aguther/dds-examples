@@ -30,6 +30,9 @@ import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
+/**
+ * Filter to ignore all wildcard partitions.
+ */
 public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
 
   @Override

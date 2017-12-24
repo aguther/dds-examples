@@ -35,6 +35,9 @@ import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
 
+/**
+ * Filter to ignore entities that belong to routing services of a given group.
+ */
 public class RoutingServiceGroupEntitiesFilter extends RoutingServiceEntitiesFilter implements
     DynamicPartitionObserverFilter {
 
