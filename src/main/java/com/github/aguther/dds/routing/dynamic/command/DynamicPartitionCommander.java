@@ -154,7 +154,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendCreateSession(session)) {
+            if (sendCreateSession(routingServiceCommandHelper, session)) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -190,7 +190,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendDeleteSession(session)) {
+            if (sendDeleteSession(routingServiceCommandHelper, session)) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -229,7 +229,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendCreateTopicRoute(session, topicRoute)) {
+            if (sendCreateTopicRoute(routingServiceCommandHelper, session, topicRoute)) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -268,7 +268,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendDeleteTopicRoute(session, topicRoute)) {
+            if (sendDeleteTopicRoute(routingServiceCommandHelper, session, topicRoute)) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -283,6 +283,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   }
 
   private boolean sendCreateSession(
+      RoutingServiceCommandHelper commandHelper,
       Session session
   ) {
     // create request
@@ -296,6 +297,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
+        commandHelper,
         commandRequest,
         String.format(
             "entity='Session', topic='%s', partition='%s'",
@@ -306,6 +308,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   }
 
   private boolean sendDeleteSession(
+      RoutingServiceCommandHelper commandHelper,
       Session session
   ) {
     // create request
@@ -316,6 +319,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
+        commandHelper,
         commandRequest,
         String.format(
             "entity='Session', topic='%s', partition='%s'",
@@ -326,6 +330,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   }
 
   private boolean sendCreateTopicRoute(
+      RoutingServiceCommandHelper commandHelper,
       Session session,
       TopicRoute topicRoute
   ) {
@@ -341,6 +346,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
+        commandHelper,
         commandRequest,
         String.format(
             "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
@@ -353,6 +359,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   }
 
   private boolean sendDeleteTopicRoute(
+      RoutingServiceCommandHelper commandHelper,
       Session session,
       TopicRoute topicRoute
   ) {
@@ -365,6 +372,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
+        commandHelper,
         commandRequest,
         String.format(
             "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
@@ -377,11 +385,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   }
 
   private boolean sendRequest(
+      RoutingServiceCommandHelper commandHelper,
       CommandRequest commandRequest,
       String identification
   ) {
     // send request and get response
-    CommandResponse commandResponse = routingServiceCommandHelper.sendRequest(
+    CommandResponse commandResponse = commandHelper.sendRequest(
         commandRequest,
         requestTimeout,
         requestTimeoutTimeUnit
