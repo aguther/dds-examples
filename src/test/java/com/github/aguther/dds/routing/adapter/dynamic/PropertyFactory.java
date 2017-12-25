@@ -31,6 +31,8 @@ public class PropertyFactory {
   public static final int ADMINISTRATION_DOMAIN_ID = 1;
   public static final int DISCOVERY_DOMAIN_ID = 2;
   public static final int ADMINISTRATION_DISCOVERY_WAIT_TIME = 250;
+  public static final int ADMINISTRATION_REQUEST_TIMEOUT = 2500;
+  public static final int ADMINISTRATION_REQUEST_RETRY_DELAY = 2500;
   public static final String CONFIGURATION_DOMAIN_ROUTE_NAME = "DomainRouteTest";
 
   private PropertyFactory() {
@@ -48,6 +50,14 @@ public class PropertyFactory {
     properties.put(
         "dynamic_routing_adapter.administration.discovery.wait_time",
         Integer.toString(ADMINISTRATION_DISCOVERY_WAIT_TIME)
+    );
+    properties.put(
+        "dynamic_routing_adapter.administration.request.timeout",
+        Integer.toString(ADMINISTRATION_REQUEST_TIMEOUT)
+    );
+    properties.put(
+        "dynamic_routing_adapter.administration.request.retry_delay",
+        Integer.toString(ADMINISTRATION_REQUEST_RETRY_DELAY)
     );
     properties.put(
         "dynamic_routing_adapter.discovery.domain_id",

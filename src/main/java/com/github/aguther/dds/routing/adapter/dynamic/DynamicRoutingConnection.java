@@ -59,14 +59,32 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
   private static final Logger log;
 
   private static final String PROPERTY_ADMINISTRATION_DOMAIN_ID;
+
   private static final String PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME;
+  private static final String DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME;
+
+  private static final String PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT;
+  private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT;
+
+  private static final String PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY;
+  private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY;
+
   private static final String PROPERTY_DISCOVERY_DOMAIN_ID;
 
   static {
     log = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
 
     PROPERTY_ADMINISTRATION_DOMAIN_ID = "dynamic_routing_adapter.administration.domain_id";
+
     PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME = "dynamic_routing_adapter.administration.discovery.wait_time";
+    DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME = "30000";
+
+    PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT = "dynamic_routing_adapter.administration.request.timeout";
+    DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT = "15000";
+
+    PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY = "dynamic_routing_adapter.administration.request.retry_delay";
+    DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY = "45000";
+
     PROPERTY_DISCOVERY_DOMAIN_ID = "dynamic_routing_adapter.discovery.domain_id";
   }
 
@@ -108,7 +126,10 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
     log.info("Waiting for remote administration interface of routing service to be discovered");
     if (routingServiceCommandHelper.waitForRoutingService(
         routingServiceName,
-        Long.parseLong(properties.getProperty(PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME)),
+        Long.parseLong(properties.getProperty(
+            PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME,
+            DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
+        )),
         TimeUnit.MILLISECONDS)) {
       log.info("Remote administration interface of routing service was discovered");
     } else {
@@ -136,7 +157,17 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
     dynamicPartitionCommander = new DynamicPartitionCommander(
         routingServiceCommandHelper,
         configurationFilter,
-        routingServiceName
+        routingServiceName,
+        Long.parseLong(properties.getProperty(
+            PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY,
+            DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
+        )),
+        TimeUnit.MILLISECONDS,
+        Long.parseLong(properties.getProperty(
+            PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT,
+            DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
+        )),
+        TimeUnit.MILLISECONDS
     );
     // add listener to dynamic partition observer
     dynamicPartitionObserver.addListener(dynamicPartitionCommander);

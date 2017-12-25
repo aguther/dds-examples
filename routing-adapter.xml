@@ -51,7 +51,15 @@
             </element>
             <element>
               <name>dynamic_routing_adapter.administration.discovery.wait_time</name>
-              <value>10000</value>
+              <value>15000</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.administration.request.timeout</name>
+              <value>15000</value>
+            </element>
+            <element>
+              <name>dynamic_routing_adapter.administration.request.retry_delay</name>
+              <value>45000</value>
             </element>
             <element>
               <name>dynamic_routing_adapter.discovery.domain_id</name>
