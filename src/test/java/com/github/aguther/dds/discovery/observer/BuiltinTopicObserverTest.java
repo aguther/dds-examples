@@ -24,6 +24,7 @@
 
 package com.github.aguther.dds.discovery.observer;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,7 +34,6 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.Subscriber;
 import java.util.concurrent.ExecutorService;
@@ -42,7 +42,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -50,20 +49,22 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest({Executors.class, BuiltinTopicObserver.class})
 public class BuiltinTopicObserverTest {
 
+  private static final String BUILTIN_TOPIC_NAME = "BuiltinTopic";
+
   private DataReader dataReader;
   private ExecutorService executorService;
   private BuiltinTopicObserver builtinTopicObserver;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     DomainParticipant domainParticipant = mock(DomainParticipant.class);
     Subscriber subscriber = mock(Subscriber.class);
     dataReader = mock(DataReader.class);
 
-    Mockito.doThrow(new RETCODE_NOT_ENABLED()).when(domainParticipant)
+    doThrow(new RETCODE_NOT_ENABLED()).when(domainParticipant)
         .get_discovered_participants(new InstanceHandleSeq());
-    Mockito.when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
-    Mockito.when(subscriber.lookup_datareader(PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME))
+    when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
+    when(subscriber.lookup_datareader(BUILTIN_TOPIC_NAME))
         .thenReturn(dataReader);
 
     mockStatic(Executors.class);
@@ -72,7 +73,7 @@ public class BuiltinTopicObserverTest {
 
     builtinTopicObserver = new BuiltinTopicObserver(
         domainParticipant,
-        PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME
+        BUILTIN_TOPIC_NAME
     );
   }
 
