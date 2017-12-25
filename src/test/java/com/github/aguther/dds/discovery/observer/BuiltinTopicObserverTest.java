@@ -83,16 +83,15 @@ public class BuiltinTopicObserverTest {
   }
 
   @Test
-  public void on_data_available() {
+  public void testOnDataAvailable() {
     // call on_data_available
     builtinTopicObserver.on_data_available(dataReader);
-
     // verify that executor was triggered
     verify(executorService, times(1)).submit(builtinTopicObserver);
   }
 
   @Test
-  public void run() {
+  public void testRun() {
     builtinTopicObserver.run();
   }
 }

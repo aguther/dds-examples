@@ -27,9 +27,6 @@ package com.github.aguther.dds.routing.adapter.dynamic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
@@ -39,25 +36,25 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+// avoid conflicts due to load of native libraries
+/*
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LoggerFactory.class, ConfigurationFilter.class})
+*/
 public class ConfigurationFilterTest {
 
   private ConfigurationFilter configurationFilter;
 
   @Before
   public void setUp() {
-    // mock logger
+    // mock logger (avoid conflicts due to load of native libraries)
+/*
     Logger logger = mock(Logger.class);
     mockStatic(LoggerFactory.class);
     when(LoggerFactory.getLogger(ConfigurationFilter.class)).thenReturn(logger);
     when(logger.isDebugEnabled()).thenReturn(true);
+*/
 
     // create configuration filter
     configurationFilter = new ConfigurationFilter(PropertyFactory.create());
@@ -65,7 +62,6 @@ public class ConfigurationFilterTest {
 
   @After
   public void tearDown() {
-//    PowerMockito.doCallRealMethod().when(LoggerFactory.class);
   }
 
   @Test

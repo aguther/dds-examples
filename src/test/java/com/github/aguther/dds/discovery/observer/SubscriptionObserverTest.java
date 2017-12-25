@@ -26,6 +26,7 @@ package com.github.aguther.dds.discovery.observer;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -39,8 +40,6 @@ import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.RETCODE_ERROR;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
@@ -50,10 +49,11 @@ import com.rti.dds.subscription.Subscriber;
 import com.rti.dds.subscription.ViewStateKind;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataSeq;
-import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 public class SubscriptionObserverTest {
 
@@ -69,7 +69,7 @@ public class SubscriptionObserverTest {
 
     doThrow(new RETCODE_NOT_ENABLED()).when(domainParticipant).get_discovered_participants(new InstanceHandleSeq());
     when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
-    when(subscriber.lookup_datareader(SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME))
+    when(subscriber.lookup_datareader(anyString()))
         .thenReturn(dataReader);
 
     subscriptionObserver = new SubscriptionObserver(domainParticipant);
