@@ -44,6 +44,15 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class commands a routing service to create or delete sessions and topic routes.
+ *
+ * It listens to a dynamic partition observer and when a session or topic route should be created or deleted it
+ * creates, queues and sends the corresponding command to the target routing service.
+ *
+ * When a command is not successful, it retries the command after the retry delay until it worked or a converse
+ * request (e.g. session creation vs. session deletion).
+ */
 public class DynamicPartitionCommander implements Closeable, DynamicPartitionObserverListener {
 
   private static final int DEFAULT_REQUEST_TIMEOUT_SECONDS;
@@ -60,7 +69,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   private final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider;
   private final RoutingServiceCommandHelper routingServiceCommandHelper;
-  private final String targetRouter;
+  private final String targetRoutingService;
 
   private final ScheduledExecutorService executorService;
   private final Map<SimpleEntry<Session, TopicRoute>, ScheduledFuture> activeCommands;
@@ -70,15 +79,23 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private long retryDelay;
   private TimeUnit retryDelayTimeUnit;
 
+
+  /**
+   * Instantiates a new Dynamic partition commander.
+   *
+   * @param routingServiceCommandHelper the routing service command helper
+   * @param dynamicPartitionCommanderProvider the dynamic partition commander provider
+   * @param targetRoutingService the target routing service
+   */
   public DynamicPartitionCommander(
       RoutingServiceCommandHelper routingServiceCommandHelper,
       DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
-      String targetRouter
+      String targetRoutingService
   ) {
     this(
         routingServiceCommandHelper,
         dynamicPartitionCommanderProvider,
-        targetRouter,
+        targetRoutingService,
         DEFAULT_RETRY_DELAY_SECONDS,
         TimeUnit.SECONDS,
         DEFAULT_REQUEST_TIMEOUT_SECONDS,
@@ -86,17 +103,26 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
   }
 
+  /**
+   * Instantiates a new Dynamic partition commander.
+   *
+   * @param routingServiceCommandHelper the routing service command helper
+   * @param dynamicPartitionCommanderProvider the dynamic partition commander provider
+   * @param targetRoutingService the target routing service
+   * @param retryDelay the retry delay
+   * @param retryDelayTimeUnit the retry delay time unit
+   */
   public DynamicPartitionCommander(
       RoutingServiceCommandHelper routingServiceCommandHelper,
       DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
-      String targetRouter,
+      String targetRoutingService,
       long retryDelay,
       TimeUnit retryDelayTimeUnit
   ) {
     this(
         routingServiceCommandHelper,
         dynamicPartitionCommanderProvider,
-        targetRouter,
+        targetRoutingService,
         retryDelay,
         retryDelayTimeUnit,
         DEFAULT_REQUEST_TIMEOUT_SECONDS,
@@ -104,10 +130,21 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
   }
 
+  /**
+   * Instantiates a new Dynamic partition commander.
+   *
+   * @param routingServiceCommandHelper the routing service command helper
+   * @param dynamicPartitionCommanderProvider the dynamic partition commander provider
+   * @param targetRoutingService the target routing service
+   * @param retryDelay the retry delay
+   * @param retryDelayTimeUnit the retry delay time unit
+   * @param requestTimeout the request timeout
+   * @param requestTimeoutTimeUnit the request timeout time unit
+   */
   public DynamicPartitionCommander(
       RoutingServiceCommandHelper routingServiceCommandHelper,
       DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
-      String targetRouter,
+      String targetRoutingService,
       long retryDelay,
       TimeUnit retryDelayTimeUnit,
       long requestTimeout,
@@ -115,7 +152,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   ) {
     this.routingServiceCommandHelper = routingServiceCommandHelper;
     this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
-    this.targetRouter = targetRouter;
+    this.targetRoutingService = targetRoutingService;
 
     activeCommands = Collections.synchronizedMap(new HashMap<>());
 
@@ -154,7 +191,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendCreateSession(routingServiceCommandHelper, session)) {
+            if (sendCreateSession(
+                routingServiceCommandHelper,
+                targetRoutingService,
+                session
+            )) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -190,7 +231,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendDeleteSession(routingServiceCommandHelper, session)) {
+            if (sendDeleteSession(
+                routingServiceCommandHelper,
+                targetRoutingService,
+                session
+            )) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -229,7 +274,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendCreateTopicRoute(routingServiceCommandHelper, session, topicRoute)) {
+            if (sendCreateTopicRoute(
+                routingServiceCommandHelper,
+                targetRoutingService,
+                session,
+                topicRoute
+            )) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -268,7 +318,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendDeleteTopicRoute(routingServiceCommandHelper, session, topicRoute)) {
+            if (sendDeleteTopicRoute(
+                routingServiceCommandHelper,
+                targetRoutingService,
+                session,
+                topicRoute
+            )) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -282,13 +337,22 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     }
   }
 
+  /**
+   * Creates and sends a create session command.
+   *
+   * @param commandHelper routing service command helper to use
+   * @param targetRoutingService target routing service
+   * @param session session to create
+   * @return true if session was successfully created, false if not
+   */
   private boolean sendCreateSession(
       RoutingServiceCommandHelper commandHelper,
+      String targetRoutingService,
       Session session
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
-    commandRequest.target_router = targetRouter;
+    commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
     commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider.getSessionParent(session);
     commandRequest.command.entity_desc.xml_url.is_final = true;
@@ -307,13 +371,22 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
   }
 
+  /**
+   * Creates and sends a delete session command.
+   *
+   * @param commandHelper routing service command helper to use
+   * @param targetRoutingService target routing service
+   * @param session session to delete
+   * @return true if session was successfully deleted, false if not
+   */
   private boolean sendDeleteSession(
       RoutingServiceCommandHelper commandHelper,
+      String targetRoutingService,
       Session session
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
-    commandRequest.target_router = targetRouter;
+    commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
     commandRequest.command.entity_name = dynamicPartitionCommanderProvider.getSessionEntityName(session);
 
@@ -329,14 +402,24 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
   }
 
+  /**
+   * Creates and sends a create topic route command.
+   *
+   * @param commandHelper routing service command helper to use
+   * @param targetRoutingService target routing service
+   * @param session session of topic route
+   * @param topicRoute topic route to create
+   * @return true if topic route was successfully created, false if not
+   */
   private boolean sendCreateTopicRoute(
       RoutingServiceCommandHelper commandHelper,
+      String targetRoutingService,
       Session session,
       TopicRoute topicRoute
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
-    commandRequest.target_router = targetRouter;
+    commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
     commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider
         .getSessionEntityName(session);
@@ -358,14 +441,24 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
   }
 
+  /**
+   * Creates and sends a delete topic route command.
+   *
+   * @param commandHelper routing service command helper to use
+   * @param targetRoutingService target routing service
+   * @param session session of topic route
+   * @param topicRoute topic route to delete
+   * @return true if topic route was successfully deleted, false if not
+   */
   private boolean sendDeleteTopicRoute(
       RoutingServiceCommandHelper commandHelper,
+      String targetRoutingService,
       Session session,
       TopicRoute topicRoute
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
-    commandRequest.target_router = targetRouter;
+    commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
     commandRequest.command.entity_name = dynamicPartitionCommanderProvider
         .getTopicRouteEntityName(session, topicRoute);
@@ -384,10 +477,18 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
   }
 
+  /**
+   * Sends a request, waits for the result and checks it.
+   *
+   * @param commandHelper routing service command helper to use
+   * @param commandRequest request to send
+   * @param loggingFormat format string for logging
+   * @return true if request was successful, false if not
+   */
   private boolean sendRequest(
       RoutingServiceCommandHelper commandHelper,
       CommandRequest commandRequest,
-      String identification
+      String loggingFormat
   ) {
     // send request and get response
     CommandResponse commandResponse = commandHelper.sendRequest(
@@ -400,21 +501,29 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     return checkResponse(
         commandRequest,
         commandResponse,
-        identification
+        loggingFormat
     );
   }
 
+  /**
+   * Checks if a response was successful.
+   *
+   * @param commandRequest request that was sent
+   * @param commandResponse response that was received
+   * @param loggingFormat format string for logging
+   * @return true if request was successful, false if not
+   */
   private boolean checkResponse(
       CommandRequest commandRequest,
       CommandResponse commandResponse,
-      String identification
+      String loggingFormat
   ) {
     // response received?
     if (commandResponse == null) {
       log.error(
           "No response received request='{}', {}",
           commandRequest.command._d,
-          identification
+          loggingFormat
       );
       return false;
     }
@@ -425,7 +534,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         log.debug(
             "Success request='{}', {}",
             commandRequest.command._d,
-            identification
+            loggingFormat
         );
       }
       return true;
@@ -435,7 +544,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     log.error(
         "Failed request='{}', {}, reason='{}', message='{}'",
         commandRequest.command._d,
-        identification,
+        loggingFormat,
         commandResponse.kind,
         commandResponse.message
     );

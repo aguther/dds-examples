@@ -46,12 +46,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements a observer for publications and subscriptions. When a publication or
- * subscription is discovered, it determines if a session or topic route needs to be created
+ * This class implements a observer for publications and subscriptions.
+ *
+ * When a publication or subscription is discovered, it determines if a session or topic route needs to be created
  * and invokes it's listeners accordingly.
  *
- * This can be used to provide a function to dynamically route topics based on their partition
- * without loosing their origin (this happens when using asterisk or multiple partitions).
+ * This can be used to provide a function to dynamically route topics based on their partition without loosing
+ * their origin (this happens when using asterisk or multiple partitions).
  */
 public class DynamicPartitionObserver implements Closeable, PublicationObserverListener, SubscriptionObserverListener {
 

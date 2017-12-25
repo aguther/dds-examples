@@ -45,6 +45,9 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class provides helpers to easily interact with a routing service using the topics defined by RTI.
+ */
 public class RoutingServiceCommandHelper {
 
   private static final Logger log;
@@ -59,6 +62,11 @@ public class RoutingServiceCommandHelper {
   private int applicationId;
   private int invocationCounter;
 
+  /**
+   * Instantiates a new routing service command helper.
+   *
+   * @param domainParticipant domain participant to send and receive commands
+   */
   public RoutingServiceCommandHelper(
       DomainParticipant domainParticipant
   ) {
@@ -87,6 +95,14 @@ public class RoutingServiceCommandHelper {
     requester = new Requester<>(requesterParams);
   }
 
+  /**
+   * Waits for a specific routing service instance to be discovered.
+   *
+   * @param targetRouter target routing service
+   * @param timeOut timeout
+   * @param timeOutUnit time unit of timeout
+   * @return true if target routing service was discovered, false if not within timeout
+   */
   public boolean waitForRoutingService(
       String targetRouter,
       long timeOut,
@@ -101,6 +117,16 @@ public class RoutingServiceCommandHelper {
     );
   }
 
+  /**
+   * Waits for a specific routing service instance to be discovered.
+   *
+   * @param targetRouter target routing service
+   * @param timeOut timeout
+   * @param timeOutUnit time unit of timeout
+   * @param sleepTime time to sleep between checks
+   * @param sleepTimeUnit time unit of time to sleep
+   * @return true if target routing service was discovered, false if not within timeout
+   */
   public boolean waitForRoutingService(
       String targetRouter,
       long timeOut,
@@ -153,10 +179,23 @@ public class RoutingServiceCommandHelper {
     return false;
   }
 
+  /**
+   * Creates a new instance of the command request.
+   *
+   * @return new instance
+   */
   public CommandRequest createCommandRequest() {
     return new CommandRequest();
   }
 
+  /**
+   * Sends a request to a target routing service and returns the response when received within timeout.
+   *
+   * @param commandRequest request to send
+   * @param timeOut timeout
+   * @param timeUnit time unit of timeout
+   * @return response if received within timeout, otherwise null
+   */
   public CommandResponse sendRequest(
       CommandRequest commandRequest,
       long timeOut,
@@ -189,6 +228,11 @@ public class RoutingServiceCommandHelper {
     return replyReceived ? reply.getData() : null;
   }
 
+  /**
+   * Logs some important things of a command request.
+   *
+   * @param commandRequest request that should be logged
+   */
   private void logCommandRequest(
       CommandRequest commandRequest
   ) {
@@ -208,6 +252,12 @@ public class RoutingServiceCommandHelper {
     }
   }
 
+  /**
+   * Logs some important things of a command response.
+   *
+   * @param reply response that should be logged
+   * @param replyReceived true if response is valid, otherwise false
+   */
   private void logCommandResponse(
       Sample<CommandResponse> reply,
       boolean replyReceived
