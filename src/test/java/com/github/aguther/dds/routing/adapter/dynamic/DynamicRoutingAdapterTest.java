@@ -25,18 +25,71 @@
 package com.github.aguther.dds.routing.adapter.dynamic;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.util.Properties;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({LoggerFactory.class, DynamicRoutingAdapterTest.class})
 public class DynamicRoutingAdapterTest {
 
-  @org.junit.Test
-  public void createConnection() {
+  private static final String ROUTING_SERVICE_NAME = "UnitTest";
+  private static final String ROUTING_SERVICE_GROUP_NAME = "UnitTestGroup";
+
+  private Properties properties;
+  private DynamicRoutingAdapter dynamicRoutingAdapter;
+
+  @Before
+  public void setUp() throws Exception {
+    Logger logger = mock(Logger.class);
+    mockStatic(LoggerFactory.class);
+    when(LoggerFactory.getLogger(DynamicRoutingAdapter.class)).thenReturn(logger);
+    when(logger.isDebugEnabled()).thenReturn(true);
+
+    properties = PropertyFactory.create();
+
+    dynamicRoutingAdapter = new DynamicRoutingAdapter(
+        properties
+    );
   }
 
-  @org.junit.Test
-  public void getVersion() {
-    DynamicRoutingAdapter dynamicRoutingAdapter = new DynamicRoutingAdapter(new Properties());
+  @After
+  public void tearDown() {
+    dynamicRoutingAdapter = null;
+  }
+
+  @Ignore
+  @Test
+  public void testCreateConnection() throws AdapterException {
+    dynamicRoutingAdapter.createConnection(
+        "RoutingServiceName",
+        "RoutingServiceGroupName",
+        null,
+        null,
+        properties
+    );
+  }
+
+  @Ignore
+  @Test
+  public void testDeleteConnection() {
+
+  }
+
+  @Test
+  public void testGetVersion() {
     assertNotNull(dynamicRoutingAdapter.getVersion());
   }
 }
