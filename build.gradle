@@ -42,6 +42,8 @@ dependencies {
     // test
     testCompile "junit:junit:4.+"
     testCompile "org.mockito:mockito-core:2.+"
+    testCompile "org.powermock:powermock-module-junit4:2.0+"
+    testCompile "org.powermock:powermock-api-mockito2:2.0+"
 }
 
 jar {
