@@ -55,9 +55,9 @@ public class RoutingServiceCommandHelper {
 
   private final Requester<CommandRequest, CommandResponse> requester;
 
-  private int idHost;
-  private int idApplication;
-  private int idInvocationCounter;
+  private int hostId;
+  private int applicationId;
+  private int invocationCounter;
 
   public RoutingServiceCommandHelper(
       DomainParticipant domainParticipant
@@ -68,11 +68,11 @@ public class RoutingServiceCommandHelper {
     // get host and app id from wire protocol of domain participant
     DomainParticipantQos domainParticipantQos = new DomainParticipantQos();
     domainParticipant.get_qos(domainParticipantQos);
-    idHost = domainParticipantQos.wire_protocol.rtps_host_id;
-    idApplication = domainParticipantQos.wire_protocol.rtps_app_id;
+    hostId = domainParticipantQos.wire_protocol.rtps_host_id;
+    applicationId = domainParticipantQos.wire_protocol.rtps_app_id;
 
     // set invocation counter
-    idInvocationCounter = 0;
+    invocationCounter = 0;
 
     // create parameters for requester
     RequesterParams requesterParams = new RequesterParams(
@@ -163,9 +163,9 @@ public class RoutingServiceCommandHelper {
       TimeUnit timeUnit
   ) {
     // set identification
-    commandRequest.id.host = idHost;
-    commandRequest.id.app = idApplication;
-    commandRequest.id.invocation = ++idInvocationCounter;
+    commandRequest.id.host = hostId;
+    commandRequest.id.app = applicationId;
+    commandRequest.id.invocation = ++invocationCounter;
 
     // logging
     logCommandRequest(commandRequest);
