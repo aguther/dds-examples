@@ -70,26 +70,6 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
     domainRouteName = properties.getProperty(PROPERTY_DOMAIN_ROUTE_NAME);
     loadConfiguration(properties);
-
-    if (log.isDebugEnabled()) {
-      for (Entry<String, Configuration> entry : configurations.entrySet()) {
-        log.debug(
-            "key='{}', allow_topic_name_filter='{}', deny_topic_name_filter='{}', allow_partition_name_filter='{}', deny_partition_name_filter='{}', qos.topic_route='{}', qos.input='{}', qos.output='{}'",
-            entry.getKey(),
-            entry.getValue().getAllowTopicNameFilter() != null ?
-                entry.getValue().getAllowTopicNameFilter().pattern() : "",
-            entry.getValue().getDenyTopicNameFilter() != null ?
-                entry.getValue().getDenyTopicNameFilter().pattern() : "",
-            entry.getValue().getAllowPartitionNameFilter() != null ?
-                entry.getValue().getAllowPartitionNameFilter().pattern() : "",
-            entry.getValue().getDenyPartitionNameFilter() != null ?
-                entry.getValue().getDenyPartitionNameFilter().pattern() : "",
-            entry.getValue().getQosTopicRoute(),
-            entry.getValue().getQosInput(),
-            entry.getValue().getQosOutput()
-        );
-      }
-    }
   }
 
   private void loadConfiguration(
@@ -145,6 +125,26 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
         default:
           // unknown configuration
           break;
+      }
+    }
+    // log loaded properties
+    if (log.isDebugEnabled()) {
+      for (Entry<String, Configuration> entry : configurations.entrySet()) {
+        log.debug(
+            "key='{}', allow_topic_name_filter='{}', deny_topic_name_filter='{}', allow_partition_name_filter='{}', deny_partition_name_filter='{}', qos.topic_route='{}', qos.input='{}', qos.output='{}'",
+            entry.getKey(),
+            entry.getValue().getAllowTopicNameFilter() != null ?
+                entry.getValue().getAllowTopicNameFilter().pattern() : "",
+            entry.getValue().getDenyTopicNameFilter() != null ?
+                entry.getValue().getDenyTopicNameFilter().pattern() : "",
+            entry.getValue().getAllowPartitionNameFilter() != null ?
+                entry.getValue().getAllowPartitionNameFilter().pattern() : "",
+            entry.getValue().getDenyPartitionNameFilter() != null ?
+                entry.getValue().getDenyPartitionNameFilter().pattern() : "",
+            entry.getValue().getQosTopicRoute(),
+            entry.getValue().getQosInput(),
+            entry.getValue().getQosOutput()
+        );
       }
     }
   }
