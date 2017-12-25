@@ -36,8 +36,11 @@ import static org.mockito.Mockito.when;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.RETCODE_ERROR;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
+import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
+import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
@@ -51,14 +54,12 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 public class SubscriptionObserverTest {
 
   private DataReader dataReader;
-  private SubscriptionObserver publicationObserver;
-  private SubscriptionObserverListener publicationObserverListener;
+  private SubscriptionObserver subscriptionObserver;
+  private SubscriptionObserverListener subscriptionObserverListener;
 
   @Before
   public void setUp() {
@@ -71,61 +72,80 @@ public class SubscriptionObserverTest {
     when(subscriber.lookup_datareader(SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME))
         .thenReturn(dataReader);
 
-    publicationObserver = new SubscriptionObserver(domainParticipant);
+    subscriptionObserver = new SubscriptionObserver(domainParticipant);
 
-    publicationObserverListener = mock(SubscriptionObserverListener.class);
-    publicationObserver.addListener(publicationObserverListener);
+    subscriptionObserverListener = mock(SubscriptionObserverListener.class);
+    subscriptionObserver.addListener(subscriptionObserverListener);
   }
 
   @After
   public void tearDown() {
-    publicationObserver.removeListener(publicationObserverListener);
-    publicationObserver.close();
+    subscriptionObserver.removeListener(subscriptionObserverListener);
+    subscriptionObserver.close();
   }
 
   @Test
   public void testInstantiation() {
-    assertNotNull(publicationObserver);
+    assertNotNull(subscriptionObserver);
   }
 
   @Test(timeout = 10000)
   public void testRun() {
     // prepare answers
-    doAnswer(new Answer() {
-      private int count = 0;
-
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        SampleInfo sampleInfo = invocation.getArgument(1);
-
-        switch (count++) {
-          case 0:
-            sampleInfo.valid_data = true;
-            sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
-            return null;
-          case 1:
-            sampleInfo.valid_data = false;
-            sampleInfo.instance_state = InstanceStateKind.NOT_ALIVE_INSTANCE_STATE;
-            return null;
-          default:
-            throw new RETCODE_NO_DATA();
+    doAnswer(
+        invocation -> {
+          SampleInfo sampleInfo = invocation.getArgument(1);
+          sampleInfo.valid_data = true;
+          sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
+          return null;
         }
-      }
-    }).when(dataReader).read_next_sample_untyped(
+    ).doAnswer(
+        invocation -> {
+          SampleInfo sampleInfo = invocation.getArgument(1);
+          sampleInfo.valid_data = false;
+          sampleInfo.instance_state = InstanceStateKind.NOT_ALIVE_INSTANCE_STATE;
+          return null;
+        }
+    ).doThrow(new RETCODE_NO_DATA()
+    ).when(dataReader).read_next_sample_untyped(
         new SubscriptionBuiltinTopicData(),
         new SampleInfo()
     );
 
     // execute tested method
-    publicationObserver.run();
+    subscriptionObserver.run();
 
     // verify results
-    verify(publicationObserverListener, times(1)).subscriptionDiscovered(
+    verify(subscriptionObserverListener, times(1)).subscriptionDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
 
-    verify(publicationObserverListener, times(1)).subscriptionLost(
+    verify(subscriptionObserverListener, times(1)).subscriptionLost(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+  }
+
+  @Test(timeout = 10000)
+  public void testRunError() {
+    // prepare answers
+    doThrow(new RETCODE_ERROR()
+    ).when(dataReader).read_next_sample_untyped(
+        new SubscriptionBuiltinTopicData(),
+        new SampleInfo()
+    );
+
+    // execute tested method
+    subscriptionObserver.run();
+
+    // verify results
+    verify(subscriptionObserverListener, times(0)).subscriptionDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+
+    verify(subscriptionObserverListener, times(0)).subscriptionLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
@@ -138,28 +158,21 @@ public class SubscriptionObserverTest {
     SubscriptionObserverListener listener = mock(SubscriptionObserverListener.class);
 
     // prepare answers
-    doAnswer(new Answer() {
-      private int count = 0;
+    doAnswer(
+        invocation -> {
+          SubscriptionBuiltinTopicDataSeq sampleSeq = invocation.getArgument(0);
+          SampleInfoSeq sampleInfoSeq = invocation.getArgument(1);
 
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        SubscriptionBuiltinTopicDataSeq sampleSeq = invocation.getArgument(0);
-        SampleInfoSeq sampleInfoSeq = invocation.getArgument(1);
+          SubscriptionBuiltinTopicData subscriptionBuiltinTopicData = new SubscriptionBuiltinTopicData();
+          sampleSeq.add(subscriptionBuiltinTopicData);
 
-        switch (count++) {
-          case 0:
-            SubscriptionBuiltinTopicData publicationBuiltinTopicData = new SubscriptionBuiltinTopicData();
-            sampleSeq.add(publicationBuiltinTopicData);
-
-            SampleInfo sampleInfo = new SampleInfo();
-            sampleInfo.valid_data = true;
-            sampleInfoSeq.add(sampleInfo);
-            return null;
-          default:
-            throw new RETCODE_NO_DATA();
+          SampleInfo sampleInfo = new SampleInfo();
+          sampleInfo.valid_data = true;
+          sampleInfoSeq.add(sampleInfo);
+          return null;
         }
-      }
-    }).when(dataReader).read_untyped(
+    ).doThrow(new RETCODE_NO_DATA()
+    ).when(dataReader).read_untyped(
         new SubscriptionBuiltinTopicDataSeq(),
         new SampleInfoSeq(),
         Integer.MAX_VALUE,
@@ -169,14 +182,76 @@ public class SubscriptionObserverTest {
     );
 
     // execute tested method
-    publicationObserver.addListener(listener);
+    subscriptionObserver.addListener(listener);
 
     // verify results
-    verify(publicationObserverListener, times(0)).subscriptionDiscovered(
+    verify(subscriptionObserverListener, times(0)).subscriptionDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+    verify(subscriptionObserverListener, times(0)).subscriptionLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
     verify(listener, times(1)).subscriptionDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+    verify(listener, times(0)).subscriptionLost(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+  }
+
+  @Test(timeout = 10000)
+  public void testDeliverReadSamplesNotEnabled() {
+    testDeliverReadSamplesWithException(new RETCODE_NOT_ENABLED());
+  }
+
+  @Test(timeout = 10000)
+  public void testDeliverReadSamplesNoData() {
+    testDeliverReadSamplesWithException(new RETCODE_NO_DATA());
+  }
+
+  @Test(timeout = 10000)
+  public void testDeliverReadSamplesError() {
+    testDeliverReadSamplesWithException(new RETCODE_ERROR());
+  }
+
+  private void testDeliverReadSamplesWithException(
+      RETCODE_ERROR exception
+  ) {
+    // add another listener
+    SubscriptionObserverListener listener = mock(SubscriptionObserverListener.class);
+
+    // prepare answers
+    doThrow(exception
+    ).when(dataReader).read_untyped(
+        new SubscriptionBuiltinTopicDataSeq(),
+        new SampleInfoSeq(),
+        Integer.MAX_VALUE,
+        SampleStateKind.READ_SAMPLE_STATE,
+        ViewStateKind.ANY_VIEW_STATE,
+        InstanceStateKind.ANY_INSTANCE_STATE
+    );
+
+    // execute tested method
+    subscriptionObserver.addListener(listener);
+
+    // verify results
+    verify(subscriptionObserverListener, times(0)).subscriptionDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+    verify(subscriptionObserverListener, times(0)).subscriptionLost(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+    verify(listener, times(0)).subscriptionDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(SubscriptionBuiltinTopicData.class));
+    verify(listener, times(0)).subscriptionLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));

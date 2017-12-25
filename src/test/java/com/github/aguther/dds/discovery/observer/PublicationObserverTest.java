@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.RETCODE_ERROR;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
@@ -51,8 +52,6 @@ import com.rti.dds.subscription.ViewStateKind;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 public class PublicationObserverTest {
 
@@ -91,27 +90,22 @@ public class PublicationObserverTest {
   @Test(timeout = 10000)
   public void testRun() {
     // prepare answers
-    doAnswer(new Answer() {
-      private int count = 0;
-
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        SampleInfo sampleInfo = invocation.getArgument(1);
-
-        switch (count++) {
-          case 0:
-            sampleInfo.valid_data = true;
-            sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
-            return null;
-          case 1:
-            sampleInfo.valid_data = false;
-            sampleInfo.instance_state = InstanceStateKind.NOT_ALIVE_INSTANCE_STATE;
-            return null;
-          default:
-            throw new RETCODE_NO_DATA();
+    doAnswer(
+        invocation -> {
+          SampleInfo sampleInfo = invocation.getArgument(1);
+          sampleInfo.valid_data = true;
+          sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
+          return null;
         }
-      }
-    }).when(dataReader).read_next_sample_untyped(
+    ).doAnswer(
+        invocation -> {
+          SampleInfo sampleInfo = invocation.getArgument(1);
+          sampleInfo.valid_data = false;
+          sampleInfo.instance_state = InstanceStateKind.NOT_ALIVE_INSTANCE_STATE;
+          return null;
+        }
+    ).doThrow(new RETCODE_NO_DATA()
+    ).when(dataReader).read_next_sample_untyped(
         new PublicationBuiltinTopicData(),
         new SampleInfo()
     );
@@ -132,34 +126,50 @@ public class PublicationObserverTest {
   }
 
   @Test(timeout = 10000)
+  public void testRunError() {
+    // prepare answers
+    doThrow(new RETCODE_ERROR()
+    ).when(dataReader).read_next_sample_untyped(
+        new PublicationBuiltinTopicData(),
+        new SampleInfo()
+    );
+
+    // execute tested method
+    publicationObserver.run();
+
+    // verify results
+    verify(publicationObserverListener, times(0)).publicationDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+
+    verify(publicationObserverListener, times(0)).publicationLost(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+  }
+
+  @Test(timeout = 10000)
   public void testDeliverReadSamples() {
 
     // add another listener
     PublicationObserverListener listener = mock(PublicationObserverListener.class);
 
     // prepare answers
-    doAnswer(new Answer() {
-      private int count = 0;
+    doAnswer(
+        invocation -> {
+          PublicationBuiltinTopicDataSeq sampleSeq = invocation.getArgument(0);
+          SampleInfoSeq sampleInfoSeq = invocation.getArgument(1);
 
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        PublicationBuiltinTopicDataSeq sampleSeq = invocation.getArgument(0);
-        SampleInfoSeq sampleInfoSeq = invocation.getArgument(1);
+          PublicationBuiltinTopicData publicationBuiltinTopicData = new PublicationBuiltinTopicData();
+          sampleSeq.add(publicationBuiltinTopicData);
 
-        switch (count++) {
-          case 0:
-            PublicationBuiltinTopicData publicationBuiltinTopicData = new PublicationBuiltinTopicData();
-            sampleSeq.add(publicationBuiltinTopicData);
-
-            SampleInfo sampleInfo = new SampleInfo();
-            sampleInfo.valid_data = true;
-            sampleInfoSeq.add(sampleInfo);
-            return null;
-          default:
-            throw new RETCODE_NO_DATA();
+          SampleInfo sampleInfo = new SampleInfo();
+          sampleInfo.valid_data = true;
+          sampleInfoSeq.add(sampleInfo);
+          return null;
         }
-      }
-    }).when(dataReader).read_untyped(
+    ).when(dataReader).read_untyped(
         new PublicationBuiltinTopicDataSeq(),
         new SampleInfoSeq(),
         Integer.MAX_VALUE,
@@ -176,7 +186,69 @@ public class PublicationObserverTest {
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
+    verify(publicationObserverListener, times(0)).publicationLost(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
     verify(listener, times(1)).publicationDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+    verify(listener, times(0)).publicationLost(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+  }
+
+  @Test(timeout = 10000)
+  public void testDeliverReadSamplesNotEnabled() {
+    testDeliverReadSamplesWithException(new RETCODE_NOT_ENABLED());
+  }
+
+  @Test(timeout = 10000)
+  public void testDeliverReadSamplesNoData() {
+    testDeliverReadSamplesWithException(new RETCODE_NO_DATA());
+  }
+
+  @Test(timeout = 10000)
+  public void testDeliverReadSamplesError() {
+    testDeliverReadSamplesWithException(new RETCODE_ERROR());
+  }
+
+  private void testDeliverReadSamplesWithException(
+      RETCODE_ERROR exception
+  ) {
+    // add another listener
+    PublicationObserverListener listener = mock(PublicationObserverListener.class);
+
+    // prepare answers
+    doThrow(exception
+    ).when(dataReader).read_untyped(
+        new PublicationBuiltinTopicDataSeq(),
+        new SampleInfoSeq(),
+        Integer.MAX_VALUE,
+        SampleStateKind.READ_SAMPLE_STATE,
+        ViewStateKind.ANY_VIEW_STATE,
+        InstanceStateKind.ANY_INSTANCE_STATE
+    );
+
+    // execute tested method
+    publicationObserver.addListener(listener);
+
+    // verify results
+    verify(publicationObserverListener, times(0)).publicationDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+    verify(publicationObserverListener, times(0)).publicationLost(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+    verify(listener, times(0)).publicationDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+    verify(listener, times(0)).publicationLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
