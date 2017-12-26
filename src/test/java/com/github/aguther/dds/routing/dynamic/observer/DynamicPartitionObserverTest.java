@@ -85,7 +85,7 @@ public class DynamicPartitionObserverTest {
   }
 
   @Test
-  public void publicationDiscoveredIgnorePublication() {
+  public void testIgnorePublication() {
     Session session = new Session("Square", "");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
 
@@ -102,11 +102,17 @@ public class DynamicPartitionObserverTest {
         instanceHandle,
         publicationBuiltinTopicData
     );
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle,
+        publicationBuiltinTopicData
+    );
 
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .createSession(any(Session.class));
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .deleteSession(any(Session.class));
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .createTopicRoute(any(Session.class), any(TopicRoute.class));
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
@@ -114,12 +120,51 @@ public class DynamicPartitionObserverTest {
   }
 
   @Test
-  public void publicationDiscoveredIgnoreDefaultPartition() {
+  public void testIgnoreSubscription() {
+    Session session = new Session("Square", "");
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+
+    InstanceHandle_t instanceHandle = createInstanceHandle(0);
+    SubscriptionBuiltinTopicData subscriptionBuiltinTopicData = createSubscriptionBuiltinTopicData(
+        session.getTopic(),
+        topicRoute.getType()
+    );
+
+    when(filter.ignoreSubscription(domainParticipant, instanceHandle, subscriptionBuiltinTopicData)).thenReturn(true);
+
+    observer.subscriptionDiscovered(
+        domainParticipant,
+        instanceHandle,
+        subscriptionBuiltinTopicData
+    );
+    observer.subscriptionLost(
+        domainParticipant,
+        instanceHandle,
+        subscriptionBuiltinTopicData
+    );
+
+    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+        .createSession(any(Session.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+        .deleteSession(any(Session.class));
+
+    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+        .createTopicRoute(any(Session.class), any(TopicRoute.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+        .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
+  }
+
+  @Test
+  public void testIgnoreDefaultPartition() {
     Session session = new Session("Square", "");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
 
     InstanceHandle_t instanceHandle = createInstanceHandle(0);
     PublicationBuiltinTopicData publicationBuiltinTopicData = createPublicationBuiltinTopicData(
+        session.getTopic(),
+        topicRoute.getType()
+    );
+    SubscriptionBuiltinTopicData subscriptionBuiltinTopicData = createSubscriptionBuiltinTopicData(
         session.getTopic(),
         topicRoute.getType()
     );
@@ -131,11 +176,28 @@ public class DynamicPartitionObserverTest {
         instanceHandle,
         publicationBuiltinTopicData
     );
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle,
+        publicationBuiltinTopicData
+    );
+
+    observer.subscriptionDiscovered(
+        domainParticipant,
+        instanceHandle,
+        subscriptionBuiltinTopicData
+    );
+    observer.subscriptionLost(
+        domainParticipant,
+        instanceHandle,
+        subscriptionBuiltinTopicData
+    );
 
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .createSession(any(Session.class));
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .deleteSession(any(Session.class));
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .createTopicRoute(any(Session.class), any(TopicRoute.class));
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
@@ -143,12 +205,17 @@ public class DynamicPartitionObserverTest {
   }
 
   @Test
-  public void publicationDiscoveredIgnorePartition() {
+  public void testIgnorePartition() {
     Session session = new Session("Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
 
     InstanceHandle_t instanceHandle = createInstanceHandle(0);
     PublicationBuiltinTopicData publicationBuiltinTopicData = createPublicationBuiltinTopicData(
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition()
+    );
+    SubscriptionBuiltinTopicData subscriptionBuiltinTopicData = createSubscriptionBuiltinTopicData(
         session.getTopic(),
         topicRoute.getType(),
         session.getPartition()
@@ -161,11 +228,28 @@ public class DynamicPartitionObserverTest {
         instanceHandle,
         publicationBuiltinTopicData
     );
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle,
+        publicationBuiltinTopicData
+    );
+
+    observer.subscriptionDiscovered(
+        domainParticipant,
+        instanceHandle,
+        subscriptionBuiltinTopicData
+    );
+    observer.subscriptionLost(
+        domainParticipant,
+        instanceHandle,
+        subscriptionBuiltinTopicData
+    );
 
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .createSession(any(Session.class));
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .deleteSession(any(Session.class));
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
         .createTopicRoute(any(Session.class), any(TopicRoute.class));
     verify(listener, timeout(VERFIY_TIMEOUT).times(0))
@@ -173,7 +257,7 @@ public class DynamicPartitionObserverTest {
   }
 
   @Test
-  public void publicationDiscoveredNewSessionNewTopicRoute() {
+  public void testSessionWithOneTopicRoute() {
     Session session = new Session("Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
 
@@ -190,18 +274,25 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData
     );
 
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle,
+        publicationBuiltinTopicData
+    );
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
-        .deleteSession(any(Session.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteSession(session);
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRoute);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
-        .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteTopicRoute(session, topicRoute);
   }
 
   @Test
-  public void publicationDiscoveredNewTopicRouteWithoutNewSession() {
+  public void testSessionWithTwoTopicRoutes() {
     Session session = new Session("Square", "A");
     TopicRoute topicRouteOut = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
     TopicRoute topicRouteIn = new TopicRoute(Direction.IN, topicRouteOut.getTopic(), topicRouteOut.getType());
@@ -232,20 +323,35 @@ public class DynamicPartitionObserverTest {
         subscriptionBuiltinTopicData
     );
 
+    observer.subscriptionLost(
+        domainParticipant,
+        instanceHandleSubscription,
+        subscriptionBuiltinTopicData
+    );
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandlePublication,
+        publicationBuiltinTopicData
+    );
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
-        .deleteSession(any(Session.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteSession(session);
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRouteOut);
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteTopicRoute(session, topicRouteOut);
+
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRouteIn);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
-        .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteTopicRoute(session, topicRouteIn);
   }
 
   @Test
-  public void publicationDiscoveredWithoutNewTopicRouteWithoutNewSession() {
+  public void testSessionWithOneTopicRouteTwoPublications() {
     Session session = new Session("Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
 
@@ -275,18 +381,30 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData2
     );
 
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle2,
+        publicationBuiltinTopicData2
+    );
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle1,
+        publicationBuiltinTopicData1
+    );
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .deleteSession(session);
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRoute);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
-        .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteTopicRoute(session, topicRoute);
   }
 
   @Test
-  public void publicationDiscoveredWithoutNewTopicRouteWithoutNewSessionDefaultPartition() {
+  public void testSessionWithOneTopicRouteTwoPublicationsDefaultPartition() {
     Session session = new Session("Square", "");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
 
@@ -314,65 +432,74 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData2
     );
 
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle2,
+        publicationBuiltinTopicData2
+    );
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle1,
+        publicationBuiltinTopicData1
+    );
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .deleteSession(session);
+
     verify(listener, timeout(VERFIY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRoute);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
-        .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteTopicRoute(session, topicRoute);
   }
 
   @Test
-  public void publicationLost() {
-    // ignore publication true
-    // ignore publication false
-    // ignore partition "" true
-    // ignore partition "" false
-    // ignore partition A true
-    // ignore partition A false
+  public void testPublicationWithTwoPartitions() {
+    Session sessionA = new Session("Square", "A");
+    Session sessionB = new Session(sessionA.getTopic(), "B");
+    TopicRoute topicRouteA = new TopicRoute(Direction.OUT, sessionA.getTopic(), "ShapeType");
+    TopicRoute topicRouteB = new TopicRoute(Direction.OUT, sessionB.getTopic(), topicRouteA.getType());
 
-    // topic route no delete
-    // session no delete
-    // topic route delete
-    // session no delete
-    // topic route delete
-    // session delete
-  }
+    InstanceHandle_t instanceHandle = createInstanceHandle(0);
+    PublicationBuiltinTopicData publicationBuiltinTopicData = createPublicationBuiltinTopicData(
+        sessionA.getTopic(),
+        topicRouteA.getType(),
+        sessionA.getPartition(),
+        sessionB.getPartition()
+    );
 
-  @Test
-  public void subscriptionDiscovered() {
-    // ignore subscription true
-    // ignore subscription false
-    // ignore partition "" true
-    // ignore partition "" false
-    // ignore partition A true
-    // ignore partition A false
+    observer.publicationDiscovered(
+        domainParticipant,
+        instanceHandle,
+        publicationBuiltinTopicData
+    );
 
-    // session new
-    // topic route new
-    // session not new
-    // topic route new
-    // session not new
-    // topic route not new
-  }
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle,
+        publicationBuiltinTopicData
+    );
 
-  @Test
-  public void subscriptionLost() {
-    // ignore subscription true
-    // ignore subscription false
-    // ignore partition "" true
-    // ignore partition "" false
-    // ignore partition A true
-    // ignore partition A false
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .createSession(sessionA);
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteSession(sessionA);
 
-    // topic route no delete
-    // session no delete
-    // topic route delete
-    // session no delete
-    // topic route delete
-    // session delete
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .createSession(sessionB);
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteSession(sessionB);
+
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .createTopicRoute(sessionA, topicRouteA);
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteTopicRoute(sessionA, topicRouteA);
+
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .createTopicRoute(sessionB, topicRouteB);
+    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+        .deleteTopicRoute(sessionB, topicRouteB);
   }
 
   private InstanceHandle_t createInstanceHandle(
