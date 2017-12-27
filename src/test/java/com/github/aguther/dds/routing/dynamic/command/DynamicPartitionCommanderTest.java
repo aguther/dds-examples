@@ -101,7 +101,7 @@ public class DynamicPartitionCommanderTest {
 
     when(commandHelper.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandHelper.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(null).thenReturn(commandResponse);
+        .thenReturn(null).thenReturn(null).thenReturn(commandResponse);
 
     commander.createSession(session);
 
@@ -109,7 +109,7 @@ public class DynamicPartitionCommanderTest {
         .getSessionParent(session);
     verify(commanderProvider, timeout(5000).times(1))
         .getSessionConfiguration(session);
-    verify(commandHelper, timeout(5000).times(2))
+    verify(commandHelper, timeout(5000).times(3))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
   }
 
