@@ -39,7 +39,7 @@ public class MutableBuffer {
 
   public static void main(
       String[] args
-  ) throws InstantiationException, IllegalAccessException {
+  ) {
 
     // create first type
     if (log.isInfoEnabled()) {
@@ -92,7 +92,7 @@ public class MutableBuffer {
       I inputSample,
       TypeSupportImpl outputTypeSupport,
       O outputSample
-  ) throws IllegalAccessException, InstantiationException {
+  ) {
 
     // print sample
     if (log.isInfoEnabled()) {

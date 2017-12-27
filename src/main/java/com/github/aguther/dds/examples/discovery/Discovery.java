@@ -68,22 +68,21 @@ public class Discovery implements PublicationObserverListener, SubscriptionObser
         StatusKind.STATUS_MASK_NONE);
 
     // create new publication observer
-    PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
-    publicationObserver.addListener(discovery);
-    // create new subscription observer
-    SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
-    subscriptionObserver.addListener(discovery);
+    try (
+        PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
+        SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery)
+    ) {
+      // add listeners
+      publicationObserver.addListener(discovery);
+      subscriptionObserver.addListener(discovery);
 
-    // enable domain participant
-    domainParticipantDiscovery.enable();
+      // enable domain participant
+      domainParticipantDiscovery.enable();
 
-    while (!shouldTerminate) {
-      Thread.sleep(1000);
+      while (!shouldTerminate) {
+        Thread.sleep(1000);
+      }
     }
-
-    // close observers
-    publicationObserver.close();
-    subscriptionObserver.close();
 
     // shutdown DDS
     DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);

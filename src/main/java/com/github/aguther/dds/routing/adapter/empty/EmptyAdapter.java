@@ -54,6 +54,7 @@ public class EmptyAdapter implements Adapter {
   public void deleteConnection(
       Connection connection
   ) throws AdapterException {
+    // do nothing
   }
 
   @Override

@@ -84,49 +84,64 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
         continue;
       }
 
-      // get identifier
-      String identifier = entryMatch.group(1);
-
-      // add new configuration if not yet known
-      if (!configurations.containsKey(identifier)) {
-        configurations.put(identifier, new Configuration());
-      }
-
-      // store configuration
-      switch (entryMatch.group(2)) {
-        case "allow_topic_name_filter":
-          configurations.get(identifier).setAllowTopicNameFilter(
-              Pattern.compile(entry.getValue().toString()));
-          break;
-        case "deny_topic_name_filter":
-          configurations.get(identifier).setDenyTopicNameFilter(
-              Pattern.compile(entry.getValue().toString()));
-          break;
-        case "allow_partition_name_filter":
-          configurations.get(identifier).setAllowPartitionNameFilter(
-              Pattern.compile(entry.getValue().toString()));
-          break;
-        case "deny_partition_name_filter":
-          configurations.get(identifier).setDenyPartitionNameFilter(
-              Pattern.compile(entry.getValue().toString()));
-          break;
-        case "qos.topic_route":
-          configurations.get(identifier).setTopicRouteQosQos(
-              entry.getValue().toString());
-          break;
-        case "qos.input":
-          configurations.get(identifier).setQosInput(
-              entry.getValue().toString());
-          break;
-        case "qos.output":
-          configurations.get(identifier).setQosOutput(
-              entry.getValue().toString());
-          break;
-        default:
-          // unknown configuration
-          break;
-      }
+      // load property
+      loadProperty(
+          entryMatch.group(1),
+          entryMatch.group(2),
+          entry.getValue().toString()
+      );
     }
+
+    // log configuration
+    logConfiguration();
+  }
+
+  private void loadProperty(
+      String identifier,
+      String propertyName,
+      String propertyValue) {
+    // add new configuration if not yet known
+    if (!configurations.containsKey(identifier)) {
+      configurations.put(identifier, new Configuration());
+    }
+
+    // store configuration
+    switch (propertyName) {
+      case "allow_topic_name_filter":
+        configurations.get(identifier).setAllowTopicNameFilter(
+            Pattern.compile(propertyValue));
+        break;
+      case "deny_topic_name_filter":
+        configurations.get(identifier).setDenyTopicNameFilter(
+            Pattern.compile(propertyValue));
+        break;
+      case "allow_partition_name_filter":
+        configurations.get(identifier).setAllowPartitionNameFilter(
+            Pattern.compile(propertyValue));
+        break;
+      case "deny_partition_name_filter":
+        configurations.get(identifier).setDenyPartitionNameFilter(
+            Pattern.compile(propertyValue));
+        break;
+      case "qos.topic_route":
+        configurations.get(identifier).setTopicRouteQosQos(
+            propertyValue);
+        break;
+      case "qos.input":
+        configurations.get(identifier).setQosInput(
+            propertyValue);
+        break;
+      case "qos.output":
+        configurations.get(identifier).setQosOutput(
+            propertyValue);
+        break;
+      default:
+        // unknown configuration
+        break;
+    }
+  }
+
+  private void logConfiguration() {
     // log loaded properties
     if (log.isDebugEnabled()) {
       for (Entry<String, Configuration> entry : configurations.entrySet()) {
