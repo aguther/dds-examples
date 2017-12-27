@@ -41,8 +41,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({LoggerFactory.class, DynamicRoutingAdapterTest.class})
 public class DynamicRoutingAdapterTest {
 
   private static final String ROUTING_SERVICE_NAME = "UnitTest";
@@ -53,13 +51,7 @@ public class DynamicRoutingAdapterTest {
 
   @Before
   public void setUp() throws Exception {
-    Logger logger = mock(Logger.class);
-    mockStatic(LoggerFactory.class);
-    when(LoggerFactory.getLogger(DynamicRoutingAdapter.class)).thenReturn(logger);
-    when(logger.isDebugEnabled()).thenReturn(true);
-
     properties = PropertyFactory.create();
-
     dynamicRoutingAdapter = new DynamicRoutingAdapter(
         properties
     );
@@ -68,24 +60,6 @@ public class DynamicRoutingAdapterTest {
   @After
   public void tearDown() {
     dynamicRoutingAdapter = null;
-  }
-
-  @Ignore
-  @Test
-  public void testCreateConnection() throws AdapterException {
-    dynamicRoutingAdapter.createConnection(
-        "RoutingServiceName",
-        "RoutingServiceGroupName",
-        null,
-        null,
-        properties
-    );
-  }
-
-  @Ignore
-  @Test
-  public void testDeleteConnection() {
-
   }
 
   @Test
