@@ -25,6 +25,7 @@
 package com.github.aguther.dds.examples.requestreply;
 
 import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.connext.requestreply.Requester;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -36,11 +37,11 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Request {
+public class Request extends AbstractIdleService {
 
   private static final Logger log;
 
-  private static boolean shouldTerminate;
+  private static Request serviceInstance;
 
   private static DomainParticipant domainParticipant;
   private static Requester<RequestType, ReplyType> requester;
@@ -58,27 +59,58 @@ public class Request {
     // register shutdown hook
     registerShutdownHook();
 
+    // create service
+    serviceInstance = new Request();
+
+    // start the service
+    serviceInstance.startAsync();
+
+    // wait for termination
+    serviceInstance.awaitTerminated();
+
+    // service terminated
+    log.info("Service terminated");
+  }
+
+  private static void registerShutdownHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      log.info("Shutdown signal received");
+      if (serviceInstance != null) {
+        serviceInstance.stopAsync();
+        serviceInstance.awaitTerminated();
+      }
+      log.info("Shutdown signal finished");
+    }));
+  }
+
+  @Override
+  protected void startUp() throws Exception {
+    // log service start
+    log.info("Service is starting");
+
     // startup DDS
     startupDds();
 
     // start publishing
     startPublish();
 
-    // wait for signal to terminate
-    waitForTerminateSignal();
+    // log service start
+    log.info("Service start finished");
+  }
+
+  @Override
+  protected void shutDown() throws Exception {
+    // log service start
+    log.info("Service is shutting down");
 
     // stop publish
     stopPublish();
 
     // shutdown DDS
     shutdownDds();
-  }
 
-  private static void registerShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received...");
-      shouldTerminate = true;
-    }));
+    // log service start
+    log.info("Service shutdown finished");
   }
 
   private static void startupDds() {
@@ -104,19 +136,6 @@ public class Request {
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
         "DomainParticipantLibrary::RequestReplyRequester"
     );
-  }
-
-  private static void waitForTerminateSignal() {
-    while (true) {
-      if (shouldTerminate) {
-        break;
-      }
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
   }
 
   private static void startPublish() {
@@ -180,5 +199,8 @@ public class Request {
       DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
       domainParticipant = null;
     }
+
+    // finalize factory
+    DomainParticipantFactory.finalize_instance();
   }
 }

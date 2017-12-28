@@ -22,29 +22,31 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.mutable;
+package com.github.aguther.dds.examples.shape;
 
 import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
-import idl.v1.MutableTypeTypeSupport;
+import idl.ShapeFillKind;
+import idl.ShapeTypeExtendedTypeSupport;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Publisher {
+public class ShapePublisher extends AbstractIdleService {
 
   private static final Logger log;
 
-  private static boolean shouldTerminate;
+  private static ShapePublisher serviceInstance;
 
   private static DomainParticipant domainParticipant;
 
   private static Thread publishThread;
-  private static MutableTypePublisher mutableTypePublisher;
+  private static ShapeTypeExtendedPublisher shapeTypeExtendedPublisher;
 
   static {
-    log = LoggerFactory.getLogger(Publisher.class);
+    log = LoggerFactory.getLogger(ShapePublisher.class);
   }
 
   public static void main(
@@ -53,27 +55,58 @@ public class Publisher {
     // register shutdown hook
     registerShutdownHook();
 
+    // create service
+    serviceInstance = new ShapePublisher();
+
+    // start the service
+    serviceInstance.startAsync();
+
+    // wait for termination
+    serviceInstance.awaitTerminated();
+
+    // service terminated
+    log.info("Service terminated");
+  }
+
+  private static void registerShutdownHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      log.info("Shutdown signal received");
+      if (serviceInstance != null) {
+        serviceInstance.stopAsync();
+        serviceInstance.awaitTerminated();
+      }
+      log.info("Shutdown signal finished");
+    }));
+  }
+
+  @Override
+  protected void startUp() throws Exception {
+    // log service start
+    log.info("Service is starting");
+
     // startup DDS
     startupDds();
 
     // start publishing
     startPublish();
 
-    // wait for signal to terminate
-    waitForTerminateSignal();
+    // log service start
+    log.info("Service start finished");
+  }
+
+  @Override
+  protected void shutDown() throws Exception {
+    // log service start
+    log.info("Service is shutting down");
 
     // stop publish
     stopPublish();
 
     // shutdown DDS
     shutdownDds();
-  }
 
-  private static void registerShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received...");
-      shouldTerminate = true;
-    }));
+    // log service start
+    log.info("Service shutdown finished");
   }
 
   private static void startupDds() {
@@ -87,50 +120,46 @@ public class Publisher {
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        MutableTypeTypeSupport.get_instance(),
-        MutableTypeTypeSupport.get_type_name()
+        ShapeTypeExtendedTypeSupport.get_instance(),
+        ShapeTypeExtendedTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::MutablePublisher"
+        "DomainParticipantLibrary::ShapePublisher"
     );
-  }
-
-  private static void waitForTerminateSignal() {
-    while (true) {
-      if (shouldTerminate) {
-        break;
-      }
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
   }
 
   private static void startPublish() {
+    // create initial attributes of shape
+    ShapeAttributes shapeAttributes = new ShapeAttributes(
+        "BLUE",
+        30,
+        ShapeFillKind.SOLID_FILL,
+        0.0f
+    );
+
     // create shape publisher
-    mutableTypePublisher = new MutableTypePublisher(
+    shapeTypeExtendedPublisher = new ShapeTypeExtendedPublisher(
+        shapeAttributes,
         domainParticipant,
-        "Publisher::MutableTypeDataWriter",
-        1000
+        "Publisher::ShapeTypeExtendedDataWriter",
+        50
     );
 
     // create and start thread
-    publishThread = new Thread(mutableTypePublisher);
+    publishThread = new Thread(shapeTypeExtendedPublisher);
     publishThread.start();
   }
 
   private static void stopPublish() {
     // check if we need to stop publish
-    if (mutableTypePublisher == null) {
+    if (shapeTypeExtendedPublisher == null) {
       return;
     }
 
     // signal termination
-    mutableTypePublisher.stop();
+    shapeTypeExtendedPublisher.stop();
 
     // wait for thread to finish
     try {
@@ -142,12 +171,17 @@ public class Publisher {
 
     // set objects to null
     publishThread = null;
-    mutableTypePublisher = null;
+    shapeTypeExtendedPublisher = null;
   }
 
   private static void shutdownDds() {
     // delete domain participant
-    DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
-    domainParticipant = null;
+    if (domainParticipant != null) {
+      DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
+      domainParticipant = null;
+    }
+
+    // finalize factory
+    DomainParticipantFactory.finalize_instance();
   }
 }

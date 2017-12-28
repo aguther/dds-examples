@@ -25,6 +25,7 @@
 package com.github.aguther.dds.examples.mutable;
 
 import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import idl.v2.MutableTypeTypeSupport;
@@ -32,18 +33,18 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Subscriber {
+public class MutableSubscriber extends AbstractIdleService {
 
   private static final Logger log;
 
-  private static boolean shouldTerminate;
+  private static MutableSubscriber serviceInstance;
 
-  private static DomainParticipant domainParticipant;
+  private DomainParticipant domainParticipant;
 
-  private static MutableTypeListener mutableTypeListener;
+  private MutableTypeListener mutableTypeListener;
 
   static {
-    log = LoggerFactory.getLogger(Publisher.class);
+    log = LoggerFactory.getLogger(MutablePublisher.class);
   }
 
   public static void main(
@@ -52,30 +53,61 @@ public class Subscriber {
     // register shutdown hook
     registerShutdownHook();
 
+    // create service
+    serviceInstance = new MutableSubscriber();
+
+    // start the service
+    serviceInstance.startAsync();
+
+    // wait for termination
+    serviceInstance.awaitTerminated();
+
+    // service terminated
+    log.info("Service terminated");
+  }
+
+  private static void registerShutdownHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      log.info("Shutdown signal received");
+      if (serviceInstance != null) {
+        serviceInstance.stopAsync();
+        serviceInstance.awaitTerminated();
+      }
+      log.info("Shutdown signal finished");
+    }));
+  }
+
+  @Override
+  protected void startUp() throws Exception {
+    // log service start
+    log.info("Service is starting");
+
     // startup DDS
     startupDds();
 
     // start publishing
     startSubscription();
 
-    // wait for signal to terminate
-    waitForTerminateSignal();
+    // log service start
+    log.info("Service start finished");
+  }
 
-    // stop subscription
+  @Override
+  protected void shutDown() throws Exception {
+    // log service start
+    log.info("Service is shutting down");
+
+    // stop publish
     stopSubscription();
 
     // shutdown DDS
     shutdownDds();
+
+    // log service start
+    log.info("Service shutdown finished");
   }
 
-  private static void registerShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received...");
-      shouldTerminate = true;
-    }));
-  }
-
-  private static void startupDds() {
+  private void startupDds() {
     // register logger DDS messages
     try {
       Slf4jDdsLogger.createRegisterLogger();
@@ -96,27 +128,14 @@ public class Subscriber {
     );
   }
 
-  private static void waitForTerminateSignal() {
-    while (true) {
-      if (shouldTerminate) {
-        break;
-      }
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
-  }
-
-  private static void startSubscription() {
+  private void startSubscription() {
     // start subscription
     mutableTypeListener = new MutableTypeListener(
         domainParticipant.lookup_datareader_by_name("Subscriber::MutableTypeDataReader")
     );
   }
 
-  private static void stopSubscription() {
+  private void stopSubscription() {
     // signal termination
     mutableTypeListener.stop();
 
@@ -124,9 +143,14 @@ public class Subscriber {
     mutableTypeListener = null;
   }
 
-  private static void shutdownDds() {
+  private void shutdownDds() {
     // delete domain participant
-    DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
-    domainParticipant = null;
+    if (domainParticipant != null) {
+      DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
+      domainParticipant = null;
+    }
+
+    // finalize factory
+    DomainParticipantFactory.finalize_instance();
   }
 }

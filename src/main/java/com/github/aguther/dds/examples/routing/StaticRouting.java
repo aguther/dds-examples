@@ -25,61 +25,106 @@
 package com.github.aguther.dds.examples.routing;
 
 import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StaticRouting {
+public class StaticRouting extends AbstractIdleService {
 
+  private static final String ROUTING_SERVICE_NAME;
+  private static final String ROUTING_SERVICE_CONFIG_FILE;
   private static final Logger log;
 
-  private static boolean shouldTerminate;
+  private static StaticRouting serviceInstance;
+
+  private RoutingService routingService;
 
   static {
+    ROUTING_SERVICE_NAME = "dds-examples-routing-static";
+    ROUTING_SERVICE_CONFIG_FILE = "routing-static.xml";
     log = LoggerFactory.getLogger(StaticRouting.class);
   }
 
-  public static void main(String[] args) throws InterruptedException {
-
+  public static void main(
+      String[] args
+  ) {
     // register shutdown hook
     registerShutdownHook();
 
-    // register logger DDS messages
-    try {
-      Slf4jDdsLogger.createRegisterLogger();
-    } catch (IOException e) {
-      log.error("Failed to create and register DDS logging device.", e);
-      return;
-    }
+    // create service
+    serviceInstance = new StaticRouting();
 
-    // setup routing service properties
-    final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
-    routingServiceProperty.cfgFile = "routing-static.xml";
-    routingServiceProperty.serviceName = "dds-examples-routing-static";
-    routingServiceProperty.applicationName = routingServiceProperty.serviceName;
-    routingServiceProperty.serviceVerbosity = 3;
+    // start the service
+    serviceInstance.startAsync();
 
-    // create routing service instance
-    try (RoutingService routingService = new RoutingService(routingServiceProperty)) {
+    // wait for termination
+    serviceInstance.awaitTerminated();
 
-      // start routing service
-      routingService.start();
-
-      while (!shouldTerminate) {
-        Thread.sleep(1000);
-      }
-
-      // stop routing service
-      routingService.stop();
-    }
+    // service terminated
+    log.info("Service terminated");
   }
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received...");
-      shouldTerminate = true;
+      log.info("Shutdown signal received");
+      if (serviceInstance != null) {
+        serviceInstance.stopAsync();
+        serviceInstance.awaitTerminated();
+      }
+      log.info("Shutdown signal finished");
     }));
+  }
+
+  @Override
+  protected void startUp() throws Exception {
+    // log service start
+    log.info("Service is starting");
+
+    // start DDS logger
+    startUpDdsLogger();
+
+    // start routing service
+    startUpRoutingService();
+
+    // log service start
+    log.info("Service start finished");
+  }
+
+  @Override
+  protected void shutDown() throws Exception {
+    // log service start
+    log.info("Service is shutting down");
+
+    // shutdown routing service
+    shutdownRoutingService();
+
+    // log service start
+    log.info("Service shutdown finished");
+  }
+
+  private void startUpDdsLogger() throws IOException {
+    Slf4jDdsLogger.createRegisterLogger();
+  }
+
+  private void startUpRoutingService() {
+    // setup routing service properties
+    final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
+    routingServiceProperty.cfgFile = ROUTING_SERVICE_CONFIG_FILE;
+    routingServiceProperty.serviceName = ROUTING_SERVICE_NAME;
+    routingServiceProperty.applicationName = routingServiceProperty.serviceName;
+    routingServiceProperty.serviceVerbosity = 3;
+
+    // create routing service instance
+    routingService = new RoutingService(routingServiceProperty);
+
+    // start routing service
+    routingService.start();
+  }
+
+  private void shutdownRoutingService() {
+    routingService.stop();
   }
 }

@@ -29,6 +29,7 @@ import com.github.aguther.dds.discovery.observer.PublicationObserverListener;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -39,61 +40,102 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Discovery implements PublicationObserverListener, SubscriptionObserverListener {
+public class Discovery extends AbstractIdleService
+    implements PublicationObserverListener, SubscriptionObserverListener {
 
   private static final Logger log;
 
-  private static boolean shouldTerminate;
+  private static Discovery serviceInstance;
+
+  private DomainParticipant domainParticipant;
+  private PublicationObserver publicationObserver;
+  private SubscriptionObserver subscriptionObserver;
 
   static {
     log = LoggerFactory.getLogger(Discovery.class);
   }
 
-  public static void main(String[] args) throws InterruptedException {
-
-    // create an instance
-    Discovery discovery = new Discovery();
-
+  public static void main(
+      String[] args
+  ) {
     // register shutdown hook
     registerShutdownHook();
+
+    // create service
+    serviceInstance = new Discovery();
+
+    // start the service
+    serviceInstance.startAsync();
+
+    // wait for termination
+    serviceInstance.awaitTerminated();
+
+    // service terminated
+    log.info("Service terminated");
+  }
+
+  private static void registerShutdownHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      log.info("Shutdown signal received");
+      if (serviceInstance != null) {
+        serviceInstance.stopAsync();
+        serviceInstance.awaitTerminated();
+      }
+      log.info("Shutdown signal finished");
+    }));
+  }
+
+  @Override
+  protected void startUp() {
+    // log service start
+    log.info("Service is starting");
 
     // do not auto-enable entities to ensure we do not miss any discovery data
     AutoEnableCreatedEntitiesHelper.disable();
 
     // create domain participant for discovery
-    DomainParticipant domainParticipantDiscovery = DomainParticipantFactory.get_instance().create_participant(
+    domainParticipant = DomainParticipantFactory.get_instance().create_participant(
         0,
         DomainParticipantFactory.PARTICIPANT_QOS_DEFAULT,
         null,
         StatusKind.STATUS_MASK_NONE);
 
     // create new publication observer
-    try (
-        PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
-        SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery)
-    ) {
-      // add listeners
-      publicationObserver.addListener(discovery);
-      subscriptionObserver.addListener(discovery);
+    publicationObserver = new PublicationObserver(domainParticipant);
+    subscriptionObserver = new SubscriptionObserver(domainParticipant);
 
-      // enable domain participant
-      domainParticipantDiscovery.enable();
+    // add listeners
+    publicationObserver.addListener(this);
+    subscriptionObserver.addListener(this);
 
-      while (!shouldTerminate) {
-        Thread.sleep(1000);
-      }
+    // enable domain participant
+    domainParticipant.enable();
+
+    // log service start
+    log.info("Service start finished");
+  }
+
+  @Override
+  protected void shutDown() {
+    // log service start
+    log.info("Service is shutting down");
+
+    // shutdown observers
+    if (publicationObserver != null) {
+      publicationObserver.close();
+    }
+    if (subscriptionObserver != null) {
+      subscriptionObserver.close();
     }
 
     // shutdown DDS
-    DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
+    if (domainParticipant != null) {
+      DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
+    }
     DomainParticipantFactory.finalize_instance();
-  }
 
-  private static void registerShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received...");
-      shouldTerminate = true;
-    }));
+    // log service start
+    log.info("Service shutdown finished");
   }
 
   private String convertInstanceHandleToString(

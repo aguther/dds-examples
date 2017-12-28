@@ -104,7 +104,7 @@ task runShapePublisher(type: JavaExec) {
     // set classpath
     classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
     // set main class
-    main = 'com.github.aguther.dds.examples.shape.Publisher'
+    main = 'com.github.aguther.dds.examples.shape.ShapePublisher'
     // set working directory
     workingDir = '.'
     // jvm settings
@@ -117,7 +117,7 @@ task runShapeSubscriber(type: JavaExec) {
     // set classpath
     classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
     // set main class
-    main = 'com.github.aguther.dds.examples.shape.Subscriber'
+    main = 'com.github.aguther.dds.examples.shape.ShapeSubscriber'
     // set working directory
     workingDir = '.'
     // jvm settings
@@ -182,7 +182,7 @@ task runMutablePublisher(type: JavaExec) {
     // set classpath
     classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
     // set main class
-    main = 'com.github.aguther.dds.examples.mutable.Publisher'
+    main = 'com.github.aguther.dds.examples.mutable.MutablePublisher'
     // set working directory
     workingDir = '.'
     // jvm settings
@@ -195,7 +195,7 @@ task runMutableSubscriber(type: JavaExec) {
     // set classpath
     classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
     // set main class
-    main = 'com.github.aguther.dds.examples.mutable.Subscriber'
+    main = 'com.github.aguther.dds.examples.mutable.MutableSubscriber'
     // set working directory
     workingDir = '.'
     // jvm settings

@@ -36,6 +36,7 @@ import com.github.aguther.dds.routing.dynamic.observer.filter.WildcardPartitionF
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.github.aguther.dds.util.RoutingServiceCommandHelper;
 import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantQos;
@@ -48,76 +49,122 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DynamicRouting {
+public class DynamicRouting extends AbstractIdleService {
 
   private static final String ROUTING_SERVICE_NAME;
-
+  private static final String ROUTING_SERVICE_CONFIG_FILE;
   private static final Logger log;
 
-  private static boolean shouldTerminate;
+  private static DynamicRouting serviceInstance;
+
+  private RoutingService routingService;
+
+  private DomainParticipant domainParticipantAdministration;
+  private DomainParticipant domainParticipantDiscovery;
+  private PublicationObserver publicationObserver;
+  private SubscriptionObserver subscriptionObserver;
+  private DynamicPartitionObserver dynamicPartitionObserver;
+  private DynamicPartitionCommander dynamicPartitionCommander;
+  private RoutingServiceCommandHelper routingServiceCommandHelper;
 
   static {
     ROUTING_SERVICE_NAME = "dds-examples-routing-dynamic";
-
+    ROUTING_SERVICE_CONFIG_FILE = "routing-dynamic.xml";
     log = LoggerFactory.getLogger(DynamicRouting.class);
   }
 
-  public static void main(String[] args) throws InterruptedException {
-
+  public static void main(
+      String[] args
+  ) {
     // register shutdown hook
     registerShutdownHook();
 
-    // register logger DDS messages
-    try {
-      Slf4jDdsLogger.createRegisterLogger();
-    } catch (IOException e) {
-      log.error("Failed to create and register DDS logging device.", e);
-      return;
-    }
+    // create service
+    serviceInstance = new DynamicRouting();
 
-    log.info("Starting routing service");
+    // start the service
+    serviceInstance.startAsync();
 
+    // wait for termination
+    serviceInstance.awaitTerminated();
+
+    // service terminated
+    log.info("Service terminated");
+  }
+
+  private static void registerShutdownHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      log.info("Shutdown signal received");
+      if (serviceInstance != null) {
+        serviceInstance.stopAsync();
+        serviceInstance.awaitTerminated();
+      }
+      log.info("Shutdown signal finished");
+    }));
+  }
+
+  @Override
+  protected void startUp() throws Exception {
+    // log service start
+    log.info("Service is starting");
+
+    // start DDS logger
+    startUpDdsLogger();
+
+    // start routing service
+    startUpRoutingService();
+
+    // start dynamic routing
+    startUpDynamicRouting();
+
+    // log service start
+    log.info("Service start finished");
+  }
+
+  @Override
+  protected void shutDown() throws Exception {
+    // log service start
+    log.info("Service is shutting down");
+
+    // shutdown dynamic routing
+    shutdownDynamicRouting();
+
+    // shutdown routing service
+    shutdownRoutingService();
+
+    // log service start
+    log.info("Service shutdown finished");
+  }
+
+  private void startUpDdsLogger() throws IOException {
+    Slf4jDdsLogger.createRegisterLogger();
+  }
+
+  private void startUpRoutingService() {
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
-    routingServiceProperty.cfgFile = "routing-dynamic.xml";
+    routingServiceProperty.cfgFile = ROUTING_SERVICE_CONFIG_FILE;
     routingServiceProperty.serviceName = ROUTING_SERVICE_NAME;
     routingServiceProperty.applicationName = routingServiceProperty.serviceName;
     routingServiceProperty.serviceVerbosity = 3;
 
     // create routing service instance
-    try (RoutingService routingService = new RoutingService(routingServiceProperty)) {
+    routingService = new RoutingService(routingServiceProperty);
 
-      // start routing service
-      routingService.start();
-      log.info("Routing service was started");
-
-      // start dynamic routing
-      startupDynamicRouting();
-
-      while (!shouldTerminate) {
-        Thread.sleep(1000);
-      }
-
-      // stop routing service
-      routingService.stop();
-    }
+    // start routing service
+    routingService.start();
   }
 
-  private static void registerShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received...");
-      shouldTerminate = true;
-    }));
+  private void shutdownRoutingService() {
+    routingService.stop();
   }
 
-  private static void startupDynamicRouting() {
-    log.info("Starting dynamic routing");
-
+  private void startUpDynamicRouting() {
     // create domain participant for administration interface
-    DomainParticipant domainParticipantAdministration = createRemoteAdministrationDomainParticipant(0);
+    domainParticipantAdministration = createRemoteAdministrationDomainParticipant(0);
 
     // create routing service administration
-    RoutingServiceCommandHelper routingServiceCommandHelper = new RoutingServiceCommandHelper(
+    routingServiceCommandHelper = new RoutingServiceCommandHelper(
         domainParticipantAdministration);
 
     // wait for routing service to be discovered
@@ -129,45 +176,71 @@ public class DynamicRouting {
     }
 
     // create domain participant for discovery
-    DomainParticipant domainParticipantDiscovery = createDiscoveryDomainParticipant(0);
+    domainParticipantDiscovery = createDiscoveryDomainParticipant(0);
+
+    // create dynamic partition commander
+    dynamicPartitionCommander = new DynamicPartitionCommander(
+        routingServiceCommandHelper,
+        new DynamicPartitionCommanderProviderImpl("Default"),
+        ROUTING_SERVICE_NAME
+    );
 
     // create dynamic partition observer
-    DynamicPartitionObserver dynamicPartitionObserver = new DynamicPartitionObserver();
+    dynamicPartitionObserver = new DynamicPartitionObserver();
+
     // add filters to dynamic partition observer
     dynamicPartitionObserver.addFilter(new RtiTopicFilter());
     dynamicPartitionObserver.addFilter(new RoutingServiceEntitiesFilter());
     dynamicPartitionObserver.addFilter(new RoutingServiceGroupEntitiesFilter(ROUTING_SERVICE_NAME));
     dynamicPartitionObserver.addFilter(new WildcardPartitionFilter());
+
     // add listener to dynamic partition observer
-    dynamicPartitionObserver.addListener(
-        new DynamicPartitionCommander(
-            routingServiceCommandHelper,
-            new DynamicPartitionCommanderProviderImpl("Default"),
-            ROUTING_SERVICE_NAME
-        )
-    );
+    dynamicPartitionObserver.addListener(dynamicPartitionCommander);
 
     // create new publication observer
-    PublicationObserver publicationObserver = new PublicationObserver(domainParticipantDiscovery);
+    publicationObserver = new PublicationObserver(domainParticipantDiscovery);
     publicationObserver.addListener(dynamicPartitionObserver, false);
 
     // create new subscription observer
-    SubscriptionObserver subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
+    subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
     subscriptionObserver.addListener(dynamicPartitionObserver, false);
 
     // enable discovery domain participant
     domainParticipantDiscovery.enable();
-
-    log.info("Dynamic routing was started");
   }
 
-  private static DomainParticipant createRemoteAdministrationDomainParticipant(
+  private void shutdownDynamicRouting() {
+    if (publicationObserver != null) {
+      publicationObserver.close();
+    }
+    if (subscriptionObserver != null) {
+      subscriptionObserver.close();
+    }
+    if (dynamicPartitionObserver != null) {
+      dynamicPartitionObserver.close();
+    }
+    if (dynamicPartitionCommander != null) {
+      dynamicPartitionCommander.close();
+    }
+
+    if (domainParticipantAdministration != null) {
+      domainParticipantAdministration.delete_contained_entities();
+      DomainParticipantFactory.get_instance().delete_participant(domainParticipantAdministration);
+    }
+    if (domainParticipantDiscovery != null) {
+      domainParticipantDiscovery.delete_contained_entities();
+      DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
+    }
+    routingServiceCommandHelper = null;
+  }
+
+  private DomainParticipant createRemoteAdministrationDomainParticipant(
       int domainId
   ) {
     return createDomainParticipant(domainId, "RTI Routing Service: remote administration");
   }
 
-  private static DomainParticipant createDiscoveryDomainParticipant(
+  private DomainParticipant createDiscoveryDomainParticipant(
       int domainId
   ) {
     // disable auto-enable -> THIS IS CRUCIAL TO WORK CORRECTLY
@@ -182,7 +255,7 @@ public class DynamicRouting {
     return domainParticipant;
   }
 
-  private static DomainParticipant createDomainParticipant(
+  private DomainParticipant createDomainParticipant(
       int domainId,
       String participantName
   ) {
