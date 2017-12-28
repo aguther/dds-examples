@@ -27,7 +27,6 @@ package com.github.aguther.dds.discovery.observer;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.github.aguther.dds.util.DomainParticipantHelper;
 import com.google.common.base.Strings;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.StatusKind;
@@ -58,16 +57,15 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   /**
    * Instantiates a new Builtin topic observer.
    *
-   * @param domainParticipant the domain participant (that is not yet enabled)
+   * @param domainParticipant not enabled domain participant (otherwise data will be missed)
    * @param topicName the topic name
    */
   BuiltinTopicObserver(
       final DomainParticipant domainParticipant,
-      final String topicName) {
-    // check arguments
+      final String topicName
+  ) {
+    // check arguments (we do not check if domain participant is enabled because it triggers an error log
     checkNotNull(domainParticipant, "DomainParticipant must not be null");
-    checkArgument(!DomainParticipantHelper.isEnabled(domainParticipant),
-        "DomainParticipant must not be enabled to guarantee correct function.");
     checkArgument(!Strings.isNullOrEmpty(topicName), "Topic name must not be empty or null");
 
     // keep reference to domain participant
