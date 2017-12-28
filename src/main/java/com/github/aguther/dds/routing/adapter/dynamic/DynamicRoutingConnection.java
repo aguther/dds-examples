@@ -35,7 +35,7 @@ import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceEnti
 import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
-import com.github.aguther.dds.util.RoutingServiceCommandHelper;
+import com.github.aguther.dds.routing.util.RoutingServiceCommandHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantQos;

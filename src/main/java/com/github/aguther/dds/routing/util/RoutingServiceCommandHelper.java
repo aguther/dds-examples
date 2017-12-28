@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.util;
+package com.github.aguther.dds.routing.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.aguther.dds.util.DurationFactory;
 import com.rti.connext.infrastructure.Sample;
 import com.rti.connext.requestreply.Requester;
 import com.rti.connext.requestreply.RequesterParams;
