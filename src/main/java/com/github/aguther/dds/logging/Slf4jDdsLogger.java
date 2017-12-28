@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.util;
+package com.github.aguther.dds.logging;
 
 
 import static com.rti.ndds.config.LogLevel.NDDS_CONFIG_LOG_LEVEL_DEBUG;

@@ -130,6 +130,7 @@ public class Discovery extends AbstractIdleService
 
     // shutdown DDS
     if (domainParticipant != null) {
+      domainParticipant.delete_contained_entities();
       DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
     }
     DomainParticipantFactory.finalize_instance();

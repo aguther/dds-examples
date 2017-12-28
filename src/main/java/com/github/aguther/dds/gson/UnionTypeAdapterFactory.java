@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.util;
+package com.github.aguther.dds.gson;
 
 import com.esotericsoftware.reflectasm.FieldAccess;
 import com.google.gson.Gson;

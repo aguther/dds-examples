@@ -24,7 +24,7 @@
 
 package com.github.aguther.dds.examples.mutable;
 
-import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -146,6 +146,7 @@ public class MutableSubscriber extends AbstractIdleService {
   private void shutdownDds() {
     // delete domain participant
     if (domainParticipant != null) {
+      domainParticipant.delete_contained_entities();
       DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
       domainParticipant = null;
     }

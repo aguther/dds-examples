@@ -24,7 +24,7 @@
 
 package com.github.aguther.dds.examples.routing;
 
-import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;

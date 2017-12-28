@@ -24,7 +24,7 @@
 
 package com.github.aguther.dds.examples.requestreply;
 
-import com.github.aguther.dds.util.Slf4jDdsLogger;
+import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.connext.requestreply.SimpleReplier;
 import com.rti.dds.domain.DomainParticipant;
@@ -171,6 +171,7 @@ public class Reply extends AbstractIdleService {
 
     // delete domain participant
     if (domainParticipant != null) {
+      domainParticipant.delete_contained_entities();
       DomainParticipantFactory.get_instance().delete_participant(domainParticipant);
       domainParticipant = null;
     }
