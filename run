@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
+# prepare runtime environment
+./gradlew build -x test copyRuntimeLibraries
+
 # start application
-./gradlew --no-daemon run$1
+exec /usr/bin/java -classpath build/libs/*:build/libs-runtime/* com.github.aguther.dds.examples.$1
