@@ -24,8 +24,6 @@
 
 package com.github.aguther.dds.util;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class RoutingServiceCommandHelperTest {

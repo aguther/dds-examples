@@ -52,8 +52,6 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataSeq;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 public class SubscriptionObserverTest {
 
