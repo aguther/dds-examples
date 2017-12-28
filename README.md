@@ -14,24 +14,44 @@ The examples can be executed in the following ways:
 
 ## Examples
 * Shape
-  * ShapePublisher
-  * ShapeSubscriber
+  * ShapePublisher `shape.ShapePublisher`
+  * ShapeSubscriber `shape.ShapeSubscriber`
 * Request/Reply
-  * RequestReplyRequest
-  * RequestReplyReply
+  * RequestReplyRequest `requestreply.Request`
+  * RequestReplyReply `requestreply.Reply`
 * Mutable
-  * MutableBuffer
-  * MutablePublisher
-  * MutableSubscriber
+  * MutableBuffer `mutable.MutableBuffer`
+  * MutablePublisher `mutable.MutablePublisher`
+  * MutableSubscriber `mutable.MutableSubscriber`
 * Json
-  * Json
-* TBD: Read/Write to file
-* TBD: Read/Write to file with backwards compatibility (mutable types)
-* TBD: Stateless/Micro-Service
+  * Json `json.Json`
+* Discovery
+  * Discovery `discovery.Discovery`
+* Routing
+  * Static Routing `routing.StaticRouting`
+  * Dynamic Routing `routing.DynamicRouting`
+  * Routing with Adapter `use ./runRoutingAdapter`
+
+## Routing Service examples
+The examples can be used with the ShapeDemo. Start a ShapeDemo on domain 0 and a ShapeDemo on domain 1.
 
 ## Helper classes
-The following helper classes are available:
-* Logger that logs RTI messages via slf4j
-* TypeAdapterFactory for Enum, Sequence for the usage with GSON library
-* TBD: Listeners logging to slf4j and to multiple listeners (e.g. for Participant, Topic, DataReader, DataWriter)
-* TBD: Helper for reading/taking data from DataReader
+The following helper classes are available.
+
+### Logging
+Logger that logs RTI messages via slf4j
+
+### GSON library
+TypeAdapterFactory for Enum, Sequence for the usage with GSON library
+
+### Routing Service
+Command helper that helps in sending remote commands to a routing service.
+
+### Samples
+Convert samples from/to byte buffer (in CDR format) and from/to DynamicData.
+
+### Miscellaneous
+* Get participant data from publication/subscription data
+* Switch the auto-enable behaviour for created entities
+* Check if a domain participant is enabled
+* Get a duration from a Java time value and time unit
