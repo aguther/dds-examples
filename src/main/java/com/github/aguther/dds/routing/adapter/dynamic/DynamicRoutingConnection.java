@@ -31,7 +31,6 @@ import com.github.aguther.dds.routing.adapter.empty.EmptyStreamReader;
 import com.github.aguther.dds.routing.adapter.empty.EmptyStreamWriter;
 import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
-import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceEntitiesFilter;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandHelper;
@@ -147,10 +146,9 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
     dynamicPartitionObserver = new DynamicPartitionObserver();
     // filter out RTI topics
     dynamicPartitionObserver.addFilter(new RtiTopicFilter());
-    // filter out routing service entities
-    dynamicPartitionObserver.addFilter(new RoutingServiceEntitiesFilter());
     // filter out entities belonging to the same routing service group
     dynamicPartitionObserver.addFilter(new RoutingServiceGroupEntitiesFilter(routingServiceGroupName));
+    // filter out entities that have no configuration
     dynamicPartitionObserver.addFilter(configurationFilter);
 
     // create commander
