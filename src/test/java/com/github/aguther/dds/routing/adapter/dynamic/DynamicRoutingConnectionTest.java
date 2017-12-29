@@ -13,7 +13,7 @@ import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
 import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
-import com.github.aguther.dds.routing.util.RoutingServiceCommand;
+import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantQos;
@@ -44,7 +44,7 @@ public class DynamicRoutingConnectionTest {
   private SubscriptionObserver subscriptionObserver;
   private DynamicPartitionObserver dynamicPartitionObserver;
   private DynamicPartitionCommander dynamicPartitionCommander;
-  private RoutingServiceCommand routingServiceCommand;
+  private RoutingServiceCommandInterface routingServiceCommandInterface;
 
   private DomainParticipantQos domainParticipantQos;
 //  private ServiceQosPolicy serviceQosPolicy;
@@ -77,8 +77,9 @@ public class DynamicRoutingConnectionTest {
     dynamicPartitionCommander = mock(DynamicPartitionCommander.class);
     PowerMockito.whenNew(DynamicPartitionCommander.class).withAnyArguments().thenReturn(dynamicPartitionCommander);
 
-    routingServiceCommand = mock(RoutingServiceCommand.class);
-    PowerMockito.whenNew(RoutingServiceCommand.class).withAnyArguments().thenReturn(routingServiceCommand);
+    routingServiceCommandInterface = mock(RoutingServiceCommandInterface.class);
+    PowerMockito.whenNew(RoutingServiceCommandInterface.class).withAnyArguments().thenReturn(
+        routingServiceCommandInterface);
 
     ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
     EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
@@ -102,7 +103,7 @@ public class DynamicRoutingConnectionTest {
     );
 
     // verify all close methods have been called
-    verify(routingServiceCommand, times(1)).waitForRoutingService(
+    verify(routingServiceCommandInterface, times(1)).waitForDiscovery(
         anyString(),
         anyLong(),
         any(TimeUnit.class)

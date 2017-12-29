@@ -49,9 +49,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This class provides helpers to easily interact with a routing service using the topics defined by RTI.
  */
-public class RoutingServiceCommand {
+public class RoutingServiceCommandInterface {
 
-  private static final Logger log = LoggerFactory.getLogger(RoutingServiceCommand.class);
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceCommandInterface.class);
 
   private final Requester<CommandRequest, CommandResponse> requester;
 
@@ -65,7 +65,7 @@ public class RoutingServiceCommand {
    *
    * @param domainParticipant domain participant to send and receive commands
    */
-  public RoutingServiceCommand(
+  public RoutingServiceCommandInterface(
       final DomainParticipant domainParticipant
   ) {
     // check input parameters
@@ -101,12 +101,12 @@ public class RoutingServiceCommand {
    * @param timeOutUnit time unit of timeout
    * @return true if target routing service was discovered, false if not within timeout
    */
-  public boolean waitForRoutingService(
+  public boolean waitForDiscovery(
       final String targetRouter,
       final long timeOut,
       final TimeUnit timeOutUnit
   ) {
-    return waitForRoutingService(
+    return waitForDiscovery(
         targetRouter,
         timeOut,
         timeOutUnit,
@@ -125,7 +125,7 @@ public class RoutingServiceCommand {
    * @param sleepTimeUnit time unit of time to sleep
    * @return true if target routing service was discovered, false if not within timeout
    */
-  public boolean waitForRoutingService(
+  public boolean waitForDiscovery(
       final String targetRouter,
       final long timeOut,
       final TimeUnit timeOutUnit,

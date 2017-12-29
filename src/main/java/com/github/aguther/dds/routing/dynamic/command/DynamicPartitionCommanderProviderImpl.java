@@ -24,9 +24,12 @@
 
 package com.github.aguther.dds.routing.dynamic.command;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
+import com.google.common.base.Strings;
 
 /**
  * Provider with the following naming schemas:
@@ -43,6 +46,7 @@ public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCo
   public DynamicPartitionCommanderProviderImpl(
       final String domainRouteName
   ) {
+    checkArgument(!Strings.isNullOrEmpty(domainRouteName), "Domain route name must not be null or empty");
     this.domainRouteName = domainRouteName;
   }
 

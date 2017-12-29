@@ -26,7 +26,7 @@ package com.github.aguther.dds.util;
 
 import org.junit.Test;
 
-public class RoutingServiceCommandTest {
+public class RoutingServiceCommandInterfaceTest {
 
   @Test
   public void waitForRoutingService() {

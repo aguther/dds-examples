@@ -33,7 +33,7 @@ import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
-import com.github.aguther.dds.routing.util.RoutingServiceCommand;
+import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -87,7 +87,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
   private final DynamicPartitionObserver dynamicPartitionObserver;
 
   private final DynamicPartitionCommander dynamicPartitionCommander;
-  private final RoutingServiceCommand routingServiceCommand;
+  private final RoutingServiceCommandInterface routingServiceCommandInterface;
 
   DynamicRoutingConnection(
       final String routingServiceName,
@@ -111,12 +111,12 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
         Integer.parseInt(properties.getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID)));
 
     // create routing service administration
-    routingServiceCommand = new RoutingServiceCommand(
+    routingServiceCommandInterface = new RoutingServiceCommandInterface(
         domainParticipantAdministration);
 
     // wait for routing service to be discovered
     log.info("Waiting for remote administration interface of routing service to be discovered");
-    if (routingServiceCommand.waitForRoutingService(
+    if (routingServiceCommandInterface.waitForDiscovery(
         routingServiceName,
         Long.parseLong(properties.getProperty(
             PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME,
@@ -146,7 +146,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
 
     // create commander
     dynamicPartitionCommander = new DynamicPartitionCommander(
-        routingServiceCommand,
+        routingServiceCommandInterface,
         configurationFilter,
         routingServiceName,
         Long.parseLong(properties.getProperty(
