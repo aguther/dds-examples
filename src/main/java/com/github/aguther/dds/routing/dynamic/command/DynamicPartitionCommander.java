@@ -24,14 +24,19 @@
 
 package com.github.aguther.dds.routing.dynamic.command;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverListener;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommand;
+import com.google.common.base.Strings;
 import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
+import idl.RTI.RoutingService.Administration.XML_URL_MAX_LENGTH;
 import java.io.Closeable;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
@@ -142,6 +147,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       final long requestTimeout,
       final TimeUnit requestTimeoutTimeUnit
   ) {
+    checkNotNull(routingServiceCommand, "Routing Service Command must not be null.");
+    checkNotNull(dynamicPartitionCommanderProvider, "Provider must not be null.");
+    checkArgument(!Strings.isNullOrEmpty(targetRoutingService), "Target routing service must be valid.");
+    checkArgument(retryDelay >= 0, "Retry delay is expected >= 0");
+    checkArgument(requestTimeout > 0, "Timeout is expected > 0");
+
     this.routingServiceCommand = routingServiceCommand;
     this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
     this.targetRoutingService = targetRoutingService;
@@ -351,6 +362,13 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     commandRequest.command.entity_desc.xml_url.content
         = dynamicPartitionCommanderProvider.getSessionConfiguration(session);
 
+    // ensure our xml url is in the allowed range (multiple send command are not yet supported)
+    checkArgument(
+        commandRequest.command.entity_desc.xml_url.content.length() <= XML_URL_MAX_LENGTH.VALUE,
+        "XML url content is expected <= %s",
+        XML_URL_MAX_LENGTH.VALUE
+    );
+
     // send request and return result
     return sendRequest(
         commandHelper,
@@ -418,6 +436,13 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     commandRequest.command.entity_desc.xml_url.is_final = true;
     commandRequest.command.entity_desc.xml_url.content
         = dynamicPartitionCommanderProvider.getTopicRouteConfiguration(session, topicRoute);
+
+    // ensure our xml url is in the allowed range (multiple send command are not yet supported)
+    checkArgument(
+        commandRequest.command.entity_desc.xml_url.content.length() <= XML_URL_MAX_LENGTH.VALUE,
+        "XML url content is expected <= %s",
+        XML_URL_MAX_LENGTH.VALUE
+    );
 
     // send request and return result
     return sendRequest(
