@@ -24,15 +24,256 @@
 
 package com.github.aguther.dds.routing.util;
 
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.rti.connext.infrastructure.Sample;
+import com.rti.connext.requestreply.Requester;
+import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.domain.DomainParticipantQos;
+import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
+import com.rti.dds.infrastructure.Duration_t;
+import com.rti.dds.infrastructure.EntityNameQosPolicy;
+import com.rti.dds.infrastructure.InstanceHandleSeq;
+import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.ServiceQosPolicy;
+import com.rti.dds.infrastructure.ServiceQosPolicyKind;
+import com.rti.dds.infrastructure.WireProtocolQosPolicy;
+import com.rti.dds.publication.DataWriter;
+import idl.RTI.RoutingService.Administration.CommandRequest;
+import idl.RTI.RoutingService.Administration.CommandRequestTypeSupport;
+import idl.RTI.RoutingService.Administration.CommandResponse;
+import idl.RTI.RoutingService.Administration.CommandResponseTypeSupport;
+import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({
+    RoutingServiceCommandInterface.class,
+    DomainParticipant.class,
+    DomainParticipantQos.class,
+    EntityNameQosPolicy.class,
+    ServiceQosPolicy.class,
+    WireProtocolQosPolicy.class,
+    ParticipantBuiltinTopicData.class,
+    CommandRequestTypeSupport.class,
+    CommandResponseTypeSupport.class,
+    Requester.class
+})
+@SuppressStaticInitializationFor({
+    "com.rti.dds.domain.DomainParticipantFactory",
+    "com.rti.dds.domain.DomainParticipant",
+    "com.rti.dds.domain.DomainParticipantQos",
+    "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
+    "com.rti.dds.topic.TypeSupportImpl",
+    "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
+    "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
+    "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
+    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport",
+    "idl.RTI.RoutingService.Administration.CommandRequestTypeSupport",
+    "idl.RTI.RoutingService.Administration.CommandResponseTypeSupport"
+})
 public class RoutingServiceCommandInterfaceTest {
 
-  @Test
-  public void waitForRoutingService() {
+  private DomainParticipant domainParticipant;
+  private DomainParticipantQos domainParticipantQos;
+
+  private CommandRequestTypeSupport commandRequestTypeSupport;
+  private CommandResponseTypeSupport commandResponseTypeSupport;
+
+  private Requester<CommandRequest, CommandResponse> requester;
+
+  private RoutingServiceCommandInterface commandInterface;
+
+  @Before
+  @SuppressWarnings("unchecked")
+  public void setUp() throws Exception {
+    domainParticipant = mock(DomainParticipant.class);
+
+    domainParticipantQos = mock(DomainParticipantQos.class);
+    {
+      WireProtocolQosPolicy wireProtocolQosPolicy = PowerMockito.mock(WireProtocolQosPolicy.class);
+      Whitebox.setInternalState(domainParticipantQos, "wire_protocol", wireProtocolQosPolicy);
+    }
+    PowerMockito.whenNew(DomainParticipantQos.class).withAnyArguments().thenReturn(domainParticipantQos);
+
+    commandRequestTypeSupport = mock(CommandRequestTypeSupport.class);
+    Whitebox.setInternalState(CommandRequestTypeSupport.class, "_singleton", commandRequestTypeSupport);
+
+    commandResponseTypeSupport = mock(CommandResponseTypeSupport.class);
+    Whitebox.setInternalState(CommandResponseTypeSupport.class, "_singleton", commandResponseTypeSupport);
+
+    requester = mock(Requester.class);
+    {
+      Sample responseSample = mock(Sample.class);
+      when(responseSample.getData()).thenReturn(new CommandResponse());
+      when(requester.createReplySample()).thenReturn(responseSample);
+    }
+    PowerMockito.whenNew(Requester.class).withAnyArguments().thenReturn(requester);
+
+    commandInterface = new RoutingServiceCommandInterface(domainParticipant);
+  }
+
+  @After
+  public void tearDown() {
+
   }
 
   @Test
-  public void sendRequest() {
+  public void testWaitForRoutingServiceFound() throws Exception {
+    // set target router name
+    String targetRouter = "Test";
+
+    // instance handle for identification
+    InstanceHandle_t instanceHandle = new InstanceHandle_t(ByteBuffer.allocate(4).putInt(1).array());
+
+    // setup mock for data writer
+    DataWriter dataWriter = mock(DataWriter.class);
+    when(requester.getRequestDataWriter()).thenReturn(dataWriter);
+
+    // setup mock for participant data
+    ParticipantBuiltinTopicData participantBuiltinTopicData = mock(ParticipantBuiltinTopicData.class);
+    {
+      ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
+      serviceQosPolicy.kind = ServiceQosPolicyKind.ROUTING_SERVICE_QOS;
+      Whitebox.setInternalState(participantBuiltinTopicData, "service", serviceQosPolicy);
+
+      EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
+      entityNameQosPolicy.name = String.format("RTI Routing Service: %s", targetRouter);
+      Whitebox.setInternalState(participantBuiltinTopicData, "participant_name", entityNameQosPolicy);
+    }
+    PowerMockito.whenNew(ParticipantBuiltinTopicData.class).withAnyArguments().thenReturn(participantBuiltinTopicData);
+
+    // prepare answer to get subscription data
+    doAnswer(
+        invocation -> {
+          InstanceHandleSeq seq = invocation.getArgument(0);
+          seq.add(instanceHandle);
+          return null;
+        }
+    ).when(dataWriter).get_matched_subscriptions(any(InstanceHandleSeq.class));
+
+    // assert that target router is found
+    assertTrue(commandInterface.waitForDiscovery(targetRouter, 100, TimeUnit.MILLISECONDS));
+  }
+
+  @Test
+  public void testWaitForRoutingServiceNotFound() throws Exception {
+    // set target router name
+    String targetRouter = "Test";
+
+    // instance handle for identification
+    InstanceHandle_t instanceHandle = new InstanceHandle_t(ByteBuffer.allocate(4).putInt(1).array());
+
+    // setup mock for data writer
+    DataWriter dataWriter = mock(DataWriter.class);
+    when(requester.getRequestDataWriter()).thenReturn(dataWriter);
+
+    // setup mock for participant data
+    ParticipantBuiltinTopicData participantBuiltinTopicData = mock(ParticipantBuiltinTopicData.class);
+    {
+      ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
+      serviceQosPolicy.kind = ServiceQosPolicyKind.NO_SERVICE_QOS;
+      Whitebox.setInternalState(participantBuiltinTopicData, "service", serviceQosPolicy);
+
+      EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
+      entityNameQosPolicy.name = "Some other participant";
+      Whitebox.setInternalState(participantBuiltinTopicData, "participant_name", entityNameQosPolicy);
+    }
+    PowerMockito.whenNew(ParticipantBuiltinTopicData.class).withAnyArguments().thenReturn(participantBuiltinTopicData);
+
+    // prepare answer to get subscription data
+    doAnswer(
+        invocation -> {
+          InstanceHandleSeq seq = invocation.getArgument(0);
+          seq.add(instanceHandle);
+          return null;
+        }
+    ).when(dataWriter).get_matched_subscriptions(any(InstanceHandleSeq.class));
+
+    // assert that target router is found
+    assertFalse(commandInterface.waitForDiscovery(targetRouter, 100, TimeUnit.MILLISECONDS));
+  }
+
+  @Test
+  public void testWaitForRoutingServiceThreadInterrupted() throws Exception {
+    // set target router name
+    String targetRouter = "Test";
+
+    // instance handle for identification
+    InstanceHandle_t instanceHandle = new InstanceHandle_t(ByteBuffer.allocate(4).putInt(1).array());
+
+    // setup mock for data writer
+    DataWriter dataWriter = mock(DataWriter.class);
+    when(requester.getRequestDataWriter()).thenReturn(dataWriter);
+
+    // setup mock for participant data
+    ParticipantBuiltinTopicData participantBuiltinTopicData = mock(ParticipantBuiltinTopicData.class);
+    PowerMockito.whenNew(ParticipantBuiltinTopicData.class).withAnyArguments().thenReturn(participantBuiltinTopicData);
+
+    // setup mock for time unit
+    TimeUnit timeUnit = mock(TimeUnit.class);
+    doThrow(new InterruptedException()).when(timeUnit).sleep(anyLong());
+
+    // wait for discovery and interrupt thread
+    commandInterface.waitForDiscovery(
+        targetRouter,
+        100,
+        TimeUnit.MILLISECONDS,
+        100,
+        timeUnit
+    );
+
+    // assert that thread was interrupted
+    assertTrue(Thread.currentThread().isInterrupted());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testSendRequest() {
+    CommandRequest commandRequest = commandInterface.createCommandRequest();
+
+    when(requester.receiveReply(any(Sample.class), any(Duration_t.class))).thenReturn(true);
+    CommandResponse response = commandInterface.sendRequest(commandRequest, 1, TimeUnit.SECONDS);
+
+    assertNotNull(response);
+
+    verify(requester, times(1)).sendRequest(commandRequest);
+    verify(requester, times(1)).createReplySample();
+    verify(requester, times(1)).receiveReply(any(Sample.class), any(Duration_t.class));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testSendRequestFailed() {
+    CommandRequest commandRequest = commandInterface.createCommandRequest();
+
+    when(requester.receiveReply(any(Sample.class), any(Duration_t.class))).thenReturn(false);
+    CommandResponse response = commandInterface.sendRequest(commandRequest, 1, TimeUnit.SECONDS);
+
+    assertNull(response);
+
+    verify(requester, times(1)).sendRequest(commandRequest);
+    verify(requester, times(1)).createReplySample();
+    verify(requester, times(1)).receiveReply(any(Sample.class), any(Duration_t.class));
   }
 }

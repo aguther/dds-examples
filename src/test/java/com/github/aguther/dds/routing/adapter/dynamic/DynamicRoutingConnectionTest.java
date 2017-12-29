@@ -31,9 +31,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({DynamicRoutingConnection.class, DomainParticipantQos.class, ServiceQosPolicy.class,
-    EntityNameQosPolicy.class})
-@SuppressStaticInitializationFor("com.rti.dds.domain.DomainParticipantFactory")
+@PrepareForTest({
+    DynamicRoutingConnection.class,
+    DomainParticipantQos.class,
+    ServiceQosPolicy.class,
+    EntityNameQosPolicy.class
+})
+@SuppressStaticInitializationFor({
+    "com.rti.dds.domain.DomainParticipantFactory"
+})
 public class DynamicRoutingConnectionTest {
 
   private DomainParticipantFactory domainParticipantFactory;
@@ -81,11 +87,14 @@ public class DynamicRoutingConnectionTest {
     PowerMockito.whenNew(RoutingServiceCommandInterface.class).withAnyArguments().thenReturn(
         routingServiceCommandInterface);
 
-    ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
-    EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
     domainParticipantQos = PowerMockito.mock(DomainParticipantQos.class);
-    Whitebox.setInternalState(domainParticipantQos, "service", serviceQosPolicy);
-    Whitebox.setInternalState(domainParticipantQos, "participant_name", entityNameQosPolicy);
+    {
+      ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
+      Whitebox.setInternalState(domainParticipantQos, "service", serviceQosPolicy);
+
+      EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
+      Whitebox.setInternalState(domainParticipantQos, "participant_name", entityNameQosPolicy);
+    }
     PowerMockito.whenNew(DomainParticipantQos.class).withAnyArguments().thenReturn(domainParticipantQos);
   }
 
