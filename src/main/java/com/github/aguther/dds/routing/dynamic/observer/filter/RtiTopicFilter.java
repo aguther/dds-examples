@@ -55,6 +55,7 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
 
   @Override
   public boolean ignorePartition(
+      final String topicName,
       final String partition
   ) {
     return false;

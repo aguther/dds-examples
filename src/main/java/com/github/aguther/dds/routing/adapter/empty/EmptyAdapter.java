@@ -31,6 +31,9 @@ import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import com.rti.routingservice.adapter.infrastructure.Version;
 import java.util.Properties;
 
+/**
+ * This class implements an adapter that does nothing.
+ */
 public class EmptyAdapter implements Adapter {
 
   public EmptyAdapter(

@@ -29,6 +29,9 @@ import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * This class implements a stream writer that does nothing.
+ */
 public class EmptyStreamWriter implements StreamWriter {
 
   @Override

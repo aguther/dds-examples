@@ -67,10 +67,12 @@ public interface DynamicPartitionObserverFilter {
   /**
    * Invoked to determine if a partition should be ignored.
    *
-   * @param partition domain participant for reference
+   * @param topicName topic name of partition
+   * @param partition partition to check
    * @return true to ignore partition, false to allow
    */
   boolean ignorePartition(
+      final String topicName,
       final String partition
   );
 }

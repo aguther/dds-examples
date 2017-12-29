@@ -33,7 +33,26 @@ public class PropertyFactory {
   public static final int ADMINISTRATION_DISCOVERY_WAIT_TIME = 250;
   public static final int ADMINISTRATION_REQUEST_TIMEOUT = 2500;
   public static final int ADMINISTRATION_REQUEST_RETRY_DELAY = 2500;
+
   public static final String CONFIGURATION_DOMAIN_ROUTE_NAME = "DomainRouteTest";
+
+  public static final String CONFIGURATION_SHAPE_NAME = "Shape";
+  public static final String CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER = "Square|T.*";
+  public static final String CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER = "Circle";
+  public static final String CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER = "A.*|B";
+  public static final String CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER = ".*\\*|D";
+  public static final String CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE = "<publish_with_original_info>true</publish_with_original_info>";
+  public static final String CONFIGURATION_SHAPE_QOS_INPUT = "<datareader_qos/>";
+  public static final String CONFIGURATION_SHAPE_QOS_OUTPUT = "<datawriter_qos/>";
+
+  public static final String CONFIGURATION_SAMPLE_NAME = "Sample";
+  public static final String CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER = "S.*";
+  public static final String CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER = "S.*Deny";
+  public static final String CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER = ".*";
+  public static final String CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER = ".*\\*";
+  public static final String CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE = "<publish_with_original_info>true</publish_with_original_info>";
+  public static final String CONFIGURATION_SAMPLE_QOS_INPUT = "<datareader_qos/>";
+  public static final String CONFIGURATION_SAMPLE_QOS_OUTPUT = "<datawriter_qos/>";
 
   private PropertyFactory() {
   }
@@ -67,37 +86,73 @@ public class PropertyFactory {
         "dynamic_routing_adapter.configuration.domain_route_name",
         CONFIGURATION_DOMAIN_ROUTE_NAME
     );
-    properties.put(
-        "dynamic_routing_adapter.configuration.Shape.allow_topic_name_filter",
-        "Square|T.*"
+
+    addConfiguration(
+        properties,
+        CONFIGURATION_SHAPE_NAME,
+        CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER,
+        CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER,
+        CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER,
+        CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER,
+        CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE,
+        CONFIGURATION_SHAPE_QOS_INPUT,
+        CONFIGURATION_SHAPE_QOS_OUTPUT
     );
-    properties.put(
-        "dynamic_routing_adapter.configuration.Shape.deny_topic_name_filter",
-        "Circle"
-    );
-    properties.put(
-        "dynamic_routing_adapter.configuration.Shape.allow_partition_name_filter",
-        "A.*|B"
-    );
-    properties.put(
-        "dynamic_routing_adapter.configuration.Shape.deny_partition_name_filter",
-        ".*\\*|D"
-    );
-    properties.put(
-        "dynamic_routing_adapter.configuration.Shape.qos.topic_route",
-        "<publish_with_original_info>true</publish_with_original_info>"
-    );
-    properties.put(
-        "dynamic_routing_adapter.configuration.Shape.qos.input",
-        "<datareader_qos/>"
-    );
-    properties.put(
-        "dynamic_routing_adapter.configuration.Shape.qos.output",
-        "<datawriter_qos/>"
+    addConfiguration(
+        properties,
+        CONFIGURATION_SAMPLE_NAME,
+        CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER,
+        CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER,
+        CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER,
+        CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER,
+        CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE,
+        CONFIGURATION_SAMPLE_QOS_INPUT,
+        CONFIGURATION_SAMPLE_QOS_OUTPUT
     );
 
     // return result
     return properties;
+  }
+
+  private static void addConfiguration(
+      Properties properties,
+      String name,
+      String allowTopicFilter,
+      String denyTopicFilter,
+      String allowPartitionFilter,
+      String denyPartitionFilter,
+      String qosTopicRoute,
+      String qosInput,
+      String qosOutput
+  ) {
+    properties.put(
+        String.format("dynamic_routing_adapter.configuration.%s.allow_topic_name_filter", name),
+        allowTopicFilter
+    );
+    properties.put(
+        String.format("dynamic_routing_adapter.configuration.%s.deny_topic_name_filter", name),
+        denyTopicFilter
+    );
+    properties.put(
+        String.format("dynamic_routing_adapter.configuration.%s.allow_partition_name_filter", name),
+        allowPartitionFilter
+    );
+    properties.put(
+        String.format("dynamic_routing_adapter.configuration.%s.deny_partition_name_filter", name),
+        denyPartitionFilter
+    );
+    properties.put(
+        String.format("dynamic_routing_adapter.configuration.%s.qos.topic_route", name),
+        qosTopicRoute
+    );
+    properties.put(
+        String.format("dynamic_routing_adapter.configuration.%s.qos.input", name),
+        qosInput
+    );
+    properties.put(
+        String.format("dynamic_routing_adapter.configuration.%s.qos.output", name),
+        qosOutput
+    );
   }
 
 }

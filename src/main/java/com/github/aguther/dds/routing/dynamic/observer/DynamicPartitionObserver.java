@@ -378,7 +378,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   ) {
     synchronized (filterList) {
       for (DynamicPartitionObserverFilter filter : filterList) {
-        if (filter.ignorePartition(partition)) {
+        if (filter.ignorePartition(topicName, partition)) {
           if (log.isDebugEnabled()) {
             log.debug(
                 "Partition topic='{}', name='{}' ignored",

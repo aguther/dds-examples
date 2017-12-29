@@ -59,6 +59,7 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
 
   @Override
   public boolean ignorePartition(
+      final String topicName,
       final String partition
   ) {
     return false;

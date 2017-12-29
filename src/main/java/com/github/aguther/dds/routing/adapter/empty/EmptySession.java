@@ -28,6 +28,9 @@ import com.rti.routingservice.adapter.Session;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.util.Properties;
 
+/**
+ * This class implements a session that does nothing.
+ */
 public class EmptySession implements Session {
 
   @Override

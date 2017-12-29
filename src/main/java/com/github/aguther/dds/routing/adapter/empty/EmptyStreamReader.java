@@ -29,6 +29,9 @@ import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * This class implements a stream reader that does nothing.
+ */
 public class EmptyStreamReader implements StreamReader {
 
   @Override

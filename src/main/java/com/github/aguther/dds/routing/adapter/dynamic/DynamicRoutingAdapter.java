@@ -33,6 +33,10 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class implements an adapter to provide a function to dynamically route topics based on their partition
+ * without loosing their origin (this happens when using asterisk or multiple partitions).
+ */
 public class DynamicRoutingAdapter implements Adapter {
 
   private static final Logger log = LoggerFactory.getLogger(DynamicRoutingAdapter.class);

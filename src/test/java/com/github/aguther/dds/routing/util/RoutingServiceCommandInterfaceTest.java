@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.util;
+package com.github.aguther.dds.routing.util;
 
 import org.junit.Test;
 

@@ -35,6 +35,7 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,17 +45,28 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConfigurationFilter implements DynamicPartitionObserverFilter, DynamicPartitionCommanderProvider {
+/**
+ * This class implements a filter and provider to be used with DynamicPartitionObserver and DynamicPartitionCommander.
+ *
+ * The configuration is provided via properties in the routing service configuration. It allows multiple configurations
+ * with different allow and deny filters for topic and partition.
+ *
+ * Deny filters take precedence over allow filters.
+ *
+ * WARNING: It must be ensured that the configuration filters are disjoint (combination of allow and deny filters)
+ * otherwise the results are unpredictable.
+ */
+public class ConfigurationFilterProvider implements DynamicPartitionObserverFilter, DynamicPartitionCommanderProvider {
 
   private static final String PROPERTY_DOMAIN_ROUTE_NAME = "dynamic_routing_adapter.configuration.domain_route_name";
 
-  private static final Logger log = LoggerFactory.getLogger(ConfigurationFilter.class);
+  private static final Logger log = LoggerFactory.getLogger(ConfigurationFilterProvider.class);
 
   private final Map<String, Configuration> configurations;
   private final Pattern patternConfigurationItem;
   private final String domainRouteName;
 
-  public ConfigurationFilter(
+  public ConfigurationFilterProvider(
       final Properties properties
   ) {
     configurations = new HashMap<>();
@@ -157,6 +169,14 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
     }
   }
 
+  String getDomainRouteName() {
+    return domainRouteName;
+  }
+
+  Map<String, Configuration> getConfigurations() {
+    return Collections.unmodifiableMap(configurations);
+  }
+
   @Override
   public boolean ignorePublication(
       final DomainParticipant domainParticipant,
@@ -179,21 +199,24 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public boolean ignorePartition(
+      final String topicName,
       final String partition
   ) {
-    for (Configuration configuration : configurations.values()) {
-      // when a deny filter is available check if it matches
-      if (configuration.getDenyPartitionNameFilter() != null
-          && configuration.getDenyPartitionNameFilter().matcher(partition).matches()) {
-        continue;
-      }
-      // when no allow filter is available allow all partitions, otherwise check if it matches
-      if (configuration.getAllowPartitionNameFilter() == null
-          || configuration.getAllowPartitionNameFilter().matcher(partition).matches()) {
-        return false;
-      }
+    // get matching configuration
+    Configuration configuration = getMatchingConfiguration(topicName);
+
+    // if we do not find a matching configuration we should ignore the partition
+    if (configuration == null) {
+      return true;
     }
-    return true;
+
+    // when a deny filter is available check if it matches
+    return (
+        configuration.getDenyPartitionNameFilter() != null
+            && configuration.getDenyPartitionNameFilter().matcher(partition).matches())
+        || (
+        configuration.getAllowPartitionNameFilter() != null
+            && !configuration.getAllowPartitionNameFilter().matcher(partition).matches());
   }
 
   private Configuration getMatchingConfiguration(

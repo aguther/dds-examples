@@ -33,6 +33,9 @@ import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import com.rti.routingservice.adapter.infrastructure.StreamInfo;
 import java.util.Properties;
 
+/**
+ * This class implements a connection that does nothing.
+ */
 public class EmptyConnection implements DiscoveryConnection {
 
   @Override

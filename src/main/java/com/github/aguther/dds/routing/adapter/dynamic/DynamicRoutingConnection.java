@@ -53,6 +53,14 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class implements a connection to provide a function to dynamically route topics based on their partition
+ * without loosing their origin (this happens when using asterisk or multiple partitions).
+ *
+ * This function is realized by creating a domain participant for discovery and remote administration of the target
+ * routing service. Whenever a topic is discovered and a appropriate configuration is found, a session and route is
+ * created accordingly. The same applies vice versa on loosing discovery.
+ */
 public class DynamicRoutingConnection implements DiscoveryConnection, Closeable {
 
   private static final String PROPERTY_ADMINISTRATION_DOMAIN_ID
@@ -133,7 +141,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
         Integer.parseInt(properties.getProperty(PROPERTY_DISCOVERY_DOMAIN_ID)));
 
     // create configuration filter
-    ConfigurationFilter configurationFilter = new ConfigurationFilter(properties);
+    ConfigurationFilterProvider configurationFilterProvider = new ConfigurationFilterProvider(properties);
 
     // create dynamic partition observer
     dynamicPartitionObserver = new DynamicPartitionObserver();
@@ -142,12 +150,12 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
     // filter out entities belonging to the same routing service group
     dynamicPartitionObserver.addFilter(new RoutingServiceGroupEntitiesFilter(routingServiceGroupName));
     // filter out entities that have no configuration
-    dynamicPartitionObserver.addFilter(configurationFilter);
+    dynamicPartitionObserver.addFilter(configurationFilterProvider);
 
     // create commander
     dynamicPartitionCommander = new DynamicPartitionCommander(
         routingServiceCommandInterface,
-        configurationFilter,
+        configurationFilterProvider,
         routingServiceName,
         Long.parseLong(properties.getProperty(
             PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY,

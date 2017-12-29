@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 @PrepareForTest({LoggerFactory.class, DynamicPartitionObserver.class})
 public class DynamicPartitionObserverTest {
 
-  private static final int VERFIY_TIMEOUT = 5000;
+  private static final int VERIFY_TIMEOUT = 5000;
 
   private DomainParticipant domainParticipant;
 
@@ -108,14 +108,14 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createSession(any(Session.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteSession(any(Session.class));
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createTopicRoute(any(Session.class), any(TopicRoute.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
   }
 
@@ -143,14 +143,14 @@ public class DynamicPartitionObserverTest {
         subscriptionBuiltinTopicData
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createSession(any(Session.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteSession(any(Session.class));
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createTopicRoute(any(Session.class), any(TopicRoute.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
   }
 
@@ -169,7 +169,7 @@ public class DynamicPartitionObserverTest {
         topicRoute.getType()
     );
 
-    when(filter.ignorePartition("")).thenReturn(true);
+    when(filter.ignorePartition("Square", "")).thenReturn(true);
 
     observer.publicationDiscovered(
         domainParticipant,
@@ -193,14 +193,14 @@ public class DynamicPartitionObserverTest {
         subscriptionBuiltinTopicData
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createSession(any(Session.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteSession(any(Session.class));
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createTopicRoute(any(Session.class), any(TopicRoute.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
   }
 
@@ -221,7 +221,7 @@ public class DynamicPartitionObserverTest {
         session.getPartition()
     );
 
-    when(filter.ignorePartition(session.getPartition())).thenReturn(true);
+    when(filter.ignorePartition(session.getTopic(), session.getPartition())).thenReturn(true);
 
     observer.publicationDiscovered(
         domainParticipant,
@@ -245,14 +245,14 @@ public class DynamicPartitionObserverTest {
         subscriptionBuiltinTopicData
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createSession(any(Session.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteSession(any(Session.class));
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .createTopicRoute(any(Session.class), any(TopicRoute.class));
-    verify(listener, timeout(VERFIY_TIMEOUT).times(0))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
         .deleteTopicRoute(any(Session.class), any(TopicRoute.class));
   }
 
@@ -280,14 +280,14 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteSession(session);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRoute);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteTopicRoute(session, topicRoute);
   }
 
@@ -334,19 +334,19 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteSession(session);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRouteOut);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteTopicRoute(session, topicRouteOut);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRouteIn);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteTopicRoute(session, topicRouteIn);
   }
 
@@ -392,14 +392,14 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData1
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteSession(session);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRoute);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteTopicRoute(session, topicRoute);
   }
 
@@ -443,14 +443,14 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData1
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createSession(session);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteSession(session);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createTopicRoute(session, topicRoute);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteTopicRoute(session, topicRoute);
   }
 
@@ -481,24 +481,24 @@ public class DynamicPartitionObserverTest {
         publicationBuiltinTopicData
     );
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createSession(sessionA);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteSession(sessionA);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createSession(sessionB);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteSession(sessionB);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createTopicRoute(sessionA, topicRouteA);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteTopicRoute(sessionA, topicRouteA);
 
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .createTopicRoute(sessionB, topicRouteB);
-    verify(listener, timeout(VERFIY_TIMEOUT).times(1))
+    verify(listener, timeout(VERIFY_TIMEOUT).times(1))
         .deleteTopicRoute(sessionB, topicRouteB);
   }
 
