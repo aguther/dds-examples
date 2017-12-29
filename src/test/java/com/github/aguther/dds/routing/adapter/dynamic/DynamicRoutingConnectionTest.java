@@ -13,7 +13,7 @@ import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
 import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
-import com.github.aguther.dds.routing.util.RoutingServiceCommandHelper;
+import com.github.aguther.dds.routing.util.RoutingServiceCommand;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantQos;
@@ -44,7 +44,7 @@ public class DynamicRoutingConnectionTest {
   private SubscriptionObserver subscriptionObserver;
   private DynamicPartitionObserver dynamicPartitionObserver;
   private DynamicPartitionCommander dynamicPartitionCommander;
-  private RoutingServiceCommandHelper routingServiceCommandHelper;
+  private RoutingServiceCommand routingServiceCommand;
 
   private DomainParticipantQos domainParticipantQos;
 //  private ServiceQosPolicy serviceQosPolicy;
@@ -77,8 +77,8 @@ public class DynamicRoutingConnectionTest {
     dynamicPartitionCommander = mock(DynamicPartitionCommander.class);
     PowerMockito.whenNew(DynamicPartitionCommander.class).withAnyArguments().thenReturn(dynamicPartitionCommander);
 
-    routingServiceCommandHelper = mock(RoutingServiceCommandHelper.class);
-    PowerMockito.whenNew(RoutingServiceCommandHelper.class).withAnyArguments().thenReturn(routingServiceCommandHelper);
+    routingServiceCommand = mock(RoutingServiceCommand.class);
+    PowerMockito.whenNew(RoutingServiceCommand.class).withAnyArguments().thenReturn(routingServiceCommand);
 
     ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
     EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
@@ -102,7 +102,7 @@ public class DynamicRoutingConnectionTest {
     );
 
     // verify all close methods have been called
-    verify(routingServiceCommandHelper, times(1)).waitForRoutingService(
+    verify(routingServiceCommand, times(1)).waitForRoutingService(
         anyString(),
         anyLong(),
         any(TimeUnit.class)

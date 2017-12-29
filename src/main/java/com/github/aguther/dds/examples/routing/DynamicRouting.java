@@ -34,7 +34,7 @@ import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceEnti
 import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
 import com.github.aguther.dds.routing.dynamic.observer.filter.WildcardPartitionFilter;
-import com.github.aguther.dds.routing.util.RoutingServiceCommandHelper;
+import com.github.aguther.dds.routing.util.RoutingServiceCommand;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
@@ -66,7 +66,7 @@ public class DynamicRouting extends AbstractIdleService {
   private SubscriptionObserver subscriptionObserver;
   private DynamicPartitionObserver dynamicPartitionObserver;
   private DynamicPartitionCommander dynamicPartitionCommander;
-  private RoutingServiceCommandHelper routingServiceCommandHelper;
+  private RoutingServiceCommand routingServiceCommand;
 
   public static void main(
       final String[] args
@@ -159,12 +159,12 @@ public class DynamicRouting extends AbstractIdleService {
     domainParticipantAdministration = createRemoteAdministrationDomainParticipant(0);
 
     // create routing service administration
-    routingServiceCommandHelper = new RoutingServiceCommandHelper(
+    routingServiceCommand = new RoutingServiceCommand(
         domainParticipantAdministration);
 
     // wait for routing service to be discovered
     log.info("Waiting for remote administration interface of routing service to be discovered");
-    if (routingServiceCommandHelper.waitForRoutingService(ROUTING_SERVICE_NAME, 30, TimeUnit.SECONDS)) {
+    if (routingServiceCommand.waitForRoutingService(ROUTING_SERVICE_NAME, 30, TimeUnit.SECONDS)) {
       log.info("Remote administration interface of routing service was discovered");
     } else {
       log.error("Remote administration interface of routing service could not be discovered within time out");
@@ -175,7 +175,7 @@ public class DynamicRouting extends AbstractIdleService {
 
     // create dynamic partition commander
     dynamicPartitionCommander = new DynamicPartitionCommander(
-        routingServiceCommandHelper,
+        routingServiceCommand,
         new DynamicPartitionCommanderProviderImpl("Default"),
         ROUTING_SERVICE_NAME
     );
@@ -226,7 +226,7 @@ public class DynamicRouting extends AbstractIdleService {
       domainParticipantDiscovery.delete_contained_entities();
       DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
     }
-    routingServiceCommandHelper = null;
+    routingServiceCommand = null;
   }
 
   private DomainParticipant createRemoteAdministrationDomainParticipant(

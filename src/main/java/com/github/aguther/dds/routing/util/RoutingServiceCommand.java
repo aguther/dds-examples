@@ -49,9 +49,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This class provides helpers to easily interact with a routing service using the topics defined by RTI.
  */
-public class RoutingServiceCommandHelper {
+public class RoutingServiceCommand {
 
-  private static final Logger log = LoggerFactory.getLogger(RoutingServiceCommandHelper.class);
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceCommand.class);
 
   private final Requester<CommandRequest, CommandResponse> requester;
 
@@ -65,7 +65,7 @@ public class RoutingServiceCommandHelper {
    *
    * @param domainParticipant domain participant to send and receive commands
    */
-  public RoutingServiceCommandHelper(
+  public RoutingServiceCommand(
       final DomainParticipant domainParticipant
   ) {
     // check input parameters

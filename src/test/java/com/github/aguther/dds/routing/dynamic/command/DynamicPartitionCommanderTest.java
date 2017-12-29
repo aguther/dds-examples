@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
-import com.github.aguther.dds.routing.util.RoutingServiceCommandHelper;
+import com.github.aguther.dds.routing.util.RoutingServiceCommand;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
@@ -45,14 +45,14 @@ import org.junit.Test;
 
 public class DynamicPartitionCommanderTest {
 
-  private RoutingServiceCommandHelper commandHelper;
+  private RoutingServiceCommand commandHelper;
   private DynamicPartitionCommanderProvider commanderProvider;
 
   private DynamicPartitionCommander commander;
 
   @Before
   public void setUp() {
-    commandHelper = mock(RoutingServiceCommandHelper.class);
+    commandHelper = mock(RoutingServiceCommand.class);
     commanderProvider = mock(DynamicPartitionCommanderProvider.class);
 
     commander = new DynamicPartitionCommander(
