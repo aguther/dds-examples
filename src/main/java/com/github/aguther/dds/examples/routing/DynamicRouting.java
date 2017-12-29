@@ -51,9 +51,10 @@ import org.slf4j.LoggerFactory;
 
 public class DynamicRouting extends AbstractIdleService {
 
-  private static final String ROUTING_SERVICE_NAME;
-  private static final String ROUTING_SERVICE_CONFIG_FILE;
-  private static final Logger log;
+  private static final String ROUTING_SERVICE_NAME = "dds-examples-routing-dynamic";
+  private static final String ROUTING_SERVICE_CONFIG_FILE = "routing-dynamic.xml";
+
+  private static final Logger log = LoggerFactory.getLogger(DynamicRouting.class);
 
   private static DynamicRouting serviceInstance;
 
@@ -67,14 +68,8 @@ public class DynamicRouting extends AbstractIdleService {
   private DynamicPartitionCommander dynamicPartitionCommander;
   private RoutingServiceCommandHelper routingServiceCommandHelper;
 
-  static {
-    ROUTING_SERVICE_NAME = "dds-examples-routing-dynamic";
-    ROUTING_SERVICE_CONFIG_FILE = "routing-dynamic.xml";
-    log = LoggerFactory.getLogger(DynamicRouting.class);
-  }
-
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -235,13 +230,13 @@ public class DynamicRouting extends AbstractIdleService {
   }
 
   private DomainParticipant createRemoteAdministrationDomainParticipant(
-      int domainId
+      final int domainId
   ) {
     return createDomainParticipant(domainId, "RTI Routing Service: remote administration");
   }
 
   private DomainParticipant createDiscoveryDomainParticipant(
-      int domainId
+      final int domainId
   ) {
     // disable auto-enable -> THIS IS CRUCIAL TO WORK CORRECTLY
     AutoEnableCreatedEntitiesHelper.disable();
@@ -256,8 +251,8 @@ public class DynamicRouting extends AbstractIdleService {
   }
 
   private DomainParticipant createDomainParticipant(
-      int domainId,
-      String participantName
+      final int domainId,
+      final String participantName
   ) {
     // create default participant qos marked as routing service entity
     DomainParticipantQos domainParticipantQos = new DomainParticipantQos();

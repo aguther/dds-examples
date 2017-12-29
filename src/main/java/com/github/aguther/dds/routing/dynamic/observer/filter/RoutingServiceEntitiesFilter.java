@@ -40,34 +40,33 @@ import com.rti.dds.topic.BuiltinTopicKey_t;
 public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
 
   @Override
-
   public boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   ) {
     return isRoutingServiceEntity(domainParticipant, data.participant_key);
   }
 
   @Override
   public boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   ) {
     return isRoutingServiceEntity(domainParticipant, data.participant_key);
   }
 
   @Override
   public boolean ignorePartition(
-      String partition
+      final String partition
   ) {
     return false;
   }
 
-  protected boolean isRoutingServiceEntity(
-      DomainParticipant domainParticipant,
-      BuiltinTopicKey_t participantKey
+  private boolean isRoutingServiceEntity(
+      final DomainParticipant domainParticipant,
+      final BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
     ParticipantBuiltinTopicData participantData = BuiltinTopicHelper.getParticipantBuiltinTopicData(

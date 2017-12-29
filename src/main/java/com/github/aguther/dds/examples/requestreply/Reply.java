@@ -39,21 +39,16 @@ import org.slf4j.LoggerFactory;
 
 public class Reply extends AbstractIdleService {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(Request.class);
 
   private static Reply serviceInstance;
 
-  private static DomainParticipant domainParticipant;
-  private static SimpleReplier<RequestType, ReplyType> replier;
-
-  private static ReplySender replySender;
-
-  static {
-    log = LoggerFactory.getLogger(Request.class);
-  }
+  private DomainParticipant domainParticipant;
+  private SimpleReplier<RequestType, ReplyType> replier;
+  private ReplySender replySender;
 
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -112,7 +107,7 @@ public class Reply extends AbstractIdleService {
     log.info("Service shutdown finished");
   }
 
-  private static void startupDds() {
+  private void startupDds() {
     // register logger DDS messages
     try {
       Slf4jDdsLogger.createRegisterLogger();
@@ -137,7 +132,7 @@ public class Reply extends AbstractIdleService {
     );
   }
 
-  private static void startSubscription() {
+  private void startSubscription() {
     // create reply sender
     replySender = new ReplySender();
 
@@ -151,7 +146,7 @@ public class Reply extends AbstractIdleService {
     );
   }
 
-  private static void stopSubscription() {
+  private void stopSubscription() {
     // close and delete replier
     if (replier != null) {
       replier.close();
@@ -162,7 +157,7 @@ public class Reply extends AbstractIdleService {
     replySender = null;
   }
 
-  private static void shutdownDds() {
+  private void shutdownDds() {
     // delete replier (if not already done)
     if (replier != null) {
       replier.close();

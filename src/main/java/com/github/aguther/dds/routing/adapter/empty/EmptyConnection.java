@@ -37,47 +37,47 @@ public class EmptyConnection implements DiscoveryConnection {
 
   @Override
   public Session createSession(
-      Properties properties
+      final Properties properties
   ) throws AdapterException {
     return new EmptySession();
   }
 
   @Override
   public void deleteSession(
-      Session session
+      final Session session
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public StreamReader createStreamReader(
-      Session session,
-      StreamInfo streamInfo,
-      Properties properties,
-      StreamReaderListener streamReaderListener
+      final Session session,
+      final StreamInfo streamInfo,
+      final Properties properties,
+      final StreamReaderListener streamReaderListener
   ) throws AdapterException {
     return new EmptyStreamReader();
   }
 
   @Override
   public void deleteStreamReader(
-      StreamReader streamReader
+      final StreamReader streamReader
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public StreamWriter createStreamWriter(
-      Session session,
-      StreamInfo streamInfo,
-      Properties properties
+      final Session session,
+      final StreamInfo streamInfo,
+      final Properties properties
   ) throws AdapterException {
     return new EmptyStreamWriter();
   }
 
   @Override
   public void deleteStreamWriter(
-      StreamWriter streamWriter
+      final StreamWriter streamWriter
   ) throws AdapterException {
     // do nothing
   }
@@ -89,7 +89,7 @@ public class EmptyConnection implements DiscoveryConnection {
 
   @Override
   public void update(
-      Properties properties
+      final Properties properties
   ) throws AdapterException {
     // do nothing
   }
@@ -106,14 +106,14 @@ public class EmptyConnection implements DiscoveryConnection {
 
   @Override
   public Object copyTypeRepresentation(
-      Object o
+      final Object o
   ) throws AdapterException {
     throw new AdapterException(0, "Operation not supported");
   }
 
   @Override
   public void deleteTypeRepresentation(
-      Object o
+      final Object o
   ) throws AdapterException {
     // do nothing
   }

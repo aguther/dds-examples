@@ -45,13 +45,12 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
   private class UnionMemberInfo {
 
-    private String fieldName;
-    private TypeAdapter<?> typeAdapter;
+    private final String fieldName;
+    private final TypeAdapter<?> typeAdapter;
 
     UnionMemberInfo(
-//        int ordinal,
-        String fieldName,
-        TypeAdapter<?> typeAdapter
+        final String fieldName,
+        final TypeAdapter<?> typeAdapter
     ) {
       this.fieldName = fieldName;
       this.typeAdapter = typeAdapter;
@@ -60,8 +59,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
   @Override
   public <T> TypeAdapter<T> create(
-      Gson gson,
-      TypeToken<T> typeToken
+      final Gson gson,
+      final TypeToken<T> typeToken
   ) {
 
     // get raw type
@@ -150,16 +149,16 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
     private static final String DISCRIMINATOR_FIELD_NAME = "_d";
 
-    private Class unionClass;
-    private TypeAdapter<?> discriminatorTypeAdapter;
-    private FieldAccess fieldAccess;
-    private Map<String, UnionMemberInfo> memberInfoMap;
+    private final Class unionClass;
+    private final TypeAdapter<?> discriminatorTypeAdapter;
+    private final FieldAccess fieldAccess;
+    private final Map<String, UnionMemberInfo> memberInfoMap;
 
     private UnionTypeAdapter(
-        Class unionClass,
-        TypeAdapter<?> discriminatorTypeAdapter,
-        FieldAccess fieldAccess,
-        Map<String, UnionMemberInfo> memberInfoMap
+        final Class unionClass,
+        final TypeAdapter<?> discriminatorTypeAdapter,
+        final FieldAccess fieldAccess,
+        final Map<String, UnionMemberInfo> memberInfoMap
     ) {
       this.unionClass = unionClass;
       this.discriminatorTypeAdapter = discriminatorTypeAdapter;
@@ -169,8 +168,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public void write(
-        JsonWriter out,
-        T value
+        final JsonWriter out,
+        final T value
     ) throws IOException {
 
       // support null objects
@@ -205,7 +204,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public T read(
-        JsonReader in
+        final JsonReader in
     ) throws IOException {
 
       // support null objects
@@ -236,7 +235,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
     }
 
     private T readUnion(
-        JsonReader in
+        final JsonReader in
     ) throws IOException, InstantiationException, IllegalAccessException {
 
       // assert begin of object

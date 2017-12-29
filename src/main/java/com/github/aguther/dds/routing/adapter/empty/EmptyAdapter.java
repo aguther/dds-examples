@@ -34,25 +34,25 @@ import java.util.Properties;
 public class EmptyAdapter implements Adapter {
 
   public EmptyAdapter(
-      Properties properties
+      final Properties properties
   ) {
     // do nothing
   }
 
   @Override
   public Connection createConnection(
-      String routingServiceName,
-      String routingServiceGroupName,
-      StreamReaderListener inputStreamDiscoveryListener,
-      StreamReaderListener outputStreamDiscoveryListener,
-      Properties properties
+      final String routingServiceName,
+      final String routingServiceGroupName,
+      final StreamReaderListener inputStreamDiscoveryListener,
+      final StreamReaderListener outputStreamDiscoveryListener,
+      final Properties properties
   ) throws AdapterException {
     return new EmptyConnection();
   }
 
   @Override
   public void deleteConnection(
-      Connection connection
+      final Connection connection
   ) throws AdapterException {
     // do nothing
   }

@@ -38,45 +38,44 @@ import com.rti.dds.topic.BuiltinTopicKey_t;
 /**
  * Filter to ignore entities that belong to routing services of a given group.
  */
-public class RoutingServiceGroupEntitiesFilter extends RoutingServiceEntitiesFilter implements
-    DynamicPartitionObserverFilter {
+public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserverFilter {
 
   private final String groupName;
 
   public RoutingServiceGroupEntitiesFilter(
-      String groupName
+      final String groupName
   ) {
     this.groupName = groupName;
   }
 
   @Override
   public boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   ) {
     return isRoutingServiceGroupEntity(domainParticipant, data.participant_key);
   }
 
   @Override
   public boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   ) {
     return isRoutingServiceGroupEntity(domainParticipant, data.participant_key);
   }
 
   @Override
   public boolean ignorePartition(
-      String partition
+      final String partition
   ) {
     return false;
   }
 
   private boolean isRoutingServiceGroupEntity(
-      DomainParticipant domainParticipant,
-      BuiltinTopicKey_t participantKey
+      final DomainParticipant domainParticipant,
+      final BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
     ParticipantBuiltinTopicData participantData = BuiltinTopicHelper.getParticipantBuiltinTopicData(

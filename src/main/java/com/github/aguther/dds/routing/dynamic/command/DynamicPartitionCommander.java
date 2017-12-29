@@ -55,17 +55,10 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicPartitionCommander implements Closeable, DynamicPartitionObserverListener {
 
-  private static final int DEFAULT_REQUEST_TIMEOUT_SECONDS;
-  private static final int DEFAULT_RETRY_DELAY_SECONDS;
+  private static final int DEFAULT_REQUEST_TIMEOUT_SECONDS = 10;
+  private static final int DEFAULT_RETRY_DELAY_SECONDS = 10;
 
-  private static final Logger log;
-
-  static {
-    DEFAULT_REQUEST_TIMEOUT_SECONDS = 10;
-    DEFAULT_RETRY_DELAY_SECONDS = 10;
-
-    log = LoggerFactory.getLogger(DynamicPartitionCommander.class);
-  }
+  private static final Logger log = LoggerFactory.getLogger(DynamicPartitionCommander.class);
 
   private final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider;
   private final RoutingServiceCommandHelper routingServiceCommandHelper;
@@ -74,11 +67,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private final ScheduledExecutorService executorService;
   private final Map<SimpleEntry<Session, TopicRoute>, ScheduledFuture> activeCommands;
 
-  private long requestTimeout;
-  private TimeUnit requestTimeoutTimeUnit;
-  private long retryDelay;
-  private TimeUnit retryDelayTimeUnit;
-
+  private final long requestTimeout;
+  private final TimeUnit requestTimeoutTimeUnit;
+  private final long retryDelay;
+  private final TimeUnit retryDelayTimeUnit;
 
   /**
    * Instantiates a new Dynamic partition commander.
@@ -88,9 +80,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @param targetRoutingService the target routing service
    */
   public DynamicPartitionCommander(
-      RoutingServiceCommandHelper routingServiceCommandHelper,
-      DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
-      String targetRoutingService
+      final RoutingServiceCommandHelper routingServiceCommandHelper,
+      final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      final String targetRoutingService
   ) {
     this(
         routingServiceCommandHelper,
@@ -113,11 +105,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @param retryDelayTimeUnit the retry delay time unit
    */
   public DynamicPartitionCommander(
-      RoutingServiceCommandHelper routingServiceCommandHelper,
-      DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
-      String targetRoutingService,
-      long retryDelay,
-      TimeUnit retryDelayTimeUnit
+      final RoutingServiceCommandHelper routingServiceCommandHelper,
+      final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      final String targetRoutingService,
+      final long retryDelay,
+      final TimeUnit retryDelayTimeUnit
   ) {
     this(
         routingServiceCommandHelper,
@@ -142,13 +134,13 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @param requestTimeoutTimeUnit the request timeout time unit
    */
   public DynamicPartitionCommander(
-      RoutingServiceCommandHelper routingServiceCommandHelper,
-      DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
-      String targetRoutingService,
-      long retryDelay,
-      TimeUnit retryDelayTimeUnit,
-      long requestTimeout,
-      TimeUnit requestTimeoutTimeUnit
+      final RoutingServiceCommandHelper routingServiceCommandHelper,
+      final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      final String targetRoutingService,
+      final long retryDelay,
+      final TimeUnit retryDelayTimeUnit,
+      final long requestTimeout,
+      final TimeUnit requestTimeoutTimeUnit
   ) {
     this.routingServiceCommandHelper = routingServiceCommandHelper;
     this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
@@ -171,7 +163,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void createSession(
-      Session session
+      final Session session
   ) {
     log.info(
         "Create session: topic='{}', partition='{}'",
@@ -211,7 +203,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void deleteSession(
-      Session session
+      final Session session
   ) {
     log.info(
         "Delete session: topic='{}', partition='{}'",
@@ -251,8 +243,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void createTopicRoute(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     log.info(
         "Create route: topic='{}', type='{}', partition='{}', direction='{}'",
@@ -295,8 +287,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void deleteTopicRoute(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     log.info(
         "Delete route: topic='{}', type='{}', partition='{}', direction='{}'",
@@ -346,9 +338,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if session was successfully created, false if not
    */
   private boolean sendCreateSession(
-      RoutingServiceCommandHelper commandHelper,
-      String targetRoutingService,
-      Session session
+      final RoutingServiceCommandHelper commandHelper,
+      final String targetRoutingService,
+      final Session session
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
@@ -380,9 +372,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if session was successfully deleted, false if not
    */
   private boolean sendDeleteSession(
-      RoutingServiceCommandHelper commandHelper,
-      String targetRoutingService,
-      Session session
+      final RoutingServiceCommandHelper commandHelper,
+      final String targetRoutingService,
+      final Session session
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
@@ -412,10 +404,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if topic route was successfully created, false if not
    */
   private boolean sendCreateTopicRoute(
-      RoutingServiceCommandHelper commandHelper,
-      String targetRoutingService,
-      Session session,
-      TopicRoute topicRoute
+      final RoutingServiceCommandHelper commandHelper,
+      final String targetRoutingService,
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
@@ -451,10 +443,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if topic route was successfully deleted, false if not
    */
   private boolean sendDeleteTopicRoute(
-      RoutingServiceCommandHelper commandHelper,
-      String targetRoutingService,
-      Session session,
-      TopicRoute topicRoute
+      final RoutingServiceCommandHelper commandHelper,
+      final String targetRoutingService,
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandHelper.createCommandRequest();
@@ -486,9 +478,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if request was successful, false if not
    */
   private boolean sendRequest(
-      RoutingServiceCommandHelper commandHelper,
-      CommandRequest commandRequest,
-      String loggingFormat
+      final RoutingServiceCommandHelper commandHelper,
+      final CommandRequest commandRequest,
+      final String loggingFormat
   ) {
     // send request and get response
     CommandResponse commandResponse = commandHelper.sendRequest(
@@ -514,9 +506,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if request was successful, false if not
    */
   private boolean checkResponse(
-      CommandRequest commandRequest,
-      CommandResponse commandResponse,
-      String loggingFormat
+      final CommandRequest commandRequest,
+      final CommandResponse commandResponse,
+      final String loggingFormat
   ) {
     // response received?
     if (commandResponse == null) {

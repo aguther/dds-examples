@@ -44,15 +44,12 @@ import org.slf4j.LoggerFactory;
  */
 class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runnable {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(BuiltinTopicObserver.class);
 
-  static {
-    log = LoggerFactory.getLogger(BuiltinTopicObserver.class);
-  }
+  private final ExecutorService executorService;
 
-  DomainParticipant domainParticipant;
-  DataReader dataReader;
-  private ExecutorService executorService;
+  final DomainParticipant domainParticipant;
+  final DataReader dataReader;
 
   /**
    * Instantiates a new Builtin topic observer.
@@ -101,7 +98,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
    */
   @Override
   public void on_data_available(
-      DataReader dataReader
+      final DataReader dataReader
   ) {
     // here we get the information that data is available
     // now we need to inform our listeners that something new has been discovered

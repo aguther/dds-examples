@@ -35,7 +35,7 @@ public interface DynamicPartitionObserverListener {
    * @param session session to create
    */
   void createSession(
-      Session session
+      final Session session
   );
 
   /**
@@ -44,7 +44,7 @@ public interface DynamicPartitionObserverListener {
    * @param session session to delete
    */
   void deleteSession(
-      Session session
+      final Session session
   );
 
   /**
@@ -54,8 +54,8 @@ public interface DynamicPartitionObserverListener {
    * @param topicRoute topic route to create
    */
   void createTopicRoute(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   );
 
   /**
@@ -65,7 +65,7 @@ public interface DynamicPartitionObserverListener {
    * @param topicRoute topic route to delete
    */
   void deleteTopicRoute(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   );
 }

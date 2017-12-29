@@ -34,23 +34,17 @@ import org.slf4j.LoggerFactory;
 
 public class Json {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(Json.class);
 
-  private static final Gson gson;
-
-  static {
-    log = LoggerFactory.getLogger(Json.class);
-
-    gson = new GsonBuilder()
-        .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
-        .registerTypeAdapterFactory(new SequenceTypeAdapterFactory())
-        .registerTypeAdapterFactory(new UnionTypeAdapterFactory())
-        .setPrettyPrinting()
-        .create();
-  }
+  private static final Gson gson = new GsonBuilder()
+      .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
+      .registerTypeAdapterFactory(new SequenceTypeAdapterFactory())
+      .registerTypeAdapterFactory(new UnionTypeAdapterFactory())
+      .setPrettyPrinting()
+      .create();
 
   public static void main(
-      String[] args
+      final String[] args
   ) {
 
     // convert v1 type to JSON and back
@@ -96,9 +90,9 @@ public class Json {
 
   @SuppressWarnings("unchecked")
   private static <I, O> void convertToJsonAndBack(
-      I input,
-      Class outputClass,
-      boolean doComparison
+      final I input,
+      final Class outputClass,
+      final boolean doComparison
   ) {
 
     // print sample

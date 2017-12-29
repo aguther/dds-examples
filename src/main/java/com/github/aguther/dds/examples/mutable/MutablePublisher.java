@@ -25,7 +25,7 @@
 package com.github.aguther.dds.examples.mutable;
 
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
-import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import idl.v1.MutableTypeTypeSupport;
@@ -33,20 +33,14 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MutablePublisher extends AbstractIdleService {
+public class MutablePublisher extends AbstractExecutionThreadService {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(MutablePublisher.class);
 
   private static MutablePublisher serviceInstance;
 
   private DomainParticipant domainParticipant;
-
-  private Thread publishThread;
   private MutableTypePublisher mutableTypePublisher;
-
-  static {
-    log = LoggerFactory.getLogger(MutablePublisher.class);
-  }
 
   public static void main(
       String[] args
@@ -94,6 +88,11 @@ public class MutablePublisher extends AbstractIdleService {
   }
 
   @Override
+  protected void run() throws Exception {
+    mutableTypePublisher.run();
+  }
+
+  @Override
   protected void shutDown() throws Exception {
     // log service start
     log.info("Service is shutting down");
@@ -136,32 +135,13 @@ public class MutablePublisher extends AbstractIdleService {
         "Publisher::MutableTypeDataWriter",
         1000
     );
-
-    // create and start thread
-    publishThread = new Thread(mutableTypePublisher);
-    publishThread.start();
   }
 
   private void stopPublish() {
     // check if we need to stop publish
-    if (mutableTypePublisher == null) {
-      return;
+    if (mutableTypePublisher != null) {
+      mutableTypePublisher.stop();
     }
-
-    // signal termination
-    mutableTypePublisher.stop();
-
-    // wait for thread to finish
-    try {
-      publishThread.join();
-    } catch (InterruptedException e) {
-      log.error("Interrupted on join of publisher thread.", e);
-      Thread.currentThread().interrupt();
-    }
-
-    // set objects to null
-    publishThread = null;
-    mutableTypePublisher = null;
   }
 
   private void shutdownDds() {

@@ -45,9 +45,9 @@ public interface DynamicPartitionObserverFilter {
    * @return true to ignore publication, false to allow
    */
   boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   );
 
   /**
@@ -59,9 +59,9 @@ public interface DynamicPartitionObserverFilter {
    * @return true to ignore publication, false to allow
    */
   boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   );
 
   /**
@@ -71,6 +71,6 @@ public interface DynamicPartitionObserverFilter {
    * @return true to ignore partition, false to allow
    */
   boolean ignorePartition(
-      String partition
+      final String partition
   );
 }

@@ -52,11 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SubscriptionObserver extends BuiltinTopicObserver {
 
-  private static final Logger log;
-
-  static {
-    log = LoggerFactory.getLogger(SubscriptionObserver.class);
-  }
+  private static final Logger log = LoggerFactory.getLogger(SubscriptionObserver.class);
 
   private final Map<InstanceHandle_t, SubscriptionBuiltinTopicData> sampleCache;
   private final List<SubscriptionObserverListener> listenerList;
@@ -67,7 +63,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param domainParticipant the domain participant (that is not yet enabled)
    */
   public SubscriptionObserver(
-      DomainParticipant domainParticipant) {
+      final DomainParticipant domainParticipant
+  ) {
     // create the parent observer with the built-in subscription topic
     super(domainParticipant, SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME);
 
@@ -90,7 +87,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param listener the listener
    */
   public void addListener(
-      SubscriptionObserverListener listener
+      final SubscriptionObserverListener listener
   ) {
     addListener(listener, true);
   }
@@ -102,8 +99,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param deliverReadSamples true to deliver already read samples
    */
   public void addListener(
-      SubscriptionObserverListener listener,
-      boolean deliverReadSamples
+      final SubscriptionObserverListener listener,
+      final boolean deliverReadSamples
   ) {
     checkNotNull(listener, "Listener must not be null");
 
@@ -123,7 +120,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param listener the listener
    */
   public void removeListener(
-      SubscriptionObserverListener listener
+      final SubscriptionObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
     listenerList.remove(listener);
@@ -185,7 +182,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param listener the listener
    */
   private void deliverReadSamples(
-      SubscriptionObserverListener listener
+      final SubscriptionObserverListener listener
   ) {
     // variables to store data
     SampleInfo sampleInfo = new SampleInfo();

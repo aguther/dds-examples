@@ -35,14 +35,10 @@ import org.slf4j.LoggerFactory;
 
 public class DynamicRoutingAdapter implements Adapter {
 
-  private static final Logger log;
-
-  static {
-    log = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
-  }
+  private static final Logger log = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
 
   public DynamicRoutingAdapter(
-      Properties properties
+      final Properties properties
   ) {
     // do nothing but logging of received properties
     if (log.isDebugEnabled()) {
@@ -58,11 +54,11 @@ public class DynamicRoutingAdapter implements Adapter {
 
   @Override
   public Connection createConnection(
-      String routingServiceName,
-      String routingServiceGroupName,
-      StreamReaderListener inputStreamDiscoveryListener,
-      StreamReaderListener outputStreamDiscoveryListener,
-      Properties properties
+      final String routingServiceName,
+      final String routingServiceGroupName,
+      final StreamReaderListener inputStreamDiscoveryListener,
+      final StreamReaderListener outputStreamDiscoveryListener,
+      final Properties properties
   ) throws AdapterException {
     try {
       return new DynamicRoutingConnection(
@@ -77,7 +73,7 @@ public class DynamicRoutingAdapter implements Adapter {
 
   @Override
   public void deleteConnection(
-      Connection connection
+      final Connection connection
   ) throws AdapterException {
     try {
       if (connection instanceof DynamicRoutingConnection) {

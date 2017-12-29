@@ -37,31 +37,31 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
 
   @Override
   public boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   ) {
     return isRtiTopic(data.topic_name);
   }
 
   @Override
   public boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   ) {
     return isRtiTopic(data.topic_name);
   }
 
   @Override
   public boolean ignorePartition(
-      String partition
+      final String partition
   ) {
     return false;
   }
 
   private boolean isRtiTopic(
-      String topicName
+      final String topicName
   ) {
     // ignore all rti topics
     return topicName.startsWith("rti");

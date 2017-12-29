@@ -39,23 +39,19 @@ import org.slf4j.LoggerFactory;
 
 public class RequestSender implements Runnable {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(RequestSender.class);
 
-  static {
-    log = LoggerFactory.getLogger(RequestSender.class);
-  }
+  private final Requester<RequestType, ReplyType> requester;
+  private final int replyWaitTime;
+  private final int sleepTime;
 
   private boolean shouldTerminate;
-  private Requester<RequestType, ReplyType> requester;
-  private int replyWaitTime;
-  private int sleepTime;
-
   private int count;
 
   RequestSender(
-      Requester<RequestType, ReplyType> requester,
-      int replyWaitTime,
-      int sleepTime
+      final Requester<RequestType, ReplyType> requester,
+      final int replyWaitTime,
+      final int sleepTime
   ) {
     checkNotNull(requester, "Requester must not be null");
     checkArgument(replyWaitTime >= 0, "Time to wait for reply must be 0 or greater");

@@ -34,22 +34,16 @@ import org.slf4j.LoggerFactory;
 
 public class StaticRouting extends AbstractIdleService {
 
-  private static final String ROUTING_SERVICE_NAME;
-  private static final String ROUTING_SERVICE_CONFIG_FILE;
-  private static final Logger log;
+  private static final String ROUTING_SERVICE_NAME = "dds-examples-routing-static";
+  private static final String ROUTING_SERVICE_CONFIG_FILE = "routing-static.xml";
+  private static final Logger log = LoggerFactory.getLogger(StaticRouting.class);
 
   private static StaticRouting serviceInstance;
 
   private RoutingService routingService;
 
-  static {
-    ROUTING_SERVICE_NAME = "dds-examples-routing-static";
-    ROUTING_SERVICE_CONFIG_FILE = "routing-static.xml";
-    log = LoggerFactory.getLogger(StaticRouting.class);
-  }
-
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();

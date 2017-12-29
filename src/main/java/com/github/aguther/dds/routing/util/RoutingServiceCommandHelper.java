@@ -51,16 +51,13 @@ import org.slf4j.LoggerFactory;
  */
 public class RoutingServiceCommandHelper {
 
-  private static final Logger log;
-
-  static {
-    log = LoggerFactory.getLogger(RoutingServiceCommandHelper.class);
-  }
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceCommandHelper.class);
 
   private final Requester<CommandRequest, CommandResponse> requester;
 
-  private int hostId;
-  private int applicationId;
+  private final int hostId;
+  private final int applicationId;
+
   private int invocationCounter;
 
   /**
@@ -69,7 +66,7 @@ public class RoutingServiceCommandHelper {
    * @param domainParticipant domain participant to send and receive commands
    */
   public RoutingServiceCommandHelper(
-      DomainParticipant domainParticipant
+      final DomainParticipant domainParticipant
   ) {
     // check input parameters
     checkNotNull(domainParticipant, "DomainParticipant must not be null");
@@ -105,9 +102,9 @@ public class RoutingServiceCommandHelper {
    * @return true if target routing service was discovered, false if not within timeout
    */
   public boolean waitForRoutingService(
-      String targetRouter,
-      long timeOut,
-      TimeUnit timeOutUnit
+      final String targetRouter,
+      final long timeOut,
+      final TimeUnit timeOutUnit
   ) {
     return waitForRoutingService(
         targetRouter,
@@ -129,11 +126,11 @@ public class RoutingServiceCommandHelper {
    * @return true if target routing service was discovered, false if not within timeout
    */
   public boolean waitForRoutingService(
-      String targetRouter,
-      long timeOut,
-      TimeUnit timeOutUnit,
-      long sleepTime,
-      TimeUnit sleepTimeUnit
+      final String targetRouter,
+      final long timeOut,
+      final TimeUnit timeOutUnit,
+      final long sleepTime,
+      final TimeUnit sleepTimeUnit
   ) {
     // create participant name for target router according RTI conventions
     String participantNameTargetRouter = String.format("RTI Routing Service: %s", targetRouter);
@@ -198,9 +195,9 @@ public class RoutingServiceCommandHelper {
    * @return response if received within timeout, otherwise null
    */
   public CommandResponse sendRequest(
-      CommandRequest commandRequest,
-      long timeOut,
-      TimeUnit timeUnit
+      final CommandRequest commandRequest,
+      final long timeOut,
+      final TimeUnit timeUnit
   ) {
     // set identification
     commandRequest.id.host = hostId;
@@ -235,7 +232,7 @@ public class RoutingServiceCommandHelper {
    * @param commandRequest request that should be logged
    */
   private void logCommandRequest(
-      CommandRequest commandRequest
+      final CommandRequest commandRequest
   ) {
     // trace logs
     if (log.isTraceEnabled()) {
@@ -260,8 +257,8 @@ public class RoutingServiceCommandHelper {
    * @param replyReceived true if response is valid, otherwise false
    */
   private void logCommandResponse(
-      Sample<CommandResponse> reply,
-      boolean replyReceived
+      final Sample<CommandResponse> reply,
+      final boolean replyReceived
   ) {
     // trace logs
     if (log.isTraceEnabled()) {

@@ -28,18 +28,18 @@ import java.util.Objects;
 
 public class Session {
 
-  private String topic;
-  private String partition;
+  private final String topic;
+  private final String partition;
 
   public Session(
-      String topic
+      final String topic
   ) {
     this(topic, "");
   }
 
   public Session(
-      String topic,
-      String partition
+      final String topic,
+      final String partition
   ) {
     this.topic = topic;
     this.partition = partition;

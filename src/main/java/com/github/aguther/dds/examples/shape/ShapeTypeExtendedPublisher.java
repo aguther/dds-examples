@@ -49,17 +49,13 @@ import org.slf4j.LoggerFactory;
 
 public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(ShapeTypeExtendedPublisher.class);
 
-  static {
-    log = LoggerFactory.getLogger(ShapeTypeExtendedPublisher.class);
-  }
+  private final DataWriter dataWriter;
+  private final ShapeAttributes shapeAttributes;
+  private final int sleepTime;
 
   private boolean shouldTerminate;
-  private DataWriter dataWriter;
-  private int sleepTime;
-
-  private ShapeAttributes shapeAttributes;
   private int xPosition;
   private int xSpeed;
   private int xPositionMin;
@@ -70,10 +66,10 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
   private int yPositionMax;
 
   ShapeTypeExtendedPublisher(
-      ShapeAttributes shapeAttributes,
-      DomainParticipant domainParticipant,
-      String dataWriterName,
-      int sleepTime
+      final ShapeAttributes shapeAttributes,
+      final DomainParticipant domainParticipant,
+      final String dataWriterName,
+      final int sleepTime
   ) {
     this(
         shapeAttributes,
@@ -83,9 +79,9 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
   }
 
   ShapeTypeExtendedPublisher(
-      ShapeAttributes shapeAttributes,
-      DataWriter dataWriter,
-      int sleepTime
+      final ShapeAttributes shapeAttributes,
+      final DataWriter dataWriter,
+      final int sleepTime
   ) {
     checkNotNull(shapeAttributes, "Shape attributes must not be null");
     checkNotNull(dataWriter, "DataWriter must not be null");
@@ -95,13 +91,13 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
     this.dataWriter = dataWriter;
     this.sleepTime = sleepTime;
 
-    this.xPositionMin = shapeAttributes.size / 2;
-    this.xPositionMax = 235 - shapeAttributes.size / 2;
-    this.xPosition = shapeAttributes.size / 2;
+    this.xPositionMin = shapeAttributes.getSize() / 2;
+    this.xPositionMax = 235 - shapeAttributes.getSize() / 2;
+    this.xPosition = shapeAttributes.getSize() / 2;
     this.xSpeed = 1;
 
-    this.yPositionMin = shapeAttributes.size / 2;
-    this.yPositionMax = 265 - shapeAttributes.size / 2;
+    this.yPositionMin = shapeAttributes.getSize() / 2;
+    this.yPositionMax = 265 - shapeAttributes.getSize() / 2;
     this.yPosition = yPositionMin;
     this.ySpeed = 2;
   }
@@ -179,14 +175,14 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
     }
 
     // set properties
-    sample.color = shapeAttributes.color;
-    sample.shapesize = shapeAttributes.size;
+    sample.color = shapeAttributes.getColor();
+    sample.shapesize = shapeAttributes.getSize();
     sample.x = xPosition;
     sample.y = yPosition;
 
     // set extended properties
-    sample.fillKind = shapeAttributes.fillKind;
-    sample.angle = shapeAttributes.angle;
+    sample.fillKind = shapeAttributes.getFillKind();
+    sample.angle = shapeAttributes.getAngle();
 
     // print sample
     if (log.isDebugEnabled()) {
@@ -199,8 +195,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_offered_deadline_missed(
-      DataWriter dataWriter,
-      OfferedDeadlineMissedStatus offeredDeadlineMissedStatus
+      final DataWriter dataWriter,
+      final OfferedDeadlineMissedStatus offeredDeadlineMissedStatus
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", offeredDeadlineMissedStatus.toString());
@@ -209,8 +205,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_offered_incompatible_qos(
-      DataWriter dataWriter,
-      OfferedIncompatibleQosStatus offeredIncompatibleQosStatus
+      final DataWriter dataWriter,
+      final OfferedIncompatibleQosStatus offeredIncompatibleQosStatus
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", offeredIncompatibleQosStatus.toString());
@@ -219,8 +215,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_liveliness_lost(
-      DataWriter dataWriter,
-      LivelinessLostStatus livelinessLostStatus
+      final DataWriter dataWriter,
+      final LivelinessLostStatus livelinessLostStatus
   ) {
     if (log.isDebugEnabled()) {
       log.debug("{}", livelinessLostStatus.toString());
@@ -229,8 +225,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_publication_matched(
-      DataWriter dataWriter,
-      PublicationMatchedStatus publicationMatchedStatus
+      final DataWriter dataWriter,
+      final PublicationMatchedStatus publicationMatchedStatus
   ) {
     if (log.isDebugEnabled()) {
       log.debug("{}", publicationMatchedStatus.toString());
@@ -239,8 +235,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_reliable_writer_cache_changed(
-      DataWriter dataWriter,
-      ReliableWriterCacheChangedStatus reliableWriterCacheChangedStatus
+      final DataWriter dataWriter,
+      final ReliableWriterCacheChangedStatus reliableWriterCacheChangedStatus
   ) {
     if (log.isDebugEnabled()) {
       log.debug("{}", reliableWriterCacheChangedStatus.toString());
@@ -249,8 +245,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_reliable_reader_activity_changed(
-      DataWriter dataWriter,
-      ReliableReaderActivityChangedStatus reliableReaderActivityChangedStatus
+      final DataWriter dataWriter,
+      final ReliableReaderActivityChangedStatus reliableReaderActivityChangedStatus
   ) {
     if (log.isDebugEnabled()) {
       log.debug("{}", reliableReaderActivityChangedStatus.toString());
@@ -259,9 +255,9 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_destination_unreachable(
-      DataWriter dataWriter,
-      InstanceHandle_t instanceHandle,
-      Locator_t locator
+      final DataWriter dataWriter,
+      final InstanceHandle_t instanceHandle,
+      final Locator_t locator
   ) {
     if (log.isInfoEnabled()) {
       log.info("{}; {}", instanceHandle.toString(), locator.toString());
@@ -270,17 +266,17 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public Object on_data_request(
-      DataWriter dataWriter,
-      Cookie_t cookie
+      final DataWriter dataWriter,
+      final Cookie_t cookie
   ) {
     return null;
   }
 
   @Override
   public void on_data_return(
-      DataWriter dataWriter,
-      Object o,
-      Cookie_t cookie
+      final DataWriter dataWriter,
+      final Object o,
+      final Cookie_t cookie
   ) {
     if (log.isDebugEnabled()) {
       log.debug("{} {}", o.toString(), cookie.toString());
@@ -289,8 +285,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_sample_removed(
-      DataWriter dataWriter,
-      Cookie_t cookie
+      final DataWriter dataWriter,
+      final Cookie_t cookie
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", cookie.toString());
@@ -299,8 +295,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_instance_replaced(
-      DataWriter dataWriter,
-      InstanceHandle_t instanceHandle
+      final DataWriter dataWriter,
+      final InstanceHandle_t instanceHandle
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", instanceHandle.toString());
@@ -309,8 +305,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_application_acknowledgment(
-      DataWriter dataWriter,
-      AcknowledgmentInfo acknowledgmentInfo
+      final DataWriter dataWriter,
+      final AcknowledgmentInfo acknowledgmentInfo
   ) {
     if (log.isInfoEnabled()) {
       log.info("{}", acknowledgmentInfo.toString());
@@ -319,8 +315,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void on_service_request_accepted(
-      DataWriter dataWriter,
-      ServiceRequestAcceptedStatus serviceRequestAcceptedStatus
+      final DataWriter dataWriter,
+      final ServiceRequestAcceptedStatus serviceRequestAcceptedStatus
   ) {
     if (log.isInfoEnabled()) {
       log.info("{}", serviceRequestAcceptedStatus.toString());

@@ -46,23 +46,16 @@ import org.slf4j.LoggerFactory;
 
 public class ConfigurationFilter implements DynamicPartitionObserverFilter, DynamicPartitionCommanderProvider {
 
-  private static final Logger log;
+  private static final String PROPERTY_DOMAIN_ROUTE_NAME = "dynamic_routing_adapter.configuration.domain_route_name";
 
-  private static final String PROPERTY_DOMAIN_ROUTE_NAME;
-
-  static {
-    log = LoggerFactory.getLogger(ConfigurationFilter.class);
-
-    PROPERTY_DOMAIN_ROUTE_NAME = "dynamic_routing_adapter.configuration.domain_route_name";
-  }
+  private static final Logger log = LoggerFactory.getLogger(ConfigurationFilter.class);
 
   private final Map<String, Configuration> configurations;
   private final Pattern patternConfigurationItem;
-
   private final String domainRouteName;
 
   public ConfigurationFilter(
-      Properties properties
+      final Properties properties
   ) {
     configurations = new HashMap<>();
     patternConfigurationItem = Pattern.compile(
@@ -73,7 +66,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
   }
 
   private void loadConfiguration(
-      Properties properties
+      final Properties properties
   ) {
     for (Entry<Object, Object> entry : properties.entrySet()) {
       // run the matcher
@@ -97,9 +90,9 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
   }
 
   private void loadProperty(
-      String identifier,
-      String propertyName,
-      String propertyValue) {
+      final String identifier,
+      final String propertyName,
+      final String propertyValue) {
     // add new configuration if not yet known
     if (!configurations.containsKey(identifier)) {
       configurations.put(identifier, new Configuration());
@@ -166,9 +159,9 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   ) {
     checkNotNull(data);
     return (getMatchingConfiguration(data.topic_name) == null);
@@ -176,9 +169,9 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   ) {
     checkNotNull(data);
     return (getMatchingConfiguration(data.topic_name) == null);
@@ -186,7 +179,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public boolean ignorePartition(
-      String partition
+      final String partition
   ) {
     for (Configuration configuration : configurations.values()) {
       // when a deny filter is available check if it matches
@@ -204,7 +197,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
   }
 
   private Configuration getMatchingConfiguration(
-      String topicName
+      final String topicName
   ) {
     for (Configuration configuration : configurations.values()) {
       // when a deny filter is available check if it matches
@@ -223,14 +216,14 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public String getSessionParent(
-      Session session
+      final Session session
   ) {
     return domainRouteName;
   }
 
   @Override
   public String getSessionName(
-      Session session
+      final Session session
   ) {
     return String.format(
         "%s(%s)",
@@ -241,7 +234,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public String getSessionEntityName(
-      Session session
+      final Session session
   ) {
     return String.format(
         "%s::%s",
@@ -252,7 +245,7 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public String getSessionConfiguration(
-      Session session
+      final Session session
   ) {
     return String.format(
         "str://\"<session name=\"%1$s\" enabled=\"true\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%2$s</element></name></partition></subscriber_qos></session>\"",
@@ -263,16 +256,16 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public String getTopicRouteName(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     return topicRoute.getDirection().toString();
   }
 
   @Override
   public String getTopicRouteEntityName(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     return String.format(
         "%s::%s",
@@ -283,8 +276,8 @@ public class ConfigurationFilter implements DynamicPartitionObserverFilter, Dyna
 
   @Override
   public String getTopicRouteConfiguration(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     Configuration configuration = getMatchingConfiguration(session.getTopic());
     checkNotNull(configuration);

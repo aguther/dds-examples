@@ -37,25 +37,25 @@ public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
 
   @Override
   public boolean ignorePublication(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   ) {
     return false;
   }
 
   @Override
   public boolean ignoreSubscription(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   ) {
     return false;
   }
 
   @Override
   public boolean ignorePartition(
-      String partition
+      final String partition
   ) {
     return (partition.contains("*"));
   }

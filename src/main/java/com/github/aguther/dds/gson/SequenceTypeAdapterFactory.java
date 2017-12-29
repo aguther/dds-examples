@@ -40,8 +40,8 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
 
   @Override
   public <T> TypeAdapter<T> create(
-      Gson gson,
-      TypeToken<T> typeToken
+      final Gson gson,
+      final TypeToken<T> typeToken
   ) {
 
     // get raw type
@@ -84,8 +84,8 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
     private TypeAdapter<E> typeAdapter;
 
     private SequenceTypeAdapter(
-        Class clazz,
-        TypeAdapter<E> typeAdapter
+        final Class clazz,
+        final TypeAdapter<E> typeAdapter
     ) {
       this.clazz = clazz;
       this.typeAdapter = typeAdapter;
@@ -93,8 +93,8 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public void write(
-        JsonWriter out,
-        T value
+        final JsonWriter out,
+        final T value
     ) throws IOException {
 
       if (value == null) {
@@ -113,7 +113,7 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public T read(
-        JsonReader in
+        final JsonReader in
     ) throws IOException {
 
       if (in.peek() == JsonToken.NULL) {

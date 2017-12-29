@@ -45,8 +45,8 @@ public class BuiltinTopicHelper {
    * @return the participant builtin topic data from publication
    */
   public static ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      DomainParticipant domainParticipant,
-      PublicationBuiltinTopicData publicationBuiltinTopicData
+      final DomainParticipant domainParticipant,
+      final PublicationBuiltinTopicData publicationBuiltinTopicData
   ) {
     return getParticipantBuiltinTopicData(
         domainParticipant,
@@ -62,8 +62,8 @@ public class BuiltinTopicHelper {
    * @return the participant builtin topic data from subscription
    */
   public static ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      DomainParticipant domainParticipant,
-      SubscriptionBuiltinTopicData subscriptionBuiltinTopicData
+      final DomainParticipant domainParticipant,
+      final SubscriptionBuiltinTopicData subscriptionBuiltinTopicData
   ) {
     return getParticipantBuiltinTopicData(
         domainParticipant,
@@ -78,8 +78,8 @@ public class BuiltinTopicHelper {
    * @return the participant builtin topic data from participant key
    */
   public static ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      DomainParticipant domainParticipant,
-      BuiltinTopicKey_t participantKey
+      final DomainParticipant domainParticipant,
+      final BuiltinTopicKey_t participantKey
   ) {
     // get discovered participants
     InstanceHandleSeq participantHandles = new InstanceHandleSeq();

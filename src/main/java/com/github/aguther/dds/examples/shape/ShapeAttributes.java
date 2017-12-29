@@ -29,11 +29,11 @@ import idl.ShapeFillKind;
 public class ShapeAttributes {
 
   // base attributes
-  String color;
-  int size;
+  private String color;
+  private int size;
   // extended attributes
-  ShapeFillKind fillKind;
-  float angle;
+  private ShapeFillKind fillKind;
+  private float angle;
 
   public ShapeAttributes() {
     this(
@@ -45,8 +45,8 @@ public class ShapeAttributes {
   }
 
   public ShapeAttributes(
-      String color,
-      int size
+      final String color,
+      final int size
   ) {
     this(
         color,
@@ -57,14 +57,30 @@ public class ShapeAttributes {
   }
 
   public ShapeAttributes(
-      String color,
-      int size,
-      ShapeFillKind fillKind,
-      float angle
+      final String color,
+      final int size,
+      final ShapeFillKind fillKind,
+      final float angle
   ) {
     this.color = color;
     this.size = size;
     this.fillKind = fillKind;
     this.angle = angle;
+  }
+
+  public String getColor() {
+    return color;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public ShapeFillKind getFillKind() {
+    return fillKind;
+  }
+
+  public float getAngle() {
+    return angle;
   }
 }

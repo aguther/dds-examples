@@ -64,7 +64,9 @@ public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
   }
 
   @Override
-  public void write(LogMessage logMessage) {
+  public void write(
+      final LogMessage logMessage
+  ) {
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_ERROR
         && log.isErrorEnabled()) {
       log.error(logMessage.text.replace("\n", " "));

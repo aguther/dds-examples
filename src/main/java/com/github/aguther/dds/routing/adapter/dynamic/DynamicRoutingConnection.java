@@ -55,51 +55,44 @@ import org.slf4j.LoggerFactory;
 
 public class DynamicRoutingConnection implements DiscoveryConnection, Closeable {
 
-  private static final Logger log;
+  private static final String PROPERTY_ADMINISTRATION_DOMAIN_ID
+      = "dynamic_routing_adapter.administration.domain_id";
 
-  private static final String PROPERTY_ADMINISTRATION_DOMAIN_ID;
+  private static final String PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
+      = "dynamic_routing_adapter.administration.discovery.wait_time";
+  private static final String DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
+      = "30000";
 
-  private static final String PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME;
-  private static final String DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME;
+  private static final String PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
+      = "dynamic_routing_adapter.administration.request.timeout";
+  private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
+      = "15000";
 
-  private static final String PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT;
-  private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT;
+  private static final String PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
+      = "dynamic_routing_adapter.administration.request.retry_delay";
+  private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
+      = "45000";
 
-  private static final String PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY;
-  private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY;
+  private static final String PROPERTY_DISCOVERY_DOMAIN_ID
+      = "dynamic_routing_adapter.discovery.domain_id";
 
-  private static final String PROPERTY_DISCOVERY_DOMAIN_ID;
+  private static final Logger log = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
 
-  static {
-    log = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
+  private final DomainParticipant domainParticipantAdministration;
+  private final DomainParticipant domainParticipantDiscovery;
 
-    PROPERTY_ADMINISTRATION_DOMAIN_ID = "dynamic_routing_adapter.administration.domain_id";
+  private final PublicationObserver publicationObserver;
+  private final SubscriptionObserver subscriptionObserver;
 
-    PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME = "dynamic_routing_adapter.administration.discovery.wait_time";
-    DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME = "30000";
+  private final DynamicPartitionObserver dynamicPartitionObserver;
 
-    PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT = "dynamic_routing_adapter.administration.request.timeout";
-    DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT = "15000";
-
-    PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY = "dynamic_routing_adapter.administration.request.retry_delay";
-    DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY = "45000";
-
-    PROPERTY_DISCOVERY_DOMAIN_ID = "dynamic_routing_adapter.discovery.domain_id";
-  }
-
-  private DomainParticipant domainParticipantAdministration;
-  private DomainParticipant domainParticipantDiscovery;
-  private RoutingServiceCommandHelper routingServiceCommandHelper;
-  private DynamicPartitionObserver dynamicPartitionObserver;
-  private PublicationObserver publicationObserver;
-  private SubscriptionObserver subscriptionObserver;
-
-  private DynamicPartitionCommander dynamicPartitionCommander;
+  private final DynamicPartitionCommander dynamicPartitionCommander;
+  private final RoutingServiceCommandHelper routingServiceCommandHelper;
 
   DynamicRoutingConnection(
-      String routingServiceName,
-      String routingServiceGroupName,
-      Properties properties
+      final String routingServiceName,
+      final String routingServiceGroupName,
+      final Properties properties
   ) {
     log.info("Creating connection");
 
@@ -210,54 +203,52 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
       DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
     }
 
-    routingServiceCommandHelper = null;
-
     log.info("Connection closed");
   }
 
   @Override
   public Session createSession(
-      Properties properties
+      final Properties properties
   ) throws AdapterException {
     return new EmptySession();
   }
 
   @Override
   public void deleteSession(
-      Session session
+      final Session session
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public StreamReader createStreamReader(
-      Session session,
-      StreamInfo streamInfo,
-      Properties properties,
-      StreamReaderListener streamReaderListener
+      final Session session,
+      final StreamInfo streamInfo,
+      final Properties properties,
+      final StreamReaderListener streamReaderListener
   ) throws AdapterException {
     return new EmptyStreamReader();
   }
 
   @Override
   public void deleteStreamReader(
-      StreamReader streamReader
+      final StreamReader streamReader
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public StreamWriter createStreamWriter(
-      Session session,
-      StreamInfo streamInfo,
-      Properties properties
+      final Session session,
+      final StreamInfo streamInfo,
+      final Properties properties
   ) throws AdapterException {
     return new EmptyStreamWriter();
   }
 
   @Override
   public void deleteStreamWriter(
-      StreamWriter streamWriter
+      final StreamWriter streamWriter
   ) throws AdapterException {
     // do nothing
   }
@@ -269,7 +260,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
 
   @Override
   public void update(
-      Properties properties
+      final Properties properties
   ) throws AdapterException {
     // do nothing
   }
@@ -286,26 +277,26 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
 
   @Override
   public Object copyTypeRepresentation(
-      Object o
+      final Object o
   ) throws AdapterException {
     throw new AdapterException(0, "Operation not supported");
   }
 
   @Override
   public void deleteTypeRepresentation(
-      Object o
+      final Object o
   ) throws AdapterException {
     // do nothing
   }
 
   private static DomainParticipant createRemoteAdministrationDomainParticipant(
-      int domainId
+      final int domainId
   ) {
     return createDomainParticipant(domainId, "RTI Routing Service: remote administration");
   }
 
   private static DomainParticipant createDiscoveryDomainParticipant(
-      int domainId
+      final int domainId
   ) {
     // disable auto-enable -> THIS IS CRUCIAL TO WORK CORRECTLY
     AutoEnableCreatedEntitiesHelper.disable();
@@ -320,8 +311,8 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
   }
 
   private static DomainParticipant createDomainParticipant(
-      int domainId,
-      String participantName
+      final int domainId,
+      final String participantName
   ) {
     // create default participant qos marked as routing service entity
     DomainParticipantQos domainParticipantQos = new DomainParticipantQos();

@@ -25,7 +25,7 @@
 package com.github.aguther.dds.examples.shape;
 
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
-import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import idl.ShapeFillKind;
@@ -34,23 +34,17 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShapePublisher extends AbstractIdleService {
+public class ShapePublisher extends AbstractExecutionThreadService {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(ShapePublisher.class);
 
   private static ShapePublisher serviceInstance;
 
-  private static DomainParticipant domainParticipant;
-
-  private static Thread publishThread;
-  private static ShapeTypeExtendedPublisher shapeTypeExtendedPublisher;
-
-  static {
-    log = LoggerFactory.getLogger(ShapePublisher.class);
-  }
+  private DomainParticipant domainParticipant;
+  private ShapeTypeExtendedPublisher shapeTypeExtendedPublisher;
 
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -95,6 +89,11 @@ public class ShapePublisher extends AbstractIdleService {
   }
 
   @Override
+  protected void run() throws Exception {
+    shapeTypeExtendedPublisher.run();
+  }
+
+  @Override
   protected void shutDown() throws Exception {
     // log service start
     log.info("Service is shutting down");
@@ -109,7 +108,7 @@ public class ShapePublisher extends AbstractIdleService {
     log.info("Service shutdown finished");
   }
 
-  private static void startupDds() {
+  private void startupDds() {
     // register logger DDS messages
     try {
       Slf4jDdsLogger.createRegisterLogger();
@@ -130,7 +129,7 @@ public class ShapePublisher extends AbstractIdleService {
     );
   }
 
-  private static void startPublish() {
+  private void startPublish() {
     // create initial attributes of shape
     ShapeAttributes shapeAttributes = new ShapeAttributes(
         "BLUE",
@@ -146,35 +145,17 @@ public class ShapePublisher extends AbstractIdleService {
         "Publisher::ShapeTypeExtendedDataWriter",
         50
     );
-
-    // create and start thread
-    publishThread = new Thread(shapeTypeExtendedPublisher);
-    publishThread.start();
   }
 
-  private static void stopPublish() {
+  private void stopPublish() {
     // check if we need to stop publish
-    if (shapeTypeExtendedPublisher == null) {
-      return;
+    if (shapeTypeExtendedPublisher != null) {
+      shapeTypeExtendedPublisher.stop();
+      shapeTypeExtendedPublisher = null;
     }
-
-    // signal termination
-    shapeTypeExtendedPublisher.stop();
-
-    // wait for thread to finish
-    try {
-      publishThread.join();
-    } catch (InterruptedException e) {
-      log.error("Interrupted on join of publisher thread.", e);
-      Thread.currentThread().interrupt();
-    }
-
-    // set objects to null
-    publishThread = null;
-    shapeTypeExtendedPublisher = null;
   }
 
-  private static void shutdownDds() {
+  private void shutdownDds() {
     // delete domain participant
     if (domainParticipant != null) {
       domainParticipant.delete_contained_entities();

@@ -41,7 +41,7 @@ public class AutoEnableCreatedEntitiesHelper {
   }
 
   private static void switchValueTo(
-      boolean value
+      final boolean value
   ) {
     // create new QoS object
     DomainParticipantFactoryQos domainParticipantFactoryQos = new DomainParticipantFactoryQos();

@@ -35,20 +35,15 @@ import org.slf4j.LoggerFactory;
 
 public class MutableSubscriber extends AbstractIdleService {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(MutablePublisher.class);
 
   private static MutableSubscriber serviceInstance;
 
   private DomainParticipant domainParticipant;
-
   private MutableTypeListener mutableTypeListener;
 
-  static {
-    log = LoggerFactory.getLogger(MutablePublisher.class);
-  }
-
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();

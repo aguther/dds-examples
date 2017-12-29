@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class Discovery extends AbstractIdleService
     implements PublicationObserverListener, SubscriptionObserverListener {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(Discovery.class);
 
   private static Discovery serviceInstance;
 
@@ -51,12 +51,8 @@ public class Discovery extends AbstractIdleService
   private PublicationObserver publicationObserver;
   private SubscriptionObserver subscriptionObserver;
 
-  static {
-    log = LoggerFactory.getLogger(Discovery.class);
-  }
-
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -140,7 +136,7 @@ public class Discovery extends AbstractIdleService
   }
 
   private String convertInstanceHandleToString(
-      InstanceHandle_t instanceHandle
+      final InstanceHandle_t instanceHandle
   ) {
     StringBuilder stringBuilder = new StringBuilder();
     byte[] values = instanceHandle.get_valuesI();
@@ -155,7 +151,7 @@ public class Discovery extends AbstractIdleService
   }
 
   private String convertPartitionQosPolicyToString(
-      PartitionQosPolicy partitionQosPolicy
+      final PartitionQosPolicy partitionQosPolicy
   ) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append('[');
@@ -174,9 +170,9 @@ public class Discovery extends AbstractIdleService
 
   @Override
   public void publicationDiscovered(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   ) {
     if (log.isInfoEnabled()) {
       log.info(
@@ -191,9 +187,9 @@ public class Discovery extends AbstractIdleService
 
   @Override
   public void publicationLost(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
   ) {
     if (log.isInfoEnabled()) {
       log.info(
@@ -208,9 +204,9 @@ public class Discovery extends AbstractIdleService
 
   @Override
   public void subscriptionDiscovered(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   ) {
     if (log.isInfoEnabled()) {
       log.info(
@@ -225,9 +221,9 @@ public class Discovery extends AbstractIdleService
 
   @Override
   public void subscriptionLost(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
   ) {
     if (log.isInfoEnabled()) {
       log.info(

@@ -45,12 +45,12 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   private static final Logger log = LoggerFactory.getLogger(ShapeTypeExtendedListener.class);
 
-  private DataReader dataReader;
-  private ShapeTypeExtended sample;
-  private SampleInfo sampleInfo;
+  private final DataReader dataReader;
+  private final ShapeTypeExtended sample;
+  private final SampleInfo sampleInfo;
 
   ShapeTypeExtendedListener(
-      DataReader dataReader
+      final DataReader dataReader
   ) {
     checkNotNull(dataReader, "DataReader must not be null");
 
@@ -75,8 +75,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   @Override
   public void on_requested_deadline_missed(
-      DataReader dataReader,
-      RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
+      final DataReader dataReader,
+      final RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", requestedDeadlineMissedStatus.toString());
@@ -85,8 +85,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   @Override
   public void on_requested_incompatible_qos(
-      DataReader dataReader,
-      RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
+      final DataReader dataReader,
+      final RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", requestedIncompatibleQosStatus.toString());
@@ -95,8 +95,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   @Override
   public void on_sample_rejected(
-      DataReader dataReader,
-      SampleRejectedStatus sampleRejectedStatus
+      final DataReader dataReader,
+      final SampleRejectedStatus sampleRejectedStatus
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", sampleRejectedStatus.toString());
@@ -105,8 +105,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   @Override
   public void on_liveliness_changed(
-      DataReader dataReader,
-      LivelinessChangedStatus livelinessChangedStatus
+      final DataReader dataReader,
+      final LivelinessChangedStatus livelinessChangedStatus
   ) {
     if (log.isDebugEnabled()) {
       log.debug("{}", livelinessChangedStatus.toString());
@@ -115,7 +115,7 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   @Override
   public void on_data_available(
-      DataReader dataReader
+      final DataReader dataReader
   ) {
     do {
       try {
@@ -146,8 +146,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   @Override
   public void on_sample_lost(
-      DataReader dataReader,
-      SampleLostStatus sampleLostStatus
+      final DataReader dataReader,
+      final SampleLostStatus sampleLostStatus
   ) {
     if (log.isWarnEnabled()) {
       log.warn("{}", sampleLostStatus.toString());
@@ -156,8 +156,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
   @Override
   public void on_subscription_matched(
-      DataReader dataReader,
-      SubscriptionMatchedStatus subscriptionMatchedStatus
+      final DataReader dataReader,
+      final SubscriptionMatchedStatus subscriptionMatchedStatus
   ) {
     if (log.isDebugEnabled()) {
       log.debug("{}", subscriptionMatchedStatus.toString());

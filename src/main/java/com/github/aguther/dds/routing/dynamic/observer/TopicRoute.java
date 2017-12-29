@@ -32,14 +32,14 @@ public class TopicRoute {
     OUT, IN
   }
 
-  private Direction direction;
-  private String topic;
-  private String type;
+  private final Direction direction;
+  private final String topic;
+  private final String type;
 
   public TopicRoute(
-      Direction direction,
-      String topic,
-      String type
+      final Direction direction,
+      final String topic,
+      final String type
   ) {
     this.direction = direction;
     this.topic = topic;

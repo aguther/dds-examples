@@ -31,14 +31,10 @@ import org.slf4j.LoggerFactory;
 
 public class MutableBuffer {
 
-  private static final Logger log;
-
-  static {
-    log = LoggerFactory.getLogger(MutableBuffer.class);
-  }
+  private static final Logger log = LoggerFactory.getLogger(MutableBuffer.class);
 
   public static void main(
-      String[] args
+      final String[] args
   ) {
 
     // create first type
@@ -88,10 +84,10 @@ public class MutableBuffer {
   }
 
   private static <I, O> void execute(
-      TypeSupportImpl inputTypeSupport,
-      I inputSample,
-      TypeSupportImpl outputTypeSupport,
-      O outputSample
+      final TypeSupportImpl inputTypeSupport,
+      final I inputSample,
+      final TypeSupportImpl outputTypeSupport,
+      final O outputSample
   ) {
 
     // print sample

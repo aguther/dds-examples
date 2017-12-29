@@ -34,18 +34,14 @@ import org.slf4j.LoggerFactory;
 
 public class ReplySender implements SimpleReplierListener<RequestType, ReplyType> {
 
-  private static final Logger log;
-
-  static {
-    log = LoggerFactory.getLogger(RequestSender.class);
-  }
+  private static final Logger log = LoggerFactory.getLogger(RequestSender.class);
 
   ReplySender() {
   }
 
   @Override
   public ReplyType onRequestAvailable(
-      Sample<RequestType> sample
+      final Sample<RequestType> sample
   ) {
     // check if request is valid
     if (!sample.getInfo().valid_data) {
@@ -79,7 +75,7 @@ public class ReplySender implements SimpleReplierListener<RequestType, ReplyType
 
   @Override
   public void returnLoan(
-      ReplyType replyType
+      final ReplyType replyType
   ) {
     // nothing to do
   }

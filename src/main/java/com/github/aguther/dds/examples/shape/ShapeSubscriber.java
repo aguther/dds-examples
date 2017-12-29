@@ -35,20 +35,15 @@ import org.slf4j.LoggerFactory;
 
 public class ShapeSubscriber extends AbstractIdleService {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(ShapePublisher.class);
 
   private static ShapeSubscriber serviceInstance;
 
-  private static DomainParticipant domainParticipant;
-
-  private static ShapeTypeExtendedListener shapeTypeExtendedListener;
-
-  static {
-    log = LoggerFactory.getLogger(ShapePublisher.class);
-  }
+  private DomainParticipant domainParticipant;
+  private ShapeTypeExtendedListener shapeTypeExtendedListener;
 
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -107,7 +102,7 @@ public class ShapeSubscriber extends AbstractIdleService {
     log.info("Service shutdown finished");
   }
 
-  private static void startupDds() {
+  private void startupDds() {
     // register logger DDS messages
     try {
       Slf4jDdsLogger.createRegisterLogger();
@@ -128,14 +123,14 @@ public class ShapeSubscriber extends AbstractIdleService {
     );
   }
 
-  private static void startSubscription() {
+  private void startSubscription() {
     // start subscription
     shapeTypeExtendedListener = new ShapeTypeExtendedListener(
         domainParticipant.lookup_datareader_by_name("Subscriber::ShapeTypeExtendedDataReader")
     );
   }
 
-  private static void stopSubscription() {
+  private void stopSubscription() {
     // signal termination
     shapeTypeExtendedListener.stop();
 
@@ -143,7 +138,7 @@ public class ShapeSubscriber extends AbstractIdleService {
     shapeTypeExtendedListener = null;
   }
 
-  private static void shutdownDds() {
+  private void shutdownDds() {
     // delete domain participant
     if (domainParticipant != null) {
       domainParticipant.delete_contained_entities();

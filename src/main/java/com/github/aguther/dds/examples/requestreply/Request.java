@@ -25,7 +25,7 @@
 package com.github.aguther.dds.examples.requestreply;
 
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
-import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.connext.requestreply.Requester;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -37,24 +37,18 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Request extends AbstractIdleService {
+public class Request extends AbstractExecutionThreadService {
 
-  private static final Logger log;
+  private static final Logger log = LoggerFactory.getLogger(Request.class);
 
   private static Request serviceInstance;
 
-  private static DomainParticipant domainParticipant;
-  private static Requester<RequestType, ReplyType> requester;
-
-  private static Thread requestSenderThread;
-  private static RequestSender requestSender;
-
-  static {
-    log = LoggerFactory.getLogger(Request.class);
-  }
+  private DomainParticipant domainParticipant;
+  private Requester<RequestType, ReplyType> requester;
+  private RequestSender requestSender;
 
   public static void main(
-      String[] args
+      final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -99,6 +93,11 @@ public class Request extends AbstractIdleService {
   }
 
   @Override
+  protected void run() throws Exception {
+    requestSender.run();
+  }
+
+  @Override
   protected void shutDown() throws Exception {
     // log service start
     log.info("Service is shutting down");
@@ -113,7 +112,7 @@ public class Request extends AbstractIdleService {
     log.info("Service shutdown finished");
   }
 
-  private static void startupDds() {
+  private void startupDds() {
     // register logger DDS messages
     try {
       Slf4jDdsLogger.createRegisterLogger();
@@ -138,7 +137,7 @@ public class Request extends AbstractIdleService {
     );
   }
 
-  private static void startPublish() {
+  private void startPublish() {
     // create requester (currently not possible to use xml for the creation)
     requester = new Requester<>(
         domainParticipant,
@@ -153,41 +152,16 @@ public class Request extends AbstractIdleService {
         1000,
         1000
     );
-
-    // create and start thread
-    requestSenderThread = new Thread(requestSender);
-    requestSenderThread.start();
   }
 
-  private static void stopPublish() {
+  private void stopPublish() {
     // check if we need to stop publish
-    if (requestSender == null) {
-      return;
-    }
-
-    // signal termination
-    requestSender.stop();
-
-    // wait for thread to finish
-    try {
-      requestSenderThread.join();
-    } catch (InterruptedException e) {
-      log.error("Interrupted on join of sender thread.", e);
-      Thread.currentThread().interrupt();
-    }
-
-    // set objects to null
-    requestSenderThread = null;
-    requestSender = null;
-
-    // delete requester
-    if (requester != null) {
-      requester.close();
-      requester = null;
+    if (requestSender != null) {
+      requestSender.stop();
     }
   }
 
-  private static void shutdownDds() {
+  private void shutdownDds() {
     // delete requester (if not already deleted)
     if (requester != null) {
       requester.close();

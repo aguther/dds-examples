@@ -38,24 +38,24 @@ import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
  */
 public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCommanderProvider {
 
-  private String domainRouteName;
+  private final String domainRouteName;
 
   public DynamicPartitionCommanderProviderImpl(
-      String domainRouteName
+      final String domainRouteName
   ) {
     this.domainRouteName = domainRouteName;
   }
 
   @Override
   public String getSessionParent(
-      Session session
+      final Session session
   ) {
     return domainRouteName;
   }
 
   @Override
   public String getSessionName(
-      Session session
+      final Session session
   ) {
     return String.format(
         "%s(%s)",
@@ -66,7 +66,7 @@ public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCo
 
   @Override
   public String getSessionEntityName(
-      Session session
+      final Session session
   ) {
     return String.format(
         "%s::%s",
@@ -77,7 +77,7 @@ public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCo
 
   @Override
   public String getSessionConfiguration(
-      Session session
+      final Session session
   ) {
     return String.format(
         "str://\"<session name=\"%1$s\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%2$s</element></name></partition></subscriber_qos></session>\"",
@@ -88,16 +88,16 @@ public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCo
 
   @Override
   public String getTopicRouteName(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     return topicRoute.getDirection().toString();
   }
 
   @Override
   public String getTopicRouteEntityName(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     return String.format(
         "%s::%s",
@@ -108,8 +108,8 @@ public class DynamicPartitionCommanderProviderImpl implements DynamicPartitionCo
 
   @Override
   public String getTopicRouteConfiguration(
-      Session session,
-      TopicRoute topicRoute
+      final Session session,
+      final TopicRoute topicRoute
   ) {
     return String.format(
         "str://\"<auto_topic_route name=\"%1$s\"><input participant=\"%2$d\"><allow_topic_name_filter>%3$s</allow_topic_name_filter><datareader_qos base_name=\"QosLibrary::Base\"/></input><output><allow_topic_name_filter>%3$s</allow_topic_name_filter><datawriter_qos base_name=\"QosLibrary::Base\"/></output></auto_topic_route>\"",

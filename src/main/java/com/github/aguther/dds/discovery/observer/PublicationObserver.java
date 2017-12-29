@@ -52,11 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PublicationObserver extends BuiltinTopicObserver implements Runnable {
 
-  private static final Logger log;
-
-  static {
-    log = LoggerFactory.getLogger(PublicationObserver.class);
-  }
+  private static final Logger log = LoggerFactory.getLogger(PublicationObserver.class);
 
   private final Map<InstanceHandle_t, PublicationBuiltinTopicData> sampleCache;
   private final List<PublicationObserverListener> listenerList;
@@ -67,8 +63,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
    * @param domainParticipant the domain participant (that is not yet enabled)
    */
   public PublicationObserver(
-      DomainParticipant domainParticipant) {
-
+      final DomainParticipant domainParticipant
+  ) {
     // create the parent observer with the built-in publication topic
     super(domainParticipant, PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME);
 
@@ -91,7 +87,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
    * @param listener the listener
    */
   public void addListener(
-      PublicationObserverListener listener
+      final PublicationObserverListener listener
   ) {
     addListener(listener, true);
   }
@@ -103,8 +99,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
    * @param deliverReadSamples true to deliver already read samples
    */
   public void addListener(
-      PublicationObserverListener listener,
-      boolean deliverReadSamples
+      final PublicationObserverListener listener,
+      final boolean deliverReadSamples
   ) {
     checkNotNull(listener, "Listener must not be null");
 
@@ -124,7 +120,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
    * @param listener the listener
    */
   public void removeListener(
-      PublicationObserverListener listener
+      final PublicationObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
     listenerList.remove(listener);
@@ -186,7 +182,7 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
    * @param listener the listener
    */
   private void deliverReadSamples(
-      PublicationObserverListener listener
+      final PublicationObserverListener listener
   ) {
     // variables to store data
     SampleInfo sampleInfo = new SampleInfo();
