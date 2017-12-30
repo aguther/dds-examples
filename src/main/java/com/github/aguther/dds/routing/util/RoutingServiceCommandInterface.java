@@ -42,6 +42,7 @@ import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandRequestTypeSupport;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseTypeSupport;
+import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class provides helpers to easily interact with a routing service using the topics defined by RTI.
  */
-public class RoutingServiceCommandInterface {
+public class RoutingServiceCommandInterface implements Closeable {
 
   private static final Logger log = LoggerFactory.getLogger(RoutingServiceCommandInterface.class);
 
@@ -91,6 +92,14 @@ public class RoutingServiceCommandInterface {
 
     // create requester for routing service administration
     requester = new Requester<>(requesterParams);
+  }
+
+
+  @Override
+  public void close() {
+    if (requester != null) {
+      requester.close();
+    }
   }
 
   /**

@@ -22,11 +22,14 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.routing.adapter.dynamic;
+package com.github.aguther.dds.routing.dynamic;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * This class represents one configuration set for dynamic routing.
+ */
 public class Configuration {
 
   private Pattern allowTopicNameFilter;

@@ -1,4 +1,4 @@
-package com.github.aguther.dds.routing.adapter.dynamic;
+package com.github.aguther.dds.routing.dynamic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

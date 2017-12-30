@@ -31,6 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.github.aguther.dds.routing.dynamic.PropertyFactory;
 import com.rti.dds.infrastructure.RETCODE_ERROR;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.util.Properties;

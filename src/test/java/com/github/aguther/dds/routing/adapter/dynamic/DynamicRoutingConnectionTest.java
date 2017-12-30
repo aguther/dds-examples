@@ -1,165 +1,161 @@
 package com.github.aguther.dds.routing.adapter.dynamic;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
-import com.github.aguther.dds.discovery.observer.PublicationObserver;
-import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
-import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
-import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
-import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
-import com.rti.dds.domain.DomainParticipant;
-import com.rti.dds.domain.DomainParticipantFactory;
-import com.rti.dds.domain.DomainParticipantQos;
-import com.rti.dds.infrastructure.EntityNameQosPolicy;
-import com.rti.dds.infrastructure.ServiceQosPolicy;
-import java.util.concurrent.TimeUnit;
+import com.github.aguther.dds.routing.adapter.empty.EmptySession;
+import com.github.aguther.dds.routing.adapter.empty.EmptyStreamReader;
+import com.github.aguther.dds.routing.adapter.empty.EmptyStreamWriter;
+import com.github.aguther.dds.routing.dynamic.DynamicRouting;
+import com.github.aguther.dds.routing.dynamic.PropertyFactory;
+import com.rti.routingservice.adapter.infrastructure.AdapterException;
+import java.util.Properties;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({
-    DynamicRoutingConnection.class,
-    DomainParticipantQos.class,
-    ServiceQosPolicy.class,
-    EntityNameQosPolicy.class
-})
-@SuppressStaticInitializationFor({
-    "com.rti.dds.domain.DomainParticipantFactory"
-})
+@PrepareForTest(DynamicRoutingConnection.class)
 public class DynamicRoutingConnectionTest {
 
-  private DomainParticipantFactory domainParticipantFactory;
+  private Properties properties;
+  private DynamicRouting dynamicRouting;
+  private DynamicRoutingConnection dynamicRoutingConnection;
 
-  private DomainParticipant domainParticipantDiscovery;
-  private DomainParticipant domainParticipantAdministration;
-  private PublicationObserver publicationObserver;
-  private SubscriptionObserver subscriptionObserver;
-  private DynamicPartitionObserver dynamicPartitionObserver;
-  private DynamicPartitionCommander dynamicPartitionCommander;
-  private RoutingServiceCommandInterface routingServiceCommandInterface;
-
-  private DomainParticipantQos domainParticipantQos;
-//  private ServiceQosPolicy serviceQosPolicy;
-//  private EntityNameQosPolicy participant_name;
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Before
   public void setUp() throws Exception {
-    // mock the domain participant factory
-    domainParticipantFactory = PowerMockito.mock(DomainParticipantFactory.class);
-    Whitebox.setInternalState(DomainParticipantFactory.class, "TheParticipantFactory", domainParticipantFactory);
+    // create properties
+    properties = PropertyFactory.create();
 
-    // mock domain participants
-    domainParticipantAdministration = mock(DomainParticipant.class);
-    domainParticipantDiscovery = mock(DomainParticipant.class);
-
-    // return mocked domain participants when factory is called
-    PowerMockito.when(domainParticipantFactory.create_participant(anyInt(), any(), any(), anyInt()))
-        .thenReturn(domainParticipantAdministration)
-        .thenReturn(domainParticipantDiscovery);
-
-    publicationObserver = mock(PublicationObserver.class);
-    PowerMockito.whenNew(PublicationObserver.class).withAnyArguments().thenReturn(publicationObserver);
-
-    subscriptionObserver = mock(SubscriptionObserver.class);
-    PowerMockito.whenNew(SubscriptionObserver.class).withAnyArguments().thenReturn(subscriptionObserver);
-
-    dynamicPartitionObserver = mock(DynamicPartitionObserver.class);
-    PowerMockito.whenNew(DynamicPartitionObserver.class).withAnyArguments().thenReturn(dynamicPartitionObserver);
-
-    dynamicPartitionCommander = mock(DynamicPartitionCommander.class);
-    PowerMockito.whenNew(DynamicPartitionCommander.class).withAnyArguments().thenReturn(dynamicPartitionCommander);
-
-    routingServiceCommandInterface = mock(RoutingServiceCommandInterface.class);
-    PowerMockito.whenNew(RoutingServiceCommandInterface.class).withAnyArguments().thenReturn(
-        routingServiceCommandInterface);
-
-    domainParticipantQos = PowerMockito.mock(DomainParticipantQos.class);
+    // mock dynamic routing
+    dynamicRouting = mock(DynamicRouting.class);
     {
-      ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
-      Whitebox.setInternalState(domainParticipantQos, "service", serviceQosPolicy);
-
-      EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
-      Whitebox.setInternalState(domainParticipantQos, "participant_name", entityNameQosPolicy);
+      when(dynamicRouting.getProperties()).thenReturn(properties);
     }
-    PowerMockito.whenNew(DomainParticipantQos.class).withAnyArguments().thenReturn(domainParticipantQos);
+    PowerMockito.whenNew(DynamicRouting.class).withAnyArguments().thenReturn(dynamicRouting);
+
+    // create connection
+    dynamicRoutingConnection = new DynamicRoutingConnection(
+        "NAME",
+        "GROUP",
+        properties
+    );
   }
 
   @After
   public void tearDown() throws Exception {
+    properties = null;
+    dynamicRouting = null;
+    dynamicRoutingConnection = null;
   }
 
   @Test
   public void testCreate() {
-    // create connection
-    DynamicRoutingConnection connection = new DynamicRoutingConnection(
-        "NAME",
-        "GROUP",
-        PropertyFactory.create()
-    );
-
-    // verify all close methods have been called
-    verify(routingServiceCommandInterface, times(1)).waitForDiscovery(
-        anyString(),
-        anyLong(),
-        any(TimeUnit.class)
-    );
-    verify(domainParticipantFactory, times(2)).create_participant(
-        anyInt(),
-        any(),
-        any(),
-        anyInt()
-    );
-    verify(dynamicPartitionObserver, times(3)).addFilter(
-        any(DynamicPartitionObserverFilter.class)
-    );
-    verify(dynamicPartitionObserver, times(1)).addListener(
-        dynamicPartitionCommander
-    );
-    verify(publicationObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
-    );
-    verify(subscriptionObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
-    );
-    verify(domainParticipantDiscovery, times(1)).enable();
+    assertNotNull(dynamicRoutingConnection);
   }
 
   @Test
   public void testClose() {
-    // create connection
-    DynamicRoutingConnection connection = new DynamicRoutingConnection(
-        "NAME",
-        "GROUP",
-        PropertyFactory.create()
-    );
-
     // close connection
-    connection.close();
+    dynamicRoutingConnection.close();
 
     // verify all close methods have been called
-    verify(publicationObserver, times(1)).close();
-    verify(subscriptionObserver, times(1)).close();
-    verify(dynamicPartitionObserver, times(1)).close();
-    verify(dynamicPartitionCommander, times(1)).close();
-    verify(domainParticipantAdministration, times(1)).delete_contained_entities();
-    verify(domainParticipantFactory, times(1)).delete_participant(domainParticipantAdministration);
-    verify(domainParticipantDiscovery, times(1)).delete_contained_entities();
-    verify(domainParticipantFactory, times(1)).delete_participant(domainParticipantDiscovery);
+    verify(dynamicRouting, times(1)).close();
+  }
+
+  @Test
+  public void testUpdate() throws AdapterException {
+    // extend properties
+    properties.put("NAME", "VALUE");
+
+    // get attributes
+    dynamicRoutingConnection.update(properties);
+
+    // verify update has been called
+    verify(dynamicRouting, times(1)).update(properties);
+  }
+
+  @Test
+  public void testGetAttributes() throws AdapterException {
+    // get attributes
+    assertEquals(properties, dynamicRoutingConnection.getAttributes());
+  }
+
+  @Test
+  public void testCreateSession() throws AdapterException {
+    assertTrue(dynamicRoutingConnection.createSession(properties) instanceof EmptySession);
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testDeleteSession() throws AdapterException {
+    dynamicRoutingConnection.deleteSession(new EmptySession());
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testCreateStreamReader() throws AdapterException {
+    assertTrue(dynamicRoutingConnection.createStreamReader(
+        null, null, properties, null) instanceof EmptyStreamReader);
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testDeleteStreamReader() throws AdapterException {
+    dynamicRoutingConnection.deleteStreamReader(new EmptyStreamReader());
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testCreateStreamWriter() throws AdapterException {
+    assertTrue(dynamicRoutingConnection.createStreamWriter(
+        null, null, properties) instanceof EmptyStreamWriter);
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testDeleteStreamWriter() throws AdapterException {
+    dynamicRoutingConnection.deleteStreamWriter(new EmptyStreamWriter());
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testGetInputStreamDiscoveryReader() throws AdapterException {
+    assertTrue(dynamicRoutingConnection.getInputStreamDiscoveryReader() instanceof EmptyStreamReader);
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testGetOutputStreamDiscoveryReader() throws AdapterException {
+    assertTrue(dynamicRoutingConnection.getOutputStreamDiscoveryReader() instanceof EmptyStreamReader);
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testCopyTypeRepresentation() throws AdapterException {
+    thrown.expect(AdapterException.class);
+    dynamicRoutingConnection.copyTypeRepresentation(new Object());
+    verifyZeroInteractions(dynamicRouting);
+  }
+
+  @Test
+  public void testDeleteTypeRepresentation() throws AdapterException {
+    dynamicRoutingConnection.deleteTypeRepresentation(new Object());
+    verifyZeroInteractions(dynamicRouting);
   }
 }

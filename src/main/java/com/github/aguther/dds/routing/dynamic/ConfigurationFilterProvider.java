@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.routing.adapter.dynamic;
+package com.github.aguther.dds.routing.dynamic;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -60,7 +60,8 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
 
   private static final String PROPERTY_DOMAIN_ROUTE_NAME = "dynamic_routing_adapter.configuration.domain_route_name";
 
-  private static final Logger log = LoggerFactory.getLogger(ConfigurationFilterProvider.class);
+  private static final Logger log = LoggerFactory.getLogger(
+      ConfigurationFilterProvider.class);
 
   private final Map<String, Configuration> configurations;
   private final Pattern patternConfigurationItem;

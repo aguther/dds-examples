@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.routing.adapter.dynamic;
+package com.github.aguther.dds.routing.dynamic;
 
 import java.util.Properties;
 
