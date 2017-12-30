@@ -24,6 +24,7 @@
 
 package com.github.aguther.dds.routing.dynamic.command;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -69,6 +70,28 @@ public class DynamicPartitionCommanderTest {
   @After
   public void tearDown() {
     commander.close();
+  }
+
+  @Test
+  public void testConstructorNoTimes() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest"
+    );
+    assertNotNull(dynamicPartitionCommander);
+  }
+
+  @Test
+  public void testConstructorRetryDelay() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest",
+        100,
+        TimeUnit.MILLISECONDS
+    );
+    assertNotNull(dynamicPartitionCommander);
   }
 
   @Test

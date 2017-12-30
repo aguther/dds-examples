@@ -29,7 +29,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.rti.dds.domain.DomainParticipant;
@@ -44,7 +43,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(PowerMockRunner.class)
@@ -61,12 +59,6 @@ public class DynamicPartitionObserverTest {
 
   @Before
   public void setUp() {
-    // mock logger
-    Logger logger = mock(Logger.class);
-    mockStatic(LoggerFactory.class);
-    when(LoggerFactory.getLogger(DynamicPartitionObserver.class)).thenReturn(logger);
-    when(logger.isDebugEnabled()).thenReturn(true);
-
     domainParticipant = mock(DomainParticipant.class);
 
     filter = mock(DynamicPartitionObserverFilter.class);
@@ -530,5 +522,34 @@ public class DynamicPartitionObserverTest {
     builtinTopicData.type_name = type;
     builtinTopicData.partition.name.addAll(Arrays.asList(partitions));
     return builtinTopicData;
+  }
+
+  @Test
+  public void testLostNonExistingSession() {
+    Session session = new Session("Square", "A");
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+
+    InstanceHandle_t instanceHandle = createInstanceHandle(0);
+    PublicationBuiltinTopicData publicationBuiltinTopicData = createPublicationBuiltinTopicData(
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition()
+    );
+
+    observer.publicationLost(
+        domainParticipant,
+        instanceHandle,
+        publicationBuiltinTopicData
+    );
+
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
+        .createSession(session);
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
+        .deleteSession(session);
+
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
+        .createTopicRoute(session, topicRoute);
+    verify(listener, timeout(VERIFY_TIMEOUT).times(0))
+        .deleteTopicRoute(session, topicRoute);
   }
 }

@@ -57,7 +57,21 @@ public class ConfigurationFilterProviderTest {
   }
 
   @Test
+  public void testDefaultPrefix() {
+    ConfigurationFilterProvider filterProvider = new ConfigurationFilterProvider(
+        PropertyFactory.create("")
+    );
+    checkConfiguration(filterProvider);
+  }
+
+  @Test
   public void testLoadConfiguration() {
+    checkConfiguration(configurationFilterProvider);
+  }
+
+  private void checkConfiguration(
+      final ConfigurationFilterProvider configurationFilterProvider
+  ) {
     assertEquals(
         PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
         configurationFilterProvider.getDomainRouteName()
