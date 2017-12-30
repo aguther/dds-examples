@@ -179,6 +179,7 @@ public class DynamicPartitionCommanderTest {
   }
 
   @Test
+  @SuppressWarnings("squid:S2925")
   public void testCreateDeleteSessionWithAbort() {
     Session session = new Session("Square", "A");
 
@@ -303,6 +304,7 @@ public class DynamicPartitionCommanderTest {
   }
 
   @Test
+  @SuppressWarnings("squid:S2925")
   public void testCreateDeleteTopicRouteWithAbort() {
     Session session = new Session("Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
