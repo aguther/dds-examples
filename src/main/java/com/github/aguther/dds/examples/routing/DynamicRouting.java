@@ -24,28 +24,14 @@
 
 package com.github.aguther.dds.examples.routing;
 
-import com.github.aguther.dds.discovery.observer.PublicationObserver;
-import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommanderProviderImpl;
-import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
-import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceEntitiesFilter;
-import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
-import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
-import com.github.aguther.dds.routing.dynamic.observer.filter.WildcardPartitionFilter;
-import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
-import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
+import com.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import com.google.common.util.concurrent.AbstractIdleService;
-import com.rti.dds.domain.DomainParticipant;
-import com.rti.dds.domain.DomainParticipantFactory;
-import com.rti.dds.domain.DomainParticipantQos;
-import com.rti.dds.infrastructure.ServiceQosPolicyKind;
-import com.rti.dds.infrastructure.StatusKind;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.io.InputStream;
+import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,14 +45,7 @@ public class DynamicRouting extends AbstractIdleService {
   private static DynamicRouting serviceInstance;
 
   private RoutingService routingService;
-
-  private DomainParticipant domainParticipantAdministration;
-  private DomainParticipant domainParticipantDiscovery;
-  private PublicationObserver publicationObserver;
-  private SubscriptionObserver subscriptionObserver;
-  private DynamicPartitionObserver dynamicPartitionObserver;
-  private DynamicPartitionCommander dynamicPartitionCommander;
-  private RoutingServiceCommandInterface routingServiceCommandInterface;
+  private DynamicRoutingManager dynamicRoutingManager;
 
   public static void main(
       final String[] args
@@ -154,118 +133,25 @@ public class DynamicRouting extends AbstractIdleService {
     routingService.stop();
   }
 
-  private void startUpDynamicRouting() {
-    // create domain participant for administration interface
-    domainParticipantAdministration = createRemoteAdministrationDomainParticipant(0);
-
-    // create routing service administration
-    routingServiceCommandInterface = new RoutingServiceCommandInterface(
-        domainParticipantAdministration);
-
-    // wait for routing service to be discovered
-    log.info("Waiting for remote administration interface of routing service to be discovered");
-    if (routingServiceCommandInterface.waitForDiscovery(ROUTING_SERVICE_NAME, 30, TimeUnit.SECONDS)) {
-      log.info("Remote administration interface of routing service was discovered");
-    } else {
-      log.error("Remote administration interface of routing service could not be discovered within time out");
+  private void startUpDynamicRouting() throws IOException {
+    // load properties
+    final Properties properties = new Properties();
+    try (InputStream stream = getClass().getResourceAsStream("/dynamic_routing.properties")) {
+      properties.load(stream);
     }
 
-    // create domain participant for discovery
-    domainParticipantDiscovery = createDiscoveryDomainParticipant(0);
-
-    // create dynamic partition commander
-    dynamicPartitionCommander = new DynamicPartitionCommander(
-        routingServiceCommandInterface,
-        new DynamicPartitionCommanderProviderImpl("Default"),
-        ROUTING_SERVICE_NAME
+    // start dynamic routing
+    dynamicRoutingManager = new DynamicRoutingManager(
+        ROUTING_SERVICE_NAME,
+        ROUTING_SERVICE_NAME,
+        "",
+        properties
     );
-
-    // create dynamic partition observer
-    dynamicPartitionObserver = new DynamicPartitionObserver();
-
-    // add filters to dynamic partition observer
-    dynamicPartitionObserver.addFilter(new RtiTopicFilter());
-    dynamicPartitionObserver.addFilter(new RoutingServiceEntitiesFilter());
-    dynamicPartitionObserver.addFilter(new RoutingServiceGroupEntitiesFilter(ROUTING_SERVICE_NAME));
-    dynamicPartitionObserver.addFilter(new WildcardPartitionFilter());
-
-    // add listener to dynamic partition observer
-    dynamicPartitionObserver.addListener(dynamicPartitionCommander);
-
-    // create new publication observer
-    publicationObserver = new PublicationObserver(domainParticipantDiscovery);
-    publicationObserver.addListener(dynamicPartitionObserver, false);
-
-    // create new subscription observer
-    subscriptionObserver = new SubscriptionObserver(domainParticipantDiscovery);
-    subscriptionObserver.addListener(dynamicPartitionObserver, false);
-
-    // enable discovery domain participant
-    domainParticipantDiscovery.enable();
   }
 
   private void shutdownDynamicRouting() {
-    if (publicationObserver != null) {
-      publicationObserver.close();
+    if (dynamicRoutingManager != null) {
+      dynamicRoutingManager.close();
     }
-    if (subscriptionObserver != null) {
-      subscriptionObserver.close();
-    }
-    if (dynamicPartitionObserver != null) {
-      dynamicPartitionObserver.close();
-    }
-    if (dynamicPartitionCommander != null) {
-      dynamicPartitionCommander.close();
-    }
-
-    if (domainParticipantAdministration != null) {
-      domainParticipantAdministration.delete_contained_entities();
-      DomainParticipantFactory.get_instance().delete_participant(domainParticipantAdministration);
-    }
-    if (domainParticipantDiscovery != null) {
-      domainParticipantDiscovery.delete_contained_entities();
-      DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
-    }
-    routingServiceCommandInterface = null;
-  }
-
-  private DomainParticipant createRemoteAdministrationDomainParticipant(
-      final int domainId
-  ) {
-    return createDomainParticipant(domainId, "RTI Routing Service: remote administration");
-  }
-
-  private DomainParticipant createDiscoveryDomainParticipant(
-      final int domainId
-  ) {
-    // disable auto-enable -> THIS IS CRUCIAL TO WORK CORRECTLY
-    AutoEnableCreatedEntitiesHelper.disable();
-
-    // create discovery participant
-    DomainParticipant domainParticipant = createDomainParticipant(domainId, "RTI Routing Service: discovery");
-
-    // enable auto-enable
-    AutoEnableCreatedEntitiesHelper.enable();
-
-    return domainParticipant;
-  }
-
-  private DomainParticipant createDomainParticipant(
-      final int domainId,
-      final String participantName
-  ) {
-    // create default participant qos marked as routing service entity
-    DomainParticipantQos domainParticipantQos = new DomainParticipantQos();
-    DomainParticipantFactory.get_instance().get_default_participant_qos(domainParticipantQos);
-    domainParticipantQos.service.kind = ServiceQosPolicyKind.ROUTING_SERVICE_QOS;
-    domainParticipantQos.participant_name.name = participantName;
-
-    // create domain participant for administration interface
-    return DomainParticipantFactory.get_instance().create_participant(
-        domainId,
-        domainParticipantQos,
-        null,
-        StatusKind.STATUS_MASK_NONE
-    );
   }
 }
