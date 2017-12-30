@@ -482,18 +482,18 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Sends a request, waits for the result and checks it.
    *
-   * @param commandHelper routing service command helper to use
+   * @param commandInterface routing service command helper to use
    * @param commandRequest request to send
    * @param loggingFormat format string for logging
    * @return true if request was successful, false if not
    */
   private boolean sendRequest(
-      final RoutingServiceCommandInterface commandHelper,
+      final RoutingServiceCommandInterface commandInterface,
       final CommandRequest commandRequest,
       final String loggingFormat
   ) {
     // send request and get response
-    CommandResponse commandResponse = commandHelper.sendRequest(
+    CommandResponse commandResponse = commandInterface.sendRequest(
         commandRequest,
         requestTimeout,
         requestTimeoutTimeUnit

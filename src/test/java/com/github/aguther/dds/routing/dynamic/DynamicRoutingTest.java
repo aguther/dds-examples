@@ -134,6 +134,7 @@ public class DynamicRoutingTest {
     DynamicRouting dynamicRouting = new DynamicRouting(
         "NAME",
         "GROUP",
+        PropertyFactory.PREFIX,
         properties
     );
 
@@ -180,6 +181,7 @@ public class DynamicRoutingTest {
     DynamicRouting dynamicRouting = new DynamicRouting(
         "NAME",
         "GROUP",
+        PropertyFactory.PREFIX,
         properties
     );
 
@@ -221,6 +223,7 @@ public class DynamicRoutingTest {
     DynamicRouting dynamicRouting = new DynamicRouting(
         "NAME",
         "GROUP",
+        PropertyFactory.PREFIX,
         properties
     );
 
@@ -244,6 +247,7 @@ public class DynamicRoutingTest {
     DynamicRouting dynamicRouting = new DynamicRouting(
         "NAME",
         "GROUP",
+        PropertyFactory.PREFIX,
         properties
     );
 
@@ -260,6 +264,7 @@ public class DynamicRoutingTest {
     DynamicRouting dynamicRouting = new DynamicRouting(
         "NAME",
         "GROUP",
+        PropertyFactory.PREFIX,
         properties
     );
 

@@ -276,4 +276,10 @@ public class RoutingServiceCommandInterfaceTest {
     verify(requester, times(1)).createReplySample();
     verify(requester, times(1)).receiveReply(any(Sample.class), any(Duration_t.class));
   }
+
+  @Test
+  public void testClose() {
+    commandInterface.close();
+    verify(requester, times(1)).close();
+  }
 }

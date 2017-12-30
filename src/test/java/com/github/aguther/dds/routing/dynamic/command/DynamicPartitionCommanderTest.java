@@ -160,12 +160,91 @@ public class DynamicPartitionCommanderTest {
   }
 
   @Test
+  public void testDeleteSessionFailed() {
+    Session session = new Session("Square", "A");
+
+    CommandResponse commandResponse = new CommandResponse();
+    commandResponse.kind = CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_ERROR;
+
+    when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
+    when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
+        .thenReturn(commandResponse);
+
+    commander.deleteSession(session);
+
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionEntityName(session);
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+  }
+
+  @Test
+  public void testCreateDeleteSessionWithAbort() {
+    Session session = new Session("Square", "A");
+
+    CommandResponse commandResponse = new CommandResponse();
+    commandResponse.kind = CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+
+    when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
+    when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
+        .thenAnswer(invocation -> {
+          Thread.sleep(1000);
+          return null;
+        });
+    when(commanderProvider.getSessionConfiguration(any(Session.class)))
+        .thenReturn("str://\"<session></session>\"");
+
+    commander.createSession(session);
+
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+
+    commander.deleteSession(session);
+
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+
+    commander.createSession(session);
+
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionConfiguration(session);
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+  }
+
+  @Test
   public void testCreateTopicRoute() {
     Session session = new Session("Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
 
     CommandResponse commandResponse = new CommandResponse();
     commandResponse.kind = CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+
+    when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
+    when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
+        .thenReturn(commandResponse);
+    when(commanderProvider.getTopicRouteConfiguration(any(Session.class), any(TopicRoute.class)))
+        .thenReturn("str://\"<topic_route></topic_route>\"");
+
+    commander.createTopicRoute(session, topicRoute);
+
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionEntityName(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getTopicRouteConfiguration(session, topicRoute);
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+  }
+
+  @Test
+  public void testCreateTopicRouteFailed() {
+    Session session = new Session("Square", "A");
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+
+    CommandResponse commandResponse = new CommandResponse();
+    commandResponse.kind = CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_ERROR;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
@@ -199,6 +278,63 @@ public class DynamicPartitionCommanderTest {
 
     verify(commanderProvider, timeout(5000).times(1))
         .getTopicRouteEntityName(session, topicRoute);
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+  }
+
+  @Test
+  public void testDeleteTopicRouteFailed() {
+    Session session = new Session("Square", "A");
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+
+    CommandResponse commandResponse = new CommandResponse();
+    commandResponse.kind = CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_ERROR;
+
+    when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
+    when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
+        .thenReturn(commandResponse);
+
+    commander.deleteTopicRoute(session, topicRoute);
+
+    verify(commanderProvider, timeout(5000).times(1))
+        .getTopicRouteEntityName(session, topicRoute);
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+  }
+
+  @Test
+  public void testCreateDeleteTopicRouteWithAbort() {
+    Session session = new Session("Square", "A");
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+
+    CommandResponse commandResponse = new CommandResponse();
+    commandResponse.kind = CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+
+    when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
+    when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
+        .thenAnswer(invocation -> {
+          Thread.sleep(1000);
+          return null;
+        });
+    when(commanderProvider.getTopicRouteConfiguration(any(Session.class), any(TopicRoute.class)))
+        .thenReturn("str://\"<topic_route></topic_route>\"");
+
+    commander.createTopicRoute(session, topicRoute);
+
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+
+    commander.deleteTopicRoute(session, topicRoute);
+
+    verify(commandInterface, timeout(5000).times(1))
+        .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
+
+    commander.createTopicRoute(session, topicRoute);
+
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionEntityName(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getTopicRouteConfiguration(session, topicRoute);
     verify(commandInterface, timeout(5000).times(1))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
   }

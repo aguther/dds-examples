@@ -28,6 +28,8 @@ import java.util.Properties;
 
 public class PropertyFactory {
 
+  public static final String PREFIX = "test.";
+
   public static final int ADMINISTRATION_DOMAIN_ID = 1;
   public static final int DISCOVERY_DOMAIN_ID = 2;
   public static final int ADMINISTRATION_DISCOVERY_WAIT_TIME = 250;
@@ -63,27 +65,27 @@ public class PropertyFactory {
 
     // fill data
     properties.put(
-        "dynamic_routing_adapter.administration.domain_id",
+        String.format("%sadministration.domain_id", PREFIX),
         Integer.toString(ADMINISTRATION_DOMAIN_ID)
     );
     properties.put(
-        "dynamic_routing_adapter.administration.discovery.wait_time",
+        String.format("%sadministration.discovery.wait_time", PREFIX),
         Integer.toString(ADMINISTRATION_DISCOVERY_WAIT_TIME)
     );
     properties.put(
-        "dynamic_routing_adapter.administration.request.timeout",
+        String.format("%sadministration.request.timeout", PREFIX),
         Integer.toString(ADMINISTRATION_REQUEST_TIMEOUT)
     );
     properties.put(
-        "dynamic_routing_adapter.administration.request.retry_delay",
+        String.format("%sadministration.request.retry_delay", PREFIX),
         Integer.toString(ADMINISTRATION_REQUEST_RETRY_DELAY)
     );
     properties.put(
-        "dynamic_routing_adapter.discovery.domain_id",
+        String.format("%sdiscovery.domain_id", PREFIX),
         Integer.toString(DISCOVERY_DOMAIN_ID)
     );
     properties.put(
-        "dynamic_routing_adapter.configuration.domain_route_name",
+        String.format("%sconfiguration.domain_route_name", PREFIX),
         CONFIGURATION_DOMAIN_ROUTE_NAME
     );
 
@@ -126,32 +128,36 @@ public class PropertyFactory {
       String qosOutput
   ) {
     properties.put(
-        String.format("dynamic_routing_adapter.configuration.%s.allow_topic_name_filter", name),
+        String.format("%sconfiguration.%s.allow_topic_name_filter", PREFIX, name),
         allowTopicFilter
     );
     properties.put(
-        String.format("dynamic_routing_adapter.configuration.%s.deny_topic_name_filter", name),
+        String.format("%sconfiguration.%s.deny_topic_name_filter", PREFIX, name),
         denyTopicFilter
     );
     properties.put(
-        String.format("dynamic_routing_adapter.configuration.%s.allow_partition_name_filter", name),
+        String.format("%sconfiguration.%s.allow_partition_name_filter", PREFIX, name),
         allowPartitionFilter
     );
     properties.put(
-        String.format("dynamic_routing_adapter.configuration.%s.deny_partition_name_filter", name),
+        String.format("%sconfiguration.%s.deny_partition_name_filter", PREFIX, name),
         denyPartitionFilter
     );
     properties.put(
-        String.format("dynamic_routing_adapter.configuration.%s.qos.topic_route", name),
+        String.format("%sconfiguration.%s.qos.topic_route", PREFIX, name),
         qosTopicRoute
     );
     properties.put(
-        String.format("dynamic_routing_adapter.configuration.%s.qos.input", name),
+        String.format("%sconfiguration.%s.qos.input", PREFIX, name),
         qosInput
     );
     properties.put(
-        String.format("dynamic_routing_adapter.configuration.%s.qos.output", name),
+        String.format("%sconfiguration.%s.qos.output", PREFIX, name),
         qosOutput
+    );
+    properties.put(
+        String.format("%sconfiguration.%s.unknown", PREFIX, name),
+        "Unknown Value for Testing"
     );
   }
 

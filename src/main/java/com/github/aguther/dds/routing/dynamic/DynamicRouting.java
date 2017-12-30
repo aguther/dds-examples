@@ -54,25 +54,25 @@ import org.slf4j.LoggerFactory;
 public class DynamicRouting implements Closeable {
 
   private static final String PROPERTY_ADMINISTRATION_DOMAIN_ID
-      = "dynamic_routing_adapter.administration.domain_id";
+      = "administration.domain_id";
 
   private static final String PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
-      = "dynamic_routing_adapter.administration.discovery.wait_time";
+      = "administration.discovery.wait_time";
   private static final String DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
       = "30000";
 
   private static final String PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
-      = "dynamic_routing_adapter.administration.request.timeout";
+      = "administration.request.timeout";
   private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
       = "15000";
 
   private static final String PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
-      = "dynamic_routing_adapter.administration.request.retry_delay";
+      = "administration.request.retry_delay";
   private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
       = "45000";
 
   private static final String PROPERTY_DISCOVERY_DOMAIN_ID
-      = "dynamic_routing_adapter.discovery.domain_id";
+      = "discovery.domain_id";
 
   private static final Logger log = LoggerFactory.getLogger(DynamicRouting.class);
 
@@ -90,6 +90,7 @@ public class DynamicRouting implements Closeable {
   public DynamicRouting(
       final String routingServiceName,
       final String routingServiceGroupName,
+      final String propertiesPrefix,
       final Properties properties
   ) {
     log.info("Creating");
@@ -106,7 +107,8 @@ public class DynamicRouting implements Closeable {
 
     // create domain participant for administration interface
     domainParticipantAdministration = createRemoteAdministrationDomainParticipant(
-        Integer.parseInt(properties.getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID)));
+        Integer.parseInt(properties.getProperty(String.format(
+            "%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_DOMAIN_ID))));
 
     // create routing service administration
     routingServiceCommandInterface = new RoutingServiceCommandInterface(
@@ -117,7 +119,7 @@ public class DynamicRouting implements Closeable {
     if (routingServiceCommandInterface.waitForDiscovery(
         routingServiceName,
         Long.parseLong(properties.getProperty(
-            PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME,
+            String.format("%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME),
             DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
         )),
         TimeUnit.MILLISECONDS)) {
@@ -128,10 +130,12 @@ public class DynamicRouting implements Closeable {
 
     // create domain participant for discovery
     domainParticipantDiscovery = createDiscoveryDomainParticipant(
-        Integer.parseInt(properties.getProperty(PROPERTY_DISCOVERY_DOMAIN_ID)));
+        Integer.parseInt(properties.getProperty(
+            String.format("%s%s", propertiesPrefix, PROPERTY_DISCOVERY_DOMAIN_ID))));
 
     // create configuration filter
-    ConfigurationFilterProvider configurationFilterProvider = new ConfigurationFilterProvider(properties);
+    ConfigurationFilterProvider configurationFilterProvider = new ConfigurationFilterProvider(
+        propertiesPrefix, properties);
 
     // create dynamic partition observer
     dynamicPartitionObserver = new DynamicPartitionObserver();
@@ -148,12 +152,12 @@ public class DynamicRouting implements Closeable {
         configurationFilterProvider,
         routingServiceName,
         Long.parseLong(properties.getProperty(
-            PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY,
+            String.format("%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY),
             DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
         )),
         TimeUnit.MILLISECONDS,
         Long.parseLong(properties.getProperty(
-            PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT,
+            String.format("%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT),
             DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
         )),
         TimeUnit.MILLISECONDS

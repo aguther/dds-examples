@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConfigurationFilterProvider implements DynamicPartitionObserverFilter, DynamicPartitionCommanderProvider {
 
-  private static final String PROPERTY_DOMAIN_ROUTE_NAME = "dynamic_routing_adapter.configuration.domain_route_name";
+  private static final String PROPERTY_DOMAIN_ROUTE_NAME = "configuration.domain_route_name";
 
   private static final Logger log = LoggerFactory.getLogger(
       ConfigurationFilterProvider.class);
@@ -70,11 +70,24 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
   public ConfigurationFilterProvider(
       final Properties properties
   ) {
-    configurations = new HashMap<>();
-    patternConfigurationItem = Pattern.compile(
-        "dynamic_routing_adapter\\.configuration\\.([A-Za-z0-9_]*)\\.([A-Za-z0-9._]*)");
+    this("", properties);
+  }
 
-    domainRouteName = properties.getProperty(PROPERTY_DOMAIN_ROUTE_NAME);
+  public ConfigurationFilterProvider(
+      final String prefix,
+      final Properties properties
+  ) {
+    configurations = new HashMap<>();
+    patternConfigurationItem = Pattern.compile(String.format(
+        "%sconfiguration\\.([A-Za-z0-9_]*)\\.([A-Za-z0-9._]*)",
+        prefix
+    ));
+
+    domainRouteName = properties.getProperty(String.format(
+        "%s%s",
+        prefix,
+        PROPERTY_DOMAIN_ROUTE_NAME
+    ));
     loadConfiguration(properties);
   }
 

@@ -142,9 +142,19 @@ public class DynamicPartitionCommanderProviderImplTest {
   }
 
   @Test
-  public void getTopicRouteConfiguration() {
+  public void getTopicRouteConfigurationOut() {
     Session session = new Session("Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+    String configuration = provider.getTopicRouteConfiguration(session, topicRoute);
+
+    assertTrue(configuration.contains("Square"));
+    assertFalse(configuration.contains("ShapeType"));
+  }
+
+  @Test
+  public void getTopicRouteConfigurationIn() {
+    Session session = new Session("Square", "A");
+    TopicRoute topicRoute = new TopicRoute(Direction.IN, session.getTopic(), "ShapeType");
     String configuration = provider.getTopicRouteConfiguration(session, topicRoute);
 
     assertTrue(configuration.contains("Square"));

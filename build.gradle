@@ -18,10 +18,17 @@ repositories {
 }
 
 apply plugin: 'java'
-apply plugin: "org.sonarqube"
+apply plugin: 'jacoco'
+apply plugin: 'org.sonarqube'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
+
+sonarqube {
+    properties {
+        property "sonar.exclusions", "**generated/**"//, **/examples/**"
+    }
+}
 
 sourceSets {
     generated
@@ -99,6 +106,42 @@ task cleanIdl(type: Delete) {
 
 compileJava.dependsOn compileIdl
 clean.dependsOn cleanIdl
+
+project.ext.jacocoOfflineSourceSets = ['main', 'generated']
+
+// to get coverage for tests that make use of PowerMockito,
+// we need to use offline instrumentation that is performed by this task
+task instrument(dependsOn: [classes, project.configurations.jacocoAnt]) {
+    inputs.files classes.outputs.files
+    File outputDir = new File(project.buildDir, 'instrumentedClasses')
+    outputs.dir outputDir
+    doFirst {
+        project.delete(outputDir)
+        ant.taskdef(
+                resource: 'org/jacoco/ant/antlib.xml',
+                classpath: project.configurations.jacocoAnt.asPath,
+                uri: 'jacoco'
+        )
+        def instrumented = false
+        jacocoOfflineSourceSets.each { sourceSetName ->
+            if (sourceSets[(String) sourceSetName].output.getClassesDirs()[0].exists()) {
+                def instrumentedClassedDir = "${outputDir}/${sourceSetName}"
+                ant.'jacoco:instrument'(destdir: instrumentedClassedDir) {
+                    fileset(dir: sourceSets[(String) sourceSetName].output.getClassesDirs()[0], includes: '**/*.class')
+                }
+                //Replace the classes dir in the test classpath with the instrumented one
+                sourceSets.test.runtimeClasspath -= files(sourceSets[(String) sourceSetName].output.getClassesDirs()[0])
+                sourceSets.test.runtimeClasspath += files(instrumentedClassedDir)
+                instrumented = true
+            }
+        }
+        if (instrumented) {
+            //Disable class verification based on https://github.com/jayway/powermock/issues/375
+            test.jvmArgs += '-noverify'
+        }
+    }
+}
+test.dependsOn instrument
 
 task copyRuntimeLibraries(type: Copy) {
     into "$buildDir/libs-runtime"

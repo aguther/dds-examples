@@ -45,7 +45,10 @@ public class ConfigurationFilterProviderTest {
   @Before
   public void setUp() {
     // create configuration filter
-    configurationFilterProvider = new ConfigurationFilterProvider(PropertyFactory.create());
+    configurationFilterProvider = new ConfigurationFilterProvider(
+        PropertyFactory.PREFIX,
+        PropertyFactory.create()
+    );
   }
 
   @After
@@ -55,68 +58,71 @@ public class ConfigurationFilterProviderTest {
 
   @Test
   public void testLoadConfiguration() {
-    assertEquals(configurationFilterProvider.getDomainRouteName(), PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME);
+    assertEquals(
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        configurationFilterProvider.getDomainRouteName()
+    );
 
     Map<String, Configuration> configurations = configurationFilterProvider.getConfigurations();
 
     Configuration shapeConfiguration = configurations.get(PropertyFactory.CONFIGURATION_SHAPE_NAME);
     assertEquals(
-        shapeConfiguration.getAllowTopicNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER,
+        shapeConfiguration.getAllowTopicNameFilter().pattern()
     );
     assertEquals(
-        shapeConfiguration.getDenyTopicNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER,
+        shapeConfiguration.getDenyTopicNameFilter().pattern()
     );
     assertEquals(
-        shapeConfiguration.getAllowPartitionNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER,
+        shapeConfiguration.getAllowPartitionNameFilter().pattern()
     );
     assertEquals(
-        shapeConfiguration.getDenyPartitionNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER,
+        shapeConfiguration.getDenyPartitionNameFilter().pattern()
     );
     assertEquals(
-        shapeConfiguration.getQosTopicRoute(),
-        PropertyFactory.CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE
+        PropertyFactory.CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE,
+        shapeConfiguration.getQosTopicRoute()
     );
     assertEquals(
-        shapeConfiguration.getQosInput(),
-        PropertyFactory.CONFIGURATION_SHAPE_QOS_INPUT
+        PropertyFactory.CONFIGURATION_SHAPE_QOS_INPUT,
+        shapeConfiguration.getQosInput()
     );
     assertEquals(
-        shapeConfiguration.getQosOutput(),
-        PropertyFactory.CONFIGURATION_SHAPE_QOS_OUTPUT
+        PropertyFactory.CONFIGURATION_SHAPE_QOS_OUTPUT,
+        shapeConfiguration.getQosOutput()
     );
 
     Configuration testConfiguration = configurations.get(PropertyFactory.CONFIGURATION_SAMPLE_NAME);
     assertEquals(
-        testConfiguration.getAllowTopicNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER,
+        testConfiguration.getAllowTopicNameFilter().pattern()
     );
     assertEquals(
-        testConfiguration.getDenyTopicNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER,
+        testConfiguration.getDenyTopicNameFilter().pattern()
     );
     assertEquals(
-        testConfiguration.getAllowPartitionNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER,
+        testConfiguration.getAllowPartitionNameFilter().pattern()
     );
     assertEquals(
-        testConfiguration.getDenyPartitionNameFilter().pattern(),
-        PropertyFactory.CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER
+        PropertyFactory.CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER,
+        testConfiguration.getDenyPartitionNameFilter().pattern()
     );
     assertEquals(
-        testConfiguration.getQosTopicRoute(),
-        PropertyFactory.CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE
+        PropertyFactory.CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE,
+        testConfiguration.getQosTopicRoute()
     );
     assertEquals(
-        testConfiguration.getQosInput(),
-        PropertyFactory.CONFIGURATION_SAMPLE_QOS_INPUT
+        PropertyFactory.CONFIGURATION_SAMPLE_QOS_INPUT,
+        testConfiguration.getQosInput()
     );
     assertEquals(
-        testConfiguration.getQosOutput(),
-        PropertyFactory.CONFIGURATION_SAMPLE_QOS_OUTPUT
+        PropertyFactory.CONFIGURATION_SAMPLE_QOS_OUTPUT,
+        testConfiguration.getQosOutput()
     );
   }
 

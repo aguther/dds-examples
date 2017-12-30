@@ -74,6 +74,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
     dynamicRouting = new DynamicRouting(
         routingServiceName,
         routingServiceGroupName,
+        "dynamic_routing_adapter.",
         properties
     );
 
