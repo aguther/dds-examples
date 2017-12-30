@@ -130,6 +130,13 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     logConfiguration();
   }
 
+  /**
+   * Loads a configuration group from the properties.
+   *
+   * @param identifier identifier of the group
+   * @param propertyName property name
+   * @param propertyValue property value
+   */
   private void loadProperty(
       final String identifier,
       final String propertyName,
