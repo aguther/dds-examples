@@ -60,19 +60,29 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
 
   private static final String PROPERTY_DOMAIN_ROUTE_NAME = "configuration.domain_route_name";
 
-  private static final Logger log = LoggerFactory.getLogger(
-      ConfigurationFilterProvider.class);
+  private static final Logger log = LoggerFactory.getLogger(ConfigurationFilterProvider.class);
 
   private final Map<String, Configuration> configurations;
   private final Pattern patternConfigurationItem;
   private final String domainRouteName;
 
+  /**
+   * Instantiates a new configuration filter provider.
+   *
+   * @param properties the properties to configure this instance
+   */
   public ConfigurationFilterProvider(
       final Properties properties
   ) {
     this("", properties);
   }
 
+  /**
+   * Instantiates a new configuration filter provider.
+   *
+   * @param properties the properties to configure this instance
+   * @param prefix the prefix that should be used for the properties
+   */
   public ConfigurationFilterProvider(
       final String prefix,
       final Properties properties
@@ -91,6 +101,11 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     loadConfiguration(properties);
   }
 
+  /**
+   * Loads the configuration from the properties.
+   *
+   * @param properties the properties to load
+   */
   private void loadConfiguration(
       final Properties properties
   ) {
@@ -160,6 +175,9 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     }
   }
 
+  /**
+   * Logs the configuration.
+   */
   private void logConfiguration() {
     // log loaded properties
     if (log.isDebugEnabled()) {
@@ -183,10 +201,20 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     }
   }
 
+  /**
+   * Returns the domain route name.
+   *
+   * @return domain route name
+   */
   String getDomainRouteName() {
     return domainRouteName;
   }
 
+  /**
+   * Returns the current configuration.
+   *
+   * @return configuration as read-only map
+   */
   Map<String, Configuration> getConfigurations() {
     return Collections.unmodifiableMap(configurations);
   }
@@ -233,6 +261,12 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
             && !configuration.getAllowPartitionNameFilter().matcher(partition).matches());
   }
 
+  /**
+   * Returns the first matching configuration. Deny filter takes precedence.
+   *
+   * @param topicName topic name
+   * @return configuration if found, otherwise null
+   */
   private Configuration getMatchingConfiguration(
       final String topicName
   ) {

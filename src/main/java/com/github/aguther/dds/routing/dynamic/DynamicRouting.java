@@ -87,6 +87,13 @@ public class DynamicRouting implements Closeable {
   private final DynamicPartitionCommander dynamicPartitionCommander;
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
 
+  /**
+   * Instantiates a new dynamic routing.
+   *
+   * @param routingServiceName name of the routing service to command
+   * @param routingServiceGroupName group of the routing service to command
+   * @param properties configuration properties
+   */
   public DynamicRouting(
       final String routingServiceName,
       final String routingServiceGroupName,
@@ -215,18 +222,35 @@ public class DynamicRouting implements Closeable {
     throw new UnsupportedOperationException("Not yet implemented");
   }
 
+  /**
+   * Updates the properties.
+   *
+   * @param properties new configuration properties
+   */
   public void update(
       final Properties properties
   ) {
     throw new UnsupportedOperationException("Not yet implemented");
   }
 
+  /**
+   * Creates a domain participant for remote administration (will be auto-enabled).
+   *
+   * @param domainId domain id
+   * @return enabled domain participant if successful, otherwise null
+   */
   private DomainParticipant createRemoteAdministrationDomainParticipant(
       final int domainId
   ) {
     return createDomainParticipant(domainId, "RTI Routing Service: remote administration");
   }
 
+  /**
+   * Creates a domain participant for discovery (will NOT be enabled).
+   *
+   * @param domainId domain id
+   * @return not enabled domain participant if successful, otherwise null
+   */
   private DomainParticipant createDiscoveryDomainParticipant(
       final int domainId
   ) {
@@ -242,6 +266,13 @@ public class DynamicRouting implements Closeable {
     return domainParticipant;
   }
 
+  /**
+   * Creates a domain participant marked as routing service and with correct participant name.
+   *
+   * @param domainId domain id
+   * @param participantName participant name
+   * @return domain participant if successful, otherwise null
+   */
   private DomainParticipant createDomainParticipant(
       final int domainId,
       final String participantName
