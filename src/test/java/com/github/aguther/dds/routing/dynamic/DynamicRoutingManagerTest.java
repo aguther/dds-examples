@@ -37,7 +37,7 @@ import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    DynamicRouting.class,
+    DynamicRoutingManager.class,
     DomainParticipantQos.class,
     ServiceQosPolicy.class,
     EntityNameQosPolicy.class
@@ -48,7 +48,7 @@ import org.powermock.reflect.Whitebox;
     "com.rti.dds.infrastructure.ServiceQosPolicy",
     "com.rti.dds.infrastructure.EntityNameQosPolicy"
 })
-public class DynamicRoutingTest {
+public class DynamicRoutingManagerTest {
 
   private DomainParticipantFactory domainParticipantFactory;
 
@@ -131,7 +131,7 @@ public class DynamicRoutingTest {
   @Test
   public void testCreate() {
     // create dynamic routing
-    DynamicRouting dynamicRouting = new DynamicRouting(
+    DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
         "NAME",
         "GROUP",
         PropertyFactory.PREFIX,
@@ -139,7 +139,7 @@ public class DynamicRoutingTest {
     );
 
     // assert dynamic routing created
-    assertNotNull(dynamicRouting);
+    assertNotNull(dynamicRoutingManager);
 
     // verify all close methods have been called
     verify(routingServiceCommandInterface, times(1)).waitForDiscovery(
@@ -178,7 +178,7 @@ public class DynamicRoutingTest {
     ).thenReturn(false);
 
     // create dynamic routing
-    DynamicRouting dynamicRouting = new DynamicRouting(
+    DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
         "NAME",
         "GROUP",
         PropertyFactory.PREFIX,
@@ -186,7 +186,7 @@ public class DynamicRoutingTest {
     );
 
     // assert dynamic routing created
-    assertNotNull(dynamicRouting);
+    assertNotNull(dynamicRoutingManager);
 
     // verify all close methods have been called
     verify(routingServiceCommandInterface, times(1)).waitForDiscovery(
@@ -220,7 +220,7 @@ public class DynamicRoutingTest {
   @Test
   public void testClose() {
     // create dynamic routing
-    DynamicRouting dynamicRouting = new DynamicRouting(
+    DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
         "NAME",
         "GROUP",
         PropertyFactory.PREFIX,
@@ -228,7 +228,7 @@ public class DynamicRoutingTest {
     );
 
     // close connection
-    dynamicRouting.close();
+    dynamicRoutingManager.close();
 
     // verify all close methods have been called
     verify(publicationObserver, times(1)).close();
@@ -244,7 +244,7 @@ public class DynamicRoutingTest {
   @Test
   public void testGetProperties() {
     // create dynamic routing
-    DynamicRouting dynamicRouting = new DynamicRouting(
+    DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
         "NAME",
         "GROUP",
         PropertyFactory.PREFIX,
@@ -255,13 +255,13 @@ public class DynamicRoutingTest {
     thrown.expect(UnsupportedOperationException.class);
 
     // invoke get properties
-    dynamicRouting.getProperties();
+    dynamicRoutingManager.getProperties();
   }
 
   @Test
   public void testUpdate() {
     // create dynamic routing
-    DynamicRouting dynamicRouting = new DynamicRouting(
+    DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
         "NAME",
         "GROUP",
         PropertyFactory.PREFIX,
@@ -275,6 +275,6 @@ public class DynamicRoutingTest {
     thrown.expect(UnsupportedOperationException.class);
 
     // invoke update
-    dynamicRouting.update(properties);
+    dynamicRoutingManager.update(properties);
   }
 }

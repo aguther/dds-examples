@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 import com.github.aguther.dds.routing.adapter.empty.EmptySession;
 import com.github.aguther.dds.routing.adapter.empty.EmptyStreamReader;
 import com.github.aguther.dds.routing.adapter.empty.EmptyStreamWriter;
-import com.github.aguther.dds.routing.dynamic.DynamicRouting;
+import com.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import com.github.aguther.dds.routing.dynamic.PropertyFactory;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.util.Properties;
@@ -31,7 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class DynamicRoutingConnectionTest {
 
   private Properties properties;
-  private DynamicRouting dynamicRouting;
+  private DynamicRoutingManager dynamicRoutingManager;
   private DynamicRoutingConnection dynamicRoutingConnection;
 
   @Rule
@@ -43,11 +43,11 @@ public class DynamicRoutingConnectionTest {
     properties = PropertyFactory.create();
 
     // mock dynamic routing
-    dynamicRouting = mock(DynamicRouting.class);
+    dynamicRoutingManager = mock(DynamicRoutingManager.class);
     {
-      when(dynamicRouting.getProperties()).thenReturn(properties);
+      when(dynamicRoutingManager.getProperties()).thenReturn(properties);
     }
-    PowerMockito.whenNew(DynamicRouting.class).withAnyArguments().thenReturn(dynamicRouting);
+    PowerMockito.whenNew(DynamicRoutingManager.class).withAnyArguments().thenReturn(dynamicRoutingManager);
 
     // create connection
     dynamicRoutingConnection = new DynamicRoutingConnection(
@@ -60,7 +60,7 @@ public class DynamicRoutingConnectionTest {
   @After
   public void tearDown() throws Exception {
     properties = null;
-    dynamicRouting = null;
+    dynamicRoutingManager = null;
     dynamicRoutingConnection = null;
   }
 
@@ -75,7 +75,7 @@ public class DynamicRoutingConnectionTest {
     dynamicRoutingConnection.close();
 
     // verify all close methods have been called
-    verify(dynamicRouting, times(1)).close();
+    verify(dynamicRoutingManager, times(1)).close();
   }
 
   @Test
@@ -87,7 +87,7 @@ public class DynamicRoutingConnectionTest {
     dynamicRoutingConnection.update(properties);
 
     // verify update has been called
-    verify(dynamicRouting, times(1)).update(properties);
+    verify(dynamicRoutingManager, times(1)).update(properties);
   }
 
   @Test
@@ -99,63 +99,63 @@ public class DynamicRoutingConnectionTest {
   @Test
   public void testCreateSession() throws AdapterException {
     assertTrue(dynamicRoutingConnection.createSession(properties) instanceof EmptySession);
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testDeleteSession() throws AdapterException {
     dynamicRoutingConnection.deleteSession(new EmptySession());
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testCreateStreamReader() throws AdapterException {
     assertTrue(dynamicRoutingConnection.createStreamReader(
         null, null, properties, null) instanceof EmptyStreamReader);
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testDeleteStreamReader() throws AdapterException {
     dynamicRoutingConnection.deleteStreamReader(new EmptyStreamReader());
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testCreateStreamWriter() throws AdapterException {
     assertTrue(dynamicRoutingConnection.createStreamWriter(
         null, null, properties) instanceof EmptyStreamWriter);
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testDeleteStreamWriter() throws AdapterException {
     dynamicRoutingConnection.deleteStreamWriter(new EmptyStreamWriter());
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testGetInputStreamDiscoveryReader() throws AdapterException {
     assertTrue(dynamicRoutingConnection.getInputStreamDiscoveryReader() instanceof EmptyStreamReader);
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testGetOutputStreamDiscoveryReader() throws AdapterException {
     assertTrue(dynamicRoutingConnection.getOutputStreamDiscoveryReader() instanceof EmptyStreamReader);
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testCopyTypeRepresentation() throws AdapterException {
     thrown.expect(AdapterException.class);
     dynamicRoutingConnection.copyTypeRepresentation(new Object());
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 
   @Test
   public void testDeleteTypeRepresentation() throws AdapterException {
     dynamicRoutingConnection.deleteTypeRepresentation(new Object());
-    verifyZeroInteractions(dynamicRouting);
+    verifyZeroInteractions(dynamicRoutingManager);
   }
 }

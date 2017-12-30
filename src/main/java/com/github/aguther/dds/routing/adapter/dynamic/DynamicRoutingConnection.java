@@ -27,7 +27,7 @@ package com.github.aguther.dds.routing.adapter.dynamic;
 import com.github.aguther.dds.routing.adapter.empty.EmptySession;
 import com.github.aguther.dds.routing.adapter.empty.EmptyStreamReader;
 import com.github.aguther.dds.routing.adapter.empty.EmptyStreamWriter;
-import com.github.aguther.dds.routing.dynamic.DynamicRouting;
+import com.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import com.rti.routingservice.adapter.DiscoveryConnection;
 import com.rti.routingservice.adapter.Session;
 import com.rti.routingservice.adapter.StreamReader;
@@ -52,7 +52,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
 
   private static final Logger log = LoggerFactory.getLogger(DynamicRoutingConnection.class);
 
-  private DynamicRouting dynamicRouting;
+  private DynamicRoutingManager dynamicRoutingManager;
 
   DynamicRoutingConnection(
       final String routingServiceName,
@@ -71,7 +71,7 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
       }
     }
 
-    dynamicRouting = new DynamicRouting(
+    dynamicRoutingManager = new DynamicRoutingManager(
         routingServiceName,
         routingServiceGroupName,
         "dynamic_routing_adapter.",
@@ -85,8 +85,8 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
   public void close() {
     log.info("Closing connection");
 
-    if (dynamicRouting != null) {
-      dynamicRouting.close();
+    if (dynamicRoutingManager != null) {
+      dynamicRoutingManager.close();
     }
 
     log.info("Connection closed");
@@ -141,14 +141,14 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
 
   @Override
   public Properties getAttributes() throws AdapterException {
-    return dynamicRouting.getProperties();
+    return dynamicRoutingManager.getProperties();
   }
 
   @Override
   public void update(
       final Properties properties
   ) throws AdapterException {
-    dynamicRouting.update(properties);
+    dynamicRoutingManager.update(properties);
   }
 
   @Override

@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * routing service. Whenever a topic is discovered and a appropriate configuration is found, a session and route is
  * created accordingly. The same applies vice versa on loosing discovery.
  */
-public class DynamicRouting implements Closeable {
+public class DynamicRoutingManager implements Closeable {
 
   private static final String PROPERTY_ADMINISTRATION_DOMAIN_ID
       = "administration.domain_id";
@@ -74,7 +74,7 @@ public class DynamicRouting implements Closeable {
   private static final String PROPERTY_DISCOVERY_DOMAIN_ID
       = "discovery.domain_id";
 
-  private static final Logger log = LoggerFactory.getLogger(DynamicRouting.class);
+  private static final Logger log = LoggerFactory.getLogger(DynamicRoutingManager.class);
 
   private final DomainParticipant domainParticipantAdministration;
   private final DomainParticipant domainParticipantDiscovery;
@@ -94,7 +94,7 @@ public class DynamicRouting implements Closeable {
    * @param routingServiceGroupName group of the routing service to command
    * @param properties configuration properties
    */
-  public DynamicRouting(
+  public DynamicRoutingManager(
       final String routingServiceName,
       final String routingServiceGroupName,
       final String propertiesPrefix,
