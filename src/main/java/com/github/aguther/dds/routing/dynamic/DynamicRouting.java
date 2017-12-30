@@ -218,6 +218,11 @@ public class DynamicRouting implements Closeable {
     log.info("Closed");
   }
 
+  /**
+   * Returns the current properties (currently not supported).
+   *
+   * @return current properties
+   */
   public Properties getProperties() {
     throw new UnsupportedOperationException("Not yet implemented");
   }
