@@ -1,0 +1,143 @@
+@startuml
+title DynamicPartitionObserver : Ignore Publication/Subscription
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()\npublicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+  activate DynamicPartitionObserverFilter
+    DynamicPartitionObserverFilter --> DynamicPartitionObserver: true
+  deactivate DynamicPartitionObserverFilter
+  DynamicPartitionObserver --> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+newPage DynamicPartitionObserver : Ignore Partition
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()\npublicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter --> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter --> DynamicPartitionObserver: true
+  deactivate DynamicPartitionObserverFilter
+end
+
+DynamicPartitionObserver --> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+newPage DynamicPartitionObserver : Create Session, TopicRoute
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+control SingleThreadExecutor
+collections DynamicPartitionObserverListener
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter --> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter --> DynamicPartitionObserver: false
+  deactivate DynamicPartitionObserverFilter
+
+  alt !mapping.containsKey(session)
+    DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(createSession)
+  end
+  alt !mapping.get(session).containsKey(topicRoute)
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(createTopicRoute)
+  end
+  DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+end
+
+DynamicPartitionObserver --> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+== Create Session ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: createSession()
+  [<-- SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+== Create Topic Route ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: createTopicRoute()
+  [<-- SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+newPage DynamicPartitionObserver : Delete Session, TopicRoute
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+control SingleThreadExecutor
+collections DynamicPartitionObserverListener
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter --> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter --> DynamicPartitionObserver: false
+  deactivate DynamicPartitionObserverFilter
+
+  DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+  alt !mapping.get(session).containsKey(topicRoute)
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(deleteTopicRoute)
+  end
+  alt mapping.get(session).isEmpty()
+    DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(deleteSession)
+  end
+end
+
+DynamicPartitionObserver --> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+== Delete Session ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: deleteSession()
+  [<-- SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+== Delete Topic Route ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: deleteTopicRoute()
+  [<-- SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+@enduml

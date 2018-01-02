@@ -1,0 +1,33 @@
+@startuml
+title Subscription Observer
+
+participant DataReader
+participant SubscriptionObserver
+control SingleThreadExecutor
+collections SubscriptionObserverListener
+
+DataReader -> SubscriptionObserver: on_data_available()
+activate SubscriptionObserver
+
+SubscriptionObserver -> SingleThreadExecutor: submit()
+SubscriptionObserver --> DataReader: done
+deactivate SubscriptionObserver
+...
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+loop RETCODE_NO_DATA|RETCODE_ERROR
+
+  SingleThreadExecutor -> DataReader: read_next_sample_untyped()
+  activate DataReader
+  DataReader --> SingleThreadExecutor: sample, sampleInfo
+  deactivate DataReader
+
+  alt sampleInfo.valid_data = true
+    SingleThreadExecutor -> SubscriptionObserverListener: subscriptionDiscovered()
+  else sampleInfo.valid_data = false
+    SingleThreadExecutor -> SubscriptionObserverListener: subscriptionLost()
+  end
+end
+[<-- SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+@enduml

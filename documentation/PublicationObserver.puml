@@ -1,0 +1,33 @@
+@startuml
+title Publication Observer
+
+participant DataReader
+participant PublicationObserver
+control SingleThreadExecutor
+collections PublicationObserverListener
+
+DataReader -> PublicationObserver: on_data_available()
+activate PublicationObserver
+
+PublicationObserver -> SingleThreadExecutor: submit()
+PublicationObserver --> DataReader: done
+deactivate PublicationObserver
+...
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+loop RETCODE_NO_DATA|RETCODE_ERROR
+
+  SingleThreadExecutor -> DataReader: read_next_sample_untyped()
+  activate DataReader
+  DataReader --> SingleThreadExecutor: sample, sampleInfo
+  deactivate DataReader
+
+  alt sampleInfo.valid_data = true
+    SingleThreadExecutor -> PublicationObserverListener: publicationDiscovered()
+  else sampleInfo.valid_data = false
+    SingleThreadExecutor -> PublicationObserverListener: publicationLost()
+  end
+end
+[<-- SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+@enduml

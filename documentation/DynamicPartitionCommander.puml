@@ -1,0 +1,133 @@
+@startuml
+title Dynamic Partition Commander : Create Session
+
+participant DynamicPartitionObserverListener
+participant DynamicPartitionCommander
+control ScheduledExecutorService
+participant DynamicPartitionCommanderProvider
+participant RoutingServiceCommandInterface
+
+DynamicPartitionObserverListener -> DynamicPartitionCommander: createSession()\ndeleteSession()\ncreateTopicRoute()\ndeleteTopicRoute()
+activate DynamicPartitionCommander
+  alt activeCommands.containsKey(command)
+    DynamicPartitionCommander -> DynamicPartitionCommander: cancel active command
+  end
+  DynamicPartitionCommander -> ScheduledExecutorService: scheduleWithFixedDelay()
+  DynamicPartitionCommander --> DynamicPartitionObserverListener: done
+deactivate DynamicPartitionCommander
+
+== Create Session ==
+
+[-> ScheduledExecutorService: run()
+activate ScheduledExecutorService
+  ScheduledExecutorService -> RoutingServiceCommandInterface: createCommandRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandRequest
+  deactivate RoutingServiceCommandInterface
+
+  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionParent()
+  activate DynamicPartitionCommanderProvider
+    DynamicPartitionCommanderProvider --> ScheduledExecutorService: sessionParent
+  deactivate DynamicPartitionCommanderProvider
+
+  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionConfiguration()
+  activate DynamicPartitionCommanderProvider
+    DynamicPartitionCommanderProvider --> ScheduledExecutorService: sessionConfiguration
+  deactivate DynamicPartitionCommanderProvider
+
+  ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandResponse
+  deactivate RoutingServiceCommandInterface
+
+  opt checkResponse()
+      ScheduledExecutorService -> ScheduledExecutorService: cancel command
+  end
+
+  [<-- ScheduledExecutorService: done
+deactivate ScheduledExecutorService
+
+== Delete Session ==
+
+[-> ScheduledExecutorService: run()
+activate ScheduledExecutorService
+  ScheduledExecutorService -> RoutingServiceCommandInterface: createCommandRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandRequest
+  deactivate RoutingServiceCommandInterface
+
+  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionEntityName()
+  activate DynamicPartitionCommanderProvider
+    DynamicPartitionCommanderProvider --> ScheduledExecutorService: sessionEntityName
+  deactivate DynamicPartitionCommanderProvider
+
+  ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandResponse
+  deactivate RoutingServiceCommandInterface
+
+  opt checkResponse()
+      ScheduledExecutorService -> ScheduledExecutorService: cancel command
+  end
+
+  [<-- ScheduledExecutorService: done
+deactivate ScheduledExecutorService
+
+== Create Topic Route ==
+
+[-> ScheduledExecutorService: run()
+activate ScheduledExecutorService
+  ScheduledExecutorService -> RoutingServiceCommandInterface: createCommandRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandRequest
+  deactivate RoutingServiceCommandInterface
+
+  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionEntityName()
+  activate DynamicPartitionCommanderProvider
+    DynamicPartitionCommanderProvider --> ScheduledExecutorService: sessionEntityName
+  deactivate DynamicPartitionCommanderProvider
+
+  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getTopicRouteConfiguration()
+  activate DynamicPartitionCommanderProvider
+    DynamicPartitionCommanderProvider --> ScheduledExecutorService: topicRouteConfiguration
+  deactivate DynamicPartitionCommanderProvider
+
+  ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandResponse
+  deactivate RoutingServiceCommandInterface
+
+  opt checkResponse()
+      ScheduledExecutorService -> ScheduledExecutorService: cancel command
+  end
+
+  [<-- ScheduledExecutorService: done
+deactivate ScheduledExecutorService
+
+== Delete Topic Route ==
+
+[-> ScheduledExecutorService: run()
+activate ScheduledExecutorService
+  ScheduledExecutorService -> RoutingServiceCommandInterface: createCommandRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandRequest
+  deactivate RoutingServiceCommandInterface
+
+  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getTopicRouteEntityName()
+  activate DynamicPartitionCommanderProvider
+    DynamicPartitionCommanderProvider --> ScheduledExecutorService: topicRouteEntityName
+  deactivate DynamicPartitionCommanderProvider
+
+  ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
+  activate RoutingServiceCommandInterface
+    RoutingServiceCommandInterface --> ScheduledExecutorService: commandResponse
+  deactivate RoutingServiceCommandInterface
+
+  opt checkResponse()
+      ScheduledExecutorService -> ScheduledExecutorService: cancel command
+  end
+
+  [<-- ScheduledExecutorService: done
+deactivate ScheduledExecutorService
+
+@enduml
