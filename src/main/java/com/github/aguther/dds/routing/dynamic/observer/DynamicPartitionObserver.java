@@ -324,10 +324,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
           if (log.isDebugEnabled()) {
             log.debug(
-                "Publication topic='{}', type='{}', instance='{}' ignored",
+                "Publication topic='{}', type='{}', instance='{}' ignored (filter '{}')",
                 data.topic_name,
                 data.type_name,
-                instanceHandle);
+                instanceHandle,
+                filter.getClass().getCanonicalName());
           }
           return true;
         }
@@ -353,10 +354,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
           if (log.isDebugEnabled()) {
             log.debug(
-                "Subscription topic='{}', type='{}', instance='{}' ignored",
+                "Subscription topic='{}', type='{}', instance='{}' ignored (filter '{}')",
                 data.topic_name,
                 data.type_name,
-                instanceHandle);
+                instanceHandle,
+                filter.getClass().getCanonicalName());
           }
           return true;
         }
@@ -381,9 +383,10 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         if (filter.ignorePartition(topicName, partition)) {
           if (log.isDebugEnabled()) {
             log.debug(
-                "Partition topic='{}', name='{}' ignored",
+                "Partition topic='{}', name='{}' ignored (filter '{}')",
                 topicName,
-                partition);
+                partition,
+                filter.getClass().getCanonicalName());
           }
           return true;
         }
