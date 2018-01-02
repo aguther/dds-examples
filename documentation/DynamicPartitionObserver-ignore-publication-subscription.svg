@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="333px" preserveAspectRatio="none" style="width:1118px;height:333px;" version="1.1" viewBox="0 0 1118 333" width="1118px" zoomAndPan="magnify"><defs><filter height="300%" id="f1tglg79w5riye" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="468" x="320.5" y="22.9951">DynamicPartitionObserver : Ignore Publication/Subscription</text><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="102.9297" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="322" y="157.5938"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="29.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="546.5" y="202.125"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="113" x2="113" y1="81.5938" y2="279.6563"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="327" x2="327" y1="81.5938" y2="279.6563"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="551" x2="551" y1="81.5938" y2="279.6563"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="757" x2="757" y1="81.5938" y2="279.6563"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="973" x2="973" y1="81.5938" y2="279.6563"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="207" x="8" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="193" x="15" y="66.292">PublicationObserverListener</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="207" x="8" y="278.6563"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="193" x="15" y="298.6514">PublicationObserverListener</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="192" x="229" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="178" x="236" y="66.292">DynamicPartitionObserver</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="192" x="229" y="278.6563"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="178" x="236" y="298.6514">DynamicPartitionObserver</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="439" y="42.2969"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="435" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="211" x="442" y="66.292">DynamicPartitionObserverFilter</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="439" y="278.6563"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="435" y="282.6563"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="211" x="442" y="302.6514">DynamicPartitionObserverFilter</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="152" x="678" y="78.292">SingleThreadExecutor</text><ellipse cx="757" cy="49.2969" fill="#FEFECE" filter="url(#f1tglg79w5riye)" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="753,37.2969,759,32.2969,757,37.2969,759,42.2969,753,37.2969" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="152" x="678" y="291.6514">SingleThreadExecutor</text><ellipse cx="757" cy="310.9531" fill="#FEFECE" filter="url(#f1tglg79w5riye)" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="753,298.9531,759,293.9531,757,298.9531,759,303.9531,753,298.9531" style="stroke: #A80036; stroke-width: 1.0;"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="850" y="42.2969"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="846" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="233" x="853" y="66.292">DynamicPartitionObserverListener</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="850" y="278.6563"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="846" y="282.6563"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="233" x="853" y="302.6514">DynamicPartitionObserverListener</text><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="102.9297" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="322" y="157.5938"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="29.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="546.5" y="202.125"/><polygon fill="#A80036" points="310,153.5938,320,157.5938,310,161.5938,314,157.5938" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="113.5" x2="316" y1="157.5938" y2="157.5938"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="106" x="120.5" y="107.6606">publicationLost()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="114" x="120.5" y="122.7935">subscriptionLost()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="150" x="120.5" y="137.9263">publicationDiscovered()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="158" x="120.5" y="153.0591">subscriptionDiscovered()</text><polygon fill="#A80036" points="534.5,198.125,544.5,202.125,534.5,206.125,538.5,202.125" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="332" x2="540.5" y1="202.125" y2="202.125"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="119" x="339" y="182.1919">ignorePublication()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="129" x="339" y="197.3247">ignoreSubscription()</text><polygon fill="#A80036" points="343,227.3906,333,231.3906,343,235.3906,339,231.3906" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="337" x2="550.5" y1="231.3906" y2="231.3906"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="26" x="349" y="226.4575">true</text><polygon fill="#A80036" points="124.5,256.5234,114.5,260.5234,124.5,264.5234,120.5,260.5234" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="118.5" x2="326" y1="260.5234" y2="260.5234"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="130.5" y="255.5903">done</text><line style="stroke: #000000; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="3" x2="1106" y1="268.6563" y2="268.6563"/><!--
+@startuml
+title DynamicPartitionObserver : Ignore Publication/Subscription
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()\npublicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+  activate DynamicPartitionObserverFilter
+    DynamicPartitionObserverFilter - -> DynamicPartitionObserver: true
+  deactivate DynamicPartitionObserverFilter
+  DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+newPage DynamicPartitionObserver : Ignore Partition
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()\npublicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter - -> DynamicPartitionObserver: true
+  deactivate DynamicPartitionObserverFilter
+end
+
+DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+newPage DynamicPartitionObserver : Create Session, TopicRoute
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+control SingleThreadExecutor
+collections DynamicPartitionObserverListener
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+  deactivate DynamicPartitionObserverFilter
+
+  alt !mapping.containsKey(session)
+    DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(createSession)
+  end
+  alt !mapping.get(session).containsKey(topicRoute)
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(createTopicRoute)
+  end
+  DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+end
+
+DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+== Create Session ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: createSession()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+== Create Topic Route ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: createTopicRoute()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+newPage DynamicPartitionObserver : Delete Session, TopicRoute
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+control SingleThreadExecutor
+collections DynamicPartitionObserverListener
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+  deactivate DynamicPartitionObserverFilter
+
+  DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+  alt !mapping.get(session).containsKey(topicRoute)
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(deleteTopicRoute)
+  end
+  alt mapping.get(session).isEmpty()
+    DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(deleteSession)
+  end
+end
+
+DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+== Delete Session ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: deleteSession()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+== Delete Topic Route ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: deleteTopicRoute()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+@enduml
+
+PlantUML version 1.2017.15(Mon Jul 03 18:45:34 CEST 2017)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 1.8.0_152-release-1024-b8
+Operating System: Linux
+OS Version: 3.10.0-693.11.1.el7.x86_64
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="860px" preserveAspectRatio="none" style="width:1118px;height:860px;" version="1.1" viewBox="0 0 1118 860" width="1118px" zoomAndPan="magnify"><defs><filter height="300%" id="f1tglg79w5riye" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="441" x="334" y="22.9951">DynamicPartitionObserver : Create Session, TopicRoute</text><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="396.8594" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="322" y="129.5938"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="29.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="546.5" y="173.8594"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="29.1328" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="546.5" y="256.3906"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="58.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="752" y="598.7188"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="58.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="752" y="729.25"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="280.1953" style="stroke: #000000; stroke-width: 2.0;" width="647" x="209" y="218.2578"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="88.3984" style="stroke: #000000; stroke-width: 2.0;" width="627" x="219" y="300.6563"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="46.2656" style="stroke: #000000; stroke-width: 2.0;" width="627" x="219" y="403.0547"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="113" x2="113" y1="81.5938" y2="806.6484"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="327" x2="327" y1="81.5938" y2="806.6484"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="551" x2="551" y1="81.5938" y2="806.6484"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="757" x2="757" y1="81.5938" y2="806.6484"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="973" x2="973" y1="81.5938" y2="806.6484"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="207" x="8" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="193" x="15" y="66.292">PublicationObserverListener</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="207" x="8" y="805.6484"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="193" x="15" y="825.6436">PublicationObserverListener</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="192" x="229" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="178" x="236" y="66.292">DynamicPartitionObserver</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="192" x="229" y="805.6484"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="178" x="236" y="825.6436">DynamicPartitionObserver</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="439" y="42.2969"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="435" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="211" x="442" y="66.292">DynamicPartitionObserverFilter</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="439" y="805.6484"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="225" x="435" y="809.6484"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="211" x="442" y="829.6436">DynamicPartitionObserverFilter</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="152" x="678" y="78.292">SingleThreadExecutor</text><ellipse cx="757" cy="49.2969" fill="#FEFECE" filter="url(#f1tglg79w5riye)" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="753,37.2969,759,32.2969,757,37.2969,759,42.2969,753,37.2969" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="152" x="678" y="818.6436">SingleThreadExecutor</text><ellipse cx="757" cy="837.9453" fill="#FEFECE" filter="url(#f1tglg79w5riye)" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="753,825.9453,759,820.9453,757,825.9453,759,830.9453,753,825.9453" style="stroke: #A80036; stroke-width: 1.0;"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="850" y="42.2969"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="846" y="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="233" x="853" y="66.292">DynamicPartitionObserverListener</text><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="850" y="805.6484"/><rect fill="#FEFECE" filter="url(#f1tglg79w5riye)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="247" x="846" y="809.6484"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="233" x="853" y="829.6436">DynamicPartitionObserverListener</text><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="396.8594" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="322" y="129.5938"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="29.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="546.5" y="173.8594"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="29.1328" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="546.5" y="256.3906"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="58.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="752" y="598.7188"/><rect fill="#FFFFFF" filter="url(#f1tglg79w5riye)" height="58.2656" style="stroke: #A80036; stroke-width: 1.0;" width="10" x="752" y="729.25"/><line style="stroke: #000000; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="3" x2="1106" y1="92.5938" y2="92.5938"/><polygon fill="#A80036" points="310,125.5938,320,129.5938,310,133.5938,314,129.5938" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="113.5" x2="316" y1="129.5938" y2="129.5938"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="150" x="120.5" y="109.6606">publicationDiscovered()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="158" x="120.5" y="124.7935">subscriptionDiscovered()</text><polygon fill="#A80036" points="534.5,169.8594,544.5,173.8594,534.5,177.8594,538.5,173.8594" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="332" x2="540.5" y1="173.8594" y2="173.8594"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="119" x="339" y="153.9263">ignorePublication()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="129" x="339" y="169.0591">ignoreSubscription()</text><polygon fill="#A80036" points="343,199.125,333,203.125,343,207.125,339,203.125" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="337" x2="550.5" y1="203.125" y2="203.125"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="30" x="349" y="198.1919">false</text><rect fill="none" height="280.1953" style="stroke: #000000; stroke-width: 2.0;" width="647" x="209" y="218.2578"/><polygon fill="#EEEEEE" points="209,218.2578,286,218.2578,286,225.2578,276,235.2578,209,235.2578,209,218.2578" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="32" x="224" y="231.3247">loop</text><text fill="#000000" font-family="sans-serif" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="72" x="301" y="230.4683">[partitions]</text><polygon fill="#A80036" points="534.5,252.3906,544.5,256.3906,534.5,260.3906,538.5,256.3906" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="332" x2="540.5" y1="256.3906" y2="256.3906"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="103" x="339" y="251.4575">ignorePartition()</text><polygon fill="#A80036" points="343,281.5234,333,285.5234,343,289.5234,339,285.5234" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="337" x2="550.5" y1="285.5234" y2="285.5234"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="30" x="349" y="280.5903">false</text><rect fill="none" height="88.3984" style="stroke: #000000; stroke-width: 2.0;" width="627" x="219" y="300.6563"/><polygon fill="#EEEEEE" points="219,300.6563,283,300.6563,283,307.6563,273,317.6563,219,317.6563,219,300.6563" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="19" x="234" y="313.7231">alt</text><text fill="#000000" font-family="sans-serif" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="212" x="298" y="312.8667">[!mapping.containsKey(session)]</text><line style="stroke: #A80036; stroke-width: 1.0;" x1="332" x2="374" y1="338.9219" y2="338.9219"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="374" x2="374" y1="338.9219" y2="351.9219"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="333" x2="374" y1="351.9219" y2="351.9219"/><polygon fill="#A80036" points="343,347.9219,333,351.9219,343,355.9219,339,351.9219" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="105" x="339" y="333.856">update mapping</text><polygon fill="#A80036" points="745,376.9219,755,380.9219,745,384.9219,749,380.9219" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="332" x2="751" y1="380.9219" y2="380.9219"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="145" x="339" y="375.9888">submit(createSession)</text><rect fill="none" height="46.2656" style="stroke: #000000; stroke-width: 2.0;" width="627" x="219" y="403.0547"/><polygon fill="#EEEEEE" points="219,403.0547,283,403.0547,283,410.0547,273,420.0547,219,420.0547,219,403.0547" style="stroke: #000000; stroke-width: 2.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="19" x="234" y="416.1216">alt</text><text fill="#000000" font-family="sans-serif" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="316" x="298" y="415.2651">[!mapping.get(session).containsKey(topicRoute)]</text><polygon fill="#A80036" points="745,437.1875,755,441.1875,745,445.1875,749,441.1875" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="332" x2="751" y1="441.1875" y2="441.1875"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="165" x="339" y="436.2544">submit(createTopicRoute)</text><line style="stroke: #A80036; stroke-width: 1.0;" x1="332" x2="374" y1="477.4531" y2="477.4531"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="374" x2="374" y1="477.4531" y2="490.4531"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="333" x2="374" y1="490.4531" y2="490.4531"/><polygon fill="#A80036" points="343,486.4531,333,490.4531,343,494.4531,339,490.4531" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="105" x="339" y="472.3872">update mapping</text><polygon fill="#A80036" points="124.5,522.4531,114.5,526.4531,124.5,530.4531,120.5,526.4531" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="118.5" x2="326" y1="526.4531" y2="526.4531"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="130.5" y="521.52">done</text><rect fill="#EEEEEE" filter="url(#f1tglg79w5riye)" height="3" style="stroke: #EEEEEE; stroke-width: 1.0;" width="1103" x="3" y="555.1523"/><line style="stroke: #000000; stroke-width: 1.0;" x1="3" x2="1106" y1="555.1523" y2="555.1523"/><line style="stroke: #000000; stroke-width: 1.0;" x1="3" x2="1106" y1="558.1523" y2="558.1523"/><rect fill="#EEEEEE" filter="url(#f1tglg79w5riye)" height="23.1328" style="stroke: #000000; stroke-width: 2.0;" width="129" x="490" y="544.5859"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="110" x="496" y="560.6528">Create Session</text><polygon fill="#A80036" points="740,594.7188,750,598.7188,740,602.7188,744,598.7188" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="3" x2="746" y1="598.7188" y2="598.7188"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="31" x="10" y="593.7856">run()</text><polygon fill="#A80036" points="961.5,623.8516,971.5,627.8516,961.5,631.8516,965.5,627.8516" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="762" x2="967.5" y1="627.8516" y2="627.8516"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="101" x="769" y="622.9185">createSession()</text><polygon fill="#A80036" points="14,652.9844,4,656.9844,14,660.9844,10,656.9844" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="8" x2="756" y1="656.9844" y2="656.9844"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="20" y="652.0513">done</text><rect fill="#EEEEEE" filter="url(#f1tglg79w5riye)" height="3" style="stroke: #EEEEEE; stroke-width: 1.0;" width="1103" x="3" y="685.6836"/><line style="stroke: #000000; stroke-width: 1.0;" x1="3" x2="1106" y1="685.6836" y2="685.6836"/><line style="stroke: #000000; stroke-width: 1.0;" x1="3" x2="1106" y1="688.6836" y2="688.6836"/><rect fill="#EEEEEE" filter="url(#f1tglg79w5riye)" height="23.1328" style="stroke: #000000; stroke-width: 2.0;" width="160" x="474.5" y="675.1172"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="141" x="480.5" y="691.1841">Create Topic Route</text><polygon fill="#A80036" points="740,725.25,750,729.25,740,733.25,744,729.25" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="3" x2="746" y1="729.25" y2="729.25"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="31" x="10" y="724.3169">run()</text><polygon fill="#A80036" points="961.5,754.3828,971.5,758.3828,961.5,762.3828,965.5,758.3828" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="762" x2="967.5" y1="758.3828" y2="758.3828"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="121" x="769" y="753.4497">createTopicRoute()</text><polygon fill="#A80036" points="14,783.5156,4,787.5156,14,791.5156,10,787.5156" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="8" x2="756" y1="787.5156" y2="787.5156"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="20" y="782.5825">done</text><line style="stroke: #000000; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="3" x2="1106" y1="795.6484" y2="795.6484"/><!--
+@startuml
+title DynamicPartitionObserver : Ignore Publication/Subscription
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()\npublicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+  activate DynamicPartitionObserverFilter
+    DynamicPartitionObserverFilter - -> DynamicPartitionObserver: true
+  deactivate DynamicPartitionObserverFilter
+  DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+newPage DynamicPartitionObserver : Ignore Partition
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()\npublicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter - -> DynamicPartitionObserver: true
+  deactivate DynamicPartitionObserverFilter
+end
+
+DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+newPage DynamicPartitionObserver : Create Session, TopicRoute
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+control SingleThreadExecutor
+collections DynamicPartitionObserverListener
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationDiscovered()\nsubscriptionDiscovered()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+  deactivate DynamicPartitionObserverFilter
+
+  alt !mapping.containsKey(session)
+    DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(createSession)
+  end
+  alt !mapping.get(session).containsKey(topicRoute)
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(createTopicRoute)
+  end
+  DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+end
+
+DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+== Create Session ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: createSession()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+== Create Topic Route ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: createTopicRoute()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+newPage DynamicPartitionObserver : Delete Session, TopicRoute
+
+participant PublicationObserverListener
+participant DynamicPartitionObserver
+collections DynamicPartitionObserverFilter
+control SingleThreadExecutor
+collections DynamicPartitionObserverListener
+
+PublicationObserverListener -> DynamicPartitionObserver: publicationLost()\nsubscriptionLost()
+activate DynamicPartitionObserver
+
+DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePublication()\nignoreSubscription()
+activate DynamicPartitionObserverFilter
+  DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+deactivate DynamicPartitionObserverFilter
+
+loop partitions
+  DynamicPartitionObserver -> DynamicPartitionObserverFilter: ignorePartition()
+  activate DynamicPartitionObserverFilter
+      DynamicPartitionObserverFilter - -> DynamicPartitionObserver: false
+  deactivate DynamicPartitionObserverFilter
+
+  DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+  alt !mapping.get(session).containsKey(topicRoute)
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(deleteTopicRoute)
+  end
+  alt mapping.get(session).isEmpty()
+    DynamicPartitionObserver -> DynamicPartitionObserver: update mapping
+    DynamicPartitionObserver -> SingleThreadExecutor: submit(deleteSession)
+  end
+end
+
+DynamicPartitionObserver - -> PublicationObserverListener: done
+deactivate DynamicPartitionObserver
+
+== Delete Session ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: deleteSession()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+== Delete Topic Route ==
+
+[-> SingleThreadExecutor: run()
+activate SingleThreadExecutor
+  SingleThreadExecutor -> DynamicPartitionObserverListener: deleteTopicRoute()
+  [<- - SingleThreadExecutor: done
+deactivate SingleThreadExecutor
+
+@enduml
+
+PlantUML version 1.2017.15(Mon Jul 03 18:45:34 CEST 2017)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 1.8.0_152-release-1024-b8
+Operating System: Linux
+OS Version: 3.10.0-693.11.1.el7.x86_64
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
