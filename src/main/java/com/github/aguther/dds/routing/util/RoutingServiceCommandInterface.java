@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RoutingServiceCommandInterface implements Closeable {
 
-  private static final Logger log = LoggerFactory.getLogger(RoutingServiceCommandInterface.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingServiceCommandInterface.class);
 
   private final Requester<CommandRequest, CommandResponse> requester;
 
@@ -244,12 +244,12 @@ public class RoutingServiceCommandInterface implements Closeable {
       final CommandRequest commandRequest
   ) {
     // trace logs
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "CommandRequest.command.entity_desc.xml_url.content.length()='{}'",
           commandRequest.command.entity_desc.xml_url.content.length()
       );
-      log.trace(
+      LOGGER.trace(
           "CommandRequest {}",
           commandRequest.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
       );
@@ -267,8 +267,8 @@ public class RoutingServiceCommandInterface implements Closeable {
       final boolean replyReceived
   ) {
     // trace logs
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "CommandResponse {}",
           replyReceived ?
               reply.getData().toString().replace(

@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RtiTopicFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(RtiTopicFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RtiTopicFilter.class);
 
   @Override
   public boolean ignorePublication(
@@ -79,8 +79,8 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
     boolean result = topicName.startsWith("rti");
 
     // log decision
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "instance='{}', ignore='{}' (filter='{}', topic='{}')",
           instanceHandle,
           result,

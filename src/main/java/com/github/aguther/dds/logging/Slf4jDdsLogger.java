@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
 
-  private static final Logger log = LoggerFactory.getLogger(Slf4jDdsLogger.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Slf4jDdsLogger.class);
 
   public static Slf4jDdsLogger createRegisterLogger() throws IOException {
     // create logger
@@ -51,11 +51,11 @@ public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
     com.rti.ndds.config.Logger.get_instance().set_print_format(LogPrintFormat.NDDS_CONFIG_LOG_PRINT_FORMAT_TIMESTAMPED);
 
     // set log level
-    if (log.isTraceEnabled()) {
+    if (LOGGER.isTraceEnabled()) {
       com.rti.ndds.config.Logger.get_instance().set_verbosity(LogVerbosity.NDDS_CONFIG_LOG_VERBOSITY_STATUS_ALL);
-    } else if (log.isWarnEnabled()) {
+    } else if (LOGGER.isWarnEnabled()) {
       com.rti.ndds.config.Logger.get_instance().set_verbosity(LogVerbosity.NDDS_CONFIG_LOG_VERBOSITY_WARNING);
-    } else if (log.isErrorEnabled()) {
+    } else if (LOGGER.isErrorEnabled()) {
       com.rti.ndds.config.Logger.get_instance().set_verbosity(LogVerbosity.NDDS_CONFIG_LOG_VERBOSITY_ERROR);
     }
 
@@ -68,33 +68,33 @@ public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
       final LogMessage logMessage
   ) {
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_ERROR
-        && log.isErrorEnabled()) {
-      log.error(logMessage.text.replace("\n", " "));
+        && LOGGER.isErrorEnabled()) {
+      LOGGER.error(logMessage.text.replace("\n", " "));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_WARNING
-        && log.isWarnEnabled()) {
-      log.warn(logMessage.text.replace("\n", " "));
+        && LOGGER.isWarnEnabled()) {
+      LOGGER.warn(logMessage.text.replace("\n", " "));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_STATUS_LOCAL
-        && log.isTraceEnabled()) {
-      log.trace(logMessage.text.replace("\n", " "));
+        && LOGGER.isTraceEnabled()) {
+      LOGGER.trace(logMessage.text.replace("\n", " "));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_STATUS_REMOTE
-        && log.isTraceEnabled()) {
-      log.trace(logMessage.text.replace("\n", " "));
+        && LOGGER.isTraceEnabled()) {
+      LOGGER.trace(logMessage.text.replace("\n", " "));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_DEBUG
-        && log.isDebugEnabled()) {
-      log.debug(logMessage.text.replace("\n", " "));
+        && LOGGER.isDebugEnabled()) {
+      LOGGER.debug(logMessage.text.replace("\n", " "));
     }
   }
 
   @Override
   public void close() {
-    log.trace("Closing log device.");
+    LOGGER.trace("Closing log device.");
   }
 }

@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicPartitionObserver implements Closeable, PublicationObserverListener, SubscriptionObserverListener {
 
-  private static final Logger log = LoggerFactory.getLogger(DynamicPartitionObserver.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPartitionObserver.class);
 
   private final Map<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
   private final List<DynamicPartitionObserverFilter> filterList;
@@ -322,8 +322,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     synchronized (filterList) {
       for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
-          if (log.isDebugEnabled()) {
-            log.debug(
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
                 "Ignoring publication topic='{}', type='{}', instance='{}' through filter '{}'",
                 data.topic_name,
                 data.type_name,
@@ -352,8 +352,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     synchronized (filterList) {
       for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
-          if (log.isDebugEnabled()) {
-            log.debug(
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
                 "Ignoring subscription topic='{}', type='{}', instance='{}' through filter '{}'",
                 data.topic_name,
                 data.type_name,
@@ -381,8 +381,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     synchronized (filterList) {
       for (DynamicPartitionObserverFilter filter : filterList) {
         if (filter.ignorePartition(topicName, partition)) {
-          if (log.isDebugEnabled()) {
-            log.debug(
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
                 "Ignoring partition topic='{}', name='{}' through filter '{}'",
                 topicName,
                 partition,
@@ -464,8 +464,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   private void createSession(
       final Session session
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug(
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
           "Calling 'createSession' on listeners with topic='{}', partition='{}'",
           session.getTopic(),
           session.getPartition()
@@ -489,8 +489,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   private void deleteSession(
       final Session session
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug(
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
           "Calling 'deleteSession' on listeners with topic='{}', partition='{}'",
           session.getTopic(),
           session.getPartition()
@@ -516,8 +516,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final Session session,
       final TopicRoute topicRoute
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug(
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
           "Calling 'createTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
           session.getTopic(),
           topicRoute.getType(),
@@ -545,8 +545,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final Session session,
       final TopicRoute topicRoute
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug(
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
           "Calling 'deleteTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
           session.getTopic(),
           topicRoute.getType(),

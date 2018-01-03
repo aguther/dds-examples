@@ -60,7 +60,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
 
   private static final String PROPERTY_DOMAIN_ROUTE_NAME = "configuration.domain_route_name";
 
-  private static final Logger log = LoggerFactory.getLogger(ConfigurationFilterProvider.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFilterProvider.class);
 
   private final Map<String, Configuration> configurations;
   private final Pattern patternConfigurationItem;
@@ -187,9 +187,9 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
    */
   private void logConfiguration() {
     // log loaded properties
-    if (log.isDebugEnabled()) {
+    if (LOGGER.isDebugEnabled()) {
       for (Entry<String, Configuration> entry : configurations.entrySet()) {
-        log.debug(
+        LOGGER.debug(
             "key='{}', allow_topic_name_filter='{}', deny_topic_name_filter='{}', allow_partition_name_filter='{}', deny_partition_name_filter='{}', qos.topic_route='{}', qos.input='{}', qos.output='{}'",
             entry.getKey(),
             entry.getValue().getAllowTopicNameFilter() != null ?
@@ -266,7 +266,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
 
     // if we do not find a matching configuration we should ignore the partition
     if (configuration == null) {
-      log.trace(
+      LOGGER.trace(
           "topic='{}', partition='{}', ignore='{}' (configuration not found)",
           topicName,
           partition,
@@ -278,7 +278,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     // check deny filter
     if (configuration.getDenyPartitionNameFilter() != null
         && configuration.getDenyPartitionNameFilter().matcher(partition).matches()) {
-      log.trace(
+      LOGGER.trace(
           "topic='{}', partition='{}', ignore='{}' (deny partition filter matched)",
           topicName,
           partition,
@@ -290,7 +290,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     // check allow filter
     if (configuration.getAllowPartitionNameFilter() != null
         && !configuration.getAllowPartitionNameFilter().matcher(partition).matches()) {
-      log.trace(
+      LOGGER.trace(
           "topic='{}', partition='{}', ignore='{}' (no match with allow partition filter)",
           topicName,
           partition,
@@ -300,7 +300,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     }
 
     // do not ignore
-    log.trace(
+    LOGGER.trace(
         "topic='{}', partition='{}', ignore='{}'",
         topicName,
         partition,
@@ -315,8 +315,8 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
   ) {
     boolean result = (getMatchingConfiguration(topicName) == null);
 
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "instance='{}', ignore='{}' (configuration for topic '{}' {})",
           instanceHandle,
           result,

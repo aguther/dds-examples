@@ -40,7 +40,7 @@ public class DynamicRouting extends AbstractIdleService {
   private static final String ROUTING_SERVICE_NAME = "dds-examples-routing-dynamic";
   private static final String ROUTING_SERVICE_CONFIG_FILE = "routing-dynamic.xml";
 
-  private static final Logger log = LoggerFactory.getLogger(DynamicRouting.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRouting.class);
 
   private static DynamicRouting serviceInstance;
 
@@ -63,24 +63,24 @@ public class DynamicRouting extends AbstractIdleService {
     serviceInstance.awaitTerminated();
 
     // service terminated
-    log.info("Service terminated");
+    LOGGER.info("Service terminated");
   }
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received");
+      LOGGER.info("Shutdown signal received");
       if (serviceInstance != null) {
         serviceInstance.stopAsync();
         serviceInstance.awaitTerminated();
       }
-      log.info("Shutdown signal finished");
+      LOGGER.info("Shutdown signal finished");
     }));
   }
 
   @Override
   protected void startUp() throws Exception {
     // log service start
-    log.info("Service is starting");
+    LOGGER.info("Service is starting");
 
     // start DDS logger
     startUpDdsLogger();
@@ -92,13 +92,13 @@ public class DynamicRouting extends AbstractIdleService {
     startUpDynamicRouting();
 
     // log service start
-    log.info("Service start finished");
+    LOGGER.info("Service start finished");
   }
 
   @Override
   protected void shutDown() throws Exception {
     // log service start
-    log.info("Service is shutting down");
+    LOGGER.info("Service is shutting down");
 
     // shutdown dynamic routing
     shutdownDynamicRouting();
@@ -107,7 +107,7 @@ public class DynamicRouting extends AbstractIdleService {
     shutdownRoutingService();
 
     // log service start
-    log.info("Service shutdown finished");
+    LOGGER.info("Service shutdown finished");
   }
 
   private void startUpDdsLogger() throws IOException {

@@ -74,7 +74,7 @@ public class DynamicRoutingManager implements Closeable {
   private static final String PROPERTY_DISCOVERY_DOMAIN_ID
       = "discovery.domain_id";
 
-  private static final Logger log = LoggerFactory.getLogger(DynamicRoutingManager.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingManager.class);
 
   private final DomainParticipant domainParticipantAdministration;
   private final DomainParticipant domainParticipantDiscovery;
@@ -100,11 +100,11 @@ public class DynamicRoutingManager implements Closeable {
       final String propertiesPrefix,
       final Properties properties
   ) {
-    log.info("Creating");
+    LOGGER.info("Creating");
 
-    if (log.isDebugEnabled()) {
+    if (LOGGER.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
-        log.info(
+        LOGGER.info(
             "key='{}', value='{}'",
             key,
             properties.getProperty(key)
@@ -122,7 +122,7 @@ public class DynamicRoutingManager implements Closeable {
         domainParticipantAdministration);
 
     // wait for routing service to be discovered
-    log.info("Waiting for remote administration interface of routing service to be discovered");
+    LOGGER.info("Waiting for remote administration interface of routing service to be discovered");
     if (routingServiceCommandInterface.waitForDiscovery(
         routingServiceName,
         Long.parseLong(properties.getProperty(
@@ -130,9 +130,9 @@ public class DynamicRoutingManager implements Closeable {
             DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
         )),
         TimeUnit.MILLISECONDS)) {
-      log.info("Remote administration interface of routing service was discovered");
+      LOGGER.info("Remote administration interface of routing service was discovered");
     } else {
-      log.warn("Remote administration interface of routing service could not be discovered within time out");
+      LOGGER.warn("Remote administration interface of routing service could not be discovered within time out");
     }
 
     // create domain participant for discovery
@@ -183,12 +183,12 @@ public class DynamicRoutingManager implements Closeable {
     // enable discovery domain participant
     domainParticipantDiscovery.enable();
 
-    log.info("Created");
+    LOGGER.info("Created");
   }
 
   @Override
   public void close() {
-    log.info("Closing");
+    LOGGER.info("Closing");
 
     if (publicationObserver != null) {
       publicationObserver.close();
@@ -215,7 +215,7 @@ public class DynamicRoutingManager implements Closeable {
       DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
     }
 
-    log.info("Closed");
+    LOGGER.info("Closed");
   }
 
   /**

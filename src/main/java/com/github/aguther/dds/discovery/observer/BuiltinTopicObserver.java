@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runnable {
 
-  private static final Logger log = LoggerFactory.getLogger(BuiltinTopicObserver.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(BuiltinTopicObserver.class);
 
   private final ExecutorService executorService;
 
@@ -102,7 +102,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   ) {
     // here we get the information that data is available
     // now we need to inform our listeners that something new has been discovered
-    log.trace("Method 'on_data_available' invoked.");
+    LOGGER.trace("Method 'on_data_available' invoked.");
     // trigger to read samples
     executorService.submit(this);
   }
@@ -110,6 +110,6 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   @Override
   public void run() {
     // override this method to read data
-    log.trace("Method 'run' invoked.");
+    LOGGER.trace("Method 'run' invoked.");
   }
 }

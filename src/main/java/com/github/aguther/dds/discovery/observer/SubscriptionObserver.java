@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SubscriptionObserver extends BuiltinTopicObserver {
 
-  private static final Logger log = LoggerFactory.getLogger(SubscriptionObserver.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionObserver.class);
 
   private final Map<InstanceHandle_t, SubscriptionBuiltinTopicData> sampleCache;
   private final List<SubscriptionObserverListener> listenerList;
@@ -173,10 +173,10 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           }
         }
       } catch (RETCODE_NO_DATA noData) {
-        log.trace("No more data available to read");
+        LOGGER.trace("No more data available to read");
         return;
       } catch (RETCODE_ERROR error) {
-        log.error("Error reading sample; {}", error);
+        LOGGER.error("Error reading sample; {}", error);
         return;
       }
     } while (true);
@@ -229,9 +229,9 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       // and therefore this error is expected when a listener is added but the related domain participant
       // is not yet enabled
     } catch (RETCODE_NO_DATA noData) {
-      log.trace("No more data available to read");
+      LOGGER.trace("No more data available to read");
     } catch (RETCODE_ERROR error) {
-      log.error("Error getting already read samples; {}", error);
+      LOGGER.error("Error getting already read samples; {}", error);
     } finally {
       dataReader.return_loan_untyped(sampleSeq, sampleInfoSeq);
     }
@@ -242,8 +242,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       SampleInfo sampleInfo,
       SubscriptionBuiltinTopicData sample
   ) {
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
           name,
           sampleInfo.instance_handle,
@@ -252,8 +252,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
           sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
       );
-    } else if (log.isDebugEnabled()) {
-      log.debug(
+    } else if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
           "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
           name,
           sampleInfo.instance_handle,

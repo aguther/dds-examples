@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 public class MutableTypeListener implements DataReaderListener {
 
-  private static final Logger log = LoggerFactory.getLogger(MutableTypeListener.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MutableTypeListener.class);
 
   private final DataReader dataReader;
   private final MutableType sample;
@@ -78,8 +78,8 @@ public class MutableTypeListener implements DataReaderListener {
       final DataReader dataReader,
       final RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", requestedDeadlineMissedStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", requestedDeadlineMissedStatus.toString());
     }
   }
 
@@ -88,8 +88,8 @@ public class MutableTypeListener implements DataReaderListener {
       final DataReader dataReader,
       final RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", requestedIncompatibleQosStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", requestedIncompatibleQosStatus.toString());
     }
   }
 
@@ -98,8 +98,8 @@ public class MutableTypeListener implements DataReaderListener {
       final DataReader dataReader,
       final SampleRejectedStatus sampleRejectedStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", sampleRejectedStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", sampleRejectedStatus.toString());
     }
   }
 
@@ -108,8 +108,8 @@ public class MutableTypeListener implements DataReaderListener {
       final DataReader dataReader,
       final LivelinessChangedStatus livelinessChangedStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", livelinessChangedStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", livelinessChangedStatus.toString());
     }
   }
 
@@ -124,18 +124,18 @@ public class MutableTypeListener implements DataReaderListener {
 
         // print info
         if (sampleInfo.valid_data) {
-          log.info(
+          LOGGER.info(
               "Received sample: key='{}', union='{}', array[0].number='{}'",
               sample.key,
               sample.unionType._d,
               sample.arrayType[0].number
           );
         } else {
-          log.warn("Invalid sample received.");
+          LOGGER.warn("Invalid sample received.");
         }
       } catch (RETCODE_NO_DATA ex) {
-        if (log.isTraceEnabled()) {
-          log.trace("{}", ex);
+        if (LOGGER.isTraceEnabled()) {
+          LOGGER.trace("{}", ex);
         }
         break;
       }
@@ -148,8 +148,8 @@ public class MutableTypeListener implements DataReaderListener {
       final DataReader dataReader,
       final SampleLostStatus sampleLostStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", sampleLostStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", sampleLostStatus.toString());
     }
   }
 
@@ -158,8 +158,8 @@ public class MutableTypeListener implements DataReaderListener {
       final DataReader dataReader,
       final SubscriptionMatchedStatus subscriptionMatchedStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", subscriptionMatchedStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", subscriptionMatchedStatus.toString());
     }
   }
 }

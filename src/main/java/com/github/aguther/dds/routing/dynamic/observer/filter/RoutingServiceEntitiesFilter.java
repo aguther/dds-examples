@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
 
   @Override
   public boolean ignorePublication(
@@ -93,8 +93,8 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
         && participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS);
 
     // log decision
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "instance='{}', ignore='{}' (filter='{}', service.kind='{}')",
           instanceHandle,
           result,

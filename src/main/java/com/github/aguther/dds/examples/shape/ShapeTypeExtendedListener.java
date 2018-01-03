@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 public class ShapeTypeExtendedListener implements DataReaderListener {
 
-  private static final Logger log = LoggerFactory.getLogger(ShapeTypeExtendedListener.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ShapeTypeExtendedListener.class);
 
   private final DataReader dataReader;
   private final ShapeTypeExtended sample;
@@ -78,8 +78,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
       final DataReader dataReader,
       final RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", requestedDeadlineMissedStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", requestedDeadlineMissedStatus.toString());
     }
   }
 
@@ -88,8 +88,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
       final DataReader dataReader,
       final RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", requestedIncompatibleQosStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", requestedIncompatibleQosStatus.toString());
     }
   }
 
@@ -98,8 +98,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
       final DataReader dataReader,
       final SampleRejectedStatus sampleRejectedStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", sampleRejectedStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", sampleRejectedStatus.toString());
     }
   }
 
@@ -108,8 +108,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
       final DataReader dataReader,
       final LivelinessChangedStatus livelinessChangedStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", livelinessChangedStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", livelinessChangedStatus.toString());
     }
   }
 
@@ -124,7 +124,7 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
 
         // print info
         if (sampleInfo.valid_data) {
-          log.info(
+          LOGGER.info(
               "Received sample (x='{}', y='{}', color='{}', size='{}', fill='{}', angle='{}')",
               sample.x,
               sample.y,
@@ -134,10 +134,10 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
               sample.angle
           );
         } else {
-          log.warn("Invalid sample received.");
+          LOGGER.warn("Invalid sample received.");
         }
       } catch (RETCODE_NO_DATA ex) {
-        log.trace("{}", ex);
+        LOGGER.trace("{}", ex);
         break;
       }
 
@@ -149,8 +149,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
       final DataReader dataReader,
       final SampleLostStatus sampleLostStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", sampleLostStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", sampleLostStatus.toString());
     }
   }
 
@@ -159,8 +159,8 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
       final DataReader dataReader,
       final SubscriptionMatchedStatus subscriptionMatchedStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", subscriptionMatchedStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", subscriptionMatchedStatus.toString());
     }
   }
 }

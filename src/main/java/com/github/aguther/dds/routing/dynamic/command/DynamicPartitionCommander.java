@@ -62,7 +62,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private static final int DEFAULT_REQUEST_TIMEOUT_SECONDS = 10;
   private static final int DEFAULT_RETRY_DELAY_SECONDS = 10;
 
-  private static final Logger log = LoggerFactory.getLogger(DynamicPartitionCommander.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPartitionCommander.class);
 
   private final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider;
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
@@ -175,7 +175,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   public void createSession(
       final Session session
   ) {
-    log.info(
+    LOGGER.info(
         "Create session: topic='{}', partition='{}'",
         session.getTopic(),
         session.getPartition()
@@ -215,7 +215,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   public void deleteSession(
       final Session session
   ) {
-    log.info(
+    LOGGER.info(
         "Delete session: topic='{}', partition='{}'",
         session.getTopic(),
         session.getPartition()
@@ -256,7 +256,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       final Session session,
       final TopicRoute topicRoute
   ) {
-    log.info(
+    LOGGER.info(
         "Create route: topic='{}', type='{}', partition='{}', direction='{}'",
         session.getTopic(),
         topicRoute.getType(),
@@ -300,7 +300,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       final Session session,
       final TopicRoute topicRoute
   ) {
-    log.info(
+    LOGGER.info(
         "Delete route: topic='{}', type='{}', partition='{}', direction='{}'",
         session.getTopic(),
         topicRoute.getType(),
@@ -522,7 +522,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   ) {
     // response received?
     if (commandResponse == null) {
-      log.error(
+      LOGGER.error(
           "No response received request='{}', {}; retry in '{} {}'",
           commandRequest.command._d,
           loggingFormat,
@@ -534,8 +534,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // success?
     if (commandResponse.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
-      if (log.isDebugEnabled()) {
-        log.debug(
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
             "Success request='{}', {}",
             commandRequest.command._d,
             loggingFormat
@@ -545,7 +545,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     }
 
     // failed
-    log.error(
+    LOGGER.error(
         "Failed request='{}', {}, reason='{}', message='{}'; retry in '{} {}'",
         commandRequest.command._d,
         loggingFormat,

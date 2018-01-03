@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class Discovery extends AbstractIdleService
     implements PublicationObserverListener, SubscriptionObserverListener {
 
-  private static final Logger log = LoggerFactory.getLogger(Discovery.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Discovery.class);
 
   private static Discovery serviceInstance;
 
@@ -67,24 +67,24 @@ public class Discovery extends AbstractIdleService
     serviceInstance.awaitTerminated();
 
     // service terminated
-    log.info("Service terminated");
+    LOGGER.info("Service terminated");
   }
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received");
+      LOGGER.info("Shutdown signal received");
       if (serviceInstance != null) {
         serviceInstance.stopAsync();
         serviceInstance.awaitTerminated();
       }
-      log.info("Shutdown signal finished");
+      LOGGER.info("Shutdown signal finished");
     }));
   }
 
   @Override
   protected void startUp() {
     // log service start
-    log.info("Service is starting");
+    LOGGER.info("Service is starting");
 
     // do not auto-enable entities to ensure we do not miss any discovery data
     AutoEnableCreatedEntitiesHelper.disable();
@@ -108,13 +108,13 @@ public class Discovery extends AbstractIdleService
     domainParticipant.enable();
 
     // log service start
-    log.info("Service start finished");
+    LOGGER.info("Service start finished");
   }
 
   @Override
   protected void shutDown() {
     // log service start
-    log.info("Service is shutting down");
+    LOGGER.info("Service is shutting down");
 
     // shutdown observers
     if (publicationObserver != null) {
@@ -132,7 +132,7 @@ public class Discovery extends AbstractIdleService
     DomainParticipantFactory.finalize_instance();
 
     // log service start
-    log.info("Service shutdown finished");
+    LOGGER.info("Service shutdown finished");
   }
 
   private String convertInstanceHandleToString(
@@ -174,8 +174,8 @@ public class Discovery extends AbstractIdleService
       final InstanceHandle_t instanceHandle,
       final PublicationBuiltinTopicData data
   ) {
-    if (log.isInfoEnabled()) {
-      log.info(
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info(
           "Discovered Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
           convertInstanceHandleToString(instanceHandle),
           data.topic_name,
@@ -191,8 +191,8 @@ public class Discovery extends AbstractIdleService
       final InstanceHandle_t instanceHandle,
       final PublicationBuiltinTopicData data
   ) {
-    if (log.isInfoEnabled()) {
-      log.info(
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info(
           "Lost Publication       : instance='{}', topic='{}', type='{}', partitions='{}'",
           convertInstanceHandleToString(instanceHandle),
           data.topic_name,
@@ -208,8 +208,8 @@ public class Discovery extends AbstractIdleService
       final InstanceHandle_t instanceHandle,
       final SubscriptionBuiltinTopicData data
   ) {
-    if (log.isInfoEnabled()) {
-      log.info(
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info(
           "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
           convertInstanceHandleToString(instanceHandle),
           data.topic_name,
@@ -225,8 +225,8 @@ public class Discovery extends AbstractIdleService
       final InstanceHandle_t instanceHandle,
       final SubscriptionBuiltinTopicData data
   ) {
-    if (log.isInfoEnabled()) {
-      log.info(
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info(
           "Lost Subscription      : instance='{}', topic='{}', type='{}', partitions='{}'",
           convertInstanceHandleToString(instanceHandle),
           data.topic_name,

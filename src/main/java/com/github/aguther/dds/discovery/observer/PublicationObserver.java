@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PublicationObserver extends BuiltinTopicObserver implements Runnable {
 
-  private static final Logger log = LoggerFactory.getLogger(PublicationObserver.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PublicationObserver.class);
 
   private final Map<InstanceHandle_t, PublicationBuiltinTopicData> sampleCache;
   private final List<PublicationObserverListener> listenerList;
@@ -173,10 +173,10 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
           }
         }
       } catch (RETCODE_NO_DATA noData) {
-        log.trace("No more data available to read");
+        LOGGER.trace("No more data available to read");
         return;
       } catch (RETCODE_ERROR error) {
-        log.error("Error reading sample; {}", error);
+        LOGGER.error("Error reading sample; {}", error);
         return;
       }
     } while (true);
@@ -229,9 +229,9 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       // and therefore this error is expected when a listener is added but the related domain participant
       // is not yet enabled
     } catch (RETCODE_NO_DATA noData) {
-      log.trace("No more data available to read");
+      LOGGER.trace("No more data available to read");
     } catch (RETCODE_ERROR error) {
-      log.error("Error getting already read samples; {}", error);
+      LOGGER.error("Error getting already read samples; {}", error);
     } finally {
       dataReader.return_loan_untyped(sampleSeq, sampleInfoSeq);
     }
@@ -242,8 +242,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       SampleInfo sampleInfo,
       PublicationBuiltinTopicData sample
   ) {
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
           name,
           sampleInfo.instance_handle,
@@ -252,8 +252,8 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
           sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
           sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
       );
-    } else if (log.isDebugEnabled()) {
-      log.debug(
+    } else if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
           "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
           name,
           sampleInfo.instance_handle,

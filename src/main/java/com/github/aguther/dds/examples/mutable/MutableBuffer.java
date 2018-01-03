@@ -31,15 +31,15 @@ import org.slf4j.LoggerFactory;
 
 public class MutableBuffer {
 
-  private static final Logger log = LoggerFactory.getLogger(MutableBuffer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MutableBuffer.class);
 
   public static void main(
       final String[] args
   ) {
 
     // create first type
-    if (log.isInfoEnabled()) {
-      log.info("Sample1 v1 -> v2");
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Sample1 v1 -> v2");
     }
     final idl.v1.MutableType sample1 = new idl.v1.MutableType();
     sample1.key = 1;
@@ -67,8 +67,8 @@ public class MutableBuffer {
     );
 
     // create second type
-    if (log.isInfoEnabled()) {
-      log.info("Sample2 v1 -> v2");
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Sample2 v1 -> v2");
     }
     final idl.v1.MutableType sample2 = new idl.v1.MutableType();
     sample2.key = 2;
@@ -91,8 +91,8 @@ public class MutableBuffer {
   ) {
 
     // print sample
-    if (log.isInfoEnabled()) {
-      log.info("Input{}", inputSample.toString());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Input{}", inputSample.toString());
     }
 
     // serialize input to cdr buffer
@@ -109,8 +109,8 @@ public class MutableBuffer {
     );
 
     // print output
-    if (log.isInfoEnabled()) {
-      log.info("Output{}", outputSample.toString());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Output{}", outputSample.toString());
     }
   }
 }

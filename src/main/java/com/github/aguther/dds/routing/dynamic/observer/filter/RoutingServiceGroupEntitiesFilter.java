@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(RoutingServiceGroupEntitiesFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingServiceGroupEntitiesFilter.class);
 
   private final String groupName;
 
@@ -108,8 +108,8 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
       boolean result = (property != null && (property.value.equals(groupName)));
 
       // log decision
-      if (log.isTraceEnabled()) {
-        log.trace(
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace(
             "instance='{}', ignore='{}' (filter='{}', group_name='{}')",
             instanceHandle,
             result,
@@ -123,7 +123,7 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
     }
 
     // log decision
-    log.trace(
+    LOGGER.trace(
         "instance='{}', ignore='{}' (participant data not found)",
         instanceHandle,
         false

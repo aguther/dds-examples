@@ -39,15 +39,15 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicRoutingAdapter implements Adapter {
 
-  private static final Logger log = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
 
   public DynamicRoutingAdapter(
       final Properties properties
   ) {
     // do nothing but logging of received properties
-    if (log.isDebugEnabled()) {
+    if (LOGGER.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
-        log.debug(
+        LOGGER.debug(
             "Property key='{}', value='{}'",
             key,
             properties.getProperty(key)

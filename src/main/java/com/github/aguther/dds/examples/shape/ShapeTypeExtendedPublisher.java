@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 
 public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener {
 
-  private static final Logger log = LoggerFactory.getLogger(ShapeTypeExtendedPublisher.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ShapeTypeExtendedPublisher.class);
 
   private final DataWriter dataWriter;
   private final ShapeAttributes shapeAttributes;
@@ -108,7 +108,7 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
   @Override
   public void run() {
-    log.info("Start sending ...");
+    LOGGER.info("Start sending ...");
 
     dataWriter.set_listener(this, StatusKind.STATUS_MASK_ALL);
 
@@ -118,7 +118,7 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
         ShapeTypeExtended sample = generateSample();
 
         // log number of sample
-        log.info(
+        LOGGER.info(
             "Writing sample (x='{}', y='{}', color='{}', size='{}', fill='{}', angle='{}')",
             sample.x,
             sample.y,
@@ -138,16 +138,16 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
       } catch (RETCODE_ERROR e) {
         // log the problem and sTerminate the application
-        log.error("Failed to write sample.", e);
+        LOGGER.error("Failed to write sample.", e);
       } catch (InterruptedException e) {
-        log.error("Failed to wait.", e);
+        LOGGER.error("Failed to wait.", e);
         Thread.currentThread().interrupt();
       }
     }
 
     dataWriter.set_listener(null, StatusKind.STATUS_MASK_NONE);
 
-    log.info("... done.");
+    LOGGER.info("... done.");
   }
 
   private ShapeTypeExtended generateSample() {
@@ -185,8 +185,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
     sample.angle = shapeAttributes.getAngle();
 
     // print sample
-    if (log.isDebugEnabled()) {
-      log.debug("Created sample: '{}'", sample.toString().replace("\n", " "));
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Created sample: '{}'", sample.toString().replace("\n", " "));
     }
 
     // return the result
@@ -198,8 +198,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final OfferedDeadlineMissedStatus offeredDeadlineMissedStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", offeredDeadlineMissedStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", offeredDeadlineMissedStatus.toString());
     }
   }
 
@@ -208,8 +208,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final OfferedIncompatibleQosStatus offeredIncompatibleQosStatus
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", offeredIncompatibleQosStatus.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", offeredIncompatibleQosStatus.toString());
     }
   }
 
@@ -218,8 +218,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final LivelinessLostStatus livelinessLostStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", livelinessLostStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", livelinessLostStatus.toString());
     }
   }
 
@@ -228,8 +228,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final PublicationMatchedStatus publicationMatchedStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", publicationMatchedStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", publicationMatchedStatus.toString());
     }
   }
 
@@ -238,8 +238,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final ReliableWriterCacheChangedStatus reliableWriterCacheChangedStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", reliableWriterCacheChangedStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", reliableWriterCacheChangedStatus.toString());
     }
   }
 
@@ -248,8 +248,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final ReliableReaderActivityChangedStatus reliableReaderActivityChangedStatus
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{}", reliableReaderActivityChangedStatus.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{}", reliableReaderActivityChangedStatus.toString());
     }
   }
 
@@ -259,8 +259,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final InstanceHandle_t instanceHandle,
       final Locator_t locator
   ) {
-    if (log.isInfoEnabled()) {
-      log.info("{}; {}", instanceHandle.toString(), locator.toString());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("{}; {}", instanceHandle.toString(), locator.toString());
     }
   }
 
@@ -278,8 +278,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final Object o,
       final Cookie_t cookie
   ) {
-    if (log.isDebugEnabled()) {
-      log.debug("{} {}", o.toString(), cookie.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{} {}", o.toString(), cookie.toString());
     }
   }
 
@@ -288,8 +288,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final Cookie_t cookie
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", cookie.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", cookie.toString());
     }
   }
 
@@ -298,8 +298,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final InstanceHandle_t instanceHandle
   ) {
-    if (log.isWarnEnabled()) {
-      log.warn("{}", instanceHandle.toString());
+    if (LOGGER.isWarnEnabled()) {
+      LOGGER.warn("{}", instanceHandle.toString());
     }
   }
 
@@ -308,8 +308,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final AcknowledgmentInfo acknowledgmentInfo
   ) {
-    if (log.isInfoEnabled()) {
-      log.info("{}", acknowledgmentInfo.toString());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("{}", acknowledgmentInfo.toString());
     }
   }
 
@@ -318,8 +318,8 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final DataWriter dataWriter,
       final ServiceRequestAcceptedStatus serviceRequestAcceptedStatus
   ) {
-    if (log.isInfoEnabled()) {
-      log.info("{}", serviceRequestAcceptedStatus.toString());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("{}", serviceRequestAcceptedStatus.toString());
     }
   }
 }

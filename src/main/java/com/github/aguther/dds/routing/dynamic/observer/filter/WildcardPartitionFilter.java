@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(WildcardPartitionFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WildcardPartitionFilter.class);
 
   @Override
   public boolean ignorePublication(
@@ -66,8 +66,8 @@ public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
     boolean result = partition.contains("*");
 
     // log decision
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
           "topic='{}', partition='{}', ignore='{}' (filter='{}')",
           topicName,
           partition,

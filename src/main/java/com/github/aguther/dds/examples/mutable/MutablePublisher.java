@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class MutablePublisher extends AbstractExecutionThreadService {
 
-  private static final Logger log = LoggerFactory.getLogger(MutablePublisher.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MutablePublisher.class);
 
   private static MutablePublisher serviceInstance;
 
@@ -58,24 +58,24 @@ public class MutablePublisher extends AbstractExecutionThreadService {
     serviceInstance.awaitTerminated();
 
     // service terminated
-    log.info("Service terminated");
+    LOGGER.info("Service terminated");
   }
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      log.info("Shutdown signal received");
+      LOGGER.info("Shutdown signal received");
       if (serviceInstance != null) {
         serviceInstance.stopAsync();
         serviceInstance.awaitTerminated();
       }
-      log.info("Shutdown signal finished");
+      LOGGER.info("Shutdown signal finished");
     }));
   }
 
   @Override
   protected void startUp() throws Exception {
     // log service start
-    log.info("Service is starting");
+    LOGGER.info("Service is starting");
 
     // startup DDS
     startupDds();
@@ -84,7 +84,7 @@ public class MutablePublisher extends AbstractExecutionThreadService {
     startPublish();
 
     // log service start
-    log.info("Service start finished");
+    LOGGER.info("Service start finished");
   }
 
   @Override
@@ -95,7 +95,7 @@ public class MutablePublisher extends AbstractExecutionThreadService {
   @Override
   protected void shutDown() throws Exception {
     // log service start
-    log.info("Service is shutting down");
+    LOGGER.info("Service is shutting down");
 
     // stop publish
     stopPublish();
@@ -104,7 +104,7 @@ public class MutablePublisher extends AbstractExecutionThreadService {
     shutdownDds();
 
     // log service start
-    log.info("Service shutdown finished");
+    LOGGER.info("Service shutdown finished");
   }
 
   private void startupDds() {
@@ -112,7 +112,7 @@ public class MutablePublisher extends AbstractExecutionThreadService {
     try {
       Slf4jDdsLogger.createRegisterLogger();
     } catch (IOException e) {
-      log.error("Failed to create and register DDS logging device.", e);
+      LOGGER.error("Failed to create and register DDS logging device.", e);
       return;
     }
 

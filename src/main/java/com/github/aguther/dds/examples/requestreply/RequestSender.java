@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 public class RequestSender implements Runnable {
 
-  private static final Logger log = LoggerFactory.getLogger(RequestSender.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RequestSender.class);
 
   private final Requester<RequestType, ReplyType> requester;
   private final int replyWaitTime;
@@ -68,7 +68,7 @@ public class RequestSender implements Runnable {
 
   @Override
   public void run() {
-    log.info("Start sending ...");
+    LOGGER.info("Start sending ...");
 
     while (!shouldTerminate) {
       try {
@@ -78,7 +78,7 @@ public class RequestSender implements Runnable {
         request.request = RequestKind.START;
 
         // log request
-        log.info(
+        LOGGER.info(
             "Writing request (id='{}', request='{}')",
             request.id,
             request.request
@@ -105,16 +105,16 @@ public class RequestSender implements Runnable {
             // get response data
             ReplyType reply = sampleReply.getData();
             // log info
-            log.info(
+            LOGGER.info(
                 "Received reply (result='{}', description='{}')",
                 reply.result,
                 reply.description
             );
           } else {
-            log.warn("Invalid reply received.");
+            LOGGER.warn("Invalid reply received.");
           }
         } else {
-          log.warn("No reply received.");
+          LOGGER.warn("No reply received.");
         }
 
         // wait some time
@@ -124,13 +124,13 @@ public class RequestSender implements Runnable {
 
       } catch (RETCODE_ERROR e) {
         // log the problem and sTerminate the application
-        log.error("Failed to write request.", e);
+        LOGGER.error("Failed to write request.", e);
       } catch (InterruptedException e) {
-        log.error("Failed to wait.", e);
+        LOGGER.error("Failed to wait.", e);
         Thread.currentThread().interrupt();
       }
     }
 
-    log.info("... done.");
+    LOGGER.info("... done.");
   }
 }

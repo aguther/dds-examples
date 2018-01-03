@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicRoutingConnection extends EmptyConnection implements DiscoveryConnection, Closeable {
 
-  private static final Logger log = LoggerFactory.getLogger(DynamicRoutingConnection.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingConnection.class);
 
   private DynamicRoutingManager dynamicRoutingManager;
 
@@ -52,11 +52,11 @@ public class DynamicRoutingConnection extends EmptyConnection implements Discove
       final String routingServiceGroupName,
       final Properties properties
   ) {
-    log.info("Creating connection");
+    LOGGER.info("Creating connection");
 
-    if (log.isDebugEnabled()) {
+    if (LOGGER.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
-        log.info(
+        LOGGER.info(
             "key='{}', value='{}'",
             key,
             properties.getProperty(key)
@@ -71,18 +71,18 @@ public class DynamicRoutingConnection extends EmptyConnection implements Discove
         properties
     );
 
-    log.info("Connection created");
+    LOGGER.info("Connection created");
   }
 
   @Override
   public void close() {
-    log.info("Closing connection");
+    LOGGER.info("Closing connection");
 
     if (dynamicRoutingManager != null) {
       dynamicRoutingManager.close();
     }
 
-    log.info("Connection closed");
+    LOGGER.info("Connection closed");
   }
 
   @Override

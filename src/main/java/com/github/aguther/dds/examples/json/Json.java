@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class Json {
 
-  private static final Logger log = LoggerFactory.getLogger(Json.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Json.class);
 
   private static final Gson gson = new GsonBuilder()
       .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
@@ -48,8 +48,8 @@ public class Json {
   ) {
 
     // convert v1 type to JSON and back
-    if (log.isInfoEnabled()) {
-      log.info("Converting v1 to json and back to v1");
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Converting v1 to json and back to v1");
     }
     convertToJsonAndBack(
         getMutableTypeV1(),
@@ -58,8 +58,8 @@ public class Json {
     );
 
     // convert v2 type to JSON and back
-    if (log.isInfoEnabled()) {
-      log.info("Converting v2 to json and back to v2");
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Converting v2 to json and back to v2");
     }
     convertToJsonAndBack(
         getMutableTypeV2(),
@@ -68,8 +68,8 @@ public class Json {
     );
 
     // convert v1 to v2 via JSON
-    if (log.isInfoEnabled()) {
-      log.info("Converting v1 to json and back to v2");
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Converting v1 to json and back to v2");
     }
     convertToJsonAndBack(
         getMutableTypeV1(),
@@ -78,8 +78,8 @@ public class Json {
     );
 
     // convert v2 to v1 via JSON
-    if (log.isInfoEnabled()) {
-      log.info("Converting v2 to json and back to v1");
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Converting v2 to json and back to v1");
     }
     convertToJsonAndBack(
         getMutableTypeV2(),
@@ -96,32 +96,32 @@ public class Json {
   ) {
 
     // print sample
-    if (log.isInfoEnabled()) {
-      log.info("Input{}", input.toString());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Input{}", input.toString());
     }
 
     // serialize input to json
     String json = gson.toJson(input);
 
     // print json
-    if (log.isInfoEnabled()) {
-      log.info("JSON:\n{}", json);
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("JSON:\n{}", json);
     }
 
     // deserialize from json
     O output = (O) gson.fromJson(json, outputClass);
 
     // print output
-    if (log.isInfoEnabled()) {
-      log.info("Output{}", output.toString());
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Output{}", output.toString());
     }
 
     // if requested, compare input and output
     if (doComparison) {
       if (input.equals(output)) {
-        log.info("Samples are equal!");
+        LOGGER.info("Samples are equal!");
       } else {
-        log.error("Samples are NOT equal!");
+        LOGGER.error("Samples are NOT equal!");
       }
     }
   }

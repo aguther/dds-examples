@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class ReplySender implements SimpleReplierListener<RequestType, ReplyType> {
 
-  private static final Logger log = LoggerFactory.getLogger(RequestSender.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RequestSender.class);
 
   ReplySender() {
   }
@@ -45,13 +45,13 @@ public class ReplySender implements SimpleReplierListener<RequestType, ReplyType
   ) {
     // check if request is valid
     if (!sample.getInfo().valid_data) {
-      log.error("Received request was not valid!");
+      LOGGER.error("Received request was not valid!");
       return null;
     }
 
     // log request
     RequestType request = sample.getData();
-    log.info(
+    LOGGER.info(
         "Received request (id='{}', request='{}')",
         request.id,
         request.request
@@ -63,7 +63,7 @@ public class ReplySender implements SimpleReplierListener<RequestType, ReplyType
     reply.description = String.format("%d", request.id);
 
     // log reply
-    log.info(
+    LOGGER.info(
         "Writing reply (result='{}', description='{}')",
         reply.result,
         reply.description
