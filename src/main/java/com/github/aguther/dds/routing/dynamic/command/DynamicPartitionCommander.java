@@ -523,9 +523,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     // response received?
     if (commandResponse == null) {
       log.error(
-          "No response received request='{}', {}",
+          "No response received request='{}', {}; retry in '{} {}'",
           commandRequest.command._d,
-          loggingFormat
+          loggingFormat,
+          retryDelay,
+          retryDelayTimeUnit
       );
       return false;
     }
@@ -544,11 +546,13 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // failed
     log.error(
-        "Failed request='{}', {}, reason='{}', message='{}'",
+        "Failed request='{}', {}, reason='{}', message='{}'; retry in '{} {}'",
         commandRequest.command._d,
         loggingFormat,
         commandResponse.kind,
-        commandResponse.message
+        commandResponse.message,
+        retryDelay,
+        retryDelayTimeUnit
     );
     return false;
   }

@@ -143,6 +143,9 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
 
           // call listeners
           synchronized (listenerList) {
+            // log information
+            logListenerInvocation("subscriptionDiscovered", sampleInfo, sample);
+            // iterate over listeners and invoke them
             for (SubscriptionObserverListener listener : listenerList) {
               listener.subscriptionDiscovered(
                   domainParticipant,
@@ -157,6 +160,9 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
 
           // call listeners
           synchronized (listenerList) {
+            // log information
+            logListenerInvocation("subscriptionLost", sampleInfo, sample);
+            // iterate over listeners and invoke them
             for (SubscriptionObserverListener listener : listenerList) {
               listener.subscriptionLost(
                   domainParticipant,
@@ -228,6 +234,32 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       log.error("Error getting already read samples; {}", error);
     } finally {
       dataReader.return_loan_untyped(sampleSeq, sampleInfoSeq);
+    }
+  }
+
+  private void logListenerInvocation(
+      String name,
+      SampleInfo sampleInfo,
+      SubscriptionBuiltinTopicData sample
+  ) {
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
+          name,
+          sampleInfo.instance_handle,
+          sample.topic_name,
+          sample.type_name,
+          sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
+          sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
+      );
+    } else if (log.isDebugEnabled()) {
+      log.debug(
+          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
+          name,
+          sampleInfo.instance_handle,
+          sample.topic_name,
+          sample.type_name
+      );
     }
   }
 }

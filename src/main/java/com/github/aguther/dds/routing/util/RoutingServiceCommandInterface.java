@@ -246,15 +246,12 @@ public class RoutingServiceCommandInterface implements Closeable {
     // trace logs
     if (log.isTraceEnabled()) {
       log.trace(
-          "CommandRequest {}",
-          commandRequest.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
-      );
-    }
-    // debug logs
-    if (log.isDebugEnabled()) {
-      log.debug(
           "CommandRequest.command.entity_desc.xml_url.content.length()='{}'",
           commandRequest.command.entity_desc.xml_url.content.length()
+      );
+      log.trace(
+          "CommandRequest {}",
+          commandRequest.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
       );
     }
   }

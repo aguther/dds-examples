@@ -29,11 +29,15 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filter to ignore all RTI topics like routing service administration.
  */
 public class RtiTopicFilter implements DynamicPartitionObserverFilter {
+
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
 
   @Override
   public boolean ignorePublication(
@@ -41,7 +45,10 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
       final InstanceHandle_t instanceHandle,
       final PublicationBuiltinTopicData data
   ) {
-    return isRtiTopic(data.topic_name);
+    return isRtiTopic(
+        instanceHandle,
+        data.topic_name
+    );
   }
 
   @Override
@@ -50,7 +57,10 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
       final InstanceHandle_t instanceHandle,
       final SubscriptionBuiltinTopicData data
   ) {
-    return isRtiTopic(data.topic_name);
+    return isRtiTopic(
+        instanceHandle,
+        data.topic_name
+    );
   }
 
   @Override
@@ -62,9 +72,24 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
   }
 
   private boolean isRtiTopic(
+      final InstanceHandle_t instanceHandle,
       final String topicName
   ) {
     // ignore all rti topics
-    return topicName.startsWith("rti");
+    boolean result = topicName.startsWith("rti");
+
+    // log decision
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "instance='{}', ignore='{}' (filter='{}', topic='{}')",
+          instanceHandle,
+          result,
+          "startsWith(\"rti\")",
+          topicName
+      );
+    }
+
+    // return result
+    return result;
   }
 }

@@ -34,11 +34,15 @@ import com.rti.dds.infrastructure.Property_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filter to ignore entities that belong to routing services of a given group.
  */
 public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserverFilter {
+
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
 
   private final String groupName;
 
@@ -54,7 +58,11 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
       final InstanceHandle_t instanceHandle,
       final PublicationBuiltinTopicData data
   ) {
-    return isRoutingServiceGroupEntity(domainParticipant, data.participant_key);
+    return isRoutingServiceGroupEntity(
+        domainParticipant,
+        instanceHandle,
+        data.participant_key
+    );
   }
 
   @Override
@@ -63,7 +71,11 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
       final InstanceHandle_t instanceHandle,
       final SubscriptionBuiltinTopicData data
   ) {
-    return isRoutingServiceGroupEntity(domainParticipant, data.participant_key);
+    return isRoutingServiceGroupEntity(
+        domainParticipant,
+        instanceHandle,
+        data.participant_key
+    );
   }
 
   @Override
@@ -76,6 +88,7 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
 
   private boolean isRoutingServiceGroupEntity(
       final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
       final BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
@@ -92,8 +105,29 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
       );
 
       // when participant is part of routing service group ignore it
-      return (property != null && (property.value.equals(groupName)));
+      boolean result = (property != null && (property.value.equals(groupName)));
+
+      // log decision
+      if (log.isTraceEnabled()) {
+        log.trace(
+            "instance='{}', ignore='{}' (filter='{}', group_name='{}')",
+            instanceHandle,
+            result,
+            groupName,
+            property != null ? property.value : "none"
+        );
+      }
+
+      // return result
+      return result;
     }
+
+    // log decision
+    log.trace(
+        "instance='{}', ignore='{}' (participant data not found)",
+        instanceHandle,
+        false
+    );
 
     // do not ignore
     return false;

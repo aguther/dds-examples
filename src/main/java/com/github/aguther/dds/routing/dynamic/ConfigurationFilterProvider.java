@@ -233,7 +233,20 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
       final PublicationBuiltinTopicData data
   ) {
     checkNotNull(data);
-    return (getMatchingConfiguration(data.topic_name) == null);
+
+    boolean result = (getMatchingConfiguration(data.topic_name) == null);
+
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "instance='{}', ignore='{}' (configuration for topic '{}' {})",
+          instanceHandle,
+          result,
+          data.topic_name,
+          result ? "not found" : "found"
+      );
+    }
+
+    return result;
   }
 
   @Override
@@ -243,7 +256,20 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
       final SubscriptionBuiltinTopicData data
   ) {
     checkNotNull(data);
-    return (getMatchingConfiguration(data.topic_name) == null);
+
+    boolean result = (getMatchingConfiguration(data.topic_name) == null);
+
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "instance='{}', ignore='{}' (configuration for topic '{}' {})",
+          instanceHandle,
+          result,
+          data.topic_name,
+          result ? "not found" : "found"
+      );
+    }
+
+    return result;
   }
 
   @Override
@@ -256,16 +282,47 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
 
     // if we do not find a matching configuration we should ignore the partition
     if (configuration == null) {
+      log.trace(
+          "topic='{}', partition='{}', ignore='{}' (configuration not found)",
+          topicName,
+          partition,
+          true
+      );
       return true;
     }
 
-    // when a deny filter is available check if it matches
-    return (
-        configuration.getDenyPartitionNameFilter() != null
-            && configuration.getDenyPartitionNameFilter().matcher(partition).matches())
-        || (
-        configuration.getAllowPartitionNameFilter() != null
-            && !configuration.getAllowPartitionNameFilter().matcher(partition).matches());
+    // check deny filter
+    if (configuration.getDenyPartitionNameFilter() != null
+        && configuration.getDenyPartitionNameFilter().matcher(partition).matches()) {
+      log.trace(
+          "topic='{}', partition='{}', ignore='{}' (deny partition filter matched)",
+          topicName,
+          partition,
+          true
+      );
+      return true;
+    }
+
+    // check allow filter
+    if (configuration.getAllowPartitionNameFilter() != null
+        && !configuration.getAllowPartitionNameFilter().matcher(partition).matches()) {
+      log.trace(
+          "topic='{}', partition='{}', ignore='{}' (no match with allow partition filter)",
+          topicName,
+          partition,
+          true
+      );
+      return true;
+    }
+
+    // do not ignore
+    log.trace(
+        "topic='{}', partition='{}', ignore='{}'",
+        topicName,
+        partition,
+        false
+    );
+    return false;
   }
 
   /**

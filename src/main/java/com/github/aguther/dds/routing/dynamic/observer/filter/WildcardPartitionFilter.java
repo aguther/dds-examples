@@ -29,11 +29,15 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filter to ignore all wildcard partitions.
  */
 public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
+
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
 
   @Override
   public boolean ignorePublication(
@@ -58,6 +62,22 @@ public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
       final String topicName,
       final String partition
   ) {
-    return (partition.contains("*"));
+    // check if partition contains asterisk
+    boolean result = partition.contains("*");
+
+    // log decision
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "topic='{}', partition='{}', ignore='{}' (filter='{}')",
+          topicName,
+          partition,
+          result,
+          "contains(\"*\")",
+          partition
+      );
+    }
+
+    // return result
+    return result;
   }
 }

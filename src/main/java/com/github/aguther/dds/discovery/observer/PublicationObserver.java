@@ -143,6 +143,9 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
 
           // call listeners
           synchronized (listenerList) {
+            // log information
+            logListenerInvocation("publicationDiscovered", sampleInfo, sample);
+            // iterate over listeners and invoke them
             for (PublicationObserverListener listener : listenerList) {
               listener.publicationDiscovered(
                   domainParticipant,
@@ -157,6 +160,9 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
 
           // call listeners
           synchronized (listenerList) {
+            // log information
+            logListenerInvocation("publicationLost", sampleInfo, sample);
+            // iterate over listeners and invoke them
             for (PublicationObserverListener listener : listenerList) {
               listener.publicationLost(
                   domainParticipant,
@@ -228,6 +234,32 @@ public class PublicationObserver extends BuiltinTopicObserver implements Runnabl
       log.error("Error getting already read samples; {}", error);
     } finally {
       dataReader.return_loan_untyped(sampleSeq, sampleInfoSeq);
+    }
+  }
+
+  private void logListenerInvocation(
+      String name,
+      SampleInfo sampleInfo,
+      PublicationBuiltinTopicData sample
+  ) {
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
+          name,
+          sampleInfo.instance_handle,
+          sample.topic_name,
+          sample.type_name,
+          sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
+          sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
+      );
+    } else if (log.isDebugEnabled()) {
+      log.debug(
+          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
+          name,
+          sampleInfo.instance_handle,
+          sample.topic_name,
+          sample.type_name
+      );
     }
   }
 }

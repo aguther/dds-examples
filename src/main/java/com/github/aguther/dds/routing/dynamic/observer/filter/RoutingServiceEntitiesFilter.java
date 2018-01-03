@@ -33,11 +33,15 @@ import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filter to ignore entities that belong to any routing service.
  */
 public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
+
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
 
   @Override
   public boolean ignorePublication(
@@ -45,7 +49,11 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
       final InstanceHandle_t instanceHandle,
       final PublicationBuiltinTopicData data
   ) {
-    return isRoutingServiceEntity(domainParticipant, data.participant_key);
+    return isRoutingServiceEntity(
+        domainParticipant,
+        instanceHandle,
+        data.participant_key
+    );
   }
 
   @Override
@@ -54,7 +62,11 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
       final InstanceHandle_t instanceHandle,
       final SubscriptionBuiltinTopicData data
   ) {
-    return isRoutingServiceEntity(domainParticipant, data.participant_key);
+    return isRoutingServiceEntity(
+        domainParticipant,
+        instanceHandle,
+        data.participant_key
+    );
   }
 
   @Override
@@ -67,6 +79,7 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
 
   private boolean isRoutingServiceEntity(
       final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
       final BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
@@ -76,7 +89,21 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
     );
 
     // check if participant belongs to a routing service
-    return (participantData != null
+    boolean result = (participantData != null
         && participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS);
+
+    // log decision
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "instance='{}', ignore='{}' (filter='{}', service.kind='{}')",
+          instanceHandle,
+          result,
+          ServiceQosPolicyKind.ROUTING_SERVICE_QOS.toString(),
+          participantData != null ? participantData.service.kind.toString() : "unknown"
+      );
+    }
+
+    // return result
+    return result;
   }
 }
