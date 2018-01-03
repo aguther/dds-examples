@@ -48,8 +48,8 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
 
   private final ExecutorService executorService;
 
-  final DomainParticipant domainParticipant;
-  final DataReader dataReader;
+  protected final DomainParticipant domainParticipant;
+  protected final DataReader dataReader;
 
   /**
    * Instantiates a new Builtin topic observer.

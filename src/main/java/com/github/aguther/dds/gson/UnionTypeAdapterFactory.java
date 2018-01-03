@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unchecked")
 public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
-  private class UnionMemberInfo {
+  private static class UnionMemberInfo {
 
     private final String fieldName;
     private final TypeAdapter<?> typeAdapter;

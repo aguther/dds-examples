@@ -26,7 +26,6 @@ package com.github.aguther.dds.routing.adapter.dynamic;
 
 import com.github.aguther.dds.routing.adapter.empty.EmptyConnection;
 import com.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
-import com.rti.routingservice.adapter.DiscoveryConnection;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.io.Closeable;
 import java.util.Properties;
@@ -41,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * routing service. Whenever a topic is discovered and a appropriate configuration is found, a session and route is
  * created accordingly. The same applies vice versa on loosing discovery.
  */
-public class DynamicRoutingConnection extends EmptyConnection implements DiscoveryConnection, Closeable {
+public class DynamicRoutingConnection extends EmptyConnection implements Closeable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingConnection.class);
 

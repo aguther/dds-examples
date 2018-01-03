@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class implements an observer for publications.
  */
-public class PublicationObserver extends BuiltinTopicObserver implements Runnable {
+public class PublicationObserver extends BuiltinTopicObserver {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PublicationObserver.class);
 
