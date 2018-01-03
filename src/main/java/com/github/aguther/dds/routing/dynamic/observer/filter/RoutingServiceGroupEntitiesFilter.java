@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
+  private static final Logger log = LoggerFactory.getLogger(RoutingServiceGroupEntitiesFilter.class);
 
   private final String groupName;
 

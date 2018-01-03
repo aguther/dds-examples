@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
+  private static final Logger log = LoggerFactory.getLogger(WildcardPartitionFilter.class);
 
   @Override
   public boolean ignorePublication(
