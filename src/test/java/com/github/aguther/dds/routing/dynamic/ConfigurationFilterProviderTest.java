@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
+import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import java.util.Map;
@@ -145,14 +146,14 @@ public class ConfigurationFilterProviderTest {
     PublicationBuiltinTopicData publicationBuiltinTopicData = new PublicationBuiltinTopicData();
 
     publicationBuiltinTopicData.topic_name = "Square";
-    assertFalse(configurationFilterProvider.ignorePublication(null, null, publicationBuiltinTopicData));
+    assertFalse(configurationFilterProvider.ignorePublication(null, InstanceHandle_t.HANDLE_NIL, publicationBuiltinTopicData));
     publicationBuiltinTopicData.topic_name = "Triangle";
-    assertFalse(configurationFilterProvider.ignorePublication(null, null, publicationBuiltinTopicData));
+    assertFalse(configurationFilterProvider.ignorePublication(null, InstanceHandle_t.HANDLE_NIL, publicationBuiltinTopicData));
 
     publicationBuiltinTopicData.topic_name = "Circle";
-    assertTrue(configurationFilterProvider.ignorePublication(null, null, publicationBuiltinTopicData));
+    assertTrue(configurationFilterProvider.ignorePublication(null, InstanceHandle_t.HANDLE_NIL, publicationBuiltinTopicData));
     publicationBuiltinTopicData.topic_name = "OtherTopic";
-    assertTrue(configurationFilterProvider.ignorePublication(null, null, publicationBuiltinTopicData));
+    assertTrue(configurationFilterProvider.ignorePublication(null, InstanceHandle_t.HANDLE_NIL, publicationBuiltinTopicData));
   }
 
   @Test
@@ -160,12 +161,12 @@ public class ConfigurationFilterProviderTest {
     SubscriptionBuiltinTopicData subscriptionBuiltinTopicData = new SubscriptionBuiltinTopicData();
 
     subscriptionBuiltinTopicData.topic_name = "Square";
-    assertFalse(configurationFilterProvider.ignoreSubscription(null, null, subscriptionBuiltinTopicData));
+    assertFalse(configurationFilterProvider.ignoreSubscription(null, InstanceHandle_t.HANDLE_NIL, subscriptionBuiltinTopicData));
     subscriptionBuiltinTopicData.topic_name = "Triangle";
-    assertFalse(configurationFilterProvider.ignoreSubscription(null, null, subscriptionBuiltinTopicData));
+    assertFalse(configurationFilterProvider.ignoreSubscription(null, InstanceHandle_t.HANDLE_NIL, subscriptionBuiltinTopicData));
 
     subscriptionBuiltinTopicData.topic_name = "Circle";
-    assertTrue(configurationFilterProvider.ignoreSubscription(null, null, subscriptionBuiltinTopicData));
+    assertTrue(configurationFilterProvider.ignoreSubscription(null, InstanceHandle_t.HANDLE_NIL, subscriptionBuiltinTopicData));
   }
 
   @Test

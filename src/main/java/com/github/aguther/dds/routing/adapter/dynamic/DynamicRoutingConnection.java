@@ -24,17 +24,10 @@
 
 package com.github.aguther.dds.routing.adapter.dynamic;
 
-import com.github.aguther.dds.routing.adapter.empty.EmptySession;
-import com.github.aguther.dds.routing.adapter.empty.EmptyStreamReader;
-import com.github.aguther.dds.routing.adapter.empty.EmptyStreamWriter;
+import com.github.aguther.dds.routing.adapter.empty.EmptyConnection;
 import com.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import com.rti.routingservice.adapter.DiscoveryConnection;
-import com.rti.routingservice.adapter.Session;
-import com.rti.routingservice.adapter.StreamReader;
-import com.rti.routingservice.adapter.StreamReaderListener;
-import com.rti.routingservice.adapter.StreamWriter;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
-import com.rti.routingservice.adapter.infrastructure.StreamInfo;
 import java.io.Closeable;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -48,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * routing service. Whenever a topic is discovered and a appropriate configuration is found, a session and route is
  * created accordingly. The same applies vice versa on loosing discovery.
  */
-public class DynamicRoutingConnection implements DiscoveryConnection, Closeable {
+public class DynamicRoutingConnection extends EmptyConnection implements DiscoveryConnection, Closeable {
 
   private static final Logger log = LoggerFactory.getLogger(DynamicRoutingConnection.class);
 
@@ -93,53 +86,6 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
   }
 
   @Override
-  public Session createSession(
-      final Properties properties
-  ) throws AdapterException {
-    return new EmptySession();
-  }
-
-  @Override
-  public void deleteSession(
-      final Session session
-  ) throws AdapterException {
-    // do nothing
-  }
-
-  @Override
-  public StreamReader createStreamReader(
-      final Session session,
-      final StreamInfo streamInfo,
-      final Properties properties,
-      final StreamReaderListener streamReaderListener
-  ) throws AdapterException {
-    return new EmptyStreamReader();
-  }
-
-  @Override
-  public void deleteStreamReader(
-      final StreamReader streamReader
-  ) throws AdapterException {
-    // do nothing
-  }
-
-  @Override
-  public StreamWriter createStreamWriter(
-      final Session session,
-      final StreamInfo streamInfo,
-      final Properties properties
-  ) throws AdapterException {
-    return new EmptyStreamWriter();
-  }
-
-  @Override
-  public void deleteStreamWriter(
-      final StreamWriter streamWriter
-  ) throws AdapterException {
-    // do nothing
-  }
-
-  @Override
   public Properties getAttributes() throws AdapterException {
     return dynamicRoutingManager.getProperties();
   }
@@ -149,29 +95,5 @@ public class DynamicRoutingConnection implements DiscoveryConnection, Closeable 
       final Properties properties
   ) throws AdapterException {
     dynamicRoutingManager.update(properties);
-  }
-
-  @Override
-  public StreamReader getInputStreamDiscoveryReader() throws AdapterException {
-    return new EmptyStreamReader();
-  }
-
-  @Override
-  public StreamReader getOutputStreamDiscoveryReader() throws AdapterException {
-    return new EmptyStreamReader();
-  }
-
-  @Override
-  public Object copyTypeRepresentation(
-      final Object o
-  ) throws AdapterException {
-    throw new AdapterException(0, "Operation not supported");
-  }
-
-  @Override
-  public void deleteTypeRepresentation(
-      final Object o
-  ) throws AdapterException {
-    // do nothing
   }
 }

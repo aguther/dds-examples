@@ -232,21 +232,13 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
       final InstanceHandle_t instanceHandle,
       final PublicationBuiltinTopicData data
   ) {
+    checkNotNull(instanceHandle);
     checkNotNull(data);
 
-    boolean result = (getMatchingConfiguration(data.topic_name) == null);
-
-    if (log.isTraceEnabled()) {
-      log.trace(
-          "instance='{}', ignore='{}' (configuration for topic '{}' {})",
-          instanceHandle,
-          result,
-          data.topic_name,
-          result ? "not found" : "found"
-      );
-    }
-
-    return result;
+    return ignorePublicationSubscription(
+        instanceHandle,
+        data.topic_name
+    );
   }
 
   @Override
@@ -255,21 +247,13 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
       final InstanceHandle_t instanceHandle,
       final SubscriptionBuiltinTopicData data
   ) {
+    checkNotNull(instanceHandle);
     checkNotNull(data);
 
-    boolean result = (getMatchingConfiguration(data.topic_name) == null);
-
-    if (log.isTraceEnabled()) {
-      log.trace(
-          "instance='{}', ignore='{}' (configuration for topic '{}' {})",
-          instanceHandle,
-          result,
-          data.topic_name,
-          result ? "not found" : "found"
-      );
-    }
-
-    return result;
+    return ignorePublicationSubscription(
+        instanceHandle,
+        data.topic_name
+    );
   }
 
   @Override
@@ -323,6 +307,25 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
         false
     );
     return false;
+  }
+
+  private boolean ignorePublicationSubscription(
+      InstanceHandle_t instanceHandle,
+      String topicName
+  ) {
+    boolean result = (getMatchingConfiguration(topicName) == null);
+
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "instance='{}', ignore='{}' (configuration for topic '{}' {})",
+          instanceHandle,
+          result,
+          topicName,
+          result ? "not found" : "found"
+      );
+    }
+
+    return result;
   }
 
   /**

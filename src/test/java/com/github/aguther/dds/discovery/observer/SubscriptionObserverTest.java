@@ -49,6 +49,8 @@ import com.rti.dds.subscription.Subscriber;
 import com.rti.dds.subscription.ViewStateKind;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataSeq;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,7 +90,40 @@ public class SubscriptionObserverTest {
   }
 
   @Test(timeout = 10000)
-  public void testRun() {
+  public void testRunWithLevelDebug() {
+    // remember current level
+    Level originalLevel = LogManager.getRootLogger().getLevel();
+    try {
+      // set logging to TRACE
+      LogManager.getRootLogger().setLevel(Level.DEBUG);
+
+      // execute run method
+      testRun();
+
+    } finally {
+      // restore level
+      LogManager.getRootLogger().setLevel(originalLevel);
+    }
+  }
+
+  @Test(timeout = 10000)
+  public void testRunWithLevelTrace() {
+    // remember current level
+    Level originalLevel = LogManager.getRootLogger().getLevel();
+    try {
+      // set logging to TRACE
+      LogManager.getRootLogger().setLevel(Level.TRACE);
+
+      // execute run method
+      testRun();
+
+    } finally {
+      // restore level
+      LogManager.getRootLogger().setLevel(originalLevel);
+    }
+  }
+
+  private void testRun() {
     // prepare answers
     doAnswer(
         invocation -> {
