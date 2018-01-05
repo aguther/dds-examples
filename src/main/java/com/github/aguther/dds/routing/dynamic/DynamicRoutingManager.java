@@ -104,7 +104,6 @@ public class DynamicRoutingManager implements Closeable {
       final String propertiesPrefix,
       final Properties properties
   ) {
-    LOGGER.info("Creating");
     checkArgument(
         !Strings.isNullOrEmpty(routingServiceName),
         "Routing Service name is expected not to be null or empty"
@@ -122,7 +121,8 @@ public class DynamicRoutingManager implements Closeable {
         "Properties must not be null"
     );
 
-    if (LOGGER.isDebugEnabled()) {
+    // log properties when info is enabled
+    if (LOGGER.isInfoEnabled()) {
       for (String key : properties.stringPropertyNames()) {
         LOGGER.info(
             "key='{}', value='{}'",
@@ -202,14 +202,10 @@ public class DynamicRoutingManager implements Closeable {
 
     // enable discovery domain participant
     domainParticipantDiscovery.enable();
-
-    LOGGER.info("Created");
   }
 
   @Override
   public void close() {
-    LOGGER.info("Closing");
-
     if (publicationObserver != null) {
       publicationObserver.close();
     }
@@ -234,8 +230,6 @@ public class DynamicRoutingManager implements Closeable {
       domainParticipantDiscovery.delete_contained_entities();
       DomainParticipantFactory.get_instance().delete_participant(domainParticipantDiscovery);
     }
-
-    LOGGER.info("Closed");
   }
 
   /**
