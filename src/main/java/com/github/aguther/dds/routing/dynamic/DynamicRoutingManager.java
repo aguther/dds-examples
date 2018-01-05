@@ -242,7 +242,7 @@ public class DynamicRoutingManager implements Closeable {
   }
 
   /**
-   * Updates the properties.
+   * Updates the properties (not yet implemented).
    *
    * @param properties new configuration properties
    */
