@@ -1,5 +1,6 @@
 package com.github.aguther.dds.routing.dynamic;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -251,11 +252,11 @@ public class DynamicRoutingManagerTest {
         properties
     );
 
-    // expect exception
-    thrown.expect(UnsupportedOperationException.class);
-
     // invoke get properties
-    dynamicRoutingManager.getProperties();
+    Properties returnedProperties = dynamicRoutingManager.getProperties();
+
+    // check if properties are equal
+    assertEquals(properties, returnedProperties);
   }
 
   @Test

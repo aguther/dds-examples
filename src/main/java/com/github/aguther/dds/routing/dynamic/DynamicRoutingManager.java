@@ -80,7 +80,10 @@ public class DynamicRoutingManager implements Closeable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingManager.class);
 
-  private final DomainParticipant domainParticipantAdministration;
+  private final String propertiesPrefix;
+  private final Properties properties;
+
+  private DomainParticipant domainParticipantAdministration;
   private final DomainParticipant domainParticipantDiscovery;
 
   private final PublicationObserver publicationObserver;
@@ -121,6 +124,10 @@ public class DynamicRoutingManager implements Closeable {
         "Properties must not be null"
     );
 
+    // store properties and prefix
+    this.propertiesPrefix = propertiesPrefix;
+    this.properties = properties;
+
     // log properties when info is enabled
     if (LOGGER.isInfoEnabled()) {
       for (String key : properties.stringPropertyNames()) {
@@ -134,8 +141,8 @@ public class DynamicRoutingManager implements Closeable {
 
     // create domain participant for administration interface
     domainParticipantAdministration = createRemoteAdministrationDomainParticipant(
-        Integer.parseInt(properties.getProperty(String.format(
-            "%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_DOMAIN_ID))));
+        Integer.parseInt(getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID))
+    );
 
     // create routing service administration
     routingServiceCommandInterface = new RoutingServiceCommandInterface(
@@ -145,8 +152,8 @@ public class DynamicRoutingManager implements Closeable {
     LOGGER.info("Waiting for remote administration interface of routing service to be discovered");
     if (routingServiceCommandInterface.waitForDiscovery(
         routingServiceName,
-        Long.parseLong(properties.getProperty(
-            String.format("%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME),
+        Long.parseLong(getProperty(
+            PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME,
             DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
         )),
         TimeUnit.MILLISECONDS)) {
@@ -157,8 +164,8 @@ public class DynamicRoutingManager implements Closeable {
 
     // create domain participant for discovery
     domainParticipantDiscovery = createDiscoveryDomainParticipant(
-        Integer.parseInt(properties.getProperty(
-            String.format("%s%s", propertiesPrefix, PROPERTY_DISCOVERY_DOMAIN_ID))));
+        Integer.parseInt(getProperty(PROPERTY_DISCOVERY_DOMAIN_ID))
+    );
 
     // create configuration filter
     ConfigurationFilterProvider configurationFilterProvider = new ConfigurationFilterProvider(
@@ -178,13 +185,13 @@ public class DynamicRoutingManager implements Closeable {
         routingServiceCommandInterface,
         configurationFilterProvider,
         routingServiceName,
-        Long.parseLong(properties.getProperty(
-            String.format("%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY),
+        Long.parseLong(getProperty(
+            PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY,
             DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
         )),
         TimeUnit.MILLISECONDS,
-        Long.parseLong(properties.getProperty(
-            String.format("%s%s", propertiesPrefix, PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT),
+        Long.parseLong(getProperty(
+            PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT,
             DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
         )),
         TimeUnit.MILLISECONDS
@@ -233,12 +240,12 @@ public class DynamicRoutingManager implements Closeable {
   }
 
   /**
-   * Returns the current properties (currently not supported).
+   * Returns the current properties.
    *
    * @return current properties
    */
   public Properties getProperties() {
-    throw new UnsupportedOperationException("Not yet implemented");
+    return properties;
   }
 
   /**
@@ -250,6 +257,24 @@ public class DynamicRoutingManager implements Closeable {
       final Properties properties
   ) {
     throw new UnsupportedOperationException("Not yet implemented");
+  }
+
+  private String getProperty(
+      String name
+  ) {
+    return properties.getProperty(
+        String.format("%s%s", propertiesPrefix, name)
+    );
+  }
+
+  private String getProperty(
+      String name,
+      String defaultValue
+  ) {
+    return properties.getProperty(
+        String.format("%s%s", propertiesPrefix, name),
+        defaultValue
+    );
   }
 
   /**
