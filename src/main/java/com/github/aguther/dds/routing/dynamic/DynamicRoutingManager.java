@@ -24,6 +24,9 @@
 
 package com.github.aguther.dds.routing.dynamic;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.github.aguther.dds.discovery.observer.PublicationObserver;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
 import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
@@ -32,6 +35,7 @@ import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGrou
 import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
+import com.google.common.base.Strings;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantQos;
@@ -101,6 +105,22 @@ public class DynamicRoutingManager implements Closeable {
       final Properties properties
   ) {
     LOGGER.info("Creating");
+    checkArgument(
+        !Strings.isNullOrEmpty(routingServiceName),
+        "Routing Service name is expected not to be null or empty"
+    );
+    checkNotNull(
+        routingServiceGroupName,
+        "Group name must not be null"
+    );
+    checkNotNull(
+        propertiesPrefix,
+        "Property prefix must not be null"
+    );
+    checkNotNull(
+        properties,
+        "Properties must not be null"
+    );
 
     if (LOGGER.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
