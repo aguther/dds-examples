@@ -55,7 +55,7 @@ public class DynamicRoutingConnection extends EmptyConnection implements Closeab
 
     if (LOGGER.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
-        LOGGER.info(
+        LOGGER.debug(
             "key='{}', value='{}'",
             key,
             properties.getProperty(key)
