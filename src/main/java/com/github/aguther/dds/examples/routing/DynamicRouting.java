@@ -27,6 +27,8 @@ package com.github.aguther.dds.examples.routing;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import com.google.common.util.concurrent.AbstractIdleService;
+import com.rti.dds.domain.DomainParticipantFactory;
+import com.rti.dds.domain.DomainParticipantFactoryQos;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
 import java.io.IOException;
@@ -82,6 +84,9 @@ public class DynamicRouting extends AbstractIdleService {
     // log service start
     LOGGER.info("Service is starting");
 
+    // prepare DDS factory
+    startUpPrepareDomainParticipantFactory();
+
     // start DDS logger
     startUpDdsLogger();
 
@@ -108,6 +113,13 @@ public class DynamicRouting extends AbstractIdleService {
 
     // log service start
     LOGGER.info("Service shutdown finished");
+  }
+
+  private void startUpPrepareDomainParticipantFactory() {
+    DomainParticipantFactoryQos domainParticipantFactoryQos = new DomainParticipantFactoryQos();
+    DomainParticipantFactory.get_instance().get_qos(domainParticipantFactoryQos);
+    domainParticipantFactoryQos.resource_limits.max_objects_per_thread = 4096;
+    DomainParticipantFactory.get_instance().set_qos(domainParticipantFactoryQos);
   }
 
   private void startUpDdsLogger() throws IOException {
