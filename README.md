@@ -1,6 +1,15 @@
 # DDS Examples
 This is an repository that contains some simple use cases for the usage of RTI DDS.
 
+## Copyright
+
+The files contained in this repository are published under MIT license with one exception: ShapeType.idl
+
+This file is part of the RTI Connext DDS SDK (see www.rti.com) and is used by a simple application for demonstration. 
+
+The original license did not allow the publication and so I want to express a special thank you to RTI for 
+the allowance to publish the file under a new license as found in this repository.
+
 ## Structure
 This example is using XML creation for the DDS. More information can be found on community.rti.com.
 
