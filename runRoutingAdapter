@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # prepare runtime environment
-./gradlew build copyRuntimeLibraries
+./gradlew -x test build copyRuntimeLibraries
 
 # set environment
 export RTI_ROUTING_ADAPTER=$(find build/libs build/libs-runtime -name '*.jar' -printf '%p:' | sed 's/:$//')

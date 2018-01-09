@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 # start application
-./gradlew --no-daemon run$1
+./gradlew --no-daemon -x test run$1
