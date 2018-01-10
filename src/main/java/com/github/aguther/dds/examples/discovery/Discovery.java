@@ -186,6 +186,23 @@ public class Discovery extends AbstractIdleService
   }
 
   @Override
+  public void publicationModified(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  ) {
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info(
+          "Modified Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
+          convertInstanceHandleToString(instanceHandle),
+          data.topic_name,
+          data.type_name,
+          convertPartitionQosPolicyToString(data.partition)
+      );
+    }
+  }
+
+  @Override
   public void publicationLost(
       final DomainParticipant domainParticipant,
       final InstanceHandle_t instanceHandle,
@@ -211,6 +228,23 @@ public class Discovery extends AbstractIdleService
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(
           "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
+          convertInstanceHandleToString(instanceHandle),
+          data.topic_name,
+          data.type_name,
+          convertPartitionQosPolicyToString(data.partition)
+      );
+    }
+  }
+
+  @Override
+  public void subscriptionModified(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
+  ) {
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info(
+          "Modified Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
           convertInstanceHandleToString(instanceHandle),
           data.topic_name,
           data.type_name,

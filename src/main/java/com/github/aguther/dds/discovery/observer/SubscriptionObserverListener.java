@@ -47,6 +47,19 @@ public interface SubscriptionObserverListener {
   );
 
   /**
+   * Invoked when a subscription has been modified (e.g. partitions changed).
+   *
+   * @param domainParticipant domain participant used for discovery
+   * @param instanceHandle instance handle of publication for identification
+   * @param data publication data
+   */
+  void subscriptionModified(
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final SubscriptionBuiltinTopicData data
+  );
+
+  /**
    * Invoked when a subscription has been lost.
    *
    * @param domainParticipant domain participant used for discovery

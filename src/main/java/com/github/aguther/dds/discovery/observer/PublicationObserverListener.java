@@ -47,6 +47,19 @@ public interface PublicationObserverListener {
   );
 
   /**
+   * Invoked when a publication has been modified (e.g. partitions changed).
+   *
+   * @param domainParticipant domain participant used for discovery
+   * @param instanceHandle instance handle of publication for identification
+   * @param data publication data
+   */
+  void publicationModified(
+      final DomainParticipant domainParticipant,
+      final InstanceHandle_t instanceHandle,
+      final PublicationBuiltinTopicData data
+  );
+
+  /**
    * Invoked when a new publication has been discovered.
    *
    * @param domainParticipant domain participant used for discovery

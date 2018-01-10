@@ -138,20 +138,36 @@ public class PublicationObserver extends BuiltinTopicObserver {
         dataReader.read_next_sample_untyped(sample, sampleInfo);
 
         if (sampleInfo.valid_data) {
+          // decide if publication was modified or discovered
+          boolean discovered = !sampleCache.containsKey(sampleInfo.instance_handle);
+
           // cache sample for the lost event
           sampleCache.put(sampleInfo.instance_handle, sample);
 
           // call listeners
           synchronized (listenerList) {
-            // log information
-            logListenerInvocation("publicationDiscovered", sampleInfo, sample);
-            // iterate over listeners and invoke them
-            for (PublicationObserverListener listener : listenerList) {
-              listener.publicationDiscovered(
-                  domainParticipant,
-                  sampleInfo.instance_handle,
-                  sample
-              );
+            if (discovered) {
+              // log information
+              logListenerInvocation("publicationDiscovered", sampleInfo, sample);
+              // iterate over listeners and invoke them
+              for (PublicationObserverListener listener : listenerList) {
+                listener.publicationDiscovered(
+                    domainParticipant,
+                    sampleInfo.instance_handle,
+                    sample
+                );
+              }
+            } else {
+              // log information
+              logListenerInvocation("publicationModified", sampleInfo, sample);
+              // iterate over listeners and invoke them
+              for (PublicationObserverListener listener : listenerList) {
+                listener.publicationModified(
+                    domainParticipant,
+                    sampleInfo.instance_handle,
+                    sample
+                );
+              }
             }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {

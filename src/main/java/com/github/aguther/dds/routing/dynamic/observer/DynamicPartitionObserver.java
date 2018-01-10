@@ -153,6 +153,14 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   }
 
   @Override
+  public void publicationModified(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      PublicationBuiltinTopicData data
+  ) {
+  }
+
+  @Override
   public void publicationLost(
       final DomainParticipant domainParticipant,
       final InstanceHandle_t instanceHandle,
@@ -192,6 +200,14 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         data.type_name,
         data.partition.name
     );
+  }
+
+  @Override
+  public void subscriptionModified(
+      DomainParticipant domainParticipant,
+      InstanceHandle_t instanceHandle,
+      SubscriptionBuiltinTopicData data
+  ) {
   }
 
   @Override
