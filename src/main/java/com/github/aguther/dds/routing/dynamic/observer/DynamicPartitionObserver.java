@@ -29,6 +29,7 @@ import com.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.StringSeq;
@@ -38,6 +39,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -59,6 +61,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPartitionObserver.class);
 
   private final Map<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
+  private final Multimap<InstanceHandle_t, Session> mappingReverse;
   private final List<DynamicPartitionObserverFilter> filterList;
   private final List<DynamicPartitionObserverListener> listenerList;
   private final ExecutorService listenerExecutor;
@@ -68,6 +71,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    */
   public DynamicPartitionObserver() {
     mapping = Collections.synchronizedMap(new HashMap<>());
+    mappingReverse = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
     filterList = Collections.synchronizedList(new ArrayList<>());
     listenerList = Collections.synchronizedList(new ArrayList<>());
     listenerExecutor = Executors.newSingleThreadExecutor();
@@ -158,6 +162,19 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       InstanceHandle_t instanceHandle,
       PublicationBuiltinTopicData data
   ) {
+    // ignore the publication?
+    if (ignorePublication(domainParticipant, instanceHandle, data)) {
+      return;
+    }
+
+    // handle discovered entity
+    handleModified(
+        instanceHandle,
+        Direction.OUT,
+        data.topic_name,
+        data.type_name,
+        data.partition.name
+    );
   }
 
   @Override
@@ -208,6 +225,19 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       InstanceHandle_t instanceHandle,
       SubscriptionBuiltinTopicData data
   ) {
+    // ignore the publication?
+    if (ignoreSubscription(domainParticipant, instanceHandle, data)) {
+      return;
+    }
+
+    // handle discovered entity
+    handleModified(
+        instanceHandle,
+        Direction.IN,
+        data.topic_name,
+        data.type_name,
+        data.partition.name
+    );
   }
 
   @Override
@@ -264,6 +294,66 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         for (Object partition : partitions) {
           // ignore partition?
           if (ignorePartition(topicName, partition.toString())) {
+            continue;
+          }
+          // add instance handle to map
+          addInstanceHandleToMap(
+              instanceHandle,
+              new Session(topicName, partition.toString()),
+              new TopicRoute(direction, topicName, typeName)
+          );
+        }
+      }
+    }
+  }
+
+  /**
+   * Handles the modification of a publication/subscription.
+   *
+   * @param instanceHandle instance handle for identification
+   * @param direction direction (OUT for publications, IN for subscriptions)
+   * @param topicName topic name
+   * @param typeName type name
+   * @param partitions partitions
+   */
+  private void handleModified(
+      final InstanceHandle_t instanceHandle,
+      final Direction direction,
+      final String topicName,
+      final String typeName,
+      final StringSeq partitions
+  ) {
+    synchronized (mapping) {
+      // create routes for all partitions we discovered
+      if (partitions.isEmpty()) {
+        for (Session session : mappingReverse.get(instanceHandle)) {
+          if (!session.getPartition().equals("")) {
+            // remove instance handles from map
+            removeInstanceHandleFromMap(
+                instanceHandle,
+                session,
+                new TopicRoute(direction, topicName, typeName)
+            );
+          }
+        }
+      } else {
+        // remove routes for partitions that no longer exist
+        for (Session session : mappingReverse.get(instanceHandle)) {
+          // determine if partition of session is still active
+          if (!partitions.contains(session.getPartition())) {
+            // remove instance handles from map
+            removeInstanceHandleFromMap(
+                instanceHandle,
+                session,
+                new TopicRoute(direction, topicName, typeName)
+            );
+          }
+        }
+        // add routes for partitions that are new
+        for (Object partition : partitions) {
+          // ignore partition?
+          if (ignorePartition(topicName, partition.toString())
+              || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition.toString()))) {
             continue;
           }
           // add instance handle to map
@@ -426,6 +516,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     // create topic session if first item discovered
     if (!mapping.containsKey(session)) {
       mapping.put(session, ArrayListMultimap.create());
+      mappingReverse.put(instanceHandle, session);
       createSession(session);
     }
 
@@ -468,6 +559,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     // delete topic session if last items was removed
     if (mapping.get(session).isEmpty()) {
       mapping.remove(session);
+      mappingReverse.remove(instanceHandle, session);
       deleteSession(session);
     }
   }
