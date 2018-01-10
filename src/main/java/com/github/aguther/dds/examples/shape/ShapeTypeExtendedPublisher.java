@@ -36,10 +36,13 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.publication.AcknowledgmentInfo;
 import com.rti.dds.publication.DataWriter;
 import com.rti.dds.publication.DataWriterListener;
+import com.rti.dds.publication.DataWriterQos;
 import com.rti.dds.publication.LivelinessLostStatus;
 import com.rti.dds.publication.OfferedDeadlineMissedStatus;
 import com.rti.dds.publication.OfferedIncompatibleQosStatus;
 import com.rti.dds.publication.PublicationMatchedStatus;
+import com.rti.dds.publication.Publisher;
+import com.rti.dds.publication.PublisherQos;
 import com.rti.dds.publication.ReliableReaderActivityChangedStatus;
 import com.rti.dds.publication.ReliableWriterCacheChangedStatus;
 import com.rti.dds.publication.ServiceRequestAcceptedStatus;
@@ -112,6 +115,9 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
     dataWriter.set_listener(this, StatusKind.STATUS_MASK_ALL);
 
+    long counter = 0;
+    boolean partitionAdded = false;
+
     while (!shouldTerminate) {
       try {
         // create sample
@@ -130,10 +136,24 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
         // write sample
         dataWriter.write_untyped(sample, InstanceHandle_t.HANDLE_NIL);
+        counter++;
 
         // wait some time
         if (sleepTime >= 0) {
           Thread.sleep(sleepTime);
+        }
+
+        // change partition
+        if (counter % 300 == 0) {
+          if (!partitionAdded) {
+            addPartition("A");
+            partitionAdded = true;
+            LOGGER.warn("Added partition 'A'");
+          } else {
+            removePartition("A");
+            partitionAdded = false;
+            LOGGER.warn("Removed partition 'A'");
+          }
         }
 
       } catch (RETCODE_ERROR e) {
@@ -191,6 +211,40 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
     // return the result
     return sample;
+  }
+
+  private void addPartition(
+      String partition
+  ) {
+    // get publisher
+    Publisher publisher = dataWriter.get_publisher();
+
+    // get QoS
+    PublisherQos publisherQos = new PublisherQos();
+    publisher.get_qos(publisherQos);
+
+    // update QoS if necessary
+    if (!publisherQos.partition.name.contains(partition)) {
+      publisherQos.partition.name.add(partition);
+      publisher.set_qos(publisherQos);
+    }
+  }
+
+  private void removePartition(
+      String partition
+  ) {
+    // get publisher
+    Publisher publisher = dataWriter.get_publisher();
+
+    // get QoS
+    PublisherQos publisherQos = new PublisherQos();
+    publisher.get_qos(publisherQos);
+
+    // update QoS if necessary
+    if (publisherQos.partition.name.contains(partition)) {
+      publisherQos.partition.name.remove(partition);
+      publisher.set_qos(publisherQos);
+    }
   }
 
   @Override
