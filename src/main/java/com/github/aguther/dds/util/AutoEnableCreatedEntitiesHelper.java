@@ -40,6 +40,17 @@ public class AutoEnableCreatedEntitiesHelper {
     switchValueTo(false);
   }
 
+  public static boolean isEnabled() {
+    // create new QoS object
+    DomainParticipantFactoryQos domainParticipantFactoryQos = new DomainParticipantFactoryQos();
+
+    // get current QoS from domain participant factory
+    DomainParticipantFactory.get_instance().get_qos(domainParticipantFactoryQos);
+
+    // return state
+    return domainParticipantFactoryQos.entity_factory.autoenable_created_entities;
+  }
+
   private static void switchValueTo(
       final boolean value
   ) {

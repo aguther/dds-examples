@@ -299,14 +299,19 @@ public class DynamicRoutingManager implements Closeable {
   private DomainParticipant createDiscoveryDomainParticipant(
       final int domainId
   ) {
+    // get current state
+    boolean wasEnabled = AutoEnableCreatedEntitiesHelper.isEnabled();
+
     // disable auto-enable -> THIS IS CRUCIAL TO WORK CORRECTLY
     AutoEnableCreatedEntitiesHelper.disable();
 
     // create discovery participant
     DomainParticipant domainParticipant = createDomainParticipant(domainId, "RTI Routing Service: discovery");
 
-    // enable auto-enable
-    AutoEnableCreatedEntitiesHelper.enable();
+    // enable auto-enable if it was enabled previously
+    if (wasEnabled) {
+      AutoEnableCreatedEntitiesHelper.enable();
+    }
 
     return domainParticipant;
   }
