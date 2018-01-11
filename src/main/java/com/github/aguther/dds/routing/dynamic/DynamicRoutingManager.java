@@ -139,10 +139,11 @@ public class DynamicRoutingManager implements Closeable {
       }
     }
 
-    // create domain participant for administration interface
+    // create domain participant for administration interface and ensure it will be enabled
     domainParticipantAdministration = createRemoteAdministrationDomainParticipant(
         Integer.parseInt(getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID))
     );
+    domainParticipantAdministration.enable();
 
     // create routing service administration
     routingServiceCommandInterface = new RoutingServiceCommandInterface(
