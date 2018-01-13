@@ -308,10 +308,10 @@ public class SubscriptionObserverTest {
         .when(dataReader).read_untyped(
         any(),
         any(),
-        any(),
-        any(),
-        any(),
-        any()
+        anyInt(),
+        anyInt(),
+        anyInt(),
+        anyInt()
     );
 
     // execute tested method

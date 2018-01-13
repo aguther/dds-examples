@@ -36,7 +36,6 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.publication.AcknowledgmentInfo;
 import com.rti.dds.publication.DataWriter;
 import com.rti.dds.publication.DataWriterListener;
-import com.rti.dds.publication.DataWriterQos;
 import com.rti.dds.publication.LivelinessLostStatus;
 import com.rti.dds.publication.OfferedDeadlineMissedStatus;
 import com.rti.dds.publication.OfferedIncompatibleQosStatus;
