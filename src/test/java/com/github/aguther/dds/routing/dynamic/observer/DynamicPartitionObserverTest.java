@@ -33,6 +33,8 @@ import static org.mockito.Mockito.when;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.PartitionQosPolicy;
+import com.rti.dds.infrastructure.StringSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import java.nio.ByteBuffer;
@@ -43,10 +45,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.slf4j.LoggerFactory;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({LoggerFactory.class, DynamicPartitionObserver.class})
+@PrepareForTest({
+    DynamicPartitionObserver.class,
+    LoggerFactory.class,
+    PartitionQosPolicy.class,
+    PublicationBuiltinTopicData.class,
+    SubscriptionBuiltinTopicData.class,
+})
 public class DynamicPartitionObserverTest {
 
   private static final int VERIFY_TIMEOUT = 5000;
@@ -505,7 +514,11 @@ public class DynamicPartitionObserverTest {
       String type,
       String... partitions
   ) {
-    PublicationBuiltinTopicData builtinTopicData = new PublicationBuiltinTopicData();
+    PublicationBuiltinTopicData builtinTopicData = mock(PublicationBuiltinTopicData.class);
+    PartitionQosPolicy partitionQosPolicy = mock(PartitionQosPolicy.class);
+    Whitebox.setInternalState(builtinTopicData, "partition", partitionQosPolicy);
+    Whitebox.setInternalState(partitionQosPolicy, "name", new StringSeq());
+
     builtinTopicData.topic_name = topic;
     builtinTopicData.type_name = type;
     builtinTopicData.partition.name.addAll(Arrays.asList(partitions));
@@ -517,10 +530,15 @@ public class DynamicPartitionObserverTest {
       String type,
       String... partitions
   ) {
-    SubscriptionBuiltinTopicData builtinTopicData = new SubscriptionBuiltinTopicData();
+    SubscriptionBuiltinTopicData builtinTopicData = mock(SubscriptionBuiltinTopicData.class);
+    PartitionQosPolicy partitionQosPolicy = mock(PartitionQosPolicy.class);
+    Whitebox.setInternalState(builtinTopicData, "partition", partitionQosPolicy);
+    Whitebox.setInternalState(partitionQosPolicy, "name", new StringSeq());
+
     builtinTopicData.topic_name = topic;
     builtinTopicData.type_name = type;
     builtinTopicData.partition.name.addAll(Arrays.asList(partitions));
+
     return builtinTopicData;
   }
 

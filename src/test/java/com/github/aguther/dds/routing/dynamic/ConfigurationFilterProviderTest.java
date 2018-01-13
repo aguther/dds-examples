@@ -27,6 +27,7 @@ package com.github.aguther.dds.routing.dynamic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
@@ -38,7 +39,15 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({
+    PublicationBuiltinTopicData.class,
+    SubscriptionBuiltinTopicData.class,
+})
 public class ConfigurationFilterProviderTest {
 
   private ConfigurationFilterProvider configurationFilterProvider;
@@ -143,7 +152,7 @@ public class ConfigurationFilterProviderTest {
 
   @Test
   public void testIgnorePublication() {
-    PublicationBuiltinTopicData publicationBuiltinTopicData = new PublicationBuiltinTopicData();
+    PublicationBuiltinTopicData publicationBuiltinTopicData = mock(PublicationBuiltinTopicData.class);
 
     publicationBuiltinTopicData.topic_name = "Square";
     assertFalse(configurationFilterProvider.ignorePublication(
@@ -174,7 +183,7 @@ public class ConfigurationFilterProviderTest {
 
   @Test
   public void testIgnoreSubscription() {
-    SubscriptionBuiltinTopicData subscriptionBuiltinTopicData = new SubscriptionBuiltinTopicData();
+    SubscriptionBuiltinTopicData subscriptionBuiltinTopicData = mock(SubscriptionBuiltinTopicData.class);
 
     subscriptionBuiltinTopicData.topic_name = "Square";
     assertFalse(configurationFilterProvider.ignoreSubscription(

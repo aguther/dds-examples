@@ -26,48 +26,111 @@ package com.github.aguther.dds.discovery.observer;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.doAnswer;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import com.rti.dds.domain.DomainParticipant;
-import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.RETCODE_ERROR;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq;
+import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
 import com.rti.dds.subscription.SampleInfoSeq;
-import com.rti.dds.subscription.SampleStateKind;
 import com.rti.dds.subscription.Subscriber;
-import com.rti.dds.subscription.ViewStateKind;
+import com.rti.dds.util.LoanableSequence;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({
+    BuiltinTopicObserver.class,
+    DomainParticipant.class,
+    LoanableSequence.class,
+    PublicationBuiltinTopicData.class,
+    PublicationBuiltinTopicDataSeq.class,
+    PublicationBuiltinTopicDataTypeSupport.class,
+    PublicationObserver.class,
+    SampleInfo.class,
+    SampleInfoSeq.class,
+})
+@SuppressStaticInitializationFor({
+    "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
+    "com.rti.dds.domain.DomainParticipant",
+    "com.rti.dds.publication.builtin.PublicationBuiltinTopicData",
+    "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq",
+    "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
+    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData",
+    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport",
+    "com.rti.dds.subscription.SampleInfoSeq",
+    "com.rti.dds.topic.AbstractBuiltinTopicData",
+    "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
+    "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
+    "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
+    "com.rti.dds.topic.TypeSupportImpl",
+    "com.rti.dds.util.LoanableSequence",
+})
 public class PublicationObserverTest {
 
   private DataReader dataReader;
   private PublicationObserver publicationObserver;
   private PublicationObserverListener publicationObserverListener;
 
+  private PublicationBuiltinTopicData publicationBuiltinTopicData;
+  private PublicationBuiltinTopicDataSeq publicationBuiltinTopicDataSeq;
+
+  private SampleInfo sampleInfo;
+  private SampleInfoSeq sampleInfoSeq;
+
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     DomainParticipant domainParticipant = mock(DomainParticipant.class);
     Subscriber subscriber = mock(Subscriber.class);
     dataReader = mock(DataReader.class);
 
-    doThrow(new RETCODE_NOT_ENABLED()).when(domainParticipant).get_discovered_participants(new InstanceHandleSeq());
+    Whitebox.setInternalState(
+        PublicationBuiltinTopicDataTypeSupport.class,
+        "PUBLICATION_TOPIC_NAME",
+        "PublicationBuiltinTopicName"
+    );
+
+    publicationBuiltinTopicData = mock(PublicationBuiltinTopicData.class);
+    publicationBuiltinTopicData.topic_name = "Square";
+    publicationBuiltinTopicData.type_name = "ShapeType";
+    PowerMockito.whenNew(PublicationBuiltinTopicData.class).withAnyArguments().thenReturn(
+        publicationBuiltinTopicData);
+
+    publicationBuiltinTopicDataSeq = mock(PublicationBuiltinTopicDataSeq.class);
+    PowerMockito.whenNew(PublicationBuiltinTopicDataSeq.class).withAnyArguments().thenReturn(
+        publicationBuiltinTopicDataSeq);
+
+    sampleInfo = mock(SampleInfo.class);
+    Whitebox.setInternalState(sampleInfo, "instance_handle", InstanceHandle_t.HANDLE_NIL);
+    PowerMockito.whenNew(SampleInfo.class).withAnyArguments().thenReturn(sampleInfo);
+
+    sampleInfoSeq = mock(SampleInfoSeq.class);
+    PowerMockito.whenNew(SampleInfoSeq.class).withAnyArguments().thenReturn(sampleInfoSeq);
+
     when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
     when(subscriber.lookup_datareader(anyString()))
         .thenReturn(dataReader);
@@ -75,7 +138,7 @@ public class PublicationObserverTest {
     publicationObserver = new PublicationObserver(domainParticipant);
 
     publicationObserverListener = mock(PublicationObserverListener.class);
-    publicationObserver.addListener(publicationObserverListener);
+    publicationObserver.addListener(publicationObserverListener, false);
   }
 
   @After
@@ -141,8 +204,8 @@ public class PublicationObserverTest {
         }
     ).doThrow(new RETCODE_NO_DATA()
     ).when(dataReader).read_next_sample_untyped(
-        new PublicationBuiltinTopicData(),
-        new SampleInfo()
+        eq(publicationBuiltinTopicData),
+        eq(sampleInfo)
     );
 
     // execute tested method
@@ -165,8 +228,8 @@ public class PublicationObserverTest {
     // prepare answers
     doThrow(new RETCODE_ERROR()
     ).when(dataReader).read_next_sample_untyped(
-        new PublicationBuiltinTopicData(),
-        new SampleInfo()
+        eq(publicationBuiltinTopicData),
+        eq(sampleInfo)
     );
 
     // execute tested method
@@ -190,28 +253,12 @@ public class PublicationObserverTest {
     // add another listener
     PublicationObserverListener listener = mock(PublicationObserverListener.class);
 
-    // prepare answers
-    doAnswer(
-        invocation -> {
-          PublicationBuiltinTopicDataSeq sampleSeq = invocation.getArgument(0);
-          SampleInfoSeq sampleInfoSeq = invocation.getArgument(1);
+    sampleInfo.valid_data = true;
 
-          PublicationBuiltinTopicData publicationBuiltinTopicData = new PublicationBuiltinTopicData();
-          sampleSeq.add(publicationBuiltinTopicData);
-
-          SampleInfo sampleInfo = new SampleInfo();
-          sampleInfo.valid_data = true;
-          sampleInfoSeq.add(sampleInfo);
-          return null;
-        }
-    ).when(dataReader).read_untyped(
-        new PublicationBuiltinTopicDataSeq(),
-        new SampleInfoSeq(),
-        Integer.MAX_VALUE,
-        SampleStateKind.READ_SAMPLE_STATE,
-        ViewStateKind.ANY_VIEW_STATE,
-        InstanceStateKind.ANY_INSTANCE_STATE
-    );
+    when(publicationBuiltinTopicDataSeq.size()).thenReturn(1);
+    when(publicationBuiltinTopicDataSeq.get(anyInt())).thenReturn(publicationBuiltinTopicData);
+    when(sampleInfoSeq.size()).thenReturn(1);
+    when(sampleInfoSeq.get(anyInt())).thenReturn(sampleInfo);
 
     // execute tested method
     publicationObserver.addListener(listener);
@@ -257,14 +304,14 @@ public class PublicationObserverTest {
     PublicationObserverListener listener = mock(PublicationObserverListener.class);
 
     // prepare answers
-    doThrow(exception
-    ).when(dataReader).read_untyped(
-        new PublicationBuiltinTopicDataSeq(),
-        new SampleInfoSeq(),
-        Integer.MAX_VALUE,
-        SampleStateKind.READ_SAMPLE_STATE,
-        ViewStateKind.ANY_VIEW_STATE,
-        InstanceStateKind.ANY_INSTANCE_STATE
+    doThrow(exception)
+        .when(dataReader).read_untyped(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
     );
 
     // execute tested method
@@ -289,3 +336,4 @@ public class PublicationObserverTest {
         any(PublicationBuiltinTopicData.class));
   }
 }
+
