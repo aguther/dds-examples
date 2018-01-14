@@ -198,6 +198,13 @@ public class PublicationObserverTest {
     ).doAnswer(
         invocation -> {
           SampleInfo sampleInfo = invocation.getArgument(1);
+          sampleInfo.valid_data = true;
+          sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
+          return null;
+        }
+    ).doAnswer(
+        invocation -> {
+          SampleInfo sampleInfo = invocation.getArgument(1);
           sampleInfo.valid_data = false;
           sampleInfo.instance_state = InstanceStateKind.NOT_ALIVE_INSTANCE_STATE;
           return null;
@@ -213,6 +220,11 @@ public class PublicationObserverTest {
 
     // verify results
     verify(publicationObserverListener, times(1)).publicationDiscovered(
+        any(DomainParticipant.class),
+        any(InstanceHandle_t.class),
+        any(PublicationBuiltinTopicData.class));
+
+    verify(publicationObserverListener, times(1)).publicationModified(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
