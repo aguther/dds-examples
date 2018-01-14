@@ -126,7 +126,7 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
     LOGGER.trace(
         "instance='{}', ignore='{}' (participant data not found)",
         instanceHandle,
-        false
+        "false"
     );
 
     // do not ignore

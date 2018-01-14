@@ -72,8 +72,7 @@ public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
           topicName,
           partition,
           result,
-          "contains(\"*\")",
-          partition
+          "contains(\"*\")"
       );
     }
 

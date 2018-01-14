@@ -69,27 +69,27 @@ public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
   ) {
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_ERROR
         && LOGGER.isErrorEnabled()) {
-      LOGGER.error(logMessage.text.replace("\n", " "));
+      LOGGER.error(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_WARNING
         && LOGGER.isWarnEnabled()) {
-      LOGGER.warn(logMessage.text.replace("\n", " "));
+      LOGGER.warn(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_STATUS_LOCAL
         && LOGGER.isTraceEnabled()) {
-      LOGGER.trace(logMessage.text.replace("\n", " "));
+      LOGGER.trace(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_STATUS_REMOTE
         && LOGGER.isTraceEnabled()) {
-      LOGGER.trace(logMessage.text.replace("\n", " "));
+      LOGGER.trace(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_DEBUG
         && LOGGER.isDebugEnabled()) {
-      LOGGER.debug(logMessage.text.replace("\n", " "));
+      LOGGER.debug(logMessage.text.replace('\n', ' '));
     }
   }
 

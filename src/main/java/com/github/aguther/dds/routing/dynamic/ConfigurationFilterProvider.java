@@ -270,7 +270,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
           "topic='{}', partition='{}', ignore='{}' (configuration not found)",
           topicName,
           partition,
-          true
+          "true"
       );
       return true;
     }
@@ -282,7 +282,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
           "topic='{}', partition='{}', ignore='{}' (deny partition filter matched)",
           topicName,
           partition,
-          true
+          "true"
       );
       return true;
     }
@@ -294,7 +294,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
           "topic='{}', partition='{}', ignore='{}' (no match with allow partition filter)",
           topicName,
           partition,
-          true
+          "true"
       );
       return true;
     }
@@ -304,7 +304,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
         "topic='{}', partition='{}', ignore='{}'",
         topicName,
         partition,
-        false
+        "false"
     );
     return false;
   }
