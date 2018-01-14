@@ -60,6 +60,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPartitionObserver.class);
 
+  private static final String DEFAULT_PARTITION = "";
+
   private final Map<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
   private final Multimap<InstanceHandle_t, Session> mappingReverse;
   private final List<DynamicPartitionObserverFilter> filterList;
@@ -281,13 +283,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       // create routes for all partitions we discovered
       if (partitions.isEmpty()) {
         // ignore partition?
-        if (ignorePartition(topicName, "")) {
+        if (ignorePartition(topicName, DEFAULT_PARTITION)) {
           return;
         }
         // add instance handle to map
         addInstanceHandleToMap(
             instanceHandle,
-            new Session(topicName, ""),
+            new Session(topicName, DEFAULT_PARTITION),
             new TopicRoute(direction, topicName, typeName)
         );
       } else {
@@ -327,7 +329,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       // create routes for all partitions we discovered
       if (partitions.isEmpty()) {
         for (Session session : ImmutableList.copyOf(mappingReverse.get(instanceHandle))) {
-          if (!session.getPartition().equals("")) {
+          if (!(DEFAULT_PARTITION).equals(session.getPartition())) {
             // remove instance handles from map
             removeInstanceHandleFromMap(
                 instanceHandle,
@@ -337,14 +339,14 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
           }
         }
         // ignore partition?
-        if (ignorePartition(topicName, "")
-            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, ""))) {
+        if (ignorePartition(topicName, DEFAULT_PARTITION)
+            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, DEFAULT_PARTITION))) {
           return;
         }
         // add instance handle to map
         addInstanceHandleToMap(
             instanceHandle,
-            new Session(topicName, ""),
+            new Session(topicName, DEFAULT_PARTITION),
             new TopicRoute(direction, topicName, typeName)
         );
       } else {
@@ -398,13 +400,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       // delete routes for all partitions we lost
       if (partitions.isEmpty()) {
         // ignore partition?
-        if (ignorePartition(topicName, "")) {
+        if (ignorePartition(topicName, DEFAULT_PARTITION)) {
           return;
         }
         // remove instance handle from map
         removeInstanceHandleFromMap(
             instanceHandle,
-            new Session(topicName, ""),
+            new Session(topicName, DEFAULT_PARTITION),
             new TopicRoute(direction, topicName, typeName)
         );
       } else {
