@@ -28,6 +28,7 @@ import com.github.aguther.dds.discovery.observer.PublicationObserverListener;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.rti.dds.domain.DomainParticipant;
@@ -325,7 +326,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     synchronized (mapping) {
       // create routes for all partitions we discovered
       if (partitions.isEmpty()) {
-        for (Session session : mappingReverse.get(instanceHandle)) {
+        for (Session session : ImmutableList.copyOf(mappingReverse.get(instanceHandle))) {
           if (!session.getPartition().equals("")) {
             // remove instance handles from map
             removeInstanceHandleFromMap(
@@ -335,9 +336,20 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
             );
           }
         }
+        // ignore partition?
+        if (ignorePartition(topicName, "")
+            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, ""))) {
+          return;
+        }
+        // add instance handle to map
+        addInstanceHandleToMap(
+            instanceHandle,
+            new Session(topicName, ""),
+            new TopicRoute(direction, topicName, typeName)
+        );
       } else {
         // remove routes for partitions that no longer exist
-        for (Session session : mappingReverse.get(instanceHandle)) {
+        for (Session session : ImmutableList.copyOf(mappingReverse.get(instanceHandle))) {
           // determine if partition of session is still active
           if (!partitions.contains(session.getPartition())) {
             // remove instance handles from map
@@ -525,7 +537,9 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
 
     // add instance handle to topic route
-    mapping.get(session).put(topicRoute, instanceHandle);
+    if (!mapping.get(session).get(topicRoute).contains(instanceHandle)) {
+      mapping.get(session).put(topicRoute, instanceHandle);
+    }
   }
 
   /**
