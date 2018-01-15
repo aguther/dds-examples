@@ -39,10 +39,12 @@ import com.rti.dds.infrastructure.StringSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import java.io.Closeable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -153,7 +155,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         Direction.OUT,
         data.topic_name,
         data.type_name,
-        data.partition.name
+        convertPartitionsToList(data.partition.name)
     );
   }
 
@@ -174,7 +176,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         Direction.OUT,
         data.topic_name,
         data.type_name,
-        data.partition.name
+        convertPartitionsToList(data.partition.name)
     );
   }
 
@@ -195,7 +197,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         Direction.OUT,
         data.topic_name,
         data.type_name,
-        data.partition.name
+        convertPartitionsToList(data.partition.name)
     );
   }
 
@@ -216,7 +218,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         Direction.IN,
         data.topic_name,
         data.type_name,
-        data.partition.name
+        convertPartitionsToList(data.partition.name)
     );
   }
 
@@ -237,7 +239,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         Direction.IN,
         data.topic_name,
         data.type_name,
-        data.partition.name
+        convertPartitionsToList(data.partition.name)
     );
   }
 
@@ -258,7 +260,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         Direction.IN,
         data.topic_name,
         data.type_name,
-        data.partition.name
+        convertPartitionsToList(data.partition.name)
     );
   }
 
@@ -276,34 +278,20 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final Direction direction,
       final String topicName,
       final String typeName,
-      final StringSeq partitions
+      final List<String> partitions
   ) {
     synchronized (mapping) {
-      // create routes for all partitions we discovered
-      if (partitions.isEmpty()) {
+      for (Object partition : partitions) {
         // ignore partition?
-        if (ignorePartition(topicName, DEFAULT_PARTITION)) {
-          return;
+        if (ignorePartition(topicName, partition.toString())) {
+          continue;
         }
         // add instance handle to map
         addInstanceHandleToMap(
             instanceHandle,
-            new Session(topicName, DEFAULT_PARTITION),
+            new Session(topicName, partition.toString()),
             new TopicRoute(direction, topicName, typeName)
         );
-      } else {
-        for (Object partition : partitions) {
-          // ignore partition?
-          if (ignorePartition(topicName, partition.toString())) {
-            continue;
-          }
-          // add instance handle to map
-          addInstanceHandleToMap(
-              instanceHandle,
-              new Session(topicName, partition.toString()),
-              new TopicRoute(direction, topicName, typeName)
-          );
-        }
       }
     }
   }
@@ -322,59 +310,34 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final Direction direction,
       final String topicName,
       final String typeName,
-      final StringSeq partitions
+      final List<String> partitions
   ) {
     synchronized (mapping) {
-      // create routes for all partitions we discovered
-      if (partitions.isEmpty()) {
-        for (Session session : ImmutableList.copyOf(mappingReverse.get(instanceHandle))) {
-          if (!(DEFAULT_PARTITION).equals(session.getPartition())) {
-            // remove instance handles from map
-            removeInstanceHandleFromMap(
-                instanceHandle,
-                session,
-                new TopicRoute(direction, topicName, typeName)
-            );
-          }
+      // remove routes for partitions that no longer exist
+      for (Session session : ImmutableList.copyOf(mappingReverse.get(instanceHandle))) {
+        // determine if partition of session is still active
+        if (!partitions.contains(session.getPartition())) {
+          // remove instance handles from map
+          removeInstanceHandleFromMap(
+              instanceHandle,
+              session,
+              new TopicRoute(direction, topicName, typeName)
+          );
         }
+      }
+      // add routes for partitions that are new
+      for (Object partition : partitions) {
         // ignore partition?
-        if (ignorePartition(topicName, DEFAULT_PARTITION)
-            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, DEFAULT_PARTITION))) {
-          return;
+        if (ignorePartition(topicName, partition.toString())
+            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition.toString()))) {
+          continue;
         }
         // add instance handle to map
         addInstanceHandleToMap(
             instanceHandle,
-            new Session(topicName, DEFAULT_PARTITION),
+            new Session(topicName, partition.toString()),
             new TopicRoute(direction, topicName, typeName)
         );
-      } else {
-        // remove routes for partitions that no longer exist
-        for (Session session : ImmutableList.copyOf(mappingReverse.get(instanceHandle))) {
-          // determine if partition of session is still active
-          if (!partitions.contains(session.getPartition())) {
-            // remove instance handles from map
-            removeInstanceHandleFromMap(
-                instanceHandle,
-                session,
-                new TopicRoute(direction, topicName, typeName)
-            );
-          }
-        }
-        // add routes for partitions that are new
-        for (Object partition : partitions) {
-          // ignore partition?
-          if (ignorePartition(topicName, partition.toString())
-              || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition.toString()))) {
-            continue;
-          }
-          // add instance handle to map
-          addInstanceHandleToMap(
-              instanceHandle,
-              new Session(topicName, partition.toString()),
-              new TopicRoute(direction, topicName, typeName)
-          );
-        }
       }
     }
   }
@@ -393,34 +356,21 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final Direction direction,
       final String topicName,
       final String typeName,
-      final StringSeq partitions
+      final List<String> partitions
   ) {
     synchronized (mapping) {
       // delete routes for all partitions we lost
-      if (partitions.isEmpty()) {
+      for (Object partition : partitions) {
         // ignore partition?
-        if (ignorePartition(topicName, DEFAULT_PARTITION)) {
+        if (ignorePartition(topicName, partition.toString())) {
           return;
         }
         // remove instance handle from map
         removeInstanceHandleFromMap(
             instanceHandle,
-            new Session(topicName, DEFAULT_PARTITION),
+            new Session(topicName, partition.toString()),
             new TopicRoute(direction, topicName, typeName)
         );
-      } else {
-        for (Object partition : partitions) {
-          // ignore partition?
-          if (ignorePartition(topicName, partition.toString())) {
-            return;
-          }
-          // remove instance handle from map
-          removeInstanceHandleFromMap(
-              instanceHandle,
-              new Session(topicName, partition.toString()),
-              new TopicRoute(direction, topicName, typeName)
-          );
-        }
       }
     }
   }
@@ -684,5 +634,34 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         }
       }
     });
+  }
+
+  /**
+   * Convert the sequence with partitions into a list with partitions.
+   * In case the sequence is empty, add the default partition which equals to ''.
+   *
+   * @param stringSeq String sequence with partitions
+   * @return List of partitions
+   */
+  private List<String> convertPartitionsToList(
+      StringSeq stringSeq
+  ) {
+    // check argument
+    checkNotNull(stringSeq, "String sequence must not be null!");
+
+    // create list with partitions
+    List<String> list = new ArrayList<>(stringSeq.size());
+
+    // when partition is empty add default partition, otherwise copy items
+    if (stringSeq.isEmpty()) {
+      list.add(DEFAULT_PARTITION);
+    } else {
+      for (Object item : stringSeq) {
+        list.add((String) item);
+      }
+    }
+
+    // return result
+    return list;
   }
 }
