@@ -137,7 +137,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
         dataReader.read_next_sample_untyped(sample, sampleInfo);
 
         if (sampleInfo.valid_data) {
-          // decide if publication was modified or discovered
+          // decide if subscription was modified or discovered
           boolean discovered = !sampleCache.containsKey(sampleInfo.instance_handle);
 
           // cache sample for the lost event
@@ -228,7 +228,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           // copy sample info
           sampleInfo.copy_from(sampleInfoSeq.get(i));
 
-          // publication data does not need copy
+          // subscription data does not need copy
           SubscriptionBuiltinTopicData sample = (SubscriptionBuiltinTopicData) sampleSeq.get(i);
 
           // invoke listener if provided
