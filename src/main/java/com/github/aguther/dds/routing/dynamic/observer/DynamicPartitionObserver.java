@@ -281,15 +281,15 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final List<String> partitions
   ) {
     synchronized (mapping) {
-      for (Object partition : partitions) {
+      for (String partition : partitions) {
         // ignore partition?
-        if (ignorePartition(topicName, partition.toString())) {
+        if (ignorePartition(topicName, partition)) {
           continue;
         }
         // add instance handle to map
         addInstanceHandleToMap(
             instanceHandle,
-            new Session(topicName, partition.toString()),
+            new Session(topicName, partition),
             new TopicRoute(direction, topicName, typeName)
         );
       }
@@ -326,16 +326,16 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         }
       }
       // add routes for partitions that are new
-      for (Object partition : partitions) {
+      for (String partition : partitions) {
         // ignore partition?
-        if (ignorePartition(topicName, partition.toString())
-            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition.toString()))) {
+        if (ignorePartition(topicName, partition)
+            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition))) {
           continue;
         }
         // add instance handle to map
         addInstanceHandleToMap(
             instanceHandle,
-            new Session(topicName, partition.toString()),
+            new Session(topicName, partition),
             new TopicRoute(direction, topicName, typeName)
         );
       }
@@ -360,15 +360,15 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   ) {
     synchronized (mapping) {
       // delete routes for all partitions we lost
-      for (Object partition : partitions) {
+      for (String partition : partitions) {
         // ignore partition?
-        if (ignorePartition(topicName, partition.toString())) {
+        if (ignorePartition(topicName, partition)) {
           return;
         }
         // remove instance handle from map
         removeInstanceHandleFromMap(
             instanceHandle,
-            new Session(topicName, partition.toString()),
+            new Session(topicName, partition),
             new TopicRoute(direction, topicName, typeName)
         );
       }
