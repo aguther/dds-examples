@@ -146,27 +146,9 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           // call listeners
           synchronized (listeners) {
             if (discovered) {
-              // log information
-              logListenerInvocation("subscriptionDiscovered", sampleInfo, sample);
-              // iterate over listeners and invoke them
-              for (SubscriptionObserverListener listener : listeners) {
-                listener.subscriptionDiscovered(
-                    domainParticipant,
-                    sampleInfo.instance_handle,
-                    sample
-                );
-              }
+              invokeSubscriptionDiscovered(sample, sampleInfo);
             } else {
-              // log information
-              logListenerInvocation("subscriptionModified", sampleInfo, sample);
-              // iterate over listeners and invoke them
-              for (SubscriptionObserverListener listener : listeners) {
-                listener.subscriptionModified(
-                    domainParticipant,
-                    sampleInfo.instance_handle,
-                    sample
-                );
-              }
+              invokeSubscriptionModified(sample, sampleInfo);
             }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
@@ -175,16 +157,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
 
           // call listeners
           synchronized (listeners) {
-            // log information
-            logListenerInvocation("subscriptionLost", sampleInfo, sample);
-            // iterate over listeners and invoke them
-            for (SubscriptionObserverListener listener : listeners) {
-              listener.subscriptionLost(
-                  domainParticipant,
-                  sampleInfo.instance_handle,
-                  sample
-              );
-            }
+            invokeSubscriptionLost(sample, sampleInfo);
           }
         }
       } catch (RETCODE_NO_DATA noData) {
@@ -195,6 +168,75 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
         return;
       }
     } while (true);
+  }
+
+  /**
+   * Informs the listeners about the discovery of a subscription.
+   *
+   * @param sample subscription data
+   * @param sampleInfo subscription info
+   */
+  private void invokeSubscriptionDiscovered(
+      SubscriptionBuiltinTopicData sample,
+      SampleInfo sampleInfo
+  ) {
+    // log information
+    logListenerInvocation("subscriptionDiscovered", sampleInfo, sample);
+
+    // iterate over listeners and invoke them
+    for (SubscriptionObserverListener listener : listeners) {
+      listener.subscriptionDiscovered(
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
+      );
+    }
+  }
+
+  /**
+   * Informs the listeners about the modification of a subscription.
+   *
+   * @param sample subscription data
+   * @param sampleInfo subscription info
+   */
+  private void invokeSubscriptionModified(
+      SubscriptionBuiltinTopicData sample,
+      SampleInfo sampleInfo
+  ) {
+    // log information
+    logListenerInvocation("subscriptionModified", sampleInfo, sample);
+
+    // iterate over listeners and invoke them
+    for (SubscriptionObserverListener listener : listeners) {
+      listener.subscriptionModified(
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
+      );
+    }
+  }
+
+  /**
+   * Informs the listeners about the loss of a subscription.
+   *
+   * @param sample subscription data
+   * @param sampleInfo subscription info
+   */
+  private void invokeSubscriptionLost(
+      SubscriptionBuiltinTopicData sample,
+      SampleInfo sampleInfo
+  ) {
+    // log information
+    logListenerInvocation("subscriptionLost", sampleInfo, sample);
+
+    // iterate over listeners and invoke them
+    for (SubscriptionObserverListener listener : listeners) {
+      listener.subscriptionLost(
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
+      );
+    }
   }
 
   /**

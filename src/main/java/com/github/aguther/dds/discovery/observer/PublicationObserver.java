@@ -146,27 +146,9 @@ public class PublicationObserver extends BuiltinTopicObserver {
           // call listeners
           synchronized (listeners) {
             if (discovered) {
-              // log information
-              logListenerInvocation("publicationDiscovered", sampleInfo, sample);
-              // iterate over listeners and invoke them
-              for (PublicationObserverListener listener : listeners) {
-                listener.publicationDiscovered(
-                    domainParticipant,
-                    sampleInfo.instance_handle,
-                    sample
-                );
-              }
+              invokePublicationDiscovered(sample, sampleInfo);
             } else {
-              // log information
-              logListenerInvocation("publicationModified", sampleInfo, sample);
-              // iterate over listeners and invoke them
-              for (PublicationObserverListener listener : listeners) {
-                listener.publicationModified(
-                    domainParticipant,
-                    sampleInfo.instance_handle,
-                    sample
-                );
-              }
+              invokePublicationModified(sample, sampleInfo);
             }
           }
         } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
@@ -175,16 +157,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
 
           // call listeners
           synchronized (listeners) {
-            // log information
-            logListenerInvocation("publicationLost", sampleInfo, sample);
-            // iterate over listeners and invoke them
-            for (PublicationObserverListener listener : listeners) {
-              listener.publicationLost(
-                  domainParticipant,
-                  sampleInfo.instance_handle,
-                  sample
-              );
-            }
+            invokePublicationLost(sample, sampleInfo);
           }
         }
       } catch (RETCODE_NO_DATA noData) {
@@ -195,6 +168,75 @@ public class PublicationObserver extends BuiltinTopicObserver {
         return;
       }
     } while (true);
+  }
+
+  /**
+   * Informs the listeners about the discovery of a publication.
+   *
+   * @param sample publication data
+   * @param sampleInfo publication info
+   */
+  private void invokePublicationDiscovered(
+      PublicationBuiltinTopicData sample,
+      SampleInfo sampleInfo
+  ) {
+    // log information
+    logListenerInvocation("publicationDiscovered", sampleInfo, sample);
+
+    // iterate over listeners and invoke them
+    for (PublicationObserverListener listener : listeners) {
+      listener.publicationDiscovered(
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
+      );
+    }
+  }
+
+  /**
+   * Informs the listeners about the modification of a publication.
+   *
+   * @param sample publication data
+   * @param sampleInfo publication info
+   */
+  private void invokePublicationModified(
+      PublicationBuiltinTopicData sample,
+      SampleInfo sampleInfo
+  ) {
+    // log information
+    logListenerInvocation("publicationModified", sampleInfo, sample);
+
+    // iterate over listeners and invoke them
+    for (PublicationObserverListener listener : listeners) {
+      listener.publicationModified(
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
+      );
+    }
+  }
+
+  /**
+   * Informs the listeners about the loss of a publication.
+   *
+   * @param sample publication data
+   * @param sampleInfo publication info
+   */
+  private void invokePublicationLost(
+      PublicationBuiltinTopicData sample,
+      SampleInfo sampleInfo
+  ) {
+    // log information
+    logListenerInvocation("publicationLost", sampleInfo, sample);
+
+    // iterate over listeners and invoke them
+    for (PublicationObserverListener listener : listeners) {
+      listener.publicationLost(
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
+      );
+    }
   }
 
   /**
