@@ -39,11 +39,11 @@ import com.rti.dds.subscription.ViewStateKind;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataSeq;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionObserver.class);
 
   private final Map<InstanceHandle_t, SubscriptionBuiltinTopicData> sampleCache;
-  private final List<SubscriptionObserverListener> listenerList;
+  private final Set<SubscriptionObserverListener> listeners;
 
   /**
    * Creates a new observer for subscriptions.
@@ -71,13 +71,13 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
     // initialize sample cache
     sampleCache = Collections.synchronizedMap(new HashMap<>());
 
-    // create list for listenerList with lock
-    listenerList = Collections.synchronizedList(new ArrayList<>());
+    // create set for listeners with lock
+    listeners = Collections.synchronizedSet(new HashSet<>());
   }
 
   @Override
   public void close() {
-    listenerList.clear();
+    listeners.clear();
     super.close();
   }
 
@@ -104,12 +104,11 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   ) {
     checkNotNull(listener, "Listener must not be null");
 
-    synchronized (listenerList) {
-      if (!listenerList.contains(listener)) {
-        listenerList.add(listener);
-        if (deliverReadSamples) {
-          deliverReadSamples(listener);
-        }
+    synchronized (listeners) {
+      listeners.add(listener);
+
+      if (deliverReadSamples) {
+        deliverReadSamples(listener);
       }
     }
   }
@@ -123,7 +122,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       final SubscriptionObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
-    listenerList.remove(listener);
+    listeners.remove(listener);
   }
 
   @Override
@@ -145,12 +144,12 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           sampleCache.put(sampleInfo.instance_handle, sample);
 
           // call listeners
-          synchronized (listenerList) {
+          synchronized (listeners) {
             if (discovered) {
               // log information
               logListenerInvocation("subscriptionDiscovered", sampleInfo, sample);
               // iterate over listeners and invoke them
-              for (SubscriptionObserverListener listener : listenerList) {
+              for (SubscriptionObserverListener listener : listeners) {
                 listener.subscriptionDiscovered(
                     domainParticipant,
                     sampleInfo.instance_handle,
@@ -161,7 +160,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
               // log information
               logListenerInvocation("subscriptionModified", sampleInfo, sample);
               // iterate over listeners and invoke them
-              for (SubscriptionObserverListener listener : listenerList) {
+              for (SubscriptionObserverListener listener : listeners) {
                 listener.subscriptionModified(
                     domainParticipant,
                     sampleInfo.instance_handle,
@@ -175,11 +174,11 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
           sample = sampleCache.remove(sampleInfo.instance_handle);
 
           // call listeners
-          synchronized (listenerList) {
+          synchronized (listeners) {
             // log information
             logListenerInvocation("subscriptionLost", sampleInfo, sample);
             // iterate over listeners and invoke them
-            for (SubscriptionObserverListener listener : listenerList) {
+            for (SubscriptionObserverListener listener : listeners) {
               listener.subscriptionLost(
                   domainParticipant,
                   sampleInfo.instance_handle,

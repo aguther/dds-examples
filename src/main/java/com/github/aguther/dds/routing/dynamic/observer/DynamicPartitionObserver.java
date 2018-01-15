@@ -24,6 +24,8 @@
 
 package com.github.aguther.dds.routing.dynamic.observer;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.github.aguther.dds.discovery.observer.PublicationObserverListener;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
@@ -37,11 +39,12 @@ import com.rti.dds.infrastructure.StringSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import java.io.Closeable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.slf4j.Logger;
@@ -64,8 +67,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   private final Map<Session, Multimap<TopicRoute, InstanceHandle_t>> mapping;
   private final Multimap<InstanceHandle_t, Session> mappingReverse;
-  private final List<DynamicPartitionObserverFilter> filterList;
-  private final List<DynamicPartitionObserverListener> listenerList;
+  private final Set<DynamicPartitionObserverFilter> filters;
+  private final Set<DynamicPartitionObserverListener> listeners;
   private final ExecutorService listenerExecutor;
 
   /**
@@ -74,14 +77,14 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   public DynamicPartitionObserver() {
     mapping = Collections.synchronizedMap(new HashMap<>());
     mappingReverse = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
-    filterList = Collections.synchronizedList(new ArrayList<>());
-    listenerList = Collections.synchronizedList(new ArrayList<>());
+    filters = Collections.synchronizedSet(new LinkedHashSet<>());
+    listeners = Collections.synchronizedSet(new HashSet<>());
     listenerExecutor = Executors.newSingleThreadExecutor();
   }
 
   @Override
   public void close() {
-    listenerList.clear();
+    listeners.clear();
     listenerExecutor.shutdownNow();
   }
 
@@ -93,11 +96,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   public void addListener(
       final DynamicPartitionObserverListener listener
   ) {
-    synchronized (listenerList) {
-      if (!listenerList.contains(listener)) {
-        listenerList.add(listener);
-      }
-    }
+    checkNotNull(listener, "Listener must not be null");
+    listeners.add(listener);
   }
 
   /**
@@ -108,7 +108,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   public void removeListener(
       final DynamicPartitionObserverListener listener
   ) {
-    listenerList.remove(listener);
+    checkNotNull(listener, "Listener must not be null");
+    listeners.remove(listener);
   }
 
   /**
@@ -119,11 +120,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   public void addFilter(
       final DynamicPartitionObserverFilter filter
   ) {
-    synchronized (filterList) {
-      if (!filterList.contains(filter)) {
-        filterList.add(filter);
-      }
-    }
+    checkNotNull(filter, "Filter must not be null");
+    filters.add(filter);
   }
 
   /**
@@ -134,7 +132,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
   public void removeFilter(
       final DynamicPartitionObserverFilter filter
   ) {
-    filterList.remove(filter);
+    checkNotNull(filter, "Filter must not be null");
+    filters.remove(filter);
   }
 
   @Override
@@ -438,8 +437,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final InstanceHandle_t instanceHandle,
       final PublicationBuiltinTopicData data
   ) {
-    synchronized (filterList) {
-      for (DynamicPartitionObserverFilter filter : filterList) {
+    synchronized (filters) {
+      for (DynamicPartitionObserverFilter filter : filters) {
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
           if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
@@ -468,8 +467,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final InstanceHandle_t instanceHandle,
       final SubscriptionBuiltinTopicData data
   ) {
-    synchronized (filterList) {
-      for (DynamicPartitionObserverFilter filter : filterList) {
+    synchronized (filters) {
+      for (DynamicPartitionObserverFilter filter : filters) {
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
           if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
@@ -497,8 +496,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       final String topicName,
       final String partition
   ) {
-    synchronized (filterList) {
-      for (DynamicPartitionObserverFilter filter : filterList) {
+    synchronized (filters) {
+      for (DynamicPartitionObserverFilter filter : filters) {
         if (filter.ignorePartition(topicName, partition)) {
           if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
@@ -596,8 +595,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerList) {
-        for (DynamicPartitionObserverListener listener : listenerList) {
+      synchronized (listeners) {
+        for (DynamicPartitionObserverListener listener : listeners) {
           listener.createSession(session);
         }
       }
@@ -621,8 +620,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerList) {
-        for (DynamicPartitionObserverListener listener : listenerList) {
+      synchronized (listeners) {
+        for (DynamicPartitionObserverListener listener : listeners) {
           listener.deleteSession(session);
         }
       }
@@ -650,8 +649,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerList) {
-        for (DynamicPartitionObserverListener listener : listenerList) {
+      synchronized (listeners) {
+        for (DynamicPartitionObserverListener listener : listeners) {
           listener.createTopicRoute(session, topicRoute);
         }
       }
@@ -679,8 +678,8 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
     }
     // invoke listener
     listenerExecutor.submit(() -> {
-      synchronized (listenerList) {
-        for (DynamicPartitionObserverListener listener : listenerList) {
+      synchronized (listeners) {
+        for (DynamicPartitionObserverListener listener : listeners) {
           listener.deleteTopicRoute(session, topicRoute);
         }
       }
