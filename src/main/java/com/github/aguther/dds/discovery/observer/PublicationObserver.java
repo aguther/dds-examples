@@ -29,20 +29,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.RETCODE_ERROR;
-import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
-import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import com.rti.dds.subscription.SampleInfoSeq;
-import com.rti.dds.subscription.SampleStateKind;
-import com.rti.dds.subscription.ViewStateKind;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,10 +64,10 @@ public class PublicationObserver extends BuiltinTopicObserver {
     super(domainParticipant, PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME);
 
     // initialize sample cache
-    sampleCache = Collections.synchronizedMap(new HashMap<>());
+    sampleCache = new HashMap<>();
 
     // create set for listeners with lock
-    listeners = Collections.synchronizedSet(new HashSet<>());
+    listeners = new HashSet<>();
   }
 
   @Override
@@ -108,7 +103,13 @@ public class PublicationObserver extends BuiltinTopicObserver {
       listeners.add(listener);
 
       if (deliverReadSamples) {
-        deliverReadSamples(listener);
+        for (Entry<InstanceHandle_t, PublicationBuiltinTopicData> entry : sampleCache.entrySet()) {
+          listener.publicationDiscovered(
+              domainParticipant,
+              entry.getKey(),
+              entry.getValue()
+          );
+        }
       }
     }
   }
@@ -122,7 +123,9 @@ public class PublicationObserver extends BuiltinTopicObserver {
       final PublicationObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
-    listeners.remove(listener);
+    synchronized (listeners) {
+      listeners.remove(listener);
+    }
   }
 
   @Override
@@ -136,27 +139,25 @@ public class PublicationObserver extends BuiltinTopicObserver {
         // read next sample
         dataReader.read_next_sample_untyped(sample, sampleInfo);
 
-        if (sampleInfo.valid_data) {
-          // decide if publication was modified or discovered
-          boolean discovered = !sampleCache.containsKey(sampleInfo.instance_handle);
+        synchronized (listeners) {
+          if (sampleInfo.valid_data) {
+            // decide if publication was modified or discovered
+            boolean discovered = !sampleCache.containsKey(sampleInfo.instance_handle);
 
-          // cache sample for the lost event
-          sampleCache.put(sampleInfo.instance_handle, sample);
+            // cache sample for the lost event
+            sampleCache.put(sampleInfo.instance_handle, sample);
 
-          // call listeners
-          synchronized (listeners) {
+            // call listeners
             if (discovered) {
               invokePublicationDiscovered(sample, sampleInfo);
             } else {
               invokePublicationModified(sample, sampleInfo);
             }
-          }
-        } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
-          // get sample from cached data
-          sample = sampleCache.remove(sampleInfo.instance_handle);
+          } else if (sampleInfo.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE) {
+            // get sample from cached data
+            sample = sampleCache.remove(sampleInfo.instance_handle);
 
-          // call listeners
-          synchronized (listeners) {
+            // call listeners
             invokePublicationLost(sample, sampleInfo);
           }
         }
@@ -180,16 +181,18 @@ public class PublicationObserver extends BuiltinTopicObserver {
       PublicationBuiltinTopicData sample,
       SampleInfo sampleInfo
   ) {
-    // log information
-    logListenerInvocation("publicationDiscovered", sampleInfo, sample);
+    synchronized (listeners) {
+      // log information
+      logListenerInvocation("publicationDiscovered", sampleInfo, sample);
 
-    // iterate over listeners and invoke them
-    for (PublicationObserverListener listener : listeners) {
-      listener.publicationDiscovered(
-          domainParticipant,
-          sampleInfo.instance_handle,
-          sample
-      );
+      // iterate over listeners and invoke them
+      for (PublicationObserverListener listener : listeners) {
+        listener.publicationDiscovered(
+            domainParticipant,
+            sampleInfo.instance_handle,
+            sample
+        );
+      }
     }
   }
 
@@ -203,16 +206,18 @@ public class PublicationObserver extends BuiltinTopicObserver {
       PublicationBuiltinTopicData sample,
       SampleInfo sampleInfo
   ) {
-    // log information
-    logListenerInvocation("publicationModified", sampleInfo, sample);
+    synchronized (listeners) {
+      // log information
+      logListenerInvocation("publicationModified", sampleInfo, sample);
 
-    // iterate over listeners and invoke them
-    for (PublicationObserverListener listener : listeners) {
-      listener.publicationModified(
-          domainParticipant,
-          sampleInfo.instance_handle,
-          sample
-      );
+      // iterate over listeners and invoke them
+      for (PublicationObserverListener listener : listeners) {
+        listener.publicationModified(
+            domainParticipant,
+            sampleInfo.instance_handle,
+            sample
+        );
+      }
     }
   }
 
@@ -226,71 +231,18 @@ public class PublicationObserver extends BuiltinTopicObserver {
       PublicationBuiltinTopicData sample,
       SampleInfo sampleInfo
   ) {
-    // log information
-    logListenerInvocation("publicationLost", sampleInfo, sample);
+    synchronized (listeners) {
+      // log information
+      logListenerInvocation("publicationLost", sampleInfo, sample);
 
-    // iterate over listeners and invoke them
-    for (PublicationObserverListener listener : listeners) {
-      listener.publicationLost(
-          domainParticipant,
-          sampleInfo.instance_handle,
-          sample
-      );
-    }
-  }
-
-  /**
-   * Reads and delivers already read samples for new listeners.
-   *
-   * @param listener the listener
-   */
-  private void deliverReadSamples(
-      final PublicationObserverListener listener
-  ) {
-    // variables to store data
-    SampleInfo sampleInfo = new SampleInfo();
-    SampleInfoSeq sampleInfoSeq = new SampleInfoSeq();
-    PublicationBuiltinTopicDataSeq sampleSeq = new PublicationBuiltinTopicDataSeq();
-
-    try {
-      // read samples that have already been read
-      dataReader.read_untyped(
-          sampleSeq,
-          sampleInfoSeq,
-          Integer.MAX_VALUE,
-          SampleStateKind.READ_SAMPLE_STATE,
-          ViewStateKind.ANY_VIEW_STATE,
-          InstanceStateKind.ANY_INSTANCE_STATE
-      );
-
-      // iterate over samples
-      for (int i = 0; i < sampleSeq.size(); i++) {
-        // is data valid?
-        if (sampleInfoSeq.get(i).valid_data) {
-          // copy sample info
-          sampleInfo.copy_from(sampleInfoSeq.get(i));
-
-          // publication data does not need copy
-          PublicationBuiltinTopicData sample = (PublicationBuiltinTopicData) sampleSeq.get(i);
-
-          // invoke listener
-          listener.publicationDiscovered(
-              domainParticipant,
-              sampleInfo.instance_handle,
-              sample
-          );
-        }
+      // iterate over listeners and invoke them
+      for (PublicationObserverListener listener : listeners) {
+        listener.publicationLost(
+            domainParticipant,
+            sampleInfo.instance_handle,
+            sample
+        );
       }
-    } catch (RETCODE_NOT_ENABLED notEnabled) {
-      // yet there is no way to directly detect that the domain participant is not yet enabled
-      // and therefore this error is expected when a listener is added but the related domain participant
-      // is not yet enabled
-    } catch (RETCODE_NO_DATA noData) {
-      LOGGER.trace("No more data available to read");
-    } catch (RETCODE_ERROR error) {
-      LOGGER.error("Error getting already read samples; {}", error);
-    } finally {
-      dataReader.return_loan_untyped(sampleSeq, sampleInfoSeq);
     }
   }
 

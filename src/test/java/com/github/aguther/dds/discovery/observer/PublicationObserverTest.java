@@ -26,7 +26,6 @@ package com.github.aguther.dds.discovery.observer;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -39,7 +38,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.RETCODE_ERROR;
-import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.infrastructure.RETCODE_NO_DATA;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq;
@@ -260,23 +258,32 @@ public class PublicationObserverTest {
   }
 
   @Test(timeout = 10000)
-  public void testDeliverReadSamples() {
-
-    // add another listener
+  public void testAddListenerWithReadSamples() {
+    // create another listener
     PublicationObserverListener listener = mock(PublicationObserverListener.class);
 
-    sampleInfo.valid_data = true;
+    // prepare answers
+    doAnswer(
+        invocation -> {
+          SampleInfo sampleInfo = invocation.getArgument(1);
+          sampleInfo.valid_data = true;
+          sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
+          return null;
+        }
+    ).doThrow(new RETCODE_NO_DATA()
+    ).when(dataReader).read_next_sample_untyped(
+        eq(publicationBuiltinTopicData),
+        eq(sampleInfo)
+    );
 
-    when(publicationBuiltinTopicDataSeq.size()).thenReturn(1);
-    when(publicationBuiltinTopicDataSeq.get(anyInt())).thenReturn(publicationBuiltinTopicData);
-    when(sampleInfoSeq.size()).thenReturn(1);
-    when(sampleInfoSeq.get(anyInt())).thenReturn(sampleInfo);
+    // execute run method so sample is stored in cache
+    publicationObserver.run();
 
     // execute tested method
     publicationObserver.addListener(listener);
 
     // verify results
-    verify(publicationObserverListener, times(0)).publicationDiscovered(
+    verify(publicationObserverListener, times(1)).publicationDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
@@ -293,59 +300,4 @@ public class PublicationObserverTest {
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
   }
-
-  @Test(timeout = 10000)
-  public void testDeliverReadSamplesNotEnabled() {
-    testDeliverReadSamplesWithException(new RETCODE_NOT_ENABLED());
-  }
-
-  @Test(timeout = 10000)
-  public void testDeliverReadSamplesNoData() {
-    testDeliverReadSamplesWithException(new RETCODE_NO_DATA());
-  }
-
-  @Test(timeout = 10000)
-  public void testDeliverReadSamplesError() {
-    testDeliverReadSamplesWithException(new RETCODE_ERROR());
-  }
-
-  private void testDeliverReadSamplesWithException(
-      RETCODE_ERROR exception
-  ) {
-    // add another listener
-    PublicationObserverListener listener = mock(PublicationObserverListener.class);
-
-    // prepare answers
-    doThrow(exception)
-        .when(dataReader).read_untyped(
-        any(),
-        any(),
-        anyInt(),
-        anyInt(),
-        anyInt(),
-        anyInt()
-    );
-
-    // execute tested method
-    publicationObserver.addListener(listener);
-
-    // verify results
-    verify(publicationObserverListener, times(0)).publicationDiscovered(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
-    verify(publicationObserverListener, times(0)).publicationLost(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
-    verify(listener, times(0)).publicationDiscovered(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
-    verify(listener, times(0)).publicationLost(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
-  }
 }
-
