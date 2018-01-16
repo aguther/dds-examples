@@ -88,7 +88,7 @@
             <element>
               <name>dynamic_routing_adapter.configuration.Shape.qos.topic_route</name>
               <value>
-                <![CDATA[<publish_with_original_info>true</publish_with_original_info><publish_with_original_timestamp>true</publish_with_original_timestamp>]]>
+                <![CDATA[<route_types>true</route_types><publish_with_original_info>true</publish_with_original_info><publish_with_original_timestamp>true</publish_with_original_timestamp>]]>
               </value>
             </element>
             <element>
