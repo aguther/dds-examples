@@ -111,7 +111,7 @@
   <domain_participant_library name="DomainParticipantLibrary">
     <!-- Shape -->
     <domain_participant name="ShapePublisher" domain_ref="DomainLibrary::Shape">
-      <participant_qos>
+      <participant_qos base_name="QosLibrary::Base">
         <participant_name>
           <name>ShapePublisher</name>
         </participant_name>
@@ -123,7 +123,7 @@
       </publisher>
     </domain_participant>
     <domain_participant name="ShapeSubscriber" domain_ref="DomainLibrary::Shape">
-      <participant_qos>
+      <participant_qos base_name="QosLibrary::Base">
         <participant_name>
           <name>ShapeSubscriber</name>
         </participant_name>
@@ -137,7 +137,7 @@
 
     <!-- RequestReply -->
     <domain_participant name="RequestReplyRequester" domain_ref="DomainLibrary::RequestReply">
-      <participant_qos>
+      <participant_qos base_name="QosLibrary::Base">
         <participant_name>
           <name>RequestReplyRequester</name>
         </participant_name>
@@ -153,7 +153,7 @@
 
     <!-- Mutable -->
     <domain_participant name="MutablePublisher" domain_ref="DomainLibrary::Mutable_v1">
-      <participant_qos>
+      <participant_qos base_name="QosLibrary::Base">
         <participant_name>
           <name>MutablePublisher</name>
         </participant_name>
@@ -165,7 +165,7 @@
       </publisher>
     </domain_participant>
     <domain_participant name="MutableSubscriber" domain_ref="DomainLibrary::Mutable_v2">
-      <participant_qos>
+      <participant_qos base_name="QosLibrary::Base">
         <participant_name>
           <name>MutableSubscriber</name>
         </participant_name>
