@@ -60,7 +60,7 @@ public interface PublicationObserverListener {
   );
 
   /**
-   * Invoked when a new publication has been discovered.
+   * Invoked when a publication has been lost.
    *
    * @param domainParticipant domain participant used for discovery
    * @param instanceHandle instance handle of publication for identification
