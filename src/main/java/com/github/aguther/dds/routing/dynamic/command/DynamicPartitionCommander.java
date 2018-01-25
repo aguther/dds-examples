@@ -194,8 +194,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendCreateSession(
-                routingServiceCommandInterface,
-                targetRoutingService,
                 session
             )) {
               activeCommands.remove(command).cancel(false);
@@ -234,8 +232,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendDeleteSession(
-                routingServiceCommandInterface,
-                targetRoutingService,
                 session
             )) {
               activeCommands.remove(command).cancel(false);
@@ -277,8 +273,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendCreateTopicRoute(
-                routingServiceCommandInterface,
-                targetRoutingService,
                 session,
                 topicRoute
             )) {
@@ -321,8 +315,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
             if (sendDeleteTopicRoute(
-                routingServiceCommandInterface,
-                targetRoutingService,
                 session,
                 topicRoute
             )) {
@@ -342,14 +334,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Creates and sends a create session command.
    *
-   * @param commandHelper routing service command helper to use
-   * @param targetRoutingService target routing service
    * @param session session to create
    * @return true if session was successfully created, false if not
    */
   private boolean sendCreateSession(
-      final RoutingServiceCommandInterface commandHelper,
-      final String targetRoutingService,
       final Session session
   ) {
     // create request
@@ -363,7 +351,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
-        commandHelper,
         commandRequest,
         String.format(
             "entity='Session', topic='%s', partition='%s'",
@@ -376,14 +363,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Creates and sends a delete session command.
    *
-   * @param commandHelper routing service command helper to use
-   * @param targetRoutingService target routing service
    * @param session session to delete
    * @return true if session was successfully deleted, false if not
    */
   private boolean sendDeleteSession(
-      final RoutingServiceCommandInterface commandHelper,
-      final String targetRoutingService,
       final Session session
   ) {
     // create request
@@ -394,7 +377,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
-        commandHelper,
         commandRequest,
         String.format(
             "entity='Session', topic='%s', partition='%s'",
@@ -407,15 +389,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Creates and sends a create topic route command.
    *
-   * @param commandHelper routing service command helper to use
-   * @param targetRoutingService target routing service
    * @param session session of topic route
    * @param topicRoute topic route to create
    * @return true if topic route was successfully created, false if not
    */
   private boolean sendCreateTopicRoute(
-      final RoutingServiceCommandInterface commandHelper,
-      final String targetRoutingService,
       final Session session,
       final TopicRoute topicRoute
   ) {
@@ -431,7 +409,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
-        commandHelper,
         commandRequest,
         String.format(
             "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
@@ -446,15 +423,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Creates and sends a delete topic route command.
    *
-   * @param commandHelper routing service command helper to use
-   * @param targetRoutingService target routing service
    * @param session session of topic route
    * @param topicRoute topic route to delete
    * @return true if topic route was successfully deleted, false if not
    */
   private boolean sendDeleteTopicRoute(
-      final RoutingServiceCommandInterface commandHelper,
-      final String targetRoutingService,
       final Session session,
       final TopicRoute topicRoute
   ) {
@@ -467,7 +440,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // send request and return result
     return sendRequest(
-        commandHelper,
         commandRequest,
         String.format(
             "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
@@ -482,18 +454,16 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Sends a request, waits for the result and checks it.
    *
-   * @param commandInterface routing service command helper to use
    * @param commandRequest request to send
    * @param loggingFormat format string for logging
    * @return true if request was successful, false if not
    */
   private boolean sendRequest(
-      final RoutingServiceCommandInterface commandInterface,
       final CommandRequest commandRequest,
       final String loggingFormat
   ) {
     // send request and get response
-    CommandResponse commandResponse = commandInterface.sendRequest(
+    CommandResponse commandResponse = routingServiceCommandInterface.sendRequest(
         commandRequest,
         requestTimeout,
         requestTimeoutTimeUnit
