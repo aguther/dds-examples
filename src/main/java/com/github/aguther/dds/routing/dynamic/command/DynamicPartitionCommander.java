@@ -193,9 +193,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendCreateSession(
-                session
-            )) {
+            if (sendCreateSession(session)) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -231,9 +229,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendDeleteSession(
-                session
-            )) {
+            if (sendDeleteSession(session)) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -272,10 +268,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendCreateTopicRoute(
-                session,
-                topicRoute
-            )) {
+            if (sendCreateTopicRoute(session, topicRoute)) {
               activeCommands.remove(command).cancel(false);
             }
           },
@@ -314,10 +307,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendDeleteTopicRoute(
-                session,
-                topicRoute
-            )) {
+            if (sendDeleteTopicRoute(session, topicRoute)) {
               activeCommands.remove(command).cancel(false);
             }
           },
