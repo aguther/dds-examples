@@ -45,6 +45,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,30 +183,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         session.getPartition()
     );
 
-    synchronized (activeCommands) {
-      // create command
-      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, null);
-
-      // when another command is scheduled, cancel it
-      if (activeCommands.containsKey(command)) {
-        activeCommands.remove(command).cancel(false);
-      }
-
-      // schedule creation of session
-      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
-          () -> {
-            if (sendCreateSession(session)) {
-              activeCommands.remove(command).cancel(false);
-            }
-          },
-          0,
-          retryDelay,
-          retryDelayTimeUnit
-      );
-
-      // add command to scheduled commands
-      activeCommands.put(command, commandFuture);
-    }
+    // schedule creation of session
+    scheduleSessionCommand(this::sendCreateSession, session);
   }
 
   @Override
@@ -217,30 +197,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         session.getPartition()
     );
 
-    synchronized (activeCommands) {
-      // create command
-      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, null);
-
-      // when another command is scheduled, cancel it
-      if (activeCommands.containsKey(command)) {
-        activeCommands.remove(command).cancel(false);
-      }
-
-      // schedule creation of session
-      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
-          () -> {
-            if (sendDeleteSession(session)) {
-              activeCommands.remove(command).cancel(false);
-            }
-          },
-          0,
-          retryDelay,
-          retryDelayTimeUnit
-      );
-
-      // add command to scheduled commands
-      activeCommands.put(command, commandFuture);
-    }
+    // schedule deletion of session
+    scheduleSessionCommand(this::sendDeleteSession, session);
   }
 
   @Override
@@ -256,30 +214,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         topicRoute.getDirection()
     );
 
-    synchronized (activeCommands) {
-      // create command
-      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, topicRoute);
-
-      // when another command is scheduled, cancel it
-      if (activeCommands.containsKey(command)) {
-        activeCommands.remove(command).cancel(false);
-      }
-
-      // schedule creation of session
-      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
-          () -> {
-            if (sendCreateTopicRoute(session, topicRoute)) {
-              activeCommands.remove(command).cancel(false);
-            }
-          },
-          0,
-          retryDelay,
-          retryDelayTimeUnit
-      );
-
-      // add command to scheduled commands
-      activeCommands.put(command, commandFuture);
-    }
+    // schedule creation of topic route
+    scheduleTopicRouteCommand(this::sendCreateTopicRoute, session, topicRoute);
   }
 
   @Override
@@ -295,6 +231,58 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         topicRoute.getDirection()
     );
 
+    // schedule deletion of topic route
+    scheduleTopicRouteCommand(this::sendDeleteTopicRoute, session, topicRoute);
+  }
+
+  /**
+   * Schedules a session command.
+   *
+   * @param function function to be called
+   * @param session session
+   */
+  private void scheduleSessionCommand(
+      Function<Session, Boolean> function,
+      Session session
+  ) {
+    synchronized (activeCommands) {
+      // create command
+      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, null);
+
+      // when another command is scheduled, cancel it
+      if (activeCommands.containsKey(command)) {
+        activeCommands.remove(command).cancel(false);
+      }
+
+      // schedule creation of session
+      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
+          () -> {
+            if (function.apply(session)) {
+              activeCommands.remove(command).cancel(false);
+            }
+          },
+          0,
+          retryDelay,
+          retryDelayTimeUnit
+      );
+
+      // add command to scheduled commands
+      activeCommands.put(command, commandFuture);
+    }
+  }
+
+  /**
+   * Schedules a topic route command.
+   *
+   * @param function function to be called
+   * @param session session
+   * @param topicRoute topic route
+   */
+  private void scheduleTopicRouteCommand(
+      BiFunction<Session, TopicRoute, Boolean> function,
+      Session session,
+      TopicRoute topicRoute
+  ) {
     synchronized (activeCommands) {
       // create command
       SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, topicRoute);
@@ -307,7 +295,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (sendDeleteTopicRoute(session, topicRoute)) {
+            if (function.apply(session, topicRoute)) {
               activeCommands.remove(command).cancel(false);
             }
           },
