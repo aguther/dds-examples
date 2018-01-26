@@ -230,9 +230,9 @@ public class DynamicPartitionCommanderTest {
 
     commander.createSession(session);
 
-    verify(commanderProvider, timeout(5000).times(1))
+    verify(commanderProvider, timeout(5000).times(2))
         .getSessionParent(session);
-    verify(commanderProvider, timeout(5000).times(1))
+    verify(commanderProvider, timeout(5000).times(2))
         .getSessionConfiguration(session);
     verify(commandInterface, timeout(5000).times(1))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
@@ -356,9 +356,9 @@ public class DynamicPartitionCommanderTest {
 
     commander.createTopicRoute(session, topicRoute);
 
-    verify(commanderProvider, timeout(5000).times(1))
+    verify(commanderProvider, timeout(5000).times(2))
         .getSessionEntityName(session);
-    verify(commanderProvider, timeout(5000).times(1))
+    verify(commanderProvider, timeout(5000).times(2))
         .getTopicRouteConfiguration(session, topicRoute);
     verify(commandInterface, timeout(5000).times(1))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));

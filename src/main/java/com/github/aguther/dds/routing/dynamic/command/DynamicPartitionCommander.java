@@ -32,7 +32,6 @@ import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.google.common.base.Strings;
-import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
@@ -45,8 +44,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +67,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
   private final String targetRoutingService;
 
+  private final CommandBuilder commandBuilder;
+
   private final ScheduledExecutorService executorService;
-  private final Map<SimpleEntry<Session, TopicRoute>, ScheduledFuture> activeCommands;
+  private final Map<SimpleEntry<Session, TopicRoute>, SimpleEntry<ScheduledFuture, Command>> activeCommands;
 
   private final long requestTimeout;
   private final TimeUnit requestTimeoutTimeUnit;
@@ -158,6 +157,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
     this.targetRoutingService = targetRoutingService;
 
+    commandBuilder = new CommandBuilder(
+        routingServiceCommandInterface,
+        targetRoutingService,
+        dynamicPartitionCommanderProvider
+    );
+
     activeCommands = Collections.synchronizedMap(new HashMap<>());
 
     executorService = Executors.newSingleThreadScheduledExecutor();
@@ -184,7 +189,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
 
     // schedule creation of session
-    scheduleSessionCommand(this::sendCreateSession, session);
+    scheduleCommand(commandBuilder.buildCreateSessionCommand(session));
   }
 
   @Override
@@ -198,7 +203,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
 
     // schedule deletion of session
-    scheduleSessionCommand(this::sendDeleteSession, session);
+    scheduleCommand(commandBuilder.buildDeleteSessionCommand(session));
   }
 
   @Override
@@ -215,7 +220,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
 
     // schedule creation of topic route
-    scheduleTopicRouteCommand(this::sendCreateTopicRoute, session, topicRoute);
+    scheduleCommand(commandBuilder.buildCreateTopicRouteCommand(session, topicRoute));
   }
 
   @Override
@@ -232,33 +237,40 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     );
 
     // schedule deletion of topic route
-    scheduleTopicRouteCommand(this::sendDeleteTopicRoute, session, topicRoute);
+    scheduleCommand(commandBuilder.buildDeleteTopicRouteCommand(session, topicRoute));
   }
 
   /**
-   * Schedules a session command.
+   * Schedules a command.
    *
-   * @param function function to be called
-   * @param session session
+   * @param command command to be scheduled
    */
-  private void scheduleSessionCommand(
-      Function<Session, Boolean> function,
-      Session session
+  private void scheduleCommand(
+      Command command
   ) {
     synchronized (activeCommands) {
-      // create command
-      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, null);
+      // create entry for command
+      SimpleEntry<Session, TopicRoute> commandKey = new SimpleEntry<>(
+          command.getSession(), command.getTopicRoute());
 
       // when another command is scheduled, cancel it
-      if (activeCommands.containsKey(command)) {
-        activeCommands.remove(command).cancel(false);
+      if (activeCommands.containsKey(commandKey)) {
+        activeCommands.remove(commandKey).getKey().cancel(false);
       }
 
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            if (function.apply(session)) {
-              activeCommands.remove(command).cancel(false);
+            // send request and if success, check if we need to cancel the schedule
+            if (sendRequest(command)) {
+              synchronized (activeCommands) {
+                // check if a new command was scheduled
+                if (activeCommands.containsKey(commandKey)
+                    && command.equals(activeCommands.get(commandKey).getValue())) {
+                  // -> this command is still active and therefore needs to be canceled
+                  activeCommands.remove(commandKey).getKey().cancel(false);
+                }
+              }
             }
           },
           0,
@@ -267,191 +279,31 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       );
 
       // add command to scheduled commands
-      activeCommands.put(command, commandFuture);
+      activeCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
     }
-  }
-
-  /**
-   * Schedules a topic route command.
-   *
-   * @param function function to be called
-   * @param session session
-   * @param topicRoute topic route
-   */
-  private void scheduleTopicRouteCommand(
-      BiFunction<Session, TopicRoute, Boolean> function,
-      Session session,
-      TopicRoute topicRoute
-  ) {
-    synchronized (activeCommands) {
-      // create command
-      SimpleEntry<Session, TopicRoute> command = new SimpleEntry<>(session, topicRoute);
-
-      // when another command is scheduled, cancel it
-      if (activeCommands.containsKey(command)) {
-        activeCommands.remove(command).cancel(false);
-      }
-
-      // schedule creation of session
-      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
-          () -> {
-            if (function.apply(session, topicRoute)) {
-              activeCommands.remove(command).cancel(false);
-            }
-          },
-          0,
-          retryDelay,
-          retryDelayTimeUnit
-      );
-
-      // add command to scheduled commands
-      activeCommands.put(command, commandFuture);
-    }
-  }
-
-  /**
-   * Creates and sends a create session command.
-   *
-   * @param session session to create
-   * @return true if session was successfully created, false if not
-   */
-  private boolean sendCreateSession(
-      final Session session
-  ) {
-    // create request
-    CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider.getSessionParent(session);
-    commandRequest.command.entity_desc.xml_url.is_final = true;
-    commandRequest.command.entity_desc.xml_url.content
-        = dynamicPartitionCommanderProvider.getSessionConfiguration(session);
-
-    // send request and return result
-    return sendRequest(
-        commandRequest,
-        String.format(
-            "entity='Session', topic='%s', partition='%s'",
-            session.getTopic(),
-            session.getPartition()
-        )
-    );
-  }
-
-  /**
-   * Creates and sends a delete session command.
-   *
-   * @param session session to delete
-   * @return true if session was successfully deleted, false if not
-   */
-  private boolean sendDeleteSession(
-      final Session session
-  ) {
-    // create request
-    CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = dynamicPartitionCommanderProvider.getSessionEntityName(session);
-
-    // send request and return result
-    return sendRequest(
-        commandRequest,
-        String.format(
-            "entity='Session', topic='%s', partition='%s'",
-            session.getTopic(),
-            session.getPartition()
-        )
-    );
-  }
-
-  /**
-   * Creates and sends a create topic route command.
-   *
-   * @param session session of topic route
-   * @param topicRoute topic route to create
-   * @return true if topic route was successfully created, false if not
-   */
-  private boolean sendCreateTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
-  ) {
-    // create request
-    CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider
-        .getSessionEntityName(session);
-    commandRequest.command.entity_desc.xml_url.is_final = true;
-    commandRequest.command.entity_desc.xml_url.content
-        = dynamicPartitionCommanderProvider.getTopicRouteConfiguration(session, topicRoute);
-
-    // send request and return result
-    return sendRequest(
-        commandRequest,
-        String.format(
-            "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
-            session.getTopic(),
-            topicRoute.getType(),
-            session.getPartition(),
-            topicRoute.getDirection().toString()
-        )
-    );
-  }
-
-  /**
-   * Creates and sends a delete topic route command.
-   *
-   * @param session session of topic route
-   * @param topicRoute topic route to delete
-   * @return true if topic route was successfully deleted, false if not
-   */
-  private boolean sendDeleteTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
-  ) {
-    // create request
-    CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = dynamicPartitionCommanderProvider
-        .getTopicRouteEntityName(session, topicRoute);
-
-    // send request and return result
-    return sendRequest(
-        commandRequest,
-        String.format(
-            "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
-            session.getTopic(),
-            topicRoute.getType(),
-            session.getPartition(),
-            topicRoute.getDirection().toString()
-        )
-    );
   }
 
   /**
    * Sends a request, waits for the result and checks it.
    *
-   * @param commandRequest request to send
-   * @param loggingFormat format string for logging
+   * @param command command to send
    * @return true if request was successful, false if not
    */
   private boolean sendRequest(
-      final CommandRequest commandRequest,
-      final String loggingFormat
+      final Command command
   ) {
     // send request and get response
     CommandResponse commandResponse = routingServiceCommandInterface.sendRequest(
-        commandRequest,
+        command.getCommandRequest(),
         requestTimeout,
         requestTimeoutTimeUnit
     );
 
     // check response
     return checkResponse(
-        commandRequest,
+        command.getCommandRequest(),
         commandResponse,
-        loggingFormat
+        command.getLoggingFormat()
     );
   }
 
@@ -474,6 +326,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
           "No response received request='{}', {}; retry in '{} {}'",
           commandRequest.command._d,
           loggingFormat,
+
           retryDelay,
           retryDelayTimeUnit
       );
