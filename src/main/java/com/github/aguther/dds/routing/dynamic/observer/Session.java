@@ -73,4 +73,13 @@ public class Session {
 
     return Objects.hash(topic, partition);
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "Session { topic='%s', partition='%s' }",
+        topic,
+        partition
+    );
+  }
 }

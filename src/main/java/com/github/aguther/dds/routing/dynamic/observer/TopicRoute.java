@@ -78,4 +78,14 @@ public class TopicRoute {
   public int hashCode() {
     return Objects.hash(direction, topic, type);
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "TopicRoute { topic='%s', type='%s', direction='%s' }",
+        topic,
+        type,
+        direction.toString()
+    );
+  }
 }
