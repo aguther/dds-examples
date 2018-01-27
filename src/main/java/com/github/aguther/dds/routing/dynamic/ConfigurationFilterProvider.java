@@ -26,7 +26,7 @@ package com.github.aguther.dds.routing.dynamic;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommanderProvider;
+import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * WARNING: It must be ensured that the configuration filters are disjoint (combination of allow and deny filters)
  * otherwise the results are unpredictable.
  */
-public class ConfigurationFilterProvider implements DynamicPartitionObserverFilter, DynamicPartitionCommanderProvider {
+public class ConfigurationFilterProvider implements DynamicPartitionObserverFilter, DynamicPartitionCommandProvider {
 
   private static final String PROPERTY_DOMAIN_ROUTE_NAME = "configuration.domain_route_name";
 

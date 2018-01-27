@@ -24,7 +24,7 @@
 
 package com.github.aguther.dds.routing.dynamic.command.remote;
 
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommanderProvider;
+import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
@@ -35,16 +35,16 @@ class CommandBuilder {
 
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
   private final String targetRoutingService;
-  private final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider;
+  private final DynamicPartitionCommandProvider dynamicPartitionCommandProvider;
 
   CommandBuilder(
       RoutingServiceCommandInterface routingServiceCommandInterface,
       String targetRoutingService,
-      DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider
+      DynamicPartitionCommandProvider dynamicPartitionCommandProvider
   ) {
     this.routingServiceCommandInterface = routingServiceCommandInterface;
     this.targetRoutingService = targetRoutingService;
-    this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
+    this.dynamicPartitionCommandProvider = dynamicPartitionCommandProvider;
   }
 
   Command buildCreateSessionCommand(
@@ -54,10 +54,10 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider.getSessionParent(session);
+    commandRequest.command.entity_desc.name = dynamicPartitionCommandProvider.getSessionParent(session);
     commandRequest.command.entity_desc.xml_url.is_final = true;
     commandRequest.command.entity_desc.xml_url.content
-        = dynamicPartitionCommanderProvider.getSessionConfiguration(session);
+        = dynamicPartitionCommandProvider.getSessionConfiguration(session);
 
     // create and return command
     return new Command(
@@ -80,7 +80,7 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = dynamicPartitionCommanderProvider.getSessionEntityName(session);
+    commandRequest.command.entity_name = dynamicPartitionCommandProvider.getSessionEntityName(session);
 
     // create and return command
     return new Command(
@@ -104,11 +104,11 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = dynamicPartitionCommanderProvider
+    commandRequest.command.entity_desc.name = dynamicPartitionCommandProvider
         .getSessionEntityName(session);
     commandRequest.command.entity_desc.xml_url.is_final = true;
     commandRequest.command.entity_desc.xml_url.content
-        = dynamicPartitionCommanderProvider.getTopicRouteConfiguration(session, topicRoute);
+        = dynamicPartitionCommandProvider.getTopicRouteConfiguration(session, topicRoute);
 
     // create and return command
     return new Command(
@@ -135,7 +135,7 @@ class CommandBuilder {
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
     commandRequest.command.entity_name
-        = dynamicPartitionCommanderProvider.getTopicRouteEntityName(session, topicRoute);
+        = dynamicPartitionCommandProvider.getTopicRouteEntityName(session, topicRoute);
 
     // create and return command
     return new Command(

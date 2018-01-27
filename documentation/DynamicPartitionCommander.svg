@@ -5,7 +5,7 @@ title Dynamic Partition Commander : Create Session
 participant DynamicPartitionObserverListener
 participant DynamicPartitionCommander
 control ScheduledExecutorService
-participant DynamicPartitionCommanderProvider
+participant DynamicPartitionCommandProvider
 participant RoutingServiceCommandInterface
 
 DynamicPartitionObserverListener -> DynamicPartitionCommander: createSession()\ndeleteSession()\ncreateTopicRoute()\ndeleteTopicRoute()
@@ -26,15 +26,15 @@ activate ScheduledExecutorService
     RoutingServiceCommandInterface - -> ScheduledExecutorService: commandRequest
   deactivate RoutingServiceCommandInterface
 
-  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionParent()
-  activate DynamicPartitionCommanderProvider
-    DynamicPartitionCommanderProvider - -> ScheduledExecutorService: sessionParent
-  deactivate DynamicPartitionCommanderProvider
+  ScheduledExecutorService -> DynamicPartitionCommandProvider: getSessionParent()
+  activate DynamicPartitionCommandProvider
+    DynamicPartitionCommandProvider - -> ScheduledExecutorService: sessionParent
+  deactivate DynamicPartitionCommandProvider
 
-  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionConfiguration()
-  activate DynamicPartitionCommanderProvider
-    DynamicPartitionCommanderProvider - -> ScheduledExecutorService: sessionConfiguration
-  deactivate DynamicPartitionCommanderProvider
+  ScheduledExecutorService -> DynamicPartitionCommandProvider: getSessionConfiguration()
+  activate DynamicPartitionCommandProvider
+    DynamicPartitionCommandProvider - -> ScheduledExecutorService: sessionConfiguration
+  deactivate DynamicPartitionCommandProvider
 
   ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
   activate RoutingServiceCommandInterface
@@ -57,10 +57,10 @@ activate ScheduledExecutorService
     RoutingServiceCommandInterface - -> ScheduledExecutorService: commandRequest
   deactivate RoutingServiceCommandInterface
 
-  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionEntityName()
-  activate DynamicPartitionCommanderProvider
-    DynamicPartitionCommanderProvider - -> ScheduledExecutorService: sessionEntityName
-  deactivate DynamicPartitionCommanderProvider
+  ScheduledExecutorService -> DynamicPartitionCommandProvider: getSessionEntityName()
+  activate DynamicPartitionCommandProvider
+    DynamicPartitionCommandProvider - -> ScheduledExecutorService: sessionEntityName
+  deactivate DynamicPartitionCommandProvider
 
   ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
   activate RoutingServiceCommandInterface
@@ -83,15 +83,15 @@ activate ScheduledExecutorService
     RoutingServiceCommandInterface - -> ScheduledExecutorService: commandRequest
   deactivate RoutingServiceCommandInterface
 
-  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getSessionEntityName()
-  activate DynamicPartitionCommanderProvider
-    DynamicPartitionCommanderProvider - -> ScheduledExecutorService: sessionEntityName
-  deactivate DynamicPartitionCommanderProvider
+  ScheduledExecutorService -> DynamicPartitionCommandProvider: getSessionEntityName()
+  activate DynamicPartitionCommandProvider
+    DynamicPartitionCommandProvider - -> ScheduledExecutorService: sessionEntityName
+  deactivate DynamicPartitionCommandProvider
 
-  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getTopicRouteConfiguration()
-  activate DynamicPartitionCommanderProvider
-    DynamicPartitionCommanderProvider - -> ScheduledExecutorService: topicRouteConfiguration
-  deactivate DynamicPartitionCommanderProvider
+  ScheduledExecutorService -> DynamicPartitionCommandProvider: getTopicRouteConfiguration()
+  activate DynamicPartitionCommandProvider
+    DynamicPartitionCommandProvider - -> ScheduledExecutorService: topicRouteConfiguration
+  deactivate DynamicPartitionCommandProvider
 
   ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
   activate RoutingServiceCommandInterface
@@ -114,10 +114,10 @@ activate ScheduledExecutorService
     RoutingServiceCommandInterface - -> ScheduledExecutorService: commandRequest
   deactivate RoutingServiceCommandInterface
 
-  ScheduledExecutorService -> DynamicPartitionCommanderProvider: getTopicRouteEntityName()
-  activate DynamicPartitionCommanderProvider
-    DynamicPartitionCommanderProvider - -> ScheduledExecutorService: topicRouteEntityName
-  deactivate DynamicPartitionCommanderProvider
+  ScheduledExecutorService -> DynamicPartitionCommandProvider: getTopicRouteEntityName()
+  activate DynamicPartitionCommandProvider
+    DynamicPartitionCommandProvider - -> ScheduledExecutorService: topicRouteEntityName
+  deactivate DynamicPartitionCommandProvider
 
   ScheduledExecutorService -> RoutingServiceCommandInterface: sendRequest()
   activate RoutingServiceCommandInterface

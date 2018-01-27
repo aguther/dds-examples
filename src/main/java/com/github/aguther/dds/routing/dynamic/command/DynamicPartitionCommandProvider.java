@@ -30,7 +30,7 @@ import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 /**
  * Callback interface to get information and configuration for the creation and deletion of sessions and topic routes.
  */
-public interface DynamicPartitionCommanderProvider {
+public interface DynamicPartitionCommandProvider {
 
   /**
    * Invoked to get the parent entity name of a session.

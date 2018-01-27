@@ -27,7 +27,7 @@ package com.github.aguther.dds.routing.dynamic.command.remote;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommanderProvider;
+import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverListener;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
@@ -80,17 +80,17 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * Instantiates a new Dynamic partition commander.
    *
    * @param routingServiceCommandInterface the routing service command helper
-   * @param dynamicPartitionCommanderProvider the dynamic partition commander provider
+   * @param dynamicPartitionCommandProvider the dynamic partition commander provider
    * @param targetRoutingService the target routing service
    */
   public DynamicPartitionCommander(
       final RoutingServiceCommandInterface routingServiceCommandInterface,
-      final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
       final String targetRoutingService
   ) {
     this(
         routingServiceCommandInterface,
-        dynamicPartitionCommanderProvider,
+        dynamicPartitionCommandProvider,
         targetRoutingService,
         DEFAULT_RETRY_DELAY_SECONDS,
         TimeUnit.SECONDS,
@@ -103,21 +103,21 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * Instantiates a new Dynamic partition commander.
    *
    * @param routingServiceCommandInterface the routing service command helper
-   * @param dynamicPartitionCommanderProvider the dynamic partition commander provider
+   * @param dynamicPartitionCommandProvider the dynamic partition commander provider
    * @param targetRoutingService the target routing service
    * @param retryDelay the retry delay
    * @param retryDelayTimeUnit the retry delay time unit
    */
   public DynamicPartitionCommander(
       final RoutingServiceCommandInterface routingServiceCommandInterface,
-      final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
       final String targetRoutingService,
       final long retryDelay,
       final TimeUnit retryDelayTimeUnit
   ) {
     this(
         routingServiceCommandInterface,
-        dynamicPartitionCommanderProvider,
+        dynamicPartitionCommandProvider,
         targetRoutingService,
         retryDelay,
         retryDelayTimeUnit,
@@ -130,7 +130,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * Instantiates a new Dynamic partition commander.
    *
    * @param routingServiceCommandInterface the routing service command helper
-   * @param dynamicPartitionCommanderProvider the dynamic partition commander provider
+   * @param dynamicPartitionCommandProvider the dynamic partition commander provider
    * @param targetRoutingService the target routing service
    * @param retryDelay the retry delay
    * @param retryDelayTimeUnit the retry delay time unit
@@ -139,7 +139,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    */
   public DynamicPartitionCommander(
       final RoutingServiceCommandInterface routingServiceCommandInterface,
-      final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider,
+      final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
       final String targetRoutingService,
       final long retryDelay,
       final TimeUnit retryDelayTimeUnit,
@@ -147,7 +147,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       final TimeUnit requestTimeoutTimeUnit
   ) {
     checkNotNull(routingServiceCommandInterface, "Command interface must not be null.");
-    checkNotNull(dynamicPartitionCommanderProvider, "Provider must not be null.");
+    checkNotNull(dynamicPartitionCommandProvider, "Provider must not be null.");
     checkArgument(!Strings.isNullOrEmpty(targetRoutingService), "Target routing service must be valid.");
     checkArgument(retryDelay >= 0, "Retry delay is expected >= 0");
     checkArgument(requestTimeout > 0, "Timeout is expected > 0");
@@ -157,7 +157,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     commandBuilder = new CommandBuilder(
         routingServiceCommandInterface,
         targetRoutingService,
-        dynamicPartitionCommanderProvider
+        dynamicPartitionCommandProvider
     );
 
     scheduledCommands = Collections.synchronizedMap(new HashMap<>());

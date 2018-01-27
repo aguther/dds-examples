@@ -48,14 +48,14 @@ import org.junit.Test;
 public class DynamicPartitionCommanderTest {
 
   private RoutingServiceCommandInterface commandInterface;
-  private DynamicPartitionCommanderProvider commanderProvider;
+  private DynamicPartitionCommandProvider commanderProvider;
 
   private DynamicPartitionCommander commander;
 
   @Before
   public void setUp() {
     commandInterface = mock(RoutingServiceCommandInterface.class);
-    commanderProvider = mock(DynamicPartitionCommanderProvider.class);
+    commanderProvider = mock(DynamicPartitionCommandProvider.class);
 
     commander = new DynamicPartitionCommander(
         commandInterface,
