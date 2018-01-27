@@ -35,7 +35,7 @@ class CommandBuilder {
 
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
   private final String targetRoutingService;
-  private final DynamicPartitionCommandProvider dynamicPartitionCommandProvider;
+  private final DynamicPartitionCommandProvider provider;
 
   CommandBuilder(
       RoutingServiceCommandInterface routingServiceCommandInterface,
@@ -44,7 +44,7 @@ class CommandBuilder {
   ) {
     this.routingServiceCommandInterface = routingServiceCommandInterface;
     this.targetRoutingService = targetRoutingService;
-    this.dynamicPartitionCommandProvider = dynamicPartitionCommandProvider;
+    this.provider = dynamicPartitionCommandProvider;
   }
 
   Command buildCreateSessionCommand(
@@ -54,10 +54,9 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = dynamicPartitionCommandProvider.getSessionParent(session);
+    commandRequest.command.entity_desc.name = provider.getSessionParent(session);
     commandRequest.command.entity_desc.xml_url.is_final = true;
-    commandRequest.command.entity_desc.xml_url.content
-        = dynamicPartitionCommandProvider.getSessionConfiguration(session);
+    commandRequest.command.entity_desc.xml_url.content = provider.getSessionConfiguration(session);
 
     // create and return command
     return new Command(
@@ -80,7 +79,7 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = dynamicPartitionCommandProvider.getSessionEntityName(session);
+    commandRequest.command.entity_name = provider.getSessionEntityName(session);
 
     // create and return command
     return new Command(
@@ -104,11 +103,9 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = dynamicPartitionCommandProvider
-        .getSessionEntityName(session);
+    commandRequest.command.entity_desc.name = provider.getSessionEntityName(session);
     commandRequest.command.entity_desc.xml_url.is_final = true;
-    commandRequest.command.entity_desc.xml_url.content
-        = dynamicPartitionCommandProvider.getTopicRouteConfiguration(session, topicRoute);
+    commandRequest.command.entity_desc.xml_url.content = provider.getTopicRouteConfiguration(session, topicRoute);
 
     // create and return command
     return new Command(
@@ -134,8 +131,7 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.target_router = targetRoutingService;
     commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name
-        = dynamicPartitionCommandProvider.getTopicRouteEntityName(session, topicRoute);
+    commandRequest.command.entity_name = provider.getTopicRouteEntityName(session, topicRoute);
 
     // create and return command
     return new Command(
