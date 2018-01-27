@@ -32,6 +32,7 @@ import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.google.common.base.Strings;
+import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
@@ -261,15 +262,18 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // schedule creation of session
       ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
           () -> {
-            // send request and if success, check if we need to cancel the schedule
-            if (sendRequest(command)) {
-              synchronized (activeCommands) {
-                // check if a new command was scheduled
-                if (activeCommands.containsKey(commandKey)
-                    && command.equals(activeCommands.get(commandKey).getValue())) {
-                  // -> this command is still active and therefore needs to be canceled
-                  activeCommands.remove(commandKey).getKey().cancel(false);
-                }
+            // send request and get result
+            boolean result = sendRequest(command);
+
+            // We have the following two cases:
+            // (A) Success -> when no other new command was scheduled, we need to cancel ourselves
+            // (B) Failed  -> when another command was scheduled, we can cancel the new command
+            synchronized (activeCommands) {
+              if (activeCommands.containsKey(commandKey) && (
+                  (result && command.equals(activeCommands.get(commandKey).getValue()))
+                      || (!result && command.getType() != activeCommands.get(commandKey).getValue().getType())
+              )) {
+                activeCommands.remove(commandKey).getKey().cancel(false);
               }
             }
           },
@@ -281,6 +285,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       // add command to scheduled commands
       activeCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
     }
+
   }
 
   /**

@@ -31,21 +31,29 @@ import java.util.Objects;
 
 public class Command {
 
+  private final CommandType type;
   private final Session session;
   private final TopicRoute topicRoute;
   private final CommandRequest commandRequest;
   private final String loggingFormat;
 
   public Command(
+      CommandType type,
       Session session,
       TopicRoute topicRoute,
       CommandRequest commandRequest,
       String loggingFormat
   ) {
+    this.type = type;
+
     this.session = session;
     this.topicRoute = topicRoute;
     this.commandRequest = commandRequest;
     this.loggingFormat = loggingFormat;
+  }
+
+  public CommandType getType() {
+    return type;
   }
 
   public Session getSession() {
@@ -73,21 +81,22 @@ public class Command {
       return false;
     }
     Command command = (Command) o;
-    return Objects.equals(session, command.session) &&
-        Objects.equals(topicRoute, command.topicRoute) &&
-        Objects.equals(commandRequest, command.commandRequest);
+    return type == command.type &&
+        Objects.equals(session, command.session) &&
+        Objects.equals(topicRoute, command.topicRoute);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(session, topicRoute, commandRequest);
+    return Objects.hash(type, session, topicRoute);
   }
 
   @Override
   public String toString() {
     return String.format(
-        "Command { session='%s', topicRoute='%s' }",
+        "Command { type='%s', session='%s', topicRoute='%s' }",
+        type,
         session,
         topicRoute
     );

@@ -60,6 +60,7 @@ public class CommandBuilder {
 
     // create and return command
     return new Command(
+        CommandType.COMMAND_TYPE_CREATE,
         session,
         null,
         commandRequest,
@@ -82,6 +83,7 @@ public class CommandBuilder {
 
     // create and return command
     return new Command(
+        CommandType.COMMAND_TYPE_DELETE,
         session,
         null,
         commandRequest,
@@ -109,6 +111,7 @@ public class CommandBuilder {
 
     // create and return command
     return new Command(
+        CommandType.COMMAND_TYPE_CREATE,
         session,
         topicRoute,
         commandRequest,
@@ -135,6 +138,7 @@ public class CommandBuilder {
 
     // create and return command
     return new Command(
+        CommandType.COMMAND_TYPE_DELETE,
         session,
         topicRoute,
         commandRequest,
