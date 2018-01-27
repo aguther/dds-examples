@@ -30,13 +30,13 @@ import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 
-public class CommandBuilder {
+class CommandBuilder {
 
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
   private final String targetRoutingService;
   private final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider;
 
-  public CommandBuilder(
+  CommandBuilder(
       RoutingServiceCommandInterface routingServiceCommandInterface,
       String targetRoutingService,
       DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider
@@ -46,7 +46,7 @@ public class CommandBuilder {
     this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
   }
 
-  public Command buildCreateSessionCommand(
+  Command buildCreateSessionCommand(
       Session session
   ) {
     // create request
@@ -72,7 +72,7 @@ public class CommandBuilder {
     );
   }
 
-  public Command buildDeleteSessionCommand(
+  Command buildDeleteSessionCommand(
       Session session
   ) {
     // create request
@@ -95,7 +95,7 @@ public class CommandBuilder {
     );
   }
 
-  public Command buildCreateTopicRouteCommand(
+  Command buildCreateTopicRouteCommand(
       Session session,
       TopicRoute topicRoute
   ) {
@@ -125,7 +125,7 @@ public class CommandBuilder {
     );
   }
 
-  public Command buildDeleteTopicRouteCommand(
+  Command buildDeleteTopicRouteCommand(
       Session session,
       TopicRoute topicRoute
   ) {
