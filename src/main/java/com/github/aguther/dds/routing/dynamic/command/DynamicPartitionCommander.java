@@ -32,7 +32,6 @@ import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.google.common.base.Strings;
-import idl.RTI.RoutingService.Administration.CommandKind;
 import idl.RTI.RoutingService.Administration.CommandRequest;
 import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
@@ -64,14 +63,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPartitionCommander.class);
 
-  private final DynamicPartitionCommanderProvider dynamicPartitionCommanderProvider;
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
-  private final String targetRoutingService;
 
   private final CommandBuilder commandBuilder;
 
   private final ScheduledExecutorService executorService;
-  private final Map<SimpleEntry<Session, TopicRoute>, SimpleEntry<ScheduledFuture, Command>> activeCommands;
+  private final Map<SimpleEntry<Session, TopicRoute>, SimpleEntry<ScheduledFuture, Command>> scheduledCommands;
 
   private final long requestTimeout;
   private final TimeUnit requestTimeoutTimeUnit;
@@ -155,8 +152,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     checkArgument(requestTimeout > 0, "Timeout is expected > 0");
 
     this.routingServiceCommandInterface = routingServiceCommandInterface;
-    this.dynamicPartitionCommanderProvider = dynamicPartitionCommanderProvider;
-    this.targetRoutingService = targetRoutingService;
 
     commandBuilder = new CommandBuilder(
         routingServiceCommandInterface,
@@ -164,7 +159,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         dynamicPartitionCommanderProvider
     );
 
-    activeCommands = Collections.synchronizedMap(new HashMap<>());
+    scheduledCommands = Collections.synchronizedMap(new HashMap<>());
 
     executorService = Executors.newSingleThreadScheduledExecutor();
 
@@ -249,14 +244,20 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private void scheduleCommand(
       Command command
   ) {
-    synchronized (activeCommands) {
+    synchronized (scheduledCommands) {
       // create entry for command
       SimpleEntry<Session, TopicRoute> commandKey = new SimpleEntry<>(
           command.getSession(), command.getTopicRoute());
 
       // when another command is scheduled, cancel it
-      if (activeCommands.containsKey(commandKey)) {
-        activeCommands.remove(commandKey).getKey().cancel(false);
+      if (scheduledCommands.containsKey(commandKey)) {
+        if (LOGGER.isTraceEnabled()) {
+          LOGGER.trace(
+              "Canceling scheduled command: command='{}'",
+              scheduledCommands.get(commandKey).getValue()
+          );
+        }
+        scheduledCommands.remove(commandKey).getKey().cancel(false);
       }
 
       // schedule creation of session
@@ -268,12 +269,20 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
             // We have the following two cases:
             // (A) Success -> when no other new command was scheduled, we need to cancel ourselves
             // (B) Failed  -> when another command was scheduled, we can cancel the new command
-            synchronized (activeCommands) {
-              if (activeCommands.containsKey(commandKey) && (
-                  (result && command.equals(activeCommands.get(commandKey).getValue()))
-                      || (!result && command.getType() != activeCommands.get(commandKey).getValue().getType())
+            synchronized (scheduledCommands) {
+              if (scheduledCommands.containsKey(commandKey) && (
+                  (result && command.equals(scheduledCommands.get(commandKey).getValue()))
+                      || (!result && command.getType() != scheduledCommands.get(commandKey).getValue().getType())
               )) {
-                activeCommands.remove(commandKey).getKey().cancel(false);
+                if (LOGGER.isTraceEnabled()) {
+                  LOGGER.trace(
+                      "Canceling scheduled command: command='{}', result='{}', scheduledCommand='{}'",
+                      command,
+                      result,
+                      scheduledCommands.get(commandKey).getValue()
+                  );
+                }
+                scheduledCommands.remove(commandKey).getKey().cancel(false);
               }
             }
           },
@@ -283,7 +292,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       );
 
       // add command to scheduled commands
-      activeCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
+      scheduledCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
     }
 
   }
