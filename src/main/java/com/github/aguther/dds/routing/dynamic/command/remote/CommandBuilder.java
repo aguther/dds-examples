@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.routing.dynamic.command;
+package com.github.aguther.dds.routing.dynamic.command.remote;
 
+import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommanderProvider;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;

@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 import com.github.aguther.dds.discovery.observer.PublicationObserver;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
+import com.github.aguther.dds.routing.dynamic.command.remote.DynamicPartitionCommander;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;

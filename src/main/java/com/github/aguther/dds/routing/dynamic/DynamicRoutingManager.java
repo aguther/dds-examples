@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.aguther.dds.discovery.observer.PublicationObserver;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserver;
-import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommander;
+import com.github.aguther.dds.routing.dynamic.command.remote.DynamicPartitionCommander;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserver;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroupEntitiesFilter;
 import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;

@@ -1,4 +1,4 @@
-package com.github.aguther.dds.routing.dynamic.command;
+package com.github.aguther.dds.routing.dynamic.command.remote;
 
 public enum CommandType {
   COMMAND_TYPE_CREATE,

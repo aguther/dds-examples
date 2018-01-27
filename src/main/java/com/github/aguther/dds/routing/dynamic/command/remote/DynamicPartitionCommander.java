@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.routing.dynamic.command;
+package com.github.aguther.dds.routing.dynamic.command.remote;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommanderProvider;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverListener;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
