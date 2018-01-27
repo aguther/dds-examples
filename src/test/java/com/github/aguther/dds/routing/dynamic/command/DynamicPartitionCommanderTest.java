@@ -95,6 +95,100 @@ public class DynamicPartitionCommanderTest {
     assertNotNull(dynamicPartitionCommander);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testConstructorTargetRouterNull() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        null,
+        100,
+        TimeUnit.MILLISECONDS
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testConstructorTargetRouterEmpty() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "",
+        100,
+        TimeUnit.MILLISECONDS
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testConstructorRetryZero() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest",
+        0,
+        TimeUnit.MILLISECONDS
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testConstructorRetryBelowZero() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest",
+        -1,
+        TimeUnit.MILLISECONDS
+    );
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testConstructorRetryTimeUnitNull() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest",
+        100,
+        null
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testConstructorTimeoutZero() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest",
+        100,
+        TimeUnit.MILLISECONDS,
+        0,
+        TimeUnit.MILLISECONDS
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testConstructorTimeoutBelowZero() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest",
+        100,
+        TimeUnit.MILLISECONDS,
+        -1,
+        TimeUnit.MILLISECONDS
+    );
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testConstructorTimeoutTimeUnitNull() {
+    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+        commandInterface,
+        commanderProvider,
+        "UnitTest",
+        100,
+        TimeUnit.MILLISECONDS,
+        100,
+        null
+    );
+  }
+
   @Test
   public void testCreateSession() {
     Session session = new Session("Square", "A");

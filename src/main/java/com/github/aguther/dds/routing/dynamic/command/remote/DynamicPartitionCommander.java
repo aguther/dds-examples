@@ -155,7 +155,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     checkNotNull(dynamicPartitionCommandProvider, "Provider must not be null.");
     checkArgument(!Strings.isNullOrEmpty(targetRoutingService), "Target routing service must be valid.");
     checkArgument(retryDelay > 0, "Retry delay is expected > 0");
+    checkNotNull(retryDelayTimeUnit, "Retry time unit must not be null.");
     checkArgument(requestTimeout > 0, "Timeout is expected > 0");
+    checkNotNull(requestTimeoutTimeUnit, "Request timeout unit must not be null.");
 
     this.routingServiceCommandInterface = routingServiceCommandInterface;
 
