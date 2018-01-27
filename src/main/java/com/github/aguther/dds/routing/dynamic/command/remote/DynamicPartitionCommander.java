@@ -43,8 +43,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import net.jodah.failsafe.Failsafe;
+import net.jodah.failsafe.FailsafeFuture;
+import net.jodah.failsafe.RetryPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +71,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private final CommandBuilder commandBuilder;
 
   private final ScheduledExecutorService executorService;
-  private final Map<SimpleEntry<Session, TopicRoute>, SimpleEntry<ScheduledFuture, Command>> scheduledCommands;
+  private final Map<SimpleEntry<Session, TopicRoute>, SimpleEntry<FailsafeFuture, Command>> scheduledCommands;
+
+  private final RetryPolicy retryPolicy;
+  private final RetryPolicy retryPolicyAfterRetry;
 
   private final long requestTimeout;
   private final TimeUnit requestTimeoutTimeUnit;
@@ -164,6 +169,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     executorService = Executors.newSingleThreadScheduledExecutor();
 
+    retryPolicy = new RetryPolicy()
+        .retryWhen(false)
+        .withDelay(retryDelay, retryDelayTimeUnit);
+
+    retryPolicyAfterRetry = new RetryPolicy();
+
     this.requestTimeout = requestTimeout;
     this.requestTimeoutTimeUnit = requestTimeoutTimeUnit;
     this.retryDelay = retryDelay;
@@ -250,52 +261,27 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
       SimpleEntry<Session, TopicRoute> commandKey = new SimpleEntry<>(
           command.getSession(), command.getTopicRoute());
 
+      // select default retry policy
+      RetryPolicy appliedRetryPolicy = retryPolicy;
+
       // when another command is scheduled, cancel it
       if (scheduledCommands.containsKey(commandKey)) {
-        if (LOGGER.isTraceEnabled()) {
-          LOGGER.trace(
-              "Canceling scheduled command: command='{}'",
-              scheduledCommands.get(commandKey).getValue()
-          );
-        }
+        // abort old command
         scheduledCommands.remove(commandKey).getKey().cancel(false);
+        // override retry policy
+        appliedRetryPolicy = retryPolicyAfterRetry;
       }
 
       // schedule creation of session
-      ScheduledFuture commandFuture = executorService.scheduleWithFixedDelay(
-          () -> {
-            // send request and get result
-            boolean result = sendRequest(command);
-
-            // We have the following two cases:
-            // (A) Success -> when no other new command was scheduled, we need to cancel ourselves
-            // (B) Failed  -> when another command was scheduled, we can cancel the new command
-            synchronized (scheduledCommands) {
-              if (scheduledCommands.containsKey(commandKey) && (
-                  (result && command.equals(scheduledCommands.get(commandKey).getValue()))
-                      || (!result && command.getType() != scheduledCommands.get(commandKey).getValue().getType())
-              )) {
-                if (LOGGER.isTraceEnabled()) {
-                  LOGGER.trace(
-                      "Canceling scheduled command: command='{}', result='{}', scheduledCommand='{}'",
-                      command,
-                      result,
-                      scheduledCommands.get(commandKey).getValue()
-                  );
-                }
-                scheduledCommands.remove(commandKey).getKey().cancel(false);
-              }
-            }
-          },
-          0,
-          retryDelay,
-          retryDelayTimeUnit
-      );
+      FailsafeFuture commandFuture = Failsafe
+          .with(appliedRetryPolicy)
+          .with(executorService)
+          .onSuccess(result -> scheduledCommands.remove(commandKey))
+          .get(() -> sendRequest(command));
 
       // add command to scheduled commands
       scheduledCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
     }
-
   }
 
   /**
