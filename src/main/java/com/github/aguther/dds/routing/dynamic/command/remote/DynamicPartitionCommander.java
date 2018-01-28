@@ -306,9 +306,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private boolean sendRequest(
       final Command command
   ) {
+    // get command request (this needs to be done, otherwise this function is somehow called twice)
+    CommandRequest commandRequest = command.getCommandRequest();
+
     // send request and get response
     CommandResponse commandResponse = routingServiceCommandInterface.sendRequest(
-        command.getCommandRequest(),
+        commandRequest,
         requestTimeout,
         requestTimeoutTimeUnit
     );
