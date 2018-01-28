@@ -269,32 +269,32 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private void scheduleCommand(
       Command command
   ) {
-    synchronized (scheduledCommands) {
-      // create entry for command
-      SimpleEntry<Session, TopicRoute> commandKey = new SimpleEntry<>(
-          command.getSession(), command.getTopicRoute());
+    // create entry for command
+    SimpleEntry<Session, TopicRoute> commandKey = new SimpleEntry<>(
+        command.getSession(), command.getTopicRoute());
 
-      // select default retry policy
-      RetryPolicy appliedRetryPolicy = retryPolicy;
+    // select default retry policy
+    RetryPolicy appliedRetryPolicy = retryPolicy;
 
-      // when another command is scheduled, cancel it
-      if (scheduledCommands.containsKey(commandKey)) {
-        // abort old command
-        scheduledCommands.remove(commandKey).getKey().cancel(false);
-        // override retry policy
-        appliedRetryPolicy = retryPolicyAfterRetry;
-      }
-
-      // schedule creation of session
-      FailsafeFuture commandFuture = Failsafe
-          .with(appliedRetryPolicy)
-          .with(executorService)
-          .onSuccess(result -> scheduledCommands.remove(commandKey))
-          .get(() -> sendRequest(command));
-
-      // add command to scheduled commands
-      scheduledCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
+    // get previous entry
+    SimpleEntry<FailsafeFuture, Command> previousCommandKey = scheduledCommands.remove(commandKey);
+    // check if previous command is still active
+    if (previousCommandKey != null) {
+      // abort previous command
+      previousCommandKey.getKey().cancel(false);
+      // override retry policy
+      appliedRetryPolicy = retryPolicyAfterRetry;
     }
+
+    // schedule creation of session
+    FailsafeFuture commandFuture = Failsafe
+        .with(appliedRetryPolicy)
+        .with(executorService)
+        .onSuccess(result -> scheduledCommands.remove(commandKey))
+        .get(() -> sendRequest(command));
+
+    // add command to scheduled commands
+    scheduledCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
   }
 
   /**
