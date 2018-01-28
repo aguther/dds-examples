@@ -154,6 +154,7 @@ public class DynamicRouting extends AbstractIdleService {
 
     // start dynamic routing
     dynamicRoutingManager = new DynamicRoutingManager(
+        routingService,
         ROUTING_SERVICE_NAME,
         ROUTING_SERVICE_NAME,
         "",

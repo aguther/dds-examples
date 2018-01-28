@@ -46,6 +46,7 @@ import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantQos;
 import com.rti.dds.infrastructure.EntityNameQosPolicy;
 import com.rti.dds.infrastructure.ServiceQosPolicy;
+import com.rti.routingservice.RoutingService;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
@@ -71,7 +72,8 @@ import org.powermock.reflect.Whitebox;
     "com.rti.dds.domain.DomainParticipantFactory",
     "com.rti.dds.domain.DomainParticipantQos",
     "com.rti.dds.infrastructure.ServiceQosPolicy",
-    "com.rti.dds.infrastructure.EntityNameQosPolicy"
+    "com.rti.dds.infrastructure.EntityNameQosPolicy",
+    "com.rti.routingservice.RoutingService"
 })
 public class DynamicRoutingManagerTest {
 
@@ -154,7 +156,64 @@ public class DynamicRoutingManagerTest {
   }
 
   @Test
-  public void testCreate() {
+  public void testCreateLocalAdministration() throws Exception {
+    // mock routing service library
+    RoutingService routingService = mock(RoutingService.class);
+
+    com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander dynamicPartitionCommanderLocal
+        = mock(com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander.class);
+    PowerMockito.whenNew(com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander.class)
+        .withAnyArguments().thenReturn(dynamicPartitionCommanderLocal);
+
+    // set local administration in properties
+    properties.put("test.administration.local", "true");
+
+    // create dynamic routing
+    DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
+        routingService,
+        "NAME",
+        "GROUP",
+        PropertyFactory.PREFIX,
+        properties
+    );
+
+    // assert dynamic routing created
+    assertNotNull(dynamicRoutingManager);
+
+    // verify all close methods have been called
+    verify(routingServiceCommandInterface, times(0)).waitForDiscovery(
+        anyString(),
+        anyLong(),
+        any(TimeUnit.class)
+    );
+    verify(domainParticipantFactory, times(1)).create_participant(
+        anyInt(),
+        any(),
+        any(),
+        anyInt()
+    );
+    verify(dynamicPartitionObserver, times(3)).addFilter(
+        any(DynamicPartitionObserverFilter.class)
+    );
+    verify(dynamicPartitionObserver, times(1)).addListener(
+        dynamicPartitionCommanderLocal
+    );
+    verify(publicationObserver, times(1)).addListener(
+        dynamicPartitionObserver,
+        false
+    );
+    verify(subscriptionObserver, times(1)).addListener(
+        dynamicPartitionObserver,
+        false
+    );
+
+    // we need to take the administration participant mock, because this is first returned
+    // and with the local interface there is only one created instead of two
+    verify(domainParticipantAdministration, times(1)).enable();
+  }
+
+  @Test
+  public void testCreateRemoteAdministration() {
     // create dynamic routing
     DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
         "NAME",
