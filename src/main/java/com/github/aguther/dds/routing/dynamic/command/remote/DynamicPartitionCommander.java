@@ -160,6 +160,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     checkNotNull(requestTimeoutTimeUnit, "Request timeout unit must not be null.");
 
     this.routingServiceCommandInterface = routingServiceCommandInterface;
+    this.retryDelay = retryDelay;
+    this.retryDelayTimeUnit = retryDelayTimeUnit;
+    this.requestTimeout = requestTimeout;
+    this.requestTimeoutTimeUnit = requestTimeoutTimeUnit;
 
     commandBuilder = new CommandBuilder(
         routingServiceCommandInterface,
@@ -176,11 +180,6 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         .withDelay(retryDelay, retryDelayTimeUnit);
 
     retryPolicyAfterRetry = new RetryPolicy();
-
-    this.requestTimeout = requestTimeout;
-    this.requestTimeoutTimeUnit = requestTimeoutTimeUnit;
-    this.retryDelay = retryDelay;
-    this.retryDelayTimeUnit = retryDelayTimeUnit;
   }
 
   @Override
