@@ -249,6 +249,18 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     scheduleCommand(commandBuilder.buildDeleteTopicRouteCommand(session, topicRoute));
   }
 
+  /*
+   * The following cases are foreseen when scheduling commands:
+   *
+   * Assumption for failed => Error | Timeout
+   *
+   * Case 1: A -> run -> success -> end
+   * Case 2: A -> run -> failed -> wait retry -> run -> success -> end
+   * Case 3: A -> run -> failed -> wait retry -> B -> abort (A) -> restart (B=>A)
+   * Case 4: A -> run -> B -> abort (A) -> success (A) -> restart (B=>A)
+   * Case 5: A -> run -> B -> abort (A) -> failed (A) -> end
+   */
+
   /**
    * Schedules a command.
    *
