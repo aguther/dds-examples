@@ -277,11 +277,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     RetryPolicy appliedRetryPolicy = retryPolicy;
 
     // get previous entry
-    SimpleEntry<FailsafeFuture, Command> previousCommandKey = scheduledCommands.remove(commandKey);
+    SimpleEntry<FailsafeFuture, Command> previousCommandEntry = scheduledCommands.remove(commandKey);
+
     // check if previous command is still active
-    if (previousCommandKey != null) {
+    if (previousCommandEntry != null) {
       // abort previous command
-      previousCommandKey.getKey().cancel(false);
+      previousCommandEntry.getKey().cancel(false);
       // override retry policy
       appliedRetryPolicy = retryPolicyAfterRetry;
     }
