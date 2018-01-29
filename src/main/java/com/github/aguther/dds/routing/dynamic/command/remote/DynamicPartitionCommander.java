@@ -294,7 +294,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
         .get(() -> sendRequest(command));
 
     // add command to scheduled commands
-    scheduledCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
+    synchronized (scheduledCommands) {
+      if (!commandFuture.isDone()) {
+        scheduledCommands.put(commandKey, new SimpleEntry<>(commandFuture, command));
+      }
+    }
   }
 
   /**
