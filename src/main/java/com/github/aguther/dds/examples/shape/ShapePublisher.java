@@ -30,6 +30,7 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import idl.ShapeFillKind;
 import idl.ShapeTypeExtendedTypeSupport;
+import idl.ShapeTypeTypeSupport;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,7 +121,7 @@ public class ShapePublisher extends AbstractExecutionThreadService {
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
         ShapeTypeExtendedTypeSupport.get_instance(),
-        ShapeTypeExtendedTypeSupport.get_type_name()
+        ShapeTypeTypeSupport.get_type_name()
     );
 
     // create participant from config

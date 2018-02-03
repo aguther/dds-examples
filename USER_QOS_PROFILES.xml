@@ -86,8 +86,8 @@
   <domain_library name="DomainLibrary">
     <!-- Shape -->
     <domain name="Shape" domain_id="0">
-      <register_type name="ShapeTypeExtended"/>
-      <topic name="Square" register_type_ref="ShapeTypeExtended"/>
+      <register_type name="ShapeType"/>
+      <topic name="Square" register_type_ref="ShapeType"/>
     </domain>
 
     <!-- RequestReply -->
