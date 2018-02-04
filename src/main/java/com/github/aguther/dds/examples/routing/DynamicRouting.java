@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class DynamicRouting extends AbstractIdleService {
 
   private static final String ROUTING_SERVICE_NAME = "dds-examples-routing-dynamic";
-  private static final String ROUTING_SERVICE_CONFIG_FILE = "routing-dynamic.xml";
+  private static final String ROUTING_SERVICE_CONFIG_FILE = "configuration/routing-dynamic.xml";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRouting.class);
 

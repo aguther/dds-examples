@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class StaticRouting extends AbstractIdleService {
 
   private static final String ROUTING_SERVICE_NAME = "dds-examples-routing-static";
-  private static final String ROUTING_SERVICE_CONFIG_FILE = "routing-static.xml";
+  private static final String ROUTING_SERVICE_CONFIG_FILE = "configuration/routing-static.xml";
   private static final Logger LOGGER = LoggerFactory.getLogger(StaticRouting.class);
 
   private static StaticRouting serviceInstance;
