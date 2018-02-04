@@ -19,7 +19,7 @@ The application can be built with:
 
 ## Starting examples
 The examples can be executed in the following ways:
-`./run <Example>`
+`./run.sh <Example>`
 
 ## Examples
 * Shape
