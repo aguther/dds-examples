@@ -38,16 +38,22 @@ import com.rti.dds.subscription.SampleLostStatus;
 import com.rti.dds.subscription.SampleRejectedStatus;
 import com.rti.dds.subscription.SubscriptionMatchedStatus;
 import idl.ShapeTypeExtended;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShapeTypeExtendedListener implements DataReaderListener {
+public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShapeTypeExtendedListener.class);
 
   private final DataReader dataReader;
   private final ShapeTypeExtended sample;
   private final SampleInfo sampleInfo;
+
+  private final ExecutorService executorService;
 
   ShapeTypeExtendedListener(
       final DataReader dataReader
@@ -64,6 +70,15 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
     // store sample
     this.sample = new ShapeTypeExtended();
     this.sampleInfo = new SampleInfo();
+
+    // executor service
+    executorService = new ThreadPoolExecutor(
+        1,
+        1,
+        0L,
+        TimeUnit.MILLISECONDS,
+        new ArrayBlockingQueue<>(2)
+    );
   }
 
   void stop() {
@@ -71,6 +86,34 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
         null,
         StatusKind.STATUS_MASK_NONE
     );
+  }
+
+  @Override
+  public void run() {
+    do {
+      try {
+        // get next sample
+        dataReader.read_next_sample_untyped(sample, sampleInfo);
+
+        // print info
+        if (sampleInfo.valid_data) {
+          LOGGER.info(
+              "Received sample (x='{}', y='{}', color='{}', size='{}', fill='{}', angle='{}')",
+              sample.x,
+              sample.y,
+              sample.color,
+              sample.shapesize,
+              sample.fillKind,
+              sample.angle
+          );
+        } else {
+          LOGGER.warn("Invalid sample received.");
+        }
+      } catch (RETCODE_NO_DATA ex) {
+        LOGGER.trace("{}", ex);
+        break;
+      }
+    } while (sampleInfo.valid_data);
   }
 
   @Override
@@ -117,31 +160,11 @@ public class ShapeTypeExtendedListener implements DataReaderListener {
   public void on_data_available(
       final DataReader dataReader
   ) {
-    do {
-      try {
-        // get next sample
-        dataReader.read_next_sample_untyped(sample, sampleInfo);
-
-        // print info
-        if (sampleInfo.valid_data) {
-          LOGGER.info(
-              "Received sample (x='{}', y='{}', color='{}', size='{}', fill='{}', angle='{}')",
-              sample.x,
-              sample.y,
-              sample.color,
-              sample.shapesize,
-              sample.fillKind,
-              sample.angle
-          );
-        } else {
-          LOGGER.warn("Invalid sample received.");
-        }
-      } catch (RETCODE_NO_DATA ex) {
-        LOGGER.trace("{}", ex);
-        break;
-      }
-
-    } while (sampleInfo.valid_data);
+    try {
+      executorService.submit(this);
+    } catch (Exception ex) {
+      LOGGER.trace("ExecutorService queue is full: {}", ex.getMessage());
+    }
   }
 
   @Override
