@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
-import com.github.aguther.dds.routing.dynamic.command.remote.DynamicPartitionCommander;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
@@ -45,10 +44,7 @@ import idl.RTI.RoutingService.Administration.CommandResponse;
 import idl.RTI.RoutingService.Administration.CommandResponseKind;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
