@@ -30,14 +30,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.Subscriber;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,11 +53,11 @@ public class BuiltinTopicObserverTest {
   private static final String BUILTIN_TOPIC_NAME = "BuiltinTopic";
 
   private DataReader dataReader;
-  private ExecutorService executorService;
+  private ThreadPoolExecutor executorService;
   private BuiltinTopicObserver builtinTopicObserver;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     DomainParticipant domainParticipant = mock(DomainParticipant.class);
     Subscriber subscriber = mock(Subscriber.class);
     dataReader = mock(DataReader.class);
@@ -68,8 +69,9 @@ public class BuiltinTopicObserverTest {
         .thenReturn(dataReader);
 
     mockStatic(Executors.class);
-    executorService = mock(ExecutorService.class);
-    when(Executors.newSingleThreadExecutor()).thenReturn(executorService);
+
+    executorService = mock(ThreadPoolExecutor.class);
+    whenNew(ThreadPoolExecutor.class).withAnyArguments().thenReturn(executorService);
 
     builtinTopicObserver = new BuiltinTopicObserver(
         domainParticipant,

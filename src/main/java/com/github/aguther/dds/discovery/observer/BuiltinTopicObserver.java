@@ -33,8 +33,10 @@ import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.DataReaderAdapter;
 import java.io.Closeable;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +78,13 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
     dataReader.set_listener(this, StatusKind.DATA_AVAILABLE_STATUS);
 
     // create executor as single thread
-    executorService = Executors.newSingleThreadExecutor();
+    executorService = new ThreadPoolExecutor(
+        1,
+        1,
+        0L,
+        TimeUnit.MILLISECONDS,
+        new ArrayBlockingQueue<>(2)
+    );
   }
 
   /**
