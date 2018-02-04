@@ -62,14 +62,17 @@ public class MutablePublisher extends AbstractExecutionThreadService {
   }
 
   private static void registerShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      LOGGER.info("Shutdown signal received");
-      if (serviceInstance != null) {
-        serviceInstance.stopAsync();
-        serviceInstance.awaitTerminated();
-      }
-      LOGGER.info("Shutdown signal finished");
-    }));
+    Runtime.getRuntime().addShutdownHook(new Thread(
+        () -> {
+          LOGGER.info("Shutdown signal received");
+          if (serviceInstance != null) {
+            serviceInstance.stopAsync();
+            serviceInstance.awaitTerminated();
+          }
+          LOGGER.info("Shutdown signal finished");
+        },
+        String.format("ShutdownHook-%s", MutablePublisher.class.getName())
+    ));
   }
 
   @Override
