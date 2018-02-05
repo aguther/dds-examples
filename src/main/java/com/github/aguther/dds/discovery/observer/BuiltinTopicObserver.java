@@ -35,6 +35,7 @@ import com.rti.dds.subscription.DataReaderAdapter;
 import java.io.Closeable;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -111,8 +112,14 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
     // here we get the information that data is available
     // now we need to inform our listeners that something new has been discovered
     LOGGER.trace("Method 'on_data_available' invoked.");
+
     // trigger to read samples
-    executorService.submit(this);
+    try {
+      executorService.submit(this);
+    } catch (RejectedExecutionException ex) {
+      // this exception can be ignored: it's enough to have at most 2 executions
+      // in the queue to read all samples, therefore more will be rejected
+    }
   }
 
   @Override
