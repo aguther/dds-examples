@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class MutableSubscriber extends AbstractIdleService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MutablePublisher.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MutableSubscriber.class);
 
   private static MutableSubscriber serviceInstance;
 

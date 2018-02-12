@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 public class Reply extends AbstractIdleService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Request.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Reply.class);
 
   private static Reply serviceInstance;
 

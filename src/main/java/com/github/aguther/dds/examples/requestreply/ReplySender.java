@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class ReplySender implements SimpleReplierListener<RequestType, ReplyType> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RequestSender.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReplySender.class);
 
   ReplySender() {
   }

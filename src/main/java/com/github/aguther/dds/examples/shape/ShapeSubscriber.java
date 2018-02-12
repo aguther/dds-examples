@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class ShapeSubscriber extends AbstractIdleService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ShapePublisher.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ShapeSubscriber.class);
 
   private static ShapeSubscriber serviceInstance;
 
