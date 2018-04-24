@@ -41,12 +41,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
     PublicationBuiltinTopicData.class,
     SubscriptionBuiltinTopicData.class,
+})
+@SuppressStaticInitializationFor({
+    "com.rti.dds.publication.builtin.PublicationBuiltinTopicData",
+    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData",
+    "com.rti.dds.topic.AbstractBuiltinTopicData",
 })
 public class ConfigurationFilterProviderTest {
 
