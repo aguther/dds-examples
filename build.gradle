@@ -47,7 +47,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.slf4j:slf4j-log4j12:1.7.25'
     compile 'com.google.code.gson:gson:2.8.4'
-    compile 'com.google.guava:guava:23.6-jre'
+    compile 'com.google.guava:guava:25.0-jre'
     compile 'com.esotericsoftware:reflectasm:1.11.3'
     compile 'net.jodah:failsafe:1.0.5'
 
