@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.rti.dds.infrastructure.ConditionSeq;
 import com.rti.dds.infrastructure.Duration_t;
+import com.rti.dds.infrastructure.GuardCondition;
 import com.rti.dds.infrastructure.ResourceLimitsQosPolicy;
 import com.rti.dds.infrastructure.WaitSet;
 import com.rti.dds.subscription.DataReader;
@@ -24,6 +25,7 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataReaderWatcher.class);
 
   private DataReader dataReader;
+  private GuardCondition guardCondition;
   private ReadCondition readCondition;
   private WaitSet waitSet;
 
@@ -51,13 +53,17 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
     this.sampleSeq = sampleSeq;
     this.sampleInfoSeq = new SampleInfoSeq();
 
-    this.readCondition = dataReader.create_readcondition_w_params(readConditionParams);
+    guardCondition = new GuardCondition();
+    checkNotNull(guardCondition);
+
+    readCondition = dataReader.create_readcondition_w_params(readConditionParams);
     checkNotNull(readCondition);
 
     // create wait set and attach condition
-    this.waitSet = new WaitSet();
-    checkNotNull(this.waitSet);
-    this.waitSet.attach_condition(readCondition);
+    waitSet = new WaitSet();
+    checkNotNull(waitSet);
+    waitSet.attach_condition(readCondition);
+    waitSet.attach_condition(guardCondition);
 
     // create executor and start execution
     executorService = Executors.newSingleThreadScheduledExecutor();
@@ -70,9 +76,10 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     if (executorService != null) {
       executorService.shutdownNow();
+      guardCondition.set_trigger_value(true);
       try {
         executorService.awaitTermination(60, TimeUnit.SECONDS);
       } catch (InterruptedException e) {
@@ -85,6 +92,11 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
         waitSet.detach_condition(readCondition);
         dataReader.delete_readcondition(readCondition);
         readCondition = null;
+      }
+      if (guardCondition != null) {
+        waitSet.detach_condition(guardCondition);
+        guardCondition.delete();
+        guardCondition = null;
       }
       waitSet.delete();
       waitSet = null;
