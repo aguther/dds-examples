@@ -1,4 +1,4 @@
-package com.github.aguther.dds.examples.shape;
+package com.github.aguther.dds.util;
 
 import com.rti.dds.subscription.SampleInfo;
 

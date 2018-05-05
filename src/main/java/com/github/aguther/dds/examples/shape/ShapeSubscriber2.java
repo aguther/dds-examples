@@ -25,13 +25,12 @@
 package com.github.aguther.dds.examples.shape;
 
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
+import com.github.aguther.dds.util.DataReaderWatcher;
+import com.github.aguther.dds.util.DataReaderWatcherListener;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
-import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.InstanceStateKind;
-import com.rti.dds.subscription.ReadCondition;
-import com.rti.dds.subscription.ReadConditionImpl;
 import com.rti.dds.subscription.ReadConditionParams;
 import com.rti.dds.subscription.SampleInfo;
 import com.rti.dds.subscription.SampleStateKind;

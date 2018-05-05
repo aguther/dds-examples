@@ -1,4 +1,4 @@
-package com.github.aguther.dds.examples.shape;
+package com.github.aguther.dds.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -12,10 +12,9 @@ import com.rti.dds.subscription.ReadCondition;
 import com.rti.dds.subscription.ReadConditionParams;
 import com.rti.dds.subscription.SampleInfoSeq;
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,7 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
   private List<T> sampleSeq;
   private SampleInfoSeq sampleInfoSeq;
 
-  private ScheduledExecutorService executorService;
+  private ExecutorService executorService;
 
   private DataReaderWatcherListener<T> listener;
 
@@ -66,13 +65,8 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
     waitSet.attach_condition(guardCondition);
 
     // create executor and start execution
-    executorService = Executors.newSingleThreadScheduledExecutor();
-    executorService.scheduleWithFixedDelay(
-        this,
-        0,
-        1,
-        TimeUnit.NANOSECONDS
-    );
+    executorService = Executors.newSingleThreadExecutor();
+    executorService.submit(this);
   }
 
   @Override
@@ -105,34 +99,41 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
 
   @Override
   public void run() {
-    // wait until condition is triggered
-    ConditionSeq conditionSeq = new ConditionSeq();
-    waitSet.get_conditions(conditionSeq);
-    waitSet.wait(conditionSeq, Duration_t.DURATION_INFINITE);
+    do {
+      // wait until condition is triggered
+      ConditionSeq conditionSeq = new ConditionSeq();
+      waitSet.get_conditions(conditionSeq);
+      waitSet.wait(conditionSeq, Duration_t.DURATION_INFINITE);
 
-    try {
-      // take data
-      dataReader.take_w_condition_untyped(
-          sampleSeq,
-          sampleInfoSeq,
-          ResourceLimitsQosPolicy.LENGTH_UNLIMITED,
-          readCondition
-      );
-
-      // iterate over data
-      for (int i = 0; i < sampleSeq.size(); i++) {
-        listener.onDataAvailable(
-            sampleSeq.get(i),
-            sampleInfoSeq.get(i)
-        );
+      // check if we shutdown was triggered -> early exit
+      if (guardCondition.get_trigger_value()) {
+        return;
       }
 
-    } finally {
-      // return data
-      dataReader.return_loan_untyped(
-          sampleSeq,
-          sampleInfoSeq
-      );
-    }
+      try {
+        // take data
+        dataReader.take_w_condition_untyped(
+            sampleSeq,
+            sampleInfoSeq,
+            ResourceLimitsQosPolicy.LENGTH_UNLIMITED,
+            readCondition
+        );
+
+        // iterate over data
+        for (int i = 0; i < sampleSeq.size(); i++) {
+          listener.onDataAvailable(
+              sampleSeq.get(i),
+              sampleInfoSeq.get(i)
+          );
+        }
+
+      } finally {
+        // return data
+        dataReader.return_loan_untyped(
+            sampleSeq,
+            sampleInfoSeq
+        );
+      }
+    } while (!guardCondition.get_trigger_value());
   }
 }
