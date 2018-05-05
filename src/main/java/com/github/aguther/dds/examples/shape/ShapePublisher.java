@@ -98,12 +98,15 @@ public class ShapePublisher extends AbstractExecutionThreadService {
   }
 
   @Override
+  protected void triggerShutdown() {
+    // stop publish
+    stopPublish();
+  }
+
+  @Override
   protected void shutDown() throws Exception {
     // log service start
     LOGGER.info("Service is shutting down");
-
-    // stop publish
-    stopPublish();
 
     // shutdown DDS
     shutdownDds();
