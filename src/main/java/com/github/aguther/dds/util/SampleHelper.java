@@ -75,6 +75,23 @@ public class SampleHelper {
     );
   }
 
+  public static <T> T getSampleFromCdrBuffer(
+      final TypeSupportImpl typeSupport,
+      final T sample,
+      final byte[] buffer
+  ) {
+
+    // deserialize from buffer
+    deserializeSampleFromCdrBuffer(
+        sample,
+        typeSupport,
+        buffer
+    );
+
+    // return sample
+    return sample;
+  }
+
   @SuppressWarnings("unchecked")
   public static <T> T getSampleFromCdrBuffer(
       final TypeSupportImpl typeSupport,
