@@ -82,17 +82,17 @@ public class SampleHelper {
       final byte[] buffer
   ) throws IllegalAccessException, InstantiationException {
 
-    // create buffer of correct size
+    // create sample of T
     T sample = (T) clazz.newInstance();
 
-    // serialize to buffer
+    // deserialize from buffer
     deserializeSampleFromCdrBuffer(
         sample,
         typeSupport,
         buffer
     );
 
-    // return buffer
+    // return sample
     return sample;
   }
 
