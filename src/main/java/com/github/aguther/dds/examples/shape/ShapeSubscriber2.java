@@ -27,6 +27,7 @@ package com.github.aguther.dds.examples.shape;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.github.aguther.dds.util.DataReaderWatcher;
 import com.github.aguther.dds.util.DataReaderWatcherListener;
+import com.github.aguther.dds.util.SampleTaker;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -44,7 +45,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShapeSubscriber2 extends AbstractIdleService {
+public class ShapeSubscriber2 extends AbstractIdleService implements DataReaderWatcherListener<ShapeTypeExtended> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShapeSubscriber2.class);
 
@@ -88,7 +89,7 @@ public class ShapeSubscriber2 extends AbstractIdleService {
   }
 
   @Override
-  protected void startUp() throws Exception {
+  protected void startUp() {
     // log service start
     LOGGER.info("Service is starting");
 
@@ -103,7 +104,7 @@ public class ShapeSubscriber2 extends AbstractIdleService {
   }
 
   @Override
-  protected void shutDown() throws Exception {
+  protected void shutDown() {
     // log service start
     LOGGER.info("Service is shutting down");
 
@@ -146,23 +147,23 @@ public class ShapeSubscriber2 extends AbstractIdleService {
     readConditionParams.view_states = ViewStateKind.ANY_VIEW_STATE;
     readConditionParams.sample_states = SampleStateKind.NOT_READ_SAMPLE_STATE;
 
-    dataReaderWatcher = new DataReaderWatcher(
+    dataReaderWatcher = new DataReaderWatcher<>(
         domainParticipant.lookup_datareader_by_name("Subscriber::ShapeTypeExtendedDataReader"),
         readConditionParams,
-        new ShapeTypeExtendedSeq(),
-        new DataReaderWatcherListener<ShapeTypeExtended>() {
-          @Override
-          public void onDataAvailable(
-              ShapeTypeExtended sample,
-              SampleInfo info
-          ) {
-            LOGGER.info(sample.toString());
-          }
-        }
+        new SampleTaker<>(new ShapeTypeExtendedSeq()),
+        this
     );
   }
 
-  private void stopSubscription() throws IOException {
+  @Override
+  public void onDataAvailable(
+      ShapeTypeExtended sample,
+      SampleInfo info
+  ) {
+    LOGGER.info(sample.toString());
+  }
+
+  private void stopSubscription() {
     // signal termination
     dataReaderWatcher.close();
 

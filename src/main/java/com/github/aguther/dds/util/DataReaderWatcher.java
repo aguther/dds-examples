@@ -28,29 +28,25 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
   private ReadCondition readCondition;
   private WaitSet waitSet;
 
-  private List<T> sampleSeq;
-  private SampleInfoSeq sampleInfoSeq;
-
   private ExecutorService executorService;
 
   private DataReaderWatcherListener<T> listener;
+  private DataReaderWatcherExecutor<T> executor;
 
   public DataReaderWatcher(
       DataReader dataReader,
       ReadConditionParams readConditionParams,
-      List<T> sampleSeq,
+      DataReaderWatcherExecutor<T> executor,
       DataReaderWatcherListener<T> listener
   ) {
     checkNotNull(dataReader);
     checkNotNull(readConditionParams);
-    checkNotNull(sampleSeq);
+    checkNotNull(executor);
     checkNotNull(listener);
 
-    this.listener = listener;
     this.dataReader = dataReader;
-
-    this.sampleSeq = sampleSeq;
-    this.sampleInfoSeq = new SampleInfoSeq();
+    this.executor = executor;
+    this.listener = listener;
 
     guardCondition = new GuardCondition();
     checkNotNull(guardCondition);
@@ -110,30 +106,13 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
         return;
       }
 
-      try {
-        // take data
-        dataReader.take_w_condition_untyped(
-            sampleSeq,
-            sampleInfoSeq,
-            ResourceLimitsQosPolicy.LENGTH_UNLIMITED,
-            readCondition
-        );
+      // read or take samples
+      executor.execute(
+          dataReader,
+          readCondition,
+          listener
+      );
 
-        // iterate over data
-        for (int i = 0; i < sampleSeq.size(); i++) {
-          listener.onDataAvailable(
-              sampleSeq.get(i),
-              sampleInfoSeq.get(i)
-          );
-        }
-
-      } finally {
-        // return data
-        dataReader.return_loan_untyped(
-            sampleSeq,
-            sampleInfoSeq
-        );
-      }
     } while (!guardCondition.get_trigger_value());
   }
 }
