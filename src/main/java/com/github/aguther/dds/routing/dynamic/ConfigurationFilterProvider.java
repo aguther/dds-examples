@@ -31,6 +31,7 @@ import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverF
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
+import com.github.aguther.dds.util.EnvironmentVariableHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
@@ -93,11 +94,11 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
         prefix
     ));
 
-    domainRouteName = properties.getProperty(String.format(
+    domainRouteName = EnvironmentVariableHelper.resolve(properties.getProperty(String.format(
         "%s%s",
         prefix,
         PROPERTY_DOMAIN_ROUTE_NAME
-    ));
+    )));
     loadConfiguration(properties);
   }
 
@@ -146,35 +147,38 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
       configurations.put(identifier, new Configuration());
     }
 
+    // resolve any contained environment variables
+    String propertyValueResolved = EnvironmentVariableHelper.resolve(propertyValue);
+
     // store configuration
     switch (propertyName) {
       case "allow_topic_name_filter":
         configurations.get(identifier).setAllowTopicNameFilter(
-            Pattern.compile(propertyValue));
+            Pattern.compile(propertyValueResolved));
         break;
       case "deny_topic_name_filter":
         configurations.get(identifier).setDenyTopicNameFilter(
-            Pattern.compile(propertyValue));
+            Pattern.compile(propertyValueResolved));
         break;
       case "allow_partition_name_filter":
         configurations.get(identifier).setAllowPartitionNameFilter(
-            Pattern.compile(propertyValue));
+            Pattern.compile(propertyValueResolved));
         break;
       case "deny_partition_name_filter":
         configurations.get(identifier).setDenyPartitionNameFilter(
-            Pattern.compile(propertyValue));
+            Pattern.compile(propertyValueResolved));
         break;
       case "qos.topic_route":
         configurations.get(identifier).setTopicRouteQosQos(
-            propertyValue);
+            propertyValueResolved);
         break;
       case "qos.input":
         configurations.get(identifier).setQosInput(
-            propertyValue);
+            propertyValueResolved);
         break;
       case "qos.output":
         configurations.get(identifier).setQosOutput(
-            propertyValue);
+            propertyValueResolved);
         break;
       default:
         // unknown configuration

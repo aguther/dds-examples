@@ -35,6 +35,7 @@ import com.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGrou
 import com.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
+import com.github.aguther.dds.util.EnvironmentVariableHelper;
 import com.google.common.base.Strings;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -182,7 +183,7 @@ public class DynamicRoutingManager implements Closeable {
 
     // create domain participant for discovery
     domainParticipantDiscovery = createDiscoveryDomainParticipant(
-        Integer.parseInt(getProperty(PROPERTY_DISCOVERY_DOMAIN_ID))
+        Integer.parseInt(EnvironmentVariableHelper.resolve(getProperty(PROPERTY_DISCOVERY_DOMAIN_ID)))
     );
 
     // create new publication observer
@@ -194,7 +195,7 @@ public class DynamicRoutingManager implements Closeable {
     subscriptionObserver.addListener(dynamicPartitionObserver, false);
 
     // depending on provided property start either local or remote administration interface
-    if (Boolean.parseBoolean(getProperty(PROPERTY_ADMINISTRATION_LOCAL, DEFAULT_PROPERTY_ADMINISTRATION_LOCAL))) {
+    if (Boolean.parseBoolean(EnvironmentVariableHelper.resolve(getProperty(PROPERTY_ADMINISTRATION_LOCAL, DEFAULT_PROPERTY_ADMINISTRATION_LOCAL)))) {
       createLocalAdministration(routingService, configurationFilterProvider);
     } else {
       createRemoteAdministration(routingServiceName, configurationFilterProvider);
@@ -332,7 +333,7 @@ public class DynamicRoutingManager implements Closeable {
 
     // create domain participant for administration interface and ensure it will be enabled
     domainParticipantAdministration = createRemoteAdministrationDomainParticipant(
-        Integer.parseInt(getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID))
+        Integer.parseInt(EnvironmentVariableHelper.resolve(getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID)))
     );
     domainParticipantAdministration.enable();
 
@@ -344,10 +345,10 @@ public class DynamicRoutingManager implements Closeable {
     LOGGER.info("Waiting for remote administration interface of routing service to be discovered");
     if (routingServiceCommandInterface.waitForDiscovery(
         routingServiceName,
-        Long.parseLong(getProperty(
+        Long.parseLong(EnvironmentVariableHelper.resolve(getProperty(
             PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME,
             DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
-        )),
+        ))),
         TimeUnit.MILLISECONDS)) {
       LOGGER.info("Remote administration interface of routing service was discovered");
     } else {
@@ -359,15 +360,15 @@ public class DynamicRoutingManager implements Closeable {
         routingServiceCommandInterface,
         configurationFilterProvider,
         routingServiceName,
-        Long.parseLong(getProperty(
+        Long.parseLong(EnvironmentVariableHelper.resolve(getProperty(
             PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY,
             DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
-        )),
+        ))),
         TimeUnit.MILLISECONDS,
-        Long.parseLong(getProperty(
+        Long.parseLong(EnvironmentVariableHelper.resolve(getProperty(
             PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT,
             DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
-        )),
+        ))),
         TimeUnit.MILLISECONDS
     );
 
