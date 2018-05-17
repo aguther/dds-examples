@@ -31,6 +31,7 @@ import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantFactoryQos;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -40,7 +41,8 @@ import org.slf4j.LoggerFactory;
 public class DynamicRouting extends AbstractIdleService {
 
   private static final String ROUTING_SERVICE_NAME = "dds-examples-routing-dynamic";
-  private static final String ROUTING_SERVICE_CONFIG_FILE = "configuration/routing-dynamic.xml";
+  private static final String ROUTING_SERVICE_CONFIG_FILE_XML = "configuration/routing-dynamic.xml";
+  private static final String ROUTING_SERVICE_CONFIG_FILE_PROPERTIES = "configuration/routing-dynamic.properties";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRouting.class);
 
@@ -132,7 +134,7 @@ public class DynamicRouting extends AbstractIdleService {
   private void startUpRoutingService() {
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
-    routingServiceProperty.cfgFile = ROUTING_SERVICE_CONFIG_FILE;
+    routingServiceProperty.cfgFile = ROUTING_SERVICE_CONFIG_FILE_XML;
     routingServiceProperty.serviceName = ROUTING_SERVICE_NAME;
     routingServiceProperty.applicationName = routingServiceProperty.serviceName;
     routingServiceProperty.serviceVerbosity = 3;
@@ -151,7 +153,7 @@ public class DynamicRouting extends AbstractIdleService {
   private void startUpDynamicRouting() throws IOException {
     // load properties
     final Properties properties = new Properties();
-    try (InputStream stream = getClass().getResourceAsStream("/dynamic_routing.properties")) {
+    try (InputStream stream = new FileInputStream(ROUTING_SERVICE_CONFIG_FILE_PROPERTIES)) {
       properties.load(stream);
     }
 
