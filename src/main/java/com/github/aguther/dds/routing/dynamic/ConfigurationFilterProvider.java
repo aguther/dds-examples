@@ -31,7 +31,6 @@ import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverF
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
-import com.github.aguther.dds.util.EnvironmentVariableHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
@@ -43,6 +42,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.text.StringSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,11 +94,14 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
         prefix
     ));
 
-    domainRouteName = EnvironmentVariableHelper.resolve(properties.getProperty(String.format(
-        "%s%s",
-        prefix,
-        PROPERTY_DOMAIN_ROUTE_NAME
-    )));
+    domainRouteName = StringSubstitutor.replace(
+        properties.getProperty(String.format(
+            "%s%s",
+            prefix,
+            PROPERTY_DOMAIN_ROUTE_NAME
+        )),
+        System.getenv()
+    );
     loadConfiguration(properties);
   }
 
@@ -148,7 +151,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     }
 
     // resolve any contained environment variables
-    String propertyValueResolved = EnvironmentVariableHelper.resolve(propertyValue);
+    String propertyValueResolved = StringSubstitutor.replace(propertyValue, System.getenv());
 
     // store configuration
     switch (propertyName) {
