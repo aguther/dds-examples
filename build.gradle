@@ -51,6 +51,8 @@ dependencies {
     compile 'com.google.guava:guava:25.1-jre'
     compile 'com.esotericsoftware:reflectasm:1.11.3'
     compile 'net.jodah:failsafe:1.1.0'
+    compile 'org.apache.kafka:kafka-clients:1.1.0'
+    compile 'org.apache.kafka:kafka-streams:1.1.0'
 
     // test
     testCompile "junit:junit:4.12"
