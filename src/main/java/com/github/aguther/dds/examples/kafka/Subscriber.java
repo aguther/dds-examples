@@ -24,7 +24,9 @@
 
 package com.github.aguther.dds.examples.kafka;
 
+import com.github.aguther.dds.util.KafkaCdrTypeDeserializer;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
+import idl.ShapeTypeExtended;
 import java.util.Collections;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -32,7 +34,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.LongDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class Subscriber extends AbstractExecutionThreadService {
 
   private static Subscriber serviceInstance;
 
-  private Consumer<Long, String> consumer;
+  private Consumer<Long, ShapeTypeExtended> consumer;
 
   public static void main(
       final String[] args
@@ -72,6 +73,7 @@ public class Subscriber extends AbstractExecutionThreadService {
           LOGGER.info("Shutdown signal received");
           if (serviceInstance != null) {
             serviceInstance.stopAsync();
+            serviceInstance.awaitTerminated();
           }
           LOGGER.info("Shutdown signal finished");
         },
@@ -89,7 +91,11 @@ public class Subscriber extends AbstractExecutionThreadService {
     config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
     config.put(ConsumerConfig.GROUP_ID_CONFIG, Subscriber.class.getName());
     config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
-    config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+    config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaCdrTypeDeserializer.class.getName());
+    config.put(KafkaCdrTypeDeserializer.VALUE_DESERIALIZER_CLASS_CONFIG_TYPE,
+        "idl.ShapeTypeExtended");
+    config.put(KafkaCdrTypeDeserializer.VALUE_DESERIALIZER_CLASS_CONFIG_TYPE_SUPPORT,
+        "idl.ShapeTypeExtendedTypeSupport");
 
     // create consumer
     consumer = new KafkaConsumer<>(config);
@@ -105,7 +111,7 @@ public class Subscriber extends AbstractExecutionThreadService {
   protected void run() {
     while (serviceInstance.state() == State.RUNNING) {
       // get records
-      final ConsumerRecords<Long, String> consumerRecords = consumer.poll(1000);
+      final ConsumerRecords<Long, ShapeTypeExtended> consumerRecords = consumer.poll(1000);
 
       // check if any records received
       if (consumerRecords.count() == 0) {
@@ -115,7 +121,7 @@ public class Subscriber extends AbstractExecutionThreadService {
       // log all received records
       consumerRecords.forEach(record ->
           LOGGER.info(
-              "Consumer Record:({}, {}, {}, {})",
+              "Received record key='{}', value='{}', partition='{}', offset='{}'",
               record.key(),
               record.value(),
               record.partition(),

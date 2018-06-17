@@ -24,7 +24,10 @@
 
 package com.github.aguther.dds.examples.kafka;
 
+import com.github.aguther.dds.util.KafkaCdrTypeSerializer;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
+import idl.ShapeFillKind;
+import idl.ShapeTypeExtended;
 import java.util.Properties;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -32,7 +35,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +47,7 @@ public class Publisher extends AbstractExecutionThreadService {
 
   private static Publisher serviceInstance;
 
-  private Producer<Long, String> producer;
+  private Producer<Long, ShapeTypeExtended> producer;
 
   public static void main(
       final String[] args
@@ -72,6 +74,7 @@ public class Publisher extends AbstractExecutionThreadService {
           LOGGER.info("Shutdown signal received");
           if (serviceInstance != null) {
             serviceInstance.stopAsync();
+            serviceInstance.awaitTerminated();
           }
           LOGGER.info("Shutdown signal finished");
         },
@@ -89,7 +92,9 @@ public class Publisher extends AbstractExecutionThreadService {
     config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
     config.put(ProducerConfig.CLIENT_ID_CONFIG, Publisher.class.getName());
     config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-    config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+    config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaCdrTypeSerializer.class.getName());
+    config.put(KafkaCdrTypeSerializer.VALUE_SERIALIZER_CLASS_CONFIG_TYPE_SUPPORT,
+        "idl.ShapeTypeExtendedTypeSupport");
 
     // create producer
     producer = new KafkaProducer<>(config);
@@ -100,11 +105,21 @@ public class Publisher extends AbstractExecutionThreadService {
 
   @Override
   protected void run() throws Exception {
+    // create sample
+    ShapeTypeExtended shapeTypeExtended = new ShapeTypeExtended();
+    shapeTypeExtended.x = 1;
+    shapeTypeExtended.y = 2;
+    shapeTypeExtended.shapesize = 3;
+    shapeTypeExtended.angle = 4;
+    shapeTypeExtended.color = "BLUE";
+    shapeTypeExtended.fillKind = ShapeFillKind.TRANSPARENT_FILL;
+
+    // key
     long key = 0;
 
     while (serviceInstance.state() == State.RUNNING) {
       // create record
-      final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC, key, "Hello World!");
+      final ProducerRecord<Long, ShapeTypeExtended> record = new ProducerRecord<>(TOPIC, key, shapeTypeExtended);
 
       // send record and get result
       RecordMetadata metadata = producer.send(record).get();
@@ -112,7 +127,7 @@ public class Publisher extends AbstractExecutionThreadService {
       // log information if requested
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(
-            "sent record(key={} value={}) meta(partition={}, offset={})",
+            "Sent record key='{}', value='{}', partition='{}', offset='{}'",
             record.key(),
             record.value(),
             metadata.partition(),
@@ -125,6 +140,25 @@ public class Publisher extends AbstractExecutionThreadService {
 
       // sleep some time
       Thread.sleep(250);
+    }
+
+    for (long i = 0; i < 10; i++) {
+      // create record with value null -> tombstone
+      final ProducerRecord<Long, ShapeTypeExtended> record = new ProducerRecord<>(TOPIC, i, null);
+
+      // send record and get result
+      RecordMetadata metadata = producer.send(record).get();
+
+      // log information if requested
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info(
+            "Sent record key='{}', value='{}', partition='{}', offset='{}'",
+            record.key(),
+            record.value(),
+            metadata.partition(),
+            metadata.offset()
+        );
+      }
     }
   }
 

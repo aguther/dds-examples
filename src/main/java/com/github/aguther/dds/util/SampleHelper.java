@@ -26,12 +26,44 @@ package com.github.aguther.dds.util;
 
 import com.rti.dds.dynamicdata.DynamicData;
 import com.rti.dds.dynamicdata.DynamicDataProperty_t;
+import com.rti.dds.topic.DefaultEndpointData;
+import com.rti.dds.topic.KeyHash_t;
+import com.rti.dds.topic.TypeSupportEndpointInfo;
 import com.rti.dds.topic.TypeSupportImpl;
 import com.rti.dds.typecode.TypeCode;
 
 public class SampleHelper {
 
   private SampleHelper() {
+  }
+
+  public static <T> KeyHash_t getKeyHashFromSample(
+      final TypeSupportImpl typeSupportImpl,
+      final T sample
+  ) {
+    // type support endpoint info
+    // -> crucial to have initial samples, otherwise md5 buffer is not created
+    TypeSupportEndpointInfo typeSupportEndpointInfo = new TypeSupportEndpointInfo();
+    typeSupportEndpointInfo.initial_samples = 1;
+
+    // endpoint data
+    DefaultEndpointData defaultEndpointData = new DefaultEndpointData(
+        typeSupportEndpointInfo,
+        typeSupportImpl
+    );
+
+    // create result object
+    KeyHash_t keyHash = new KeyHash_t();
+
+    // calculate key-hash
+    typeSupportImpl.instance_to_keyhash(
+        defaultEndpointData,
+        keyHash,
+        sample
+    );
+
+    // create buffer and return it
+    return keyHash;
   }
 
   public static <T> byte[] createCdrBufferForSample(
