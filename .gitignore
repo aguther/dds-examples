@@ -9,3 +9,5 @@ bin
 build
 out
 src/generated
+kafka/kafka
+kafka/*.tgz
