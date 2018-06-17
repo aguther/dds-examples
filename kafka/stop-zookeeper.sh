@@ -3,8 +3,5 @@
 # determine script directory
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
-# stop kafka
-${SCRIPT_DIR}/stop-kafka.sh
-
 # stop zookeeper
-${SCRIPT_DIR}/stop-zookeeper.sh
+exec ${SCRIPT_DIR}/kafka/bin/zookeeper-server-stop.sh
