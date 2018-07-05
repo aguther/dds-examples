@@ -32,6 +32,10 @@
               <name>dds.transport.UDPv6.builtin.send_socket_buffer_size</name>
               <value>1048576</value>
             </element>
+            <element>
+              <name>dds.clock.internal_clock</name>
+              <value>monotonic,realtime</value>
+            </element>
           </value>
         </property>
       </participant_qos>
