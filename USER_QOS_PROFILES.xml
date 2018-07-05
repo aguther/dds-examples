@@ -43,9 +43,14 @@
       <datawriter_qos>
         <writer_data_lifecycle>
           <autodispose_unregistered_instances>false</autodispose_unregistered_instances>
+          <autopurge_disposed_instances_delay>
+            <sec>0</sec>
+            <nanosec>0</nanosec>
+          </autopurge_disposed_instances_delay>
         </writer_data_lifecycle>
         <writer_resource_limits>
           <instance_replacement>DISPOSED_INSTANCE_REPLACEMENT</instance_replacement>
+          <replace_empty_instances>false</replace_empty_instances>
         </writer_resource_limits>
         <property>
           <value>
@@ -66,6 +71,12 @@
       </datawriter_qos>
 
       <datareader_qos>
+        <reader_data_lifecycle>
+          <autopurge_disposed_instances_delay>
+            <sec>0</sec>
+            <nanosec>0</nanosec>
+          </autopurge_disposed_instances_delay>
+        </reader_data_lifecycle>
         <protocol>
           <propagate_dispose_of_unregistered_instances>true</propagate_dispose_of_unregistered_instances>
         </protocol>
