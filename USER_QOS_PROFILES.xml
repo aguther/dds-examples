@@ -194,7 +194,5 @@
         </data_reader>
       </subscriber>
     </domain_participant>
-
   </domain_participant_library>
-
 </dds>
