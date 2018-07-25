@@ -9,3 +9,6 @@ bin
 build
 out
 src/generated
+docker/rpms
+docker/**/*.rpm
+docker/**/*.jar
