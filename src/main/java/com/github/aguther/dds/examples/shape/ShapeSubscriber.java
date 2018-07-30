@@ -24,6 +24,7 @@
 
 package com.github.aguther.dds.examples.shape;
 
+import com.github.aguther.dds.examples.shape.util.ShapeKind;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
@@ -31,10 +32,13 @@ import com.rti.dds.domain.DomainParticipantFactory;
 import idl.ShapeTypeExtendedTypeSupport;
 import idl.ShapeTypeTypeSupport;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
-public class ShapeSubscriber extends AbstractIdleService {
+public class ShapeSubscriber extends AbstractIdleService implements Callable<ShapeSubscriber> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShapeSubscriber.class);
 
@@ -43,14 +47,25 @@ public class ShapeSubscriber extends AbstractIdleService {
   private DomainParticipant domainParticipant;
   private ShapeTypeExtendedListener shapeTypeExtendedListener;
 
+  @Option(
+      names = {"--shape"},
+      defaultValue = "SQUARE"
+  )
+  private ShapeKind shapeKind;
+
   public static void main(
       final String[] args
   ) {
+    // create service
+    serviceInstance = CommandLine.call(new ShapeSubscriber(), args);
+
+    // check if service instance was created and exit if not
+    if (serviceInstance == null) {
+      System.exit(1);
+    }
+
     // register shutdown hook
     registerShutdownHook();
-
-    // create service
-    serviceInstance = new ShapeSubscriber();
 
     // start the service
     serviceInstance.startAsync();
@@ -60,6 +75,11 @@ public class ShapeSubscriber extends AbstractIdleService {
 
     // service terminated
     LOGGER.info("Service terminated");
+  }
+
+  @Override
+  public ShapeSubscriber call() {
+    return this;
   }
 
   private static void registerShutdownHook() {
@@ -77,7 +97,7 @@ public class ShapeSubscriber extends AbstractIdleService {
   }
 
   @Override
-  protected void startUp() throws Exception {
+  protected void startUp() {
     // log service start
     LOGGER.info("Service is starting");
 
@@ -92,7 +112,7 @@ public class ShapeSubscriber extends AbstractIdleService {
   }
 
   @Override
-  protected void shutDown() throws Exception {
+  protected void shutDown() {
     // log service start
     LOGGER.info("Service is shutting down");
 
@@ -130,7 +150,7 @@ public class ShapeSubscriber extends AbstractIdleService {
   private void startSubscription() {
     // start subscription
     shapeTypeExtendedListener = new ShapeTypeExtendedListener(
-        domainParticipant.lookup_datareader_by_name("Subscriber::ShapeTypeExtendedDataReader")
+        domainParticipant.lookup_datareader_by_name(String.format("Subscriber::%sDataReader", shapeKind))
     );
   }
 

@@ -27,6 +27,7 @@ package com.github.aguther.dds.examples.shape;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.aguther.dds.examples.shape.util.ShapeAttributes;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.Cookie_t;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -44,6 +45,7 @@ import com.rti.dds.publication.ReliableReaderActivityChangedStatus;
 import com.rti.dds.publication.ReliableWriterCacheChangedStatus;
 import com.rti.dds.publication.ServiceRequestAcceptedStatus;
 import idl.ShapeTypeExtended;
+import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,19 +71,25 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
       final ShapeAttributes shapeAttributes,
       final DomainParticipant domainParticipant,
       final String dataWriterName,
-      final int sleepTime
+      final int sleepTime,
+      final int speedX,
+      final int speedY
   ) {
     this(
         shapeAttributes,
         domainParticipant.lookup_datawriter_by_name(dataWriterName),
-        sleepTime
+        sleepTime,
+        speedX,
+        speedY
     );
   }
 
   ShapeTypeExtendedPublisher(
       final ShapeAttributes shapeAttributes,
       final DataWriter dataWriter,
-      final int sleepTime
+      final int sleepTime,
+      final int speedX,
+      final int speedY
   ) {
     checkNotNull(shapeAttributes, "Shape attributes must not be null");
     checkNotNull(dataWriter, "DataWriter must not be null");
@@ -93,13 +101,13 @@ public class ShapeTypeExtendedPublisher implements Runnable, DataWriterListener 
 
     this.xPositionMin = shapeAttributes.getSize() / 2;
     this.xPositionMax = 235 - shapeAttributes.getSize() / 2;
-    this.xPosition = shapeAttributes.getSize() / 2;
-    this.xSpeed = 1;
+    this.xPosition = ThreadLocalRandom.current().nextInt(xPositionMin, xPositionMax + 1);
+    this.xSpeed = speedX;
 
     this.yPositionMin = shapeAttributes.getSize() / 2;
     this.yPositionMax = 265 - shapeAttributes.getSize() / 2;
-    this.yPosition = yPositionMin;
-    this.ySpeed = 2;
+    this.yPosition = ThreadLocalRandom.current().nextInt(yPositionMin, yPositionMax + 1);
+    this.ySpeed = speedY;
   }
 
   void stop() {

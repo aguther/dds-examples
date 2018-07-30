@@ -24,18 +24,24 @@
 
 package com.github.aguther.dds.examples.shape;
 
+import com.github.aguther.dds.examples.shape.util.ShapeAttributes;
+import com.github.aguther.dds.examples.shape.util.ShapeColor;
+import com.github.aguther.dds.examples.shape.util.ShapeFillKind;
+import com.github.aguther.dds.examples.shape.util.ShapeKind;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
-import idl.ShapeFillKind;
 import idl.ShapeTypeExtendedTypeSupport;
 import idl.ShapeTypeTypeSupport;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
-public class ShapePublisher extends AbstractExecutionThreadService {
+public class ShapePublisher extends AbstractExecutionThreadService implements Callable<ShapePublisher> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShapePublisher.class);
 
@@ -44,14 +50,67 @@ public class ShapePublisher extends AbstractExecutionThreadService {
   private DomainParticipant domainParticipant;
   private ShapeTypeExtendedPublisher shapeTypeExtendedPublisher;
 
+  @Option(
+      names = {"--shape"},
+      defaultValue = "SQUARE"
+  )
+  private ShapeKind shapeKind;
+
+  @Option(
+      names = {"--color"},
+      defaultValue = "BLUE"
+  )
+  private ShapeColor shapeColor;
+
+  @Option(
+      names = {"--size"},
+      defaultValue = "30"
+  )
+  private int shapeSize;
+
+  @Option(
+      names = {"--fillKind"},
+      defaultValue = "SOLID"
+  )
+  private ShapeFillKind shapeFillKind;
+
+  @Option(
+      names = {"--angle"},
+      defaultValue = "0"
+  )
+  private float shapeAngle;
+
+  @Option(
+      names = {"--speed-x"},
+      defaultValue = "1"
+  )
+  private int speedX;
+
+  @Option(
+      names = {"--speed-y"},
+      defaultValue = "2"
+  )
+  private int speedY;
+
+  @Option(
+      names = {"--sleep"},
+      defaultValue = "50"
+  )
+  private int sleepTime;
+
   public static void main(
       final String[] args
   ) {
+    // create service
+    serviceInstance = CommandLine.call(new ShapePublisher(), args);
+
+    // check if service instance was created and exit if not
+    if (serviceInstance == null) {
+      System.exit(1);
+    }
+
     // register shutdown hook
     registerShutdownHook();
-
-    // create service
-    serviceInstance = new ShapePublisher();
 
     // start the service
     serviceInstance.startAsync();
@@ -61,6 +120,11 @@ public class ShapePublisher extends AbstractExecutionThreadService {
 
     // service terminated
     LOGGER.info("Service terminated");
+  }
+
+  @Override
+  public ShapePublisher call() {
+    return this;
   }
 
   private static void registerShutdownHook() {
@@ -78,7 +142,7 @@ public class ShapePublisher extends AbstractExecutionThreadService {
   }
 
   @Override
-  protected void startUp() throws Exception {
+  protected void startUp() {
     // log service start
     LOGGER.info("Service is starting");
 
@@ -93,7 +157,7 @@ public class ShapePublisher extends AbstractExecutionThreadService {
   }
 
   @Override
-  protected void run() throws Exception {
+  protected void run() {
     shapeTypeExtendedPublisher.run();
   }
 
@@ -104,7 +168,7 @@ public class ShapePublisher extends AbstractExecutionThreadService {
   }
 
   @Override
-  protected void shutDown() throws Exception {
+  protected void shutDown() {
     // log service start
     LOGGER.info("Service is shutting down");
 
@@ -139,18 +203,20 @@ public class ShapePublisher extends AbstractExecutionThreadService {
   private void startPublish() {
     // create initial attributes of shape
     ShapeAttributes shapeAttributes = new ShapeAttributes(
-        "BLUE",
-        30,
-        ShapeFillKind.SOLID_FILL,
-        0.0f
+        shapeColor.toString(),
+        shapeSize,
+        ShapeFillKind.toShapeFillKind(shapeFillKind),
+        shapeAngle
     );
 
     // create shape publisher
     shapeTypeExtendedPublisher = new ShapeTypeExtendedPublisher(
         shapeAttributes,
         domainParticipant,
-        "Publisher::ShapeTypeExtendedDataWriter",
-        50
+        String.format("Publisher::%sDataWriter", shapeKind),
+        sleepTime,
+        speedX,
+        speedY
     );
   }
 

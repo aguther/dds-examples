@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.shape;
+package com.github.aguther.dds.examples.shape.util;
 
 import idl.ShapeFillKind;
 
