@@ -24,4 +24,4 @@ USER app
 
 # define work directory and entrypoint
 WORKDIR "/app"
-ENTRYPOINT ["/usr/bin/java", "-cp", "/app/application.jar", "com.github.aguther.dds.examples.shape.ShapePublisher"]
+ENTRYPOINT ["/usr/bin/java", "-cp", "/app/application.jar"]

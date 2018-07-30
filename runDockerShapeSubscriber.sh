@@ -4,6 +4,6 @@
 docker run \
   --detach \
   --rm \
-  --name shape-publisher \
+  --name shape-subscriber \
   dds-examples:latest \
-  com.github.aguther.dds.examples.shape.ShapePublisher
+  com.github.aguther.dds.examples.shape.ShapeSubscriber
