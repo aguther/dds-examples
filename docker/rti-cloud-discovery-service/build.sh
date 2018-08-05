@@ -11,7 +11,7 @@ docker build -t rti-cloud-discovery-service:5.3.1 .
 rm -f *.rpm
 
 # save docker image
-docker save -o rti-cloud-discovery-service-5.3.1.tar rti-cloud-discovery-service:5.3.1
+docker save -o rti-cloud-discovery-service--5.3.1.tar rti-cloud-discovery-service:5.3.1
 
 # gzip archive
-gzip -f rti-cloud-discovery-service-5.3.1.tar
+gzip -f rti-cloud-discovery-service--5.3.1.tar

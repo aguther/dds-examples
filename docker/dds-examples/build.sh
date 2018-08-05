@@ -21,7 +21,7 @@ docker build -t dds-examples:latest .
 rm -f *.jar *.xml *.rpm
 
 # save docker image
-docker save -o dds-examples.tar dds-examples:latest
+docker save -o dds-examples--latest.tar dds-examples:latest
 
 # gzip archive
-gzip -f dds-examples.tar
+gzip -f dds-examples--latest.tar

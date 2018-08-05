@@ -10,7 +10,7 @@ docker build -t rti-persistence-service:5.3.1 .
 rm -f *.rpm
 
 # save docker image
-docker save -o rti-persistence-service-5.3.1.tar rti-persistence-service:5.3.1
+docker save -o rti-persistence-service--5.3.1.tar rti-persistence-service:5.3.1
 
 # gzip archive
-gzip -f rti-persistence-service-5.3.1.tar
+gzip -f rti-persistence-service--5.3.1.tar

@@ -2,7 +2,9 @@
 FROM centos:7
 
 # define maintainer
-LABEL maintainer="andreas@guther.net"
+LABEL maintainer="andreas@guther.net" \
+      application="rti-persistence-service" \
+      version="5.3.1"
 
 # add RTI Connext DDS runtime
 ADD rti-connext-dds-53-persistence-service-*.rpm /tmp
