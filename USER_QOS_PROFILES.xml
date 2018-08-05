@@ -38,6 +38,9 @@
             </element>
           </value>
         </property>
+        <wire_protocol>
+          <rtps_auto_id_kind>RTPS_AUTO_ID_FROM_UUID</rtps_auto_id_kind>
+        </wire_protocol>
       </participant_qos>
 
       <datawriter_qos>
@@ -106,6 +109,8 @@
     <domain name="Shape" domain_id="0">
       <register_type name="ShapeType"/>
       <topic name="Square" register_type_ref="ShapeType"/>
+      <topic name="Circle" register_type_ref="ShapeType"/>
+      <topic name="Triangle" register_type_ref="ShapeType"/>
     </domain>
 
     <!-- RequestReply -->
@@ -135,8 +140,17 @@
         </participant_name>
       </participant_qos>
       <publisher name="Publisher">
-        <data_writer name="ShapeTypeExtendedDataWriter" topic_ref="Square">
-          <datawriter_qos base_name="QosLibrary::Base"/>
+        <data_writer name="SquareDataWriter" topic_ref="Square">
+          <datawriter_qos base_name="QosLibrary::Base">
+          </datawriter_qos>
+        </data_writer>
+        <data_writer name="CircleDataWriter" topic_ref="Circle">
+          <datawriter_qos base_name="QosLibrary::Base">
+          </datawriter_qos>
+        </data_writer>
+        <data_writer name="TriangleDataWriter" topic_ref="Triangle">
+          <datawriter_qos base_name="QosLibrary::Base">
+          </datawriter_qos>
         </data_writer>
       </publisher>
     </domain_participant>
@@ -147,8 +161,17 @@
         </participant_name>
       </participant_qos>
       <subscriber name="Subscriber">
-        <data_reader name="ShapeTypeExtendedDataReader" topic_ref="Square">
-          <datareader_qos base_name="QosLibrary::Base"/>
+        <data_reader name="SquareDataReader" topic_ref="Square">
+          <datareader_qos base_name="QosLibrary::Base">
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="CircleDataReader" topic_ref="Circle">
+          <datareader_qos base_name="QosLibrary::Base">
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="TriangleDataReader" topic_ref="Triangle">
+          <datareader_qos base_name="QosLibrary::Base">
+          </datareader_qos>
         </data_reader>
       </subscriber>
     </domain_participant>

@@ -10,6 +10,7 @@ buildscript {
     }
     dependencies {
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
 }
 
@@ -20,6 +21,7 @@ repositories {
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'org.sonarqube'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -51,6 +53,7 @@ dependencies {
     compile 'com.google.guava:guava:25.1-jre'
     compile 'com.esotericsoftware:reflectasm:1.11.3'
     compile 'net.jodah:failsafe:1.1.0'
+    compile 'info.picocli:picocli:3.3.0'
 
     // test
     testCompile "junit:junit:4.12"

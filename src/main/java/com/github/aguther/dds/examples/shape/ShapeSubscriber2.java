@@ -24,93 +24,45 @@
 
 package com.github.aguther.dds.examples.shape;
 
-import com.github.aguther.dds.examples.shape.util.ShapeAttributes;
-import com.github.aguther.dds.examples.shape.util.ShapeColor;
-import com.github.aguther.dds.examples.shape.util.ShapeFillKind;
-import com.github.aguther.dds.examples.shape.util.ShapeKind;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
-import com.google.common.util.concurrent.AbstractExecutionThreadService;
+import com.github.aguther.dds.util.DataReaderWatcher;
+import com.github.aguther.dds.util.DataReaderWatcherListener;
+import com.github.aguther.dds.util.SampleTaker;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
+import com.rti.dds.subscription.InstanceStateKind;
+import com.rti.dds.subscription.ReadConditionParams;
+import com.rti.dds.subscription.SampleInfo;
+import com.rti.dds.subscription.SampleStateKind;
+import com.rti.dds.subscription.StreamKind;
+import com.rti.dds.subscription.ViewStateKind;
+import idl.ShapeTypeExtended;
+import idl.ShapeTypeExtendedSeq;
 import idl.ShapeTypeExtendedTypeSupport;
 import idl.ShapeTypeTypeSupport;
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import picocli.CommandLine;
-import picocli.CommandLine.Option;
 
-public class ShapePublisher extends AbstractExecutionThreadService implements Callable<ShapePublisher> {
+public class ShapeSubscriber2 extends AbstractIdleService implements DataReaderWatcherListener<ShapeTypeExtended> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ShapePublisher.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ShapeSubscriber2.class);
 
-  private static ShapePublisher serviceInstance;
+  private static ShapeSubscriber2 serviceInstance;
 
   private DomainParticipant domainParticipant;
-  private ShapeTypeExtendedPublisher shapeTypeExtendedPublisher;
 
-  @Option(
-      names = {"--shape"},
-      defaultValue = "SQUARE"
-  )
-  private ShapeKind shapeKind;
-
-  @Option(
-      names = {"--color"},
-      defaultValue = "BLUE"
-  )
-  private ShapeColor shapeColor;
-
-  @Option(
-      names = {"--size"},
-      defaultValue = "30"
-  )
-  private int shapeSize;
-
-  @Option(
-      names = {"--fillKind"},
-      defaultValue = "SOLID"
-  )
-  private ShapeFillKind shapeFillKind;
-
-  @Option(
-      names = {"--angle"},
-      defaultValue = "0"
-  )
-  private float shapeAngle;
-
-  @Option(
-      names = {"--speed-x"},
-      defaultValue = "1"
-  )
-  private int speedX;
-
-  @Option(
-      names = {"--speed-y"},
-      defaultValue = "2"
-  )
-  private int speedY;
-
-  @Option(
-      names = {"--sleep"},
-      defaultValue = "50"
-  )
-  private int sleepTime;
+  private DataReaderWatcher dataReaderWatcher;
 
   public static void main(
       final String[] args
   ) {
-    // create service
-    serviceInstance = CommandLine.call(new ShapePublisher(), args);
-
-    // check if service instance was created and exit if not
-    if (serviceInstance == null) {
-      System.exit(1);
-    }
-
     // register shutdown hook
     registerShutdownHook();
+
+    // create service
+    serviceInstance = new ShapeSubscriber2();
 
     // start the service
     serviceInstance.startAsync();
@@ -120,11 +72,6 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
 
     // service terminated
     LOGGER.info("Service terminated");
-  }
-
-  @Override
-  public ShapePublisher call() {
-    return this;
   }
 
   private static void registerShutdownHook() {
@@ -137,7 +84,7 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
           }
           LOGGER.info("Shutdown signal finished");
         },
-        String.format("ShutdownHook-%s", ShapePublisher.class.getName())
+        String.format("ShutdownHook-%s", ShapeSubscriber2.class.getName())
     ));
   }
 
@@ -150,27 +97,19 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
     startupDds();
 
     // start publishing
-    startPublish();
+    startSubscription();
 
     // log service start
     LOGGER.info("Service start finished");
   }
 
   @Override
-  protected void run() {
-    shapeTypeExtendedPublisher.run();
-  }
-
-  @Override
-  protected void triggerShutdown() {
-    // stop publish
-    stopPublish();
-  }
-
-  @Override
   protected void shutDown() {
     // log service start
     LOGGER.info("Service is shutting down");
+
+    // stop publish
+    stopSubscription();
 
     // shutdown DDS
     shutdownDds();
@@ -196,36 +135,40 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::ShapePublisher"
+        "DomainParticipantLibrary::ShapeSubscriber"
     );
   }
 
-  private void startPublish() {
-    // create initial attributes of shape
-    ShapeAttributes shapeAttributes = new ShapeAttributes(
-        shapeColor.toString(),
-        shapeSize,
-        ShapeFillKind.toShapeFillKind(shapeFillKind),
-        shapeAngle
-    );
+  private void startSubscription() {
+    // start subscription
+    ReadConditionParams readConditionParams = new ReadConditionParams();
+    readConditionParams.stream_kinds = StreamKind.LIVE_STREAM;
+    readConditionParams.instance_states = InstanceStateKind.ANY_INSTANCE_STATE;
+    readConditionParams.view_states = ViewStateKind.ANY_VIEW_STATE;
+    readConditionParams.sample_states = SampleStateKind.NOT_READ_SAMPLE_STATE;
 
-    // create shape publisher
-    shapeTypeExtendedPublisher = new ShapeTypeExtendedPublisher(
-        shapeAttributes,
-        domainParticipant,
-        String.format("Publisher::%sDataWriter", shapeKind),
-        sleepTime,
-        speedX,
-        speedY
+    dataReaderWatcher = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::ShapeTypeExtendedDataReader"),
+        readConditionParams,
+        new SampleTaker<>(new ShapeTypeExtendedSeq()),
+        this
     );
   }
 
-  private void stopPublish() {
-    // check if we need to stop publish
-    if (shapeTypeExtendedPublisher != null) {
-      shapeTypeExtendedPublisher.stop();
-      shapeTypeExtendedPublisher = null;
-    }
+  @Override
+  public void onDataAvailable(
+      ShapeTypeExtended sample,
+      SampleInfo info
+  ) {
+    LOGGER.info(sample.toString());
+  }
+
+  private void stopSubscription() {
+    // signal termination
+    dataReaderWatcher.close();
+
+    // set objects to null
+    dataReaderWatcher = null;
   }
 
   private void shutdownDds() {

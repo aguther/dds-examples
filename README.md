@@ -5,7 +5,7 @@ This is an repository that contains some simple use cases for the usage of RTI D
 
 The files contained in this repository are published under MIT license with one exception: ShapeType.idl
 
-This file is part of the RTI Connext DDS SDK (see www.rti.com) and is used by a simple application for demonstration. 
+This file is part of the RTI Connext DDS SDK (see [www.rti.com](https://www.rti.com)) and is used by a simple application for demonstration.
 
 The original license did not allow the publication and so I want to express a special thank you to RTI for 
 the allowance to publish the file under a new license as found in this repository.
@@ -64,3 +64,22 @@ Convert samples from/to byte buffer (in CDR format) and from/to DynamicData.
 * Switch the auto-enable behaviour for created entities
 * Check if a domain participant is enabled
 * Get a duration from a Java time value and time unit
+
+## Docker containers
+
+### Dependencies
+
+The following RPMs are needed and must be placed into the directory `docker/rpms`:
+* rti-connext-dds-53-cloud-discovery-service-5.3.1.0-2.x86_64.rpm
+* rti-connext-dds-53-routing-service-5.3.1.0-2.x86_64.rpm
+* rti-connext-dds-53-runtime-pro-x64Linux3gcc4.8.2-5.3.1.0-2.x86_64.rpm
+
+In order to build these RPM files please refer to this repository: [github.com/aguther/rti-connext-dds-pro](https://www.github.com/aguther/rti-connext-dds-pro).
+
+### Output
+
+The build scripts included in the directories will copy the dependencies and build the images. The images are then
+also exported to tar.gz files for easy reuse without a build environment.
+
+They can be loaded in the following way:
+`docker load -i shape-publisher.tar.gz`
