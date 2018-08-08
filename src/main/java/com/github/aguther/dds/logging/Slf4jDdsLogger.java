@@ -53,6 +53,8 @@ public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
     // set log level
     if (LOGGER.isTraceEnabled()) {
       com.rti.ndds.config.Logger.get_instance().set_verbosity(LogVerbosity.NDDS_CONFIG_LOG_VERBOSITY_STATUS_ALL);
+    } else if (LOGGER.isDebugEnabled()) {
+      com.rti.ndds.config.Logger.get_instance().set_verbosity(LogVerbosity.NDDS_CONFIG_LOG_VERBOSITY_STATUS_LOCAL);
     } else if (LOGGER.isWarnEnabled()) {
       com.rti.ndds.config.Logger.get_instance().set_verbosity(LogVerbosity.NDDS_CONFIG_LOG_VERBOSITY_WARNING);
     } else if (LOGGER.isErrorEnabled()) {
