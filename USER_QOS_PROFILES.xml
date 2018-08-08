@@ -6,9 +6,6 @@
   <qos_library name="QosLibrary">
     <qos_profile name="Base" base_name="BuiltinQosLib::Baseline.5.3.0" is_default_qos="true">
       <participant_qos>
-        <wire_protocol>
-          <rtps_auto_id_kind>RTPS_AUTO_ID_FROM_UUID</rtps_auto_id_kind>
-        </wire_protocol>
         <event>
           <thread>
             <priority>THREAD_PRIORITY_HIGH</priority>
