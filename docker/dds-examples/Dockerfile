@@ -18,7 +18,6 @@ RUN yum -y install /tmp/*.rpm \
 
 # add application files
 ADD dds-examples*all.jar /app/application.jar
-ADD USER_QOS_PROFILES.xml /app
 
 # switch user to non-root
 USER app
