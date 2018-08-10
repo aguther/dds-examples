@@ -23,4 +23,4 @@ USER app
 
 # define work directory and entrypoint
 WORKDIR "/app"
-ENTRYPOINT ["/usr/bin/rtiroutingservice"]
+ENTRYPOINT ["/usr/bin/stdbuf", "-oL", "-eL", "/usr/bin/rtiroutingservice"]

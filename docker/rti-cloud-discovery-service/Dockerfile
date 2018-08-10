@@ -23,4 +23,4 @@ USER app
 
 # define work directory and entrypoint
 WORKDIR "/app"
-ENTRYPOINT ["/usr/bin/rticlouddiscoveryservice"]
+ENTRYPOINT ["/usr/bin/stdbuf", "-oL", "-eL", "/usr/bin/rticlouddiscoveryservice"]

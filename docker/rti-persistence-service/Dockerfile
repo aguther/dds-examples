@@ -22,4 +22,4 @@ USER app
 
 # define work directory and entrypoint
 WORKDIR "/app"
-ENTRYPOINT ["/usr/bin/rtipersistenceservice"]
+ENTRYPOINT ["/usr/bin/stdbuf", "-oL", "-eL", "/usr/bin/rtipersistenceservice"]
