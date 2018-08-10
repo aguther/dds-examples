@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/5.3.1/rti_persistence_service.xsd">
+
+  <persistence_service name="dds-examples-persistence">
+
+    <administration>
+      <domain_id>0</domain_id>
+      <distributed_logger>
+        <enabled>true</enabled>
+        <echo_to_stdout>true</echo_to_stdout>
+      </distributed_logger>
+      <participant_qos base_name="QosLibrary::Base"/>
+    </administration>
+
+    <persistent_storage>
+      <filesystem>
+        <directory>$(NDDS_PERSISTENCE_DIRECTORY)</directory>
+
+      </filesystem>
+    </persistent_storage>
+
+    <participant name="Default">
+
+      <domain_id>0</domain_id>
+
+      <persistence_group name="DefaultShapes">
+        <filter>Square,Circle,Triangle</filter>
+        <single_publisher>true</single_publisher>
+        <single_subscriber>true</single_subscriber>
+        <datawriter_qos base_name="QosLibrary::Base">
+          <durability>
+            <kind>PERSISTENT_DURABILITY_QOS</kind>
+          </durability>
+          <reliability>
+            <kind>RELIABLE_RELIABILITY_QOS</kind>
+          </reliability>
+        </datawriter_qos>
+        <datareader_qos base_name="QosLibrary::Base">
+        </datareader_qos>
+      </persistence_group>
+
+    </participant>
+
+  </persistence_service>
+
+</dds>
