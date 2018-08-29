@@ -1,5 +1,5 @@
 # define parent
-FROM centos:7
+FROM centos-java:7-1.8.0-openjdk
 
 # define maintainer
 LABEL maintainer="andreas@guther.net" \
@@ -10,11 +10,7 @@ ADD rti-connext-dds-53-runtime-pro-*.rpm /tmp
 
 # install java
 RUN yum -y install /tmp/*.rpm \
-    && rm -f /tmp/*.rpm \
-    && groupadd -r app \
-    && useradd -r -g app app \
-    && mkdir -p /app \
-    && chown -R app:app /app
+    && rm -f /tmp/*.rpm
 
 # add application files
 ADD dds-examples*all.jar /app/application.jar
@@ -23,5 +19,4 @@ ADD dds-examples*all.jar /app/application.jar
 USER app
 
 # define work directory and entrypoint
-WORKDIR "/app"
 ENTRYPOINT ["/usr/bin/java", "-cp", "/app/application.jar"]

@@ -1,5 +1,5 @@
 # define parent
-FROM centos:7
+FROM centos-java:7-1.8.0-openjdk
 
 # define maintainer
 LABEL maintainer="andreas@guther.net" \
@@ -12,15 +12,10 @@ ADD rti-connext-dds-53-cloud-discovery-service-*.rpm /tmp
 
 # install java
 RUN yum -y install /tmp/*.rpm \
-    && rm -f /tmp/*.rpm \
-    && groupadd -r app \
-    && useradd -r -g app app \
-    && mkdir -p /app \
-    && chown -R app:app /app
+    && rm -f /tmp/*.rpm
 
 # switch user to non-root
 USER app
 
 # define work directory and entrypoint
-WORKDIR "/app"
 ENTRYPOINT ["/usr/bin/stdbuf", "-oL", "-eL", "/usr/bin/rticlouddiscoveryservice"]
