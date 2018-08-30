@@ -2,7 +2,7 @@
 FROM guther/centos-java:latest
 
 # define maintainer
-LABEL maintainer="andreas@guther.net" \
+LABEL maintainer="Andreas Guther <andreas@guther.net>" \
       application="rti-cloud-discovery-service" \
       version="5.3.1"
 

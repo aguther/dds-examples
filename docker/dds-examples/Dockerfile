@@ -2,8 +2,8 @@
 FROM guther/centos-java:latest
 
 # define maintainer
-LABEL maintainer="andreas@guther.net" \
-      application="rti-routing-service"
+LABEL maintainer="Andreas Guther <andreas@guther.net>" \
+      application="dds-examples"
 
 # add RTI Connext DDS runtime
 ADD rti-connext-dds-53-runtime-pro-*.rpm /tmp
