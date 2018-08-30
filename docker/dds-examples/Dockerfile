@@ -1,5 +1,5 @@
 # define parent
-FROM centos-java:7-1.8.0-openjdk
+FROM guther/centos-java:latest
 
 # define maintainer
 LABEL maintainer="andreas@guther.net" \
