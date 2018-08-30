@@ -7,7 +7,7 @@ docker build -t centos-java:7-1.8.0-openjdk .
 rm -f *.rpm
 
 # save docker image
-docker save -o centos-java-7--1.8.0-openjdk.tar centos-java:7-1.8.0-openjdk
+docker save -o centos-java--7-1.8.0-openjdk.tar centos-java:7-1.8.0-openjdk
 
 # gzip archive
-gzip -f centos-java-7--1.8.0-openjdk.tar
+gzip -f centos-java--7-1.8.0-openjdk.tar
