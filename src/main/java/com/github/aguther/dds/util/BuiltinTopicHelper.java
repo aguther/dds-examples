@@ -28,11 +28,16 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.RETCODE_PRECONDITION_NOT_MET;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BuiltinTopicHelper {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(BuiltinTopicHelper.class);
 
   private BuiltinTopicHelper() {
   }
@@ -77,7 +82,7 @@ public class BuiltinTopicHelper {
    * @param participantKey the participant key
    * @return the participant builtin topic data from participant key
    */
-  public static ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
+  public static synchronized ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
       final DomainParticipant domainParticipant,
       final BuiltinTopicKey_t participantKey
   ) {
@@ -88,10 +93,23 @@ public class BuiltinTopicHelper {
     // iterate over handles
     ParticipantBuiltinTopicData participantData = new ParticipantBuiltinTopicData();
     for (Object participantHandle : participantHandles) {
-      domainParticipant.get_discovered_participant_data(
-          participantData,
-          (InstanceHandle_t) participantHandle
-      );
+      try {
+        domainParticipant.get_discovered_participant_data(
+            participantData,
+            (InstanceHandle_t) participantHandle
+        );
+      } catch (RETCODE_PRECONDITION_NOT_MET ex) {
+        if (LOGGER.isInfoEnabled()) {
+          LOGGER.info(
+              "Ignoring participant ({}) that got lost between call get_discovered_participants() and get_discovered_participant_data()",
+              participantHandle == null ? "null" : participantHandle
+          );
+        }
+        // when during call to get_discovered_participants and this loop a participant is lost,
+        // it might return PRECONDITION_NOT_MET because this participant handle will no
+        // longer be valid -> ignore this participant and check the other handles
+        continue;
+      }
 
       if (participantData.key.equals(participantKey)) {
         return participantData;
