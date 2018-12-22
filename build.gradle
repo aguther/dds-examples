@@ -68,6 +68,8 @@ jar {
 }
 
 task compileIdl {
+    group = 'build'
+
     // define IDL directory
     def idlDirectory = file('src/main/idl')
 
@@ -101,6 +103,8 @@ task compileIdl {
 }
 
 task cleanIdl(type: Delete) {
+    group = 'build'
+
     doLast {
         sourceSets.generated.java.srcDirs[0].list().each {
             f -> delete "${sourceSets.generated.java.srcDirs[0]}/${f}"
@@ -116,6 +120,8 @@ project.ext.jacocoOfflineSourceSets = ['main', 'generated']
 // to get coverage for tests that make use of PowerMockito,
 // we need to use offline instrumentation that is performed by this task
 task instrument(dependsOn: [classes, project.configurations.jacocoAnt]) {
+    group = 'verification'
+
     inputs.files classes.outputs.files
     File outputDir = new File(project.buildDir, 'instrumentedClasses')
     outputs.dir outputDir
