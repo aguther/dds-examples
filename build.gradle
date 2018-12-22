@@ -11,6 +11,7 @@ buildscript {
     dependencies {
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.3"
+        classpath "gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.5"
     }
 }
 
@@ -22,6 +23,7 @@ apply plugin: "java"
 apply plugin: "jacoco"
 apply plugin: "org.sonarqube"
 apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "org.jetbrains.gradle.plugin.idea-ext"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -152,6 +154,12 @@ task instrument(dependsOn: [classes, project.configurations.jacocoAnt]) {
     }
 }
 test.dependsOn instrument
+
+idea.project.settings {
+    taskTriggers {
+        beforeBuild tasks.getByName("compileIdl")
+    }
+}
 
 task copyRuntimeLibraries(type: Copy) {
     into "$buildDir/libs-runtime"
