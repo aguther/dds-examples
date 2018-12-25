@@ -119,4 +119,28 @@ public class BuiltinTopicHelper {
     // nothing found
     return null;
   }
+
+  public static String toString(
+      final int[] key
+  ) {
+    return String.format(
+        "%08x.%08x.%08x.%08x",
+        key[0],
+        key[1],
+        key[2],
+        key[3]
+    );
+  }
+
+  public static String toString(
+      final byte[] key
+  ) {
+    return String.format(
+        "%02x.%02x.%02x.%02x",
+        key[0],
+        key[1],
+        key[2],
+        key[3]
+    );
+  }
 }

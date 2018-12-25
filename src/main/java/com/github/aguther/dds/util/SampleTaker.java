@@ -8,8 +8,12 @@ import com.rti.dds.subscription.ReadCondition;
 import com.rti.dds.subscription.SampleInfoSeq;
 import com.rti.dds.util.LoanableSequence;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SampleTaker<T> implements DataReaderWatcherExecutor<T> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(SampleTaker.class);
 
   private List<T> sampleSeq;
   private SampleInfoSeq sampleInfoSeq;
@@ -40,12 +44,15 @@ public class SampleTaker<T> implements DataReaderWatcherExecutor<T> {
 
       // iterate over data
       for (int i = 0; i < sampleSeq.size(); i++) {
-        listener.onDataAvailable(
-            sampleSeq.get(i),
-            sampleInfoSeq.get(i)
-        );
+        try {
+          listener.onDataAvailable(
+              sampleSeq.get(i),
+              sampleInfoSeq.get(i)
+          );
+        } catch (Exception ex) {
+          LOGGER.error("Exception during listener invocation.", ex);
+        }
       }
-
     } finally {
       // return data
       dataReader.return_loan_untyped(
