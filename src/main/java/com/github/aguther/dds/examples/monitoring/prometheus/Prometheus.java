@@ -204,7 +204,7 @@ public class Prometheus extends AbstractIdleService {
     LOGGER.info("Service is starting");
 
     // start http server
-    httpServer = new HTTPServer(9091);
+    httpServer = new HTTPServer(9102);
 
     // create metrics processors
     domainParticipantDescriptionMetricProcessor = new DomainParticipantDescriptionMetricProcessor();
