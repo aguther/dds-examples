@@ -202,6 +202,46 @@
       <register_type name="rti::dds::monitoring::TopicEntityStatistics"/>
       <topic name="rti/dds/monitoring/topicEntityStatistics"
         register_type_ref="rti::dds::monitoring::TopicEntityStatistics"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::RoutingServiceData"/>
+      <topic name="rti/routing_service/monitoring/routing_service_data"
+        register_type_ref="RTI::RoutingService::Monitoring::RoutingServiceData"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::RoutingServiceStatusSet"/>
+      <topic name="rti/routing_service/monitoring/routing_service_status_set"
+        register_type_ref="RTI::RoutingService::Monitoring::RoutingServiceStatusSet"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::DomainRouteData"/>
+      <topic name="rti/routing_service/monitoring/domain_route_data"
+        register_type_ref="RTI::RoutingService::Monitoring::DomainRouteData"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::DomainRouteStatusSet"/>
+      <topic name="rti/routing_service/monitoring/domain_route_status_set"
+        register_type_ref="RTI::RoutingService::Monitoring::DomainRouteStatusSet"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::SessionData"/>
+      <topic name="rti/routing_service/monitoring/session_data"
+        register_type_ref="RTI::RoutingService::Monitoring::SessionData"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::SessionStatusSet"/>
+      <topic name="rti/routing_service/monitoring/session_status_set"
+        register_type_ref="RTI::RoutingService::Monitoring::SessionStatusSet"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::AutoRouteData"/>
+      <topic name="rti/routing_service/monitoring/auto_route_data"
+        register_type_ref="RTI::RoutingService::Monitoring::AutoRouteData"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::AutoRouteStatusSet"/>
+      <topic name="rti/routing_service/monitoring/auto_route_status_set"
+        register_type_ref="RTI::RoutingService::Monitoring::AutoRouteStatusSet"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::RouteData"/>
+      <topic name="rti/routing_service/monitoring/route_data"
+        register_type_ref="RTI::RoutingService::Monitoring::RouteData"/>
+
+      <register_type name="RTI::RoutingService::Monitoring::RouteStatusSet"/>
+      <topic name="rti/routing_service/monitoring/route_status_set"
+        register_type_ref="RTI::RoutingService::Monitoring::RouteStatusSet"/>
     </domain>
   </domain_library>
 
@@ -395,6 +435,123 @@
           topic_ref="rti/dds/monitoring/topicEntityStatistics">
           <datareader_qos base_name="QosLibrary::Base"/>
         </data_reader>
+
+
+        <data_reader name="RoutingServiceData"
+          topic_ref="rti/routing_service/monitoring/routing_service_data">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="RoutingServiceStatusSet"
+          topic_ref="rti/routing_service/monitoring/routing_service_status_set">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+
+        <data_reader name="DomainRouteData"
+          topic_ref="rti/routing_service/monitoring/domain_route_data">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="DomainRouteStatusSet"
+          topic_ref="rti/routing_service/monitoring/domain_route_status_set">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+
+        <data_reader name="SessionData"
+          topic_ref="rti/routing_service/monitoring/session_data">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="SessionStatusSet"
+          topic_ref="rti/routing_service/monitoring/session_status_set">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+
+        <data_reader name="AutoRouteData"
+          topic_ref="rti/routing_service/monitoring/auto_route_data">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="AutoRouteStatusSet"
+          topic_ref="rti/routing_service/monitoring/auto_route_status_set">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+
+        <data_reader name="RouteData"
+          topic_ref="rti/routing_service/monitoring/route_data">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="RouteStatusSet"
+          topic_ref="rti/routing_service/monitoring/route_status_set">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+
       </subscriber>
     </domain_participant>
   </domain_participant_library>

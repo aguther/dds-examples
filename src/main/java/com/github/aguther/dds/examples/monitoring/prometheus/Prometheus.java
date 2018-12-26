@@ -12,6 +12,36 @@ import com.rti.dds.subscription.ReadConditionParams;
 import com.rti.dds.subscription.SampleStateKind;
 import com.rti.dds.subscription.StreamKind;
 import com.rti.dds.subscription.ViewStateKind;
+import idl.RTI.RoutingService.Monitoring.AutoRouteData;
+import idl.RTI.RoutingService.Monitoring.AutoRouteDataSeq;
+import idl.RTI.RoutingService.Monitoring.AutoRouteDataTypeSupport;
+import idl.RTI.RoutingService.Monitoring.AutoRouteStatusSet;
+import idl.RTI.RoutingService.Monitoring.AutoRouteStatusSetSeq;
+import idl.RTI.RoutingService.Monitoring.AutoRouteStatusSetTypeSupport;
+import idl.RTI.RoutingService.Monitoring.DomainRouteData;
+import idl.RTI.RoutingService.Monitoring.DomainRouteDataSeq;
+import idl.RTI.RoutingService.Monitoring.DomainRouteDataTypeSupport;
+import idl.RTI.RoutingService.Monitoring.DomainRouteStatusSet;
+import idl.RTI.RoutingService.Monitoring.DomainRouteStatusSetSeq;
+import idl.RTI.RoutingService.Monitoring.DomainRouteStatusSetTypeSupport;
+import idl.RTI.RoutingService.Monitoring.RouteData;
+import idl.RTI.RoutingService.Monitoring.RouteDataSeq;
+import idl.RTI.RoutingService.Monitoring.RouteDataTypeSupport;
+import idl.RTI.RoutingService.Monitoring.RouteStatusSet;
+import idl.RTI.RoutingService.Monitoring.RouteStatusSetSeq;
+import idl.RTI.RoutingService.Monitoring.RouteStatusSetTypeSupport;
+import idl.RTI.RoutingService.Monitoring.RoutingServiceData;
+import idl.RTI.RoutingService.Monitoring.RoutingServiceDataSeq;
+import idl.RTI.RoutingService.Monitoring.RoutingServiceDataTypeSupport;
+import idl.RTI.RoutingService.Monitoring.RoutingServiceStatusSet;
+import idl.RTI.RoutingService.Monitoring.RoutingServiceStatusSetSeq;
+import idl.RTI.RoutingService.Monitoring.RoutingServiceStatusSetTypeSupport;
+import idl.RTI.RoutingService.Monitoring.SessionData;
+import idl.RTI.RoutingService.Monitoring.SessionDataSeq;
+import idl.RTI.RoutingService.Monitoring.SessionDataTypeSupport;
+import idl.RTI.RoutingService.Monitoring.SessionStatusSet;
+import idl.RTI.RoutingService.Monitoring.SessionStatusSetSeq;
+import idl.RTI.RoutingService.Monitoring.SessionStatusSetTypeSupport;
 import idl.rti.dds.monitoring.DataReaderDescription;
 import idl.rti.dds.monitoring.DataReaderDescriptionSeq;
 import idl.rti.dds.monitoring.DataReaderDescriptionTypeSupport;
@@ -105,6 +135,36 @@ public class Prometheus extends AbstractIdleService {
   private DataReaderWatcher dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics;
   private DataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor dataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor;
 
+  private DataReaderWatcher dataReaderWatcherRoutingServiceData;
+  private RoutingServiceDataMetricProcessor routingServiceDataMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherRoutingServiceStatusSet;
+  private RoutingServiceStatusSetMetricProcessor routingServiceStatusSetMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherDomainRouteData;
+  private DomainRouteDataMetricProcessor domainRouteDataMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherDomainRouteStatusSet;
+  private DomainRouteStatusSetMetricProcessor domainRouteStatusSetMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherSessionData;
+  private SessionDataMetricProcessor sessionDataMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherSessionStatusSet;
+  private SessionStatusSetMetricProcessor sessionStatusSetMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherAutoRouteData;
+  private AutoRouteDataMetricProcessor autoRouteDataMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherAutoRouteStatusSet;
+  private AutoRouteStatusSetMetricProcessor autoRouteStatusSetMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherRouteData;
+  private RouteDataMetricProcessor routeDataMetricProcessor;
+
+  private DataReaderWatcher dataReaderWatcherRouteStatusSet;
+  private RouteStatusSetMetricProcessor routeStatusSetMetricProcessor;
+
   public static void main(
       final String[] args
   ) {
@@ -160,6 +220,16 @@ public class Prometheus extends AbstractIdleService {
     dataWriterEntityStatisticsMetricProcessor = new DataWriterEntityStatisticsMetricProcessor();
     dataWriterEntityMatchedSubscriptionStatisticsMetricProcessor = new DataWriterEntityMatchedSubscriptionStatisticsMetricProcessor();
     dataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor = new DataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor();
+    routingServiceDataMetricProcessor = new RoutingServiceDataMetricProcessor();
+    routingServiceStatusSetMetricProcessor = new RoutingServiceStatusSetMetricProcessor();
+    domainRouteDataMetricProcessor = new DomainRouteDataMetricProcessor();
+    domainRouteStatusSetMetricProcessor = new DomainRouteStatusSetMetricProcessor();
+    sessionDataMetricProcessor = new SessionDataMetricProcessor();
+    sessionStatusSetMetricProcessor = new SessionStatusSetMetricProcessor();
+    autoRouteDataMetricProcessor = new AutoRouteDataMetricProcessor();
+    autoRouteStatusSetMetricProcessor = new AutoRouteStatusSetMetricProcessor();
+    routeDataMetricProcessor = new RouteDataMetricProcessor();
+    routeStatusSetMetricProcessor = new RouteStatusSetMetricProcessor();
 
     // startup DDS
     startupDds();
@@ -259,6 +329,51 @@ public class Prometheus extends AbstractIdleService {
     DomainParticipantFactory.get_instance().register_type_support(
         TopicEntityStatisticsTypeSupport.get_instance(),
         TopicEntityStatisticsTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+        RoutingServiceDataTypeSupport.get_instance(),
+        RoutingServiceDataTypeSupport.get_type_name()
+    );
+    DomainParticipantFactory.get_instance().register_type_support(
+        RoutingServiceStatusSetTypeSupport.get_instance(),
+        RoutingServiceStatusSetTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+        DomainRouteDataTypeSupport.get_instance(),
+        DomainRouteDataTypeSupport.get_type_name()
+    );
+    DomainParticipantFactory.get_instance().register_type_support(
+        DomainRouteStatusSetTypeSupport.get_instance(),
+        DomainRouteStatusSetTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+        SessionDataTypeSupport.get_instance(),
+        SessionDataTypeSupport.get_type_name()
+    );
+    DomainParticipantFactory.get_instance().register_type_support(
+        SessionStatusSetTypeSupport.get_instance(),
+        SessionStatusSetTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+        AutoRouteDataTypeSupport.get_instance(),
+        AutoRouteDataTypeSupport.get_type_name()
+    );
+    DomainParticipantFactory.get_instance().register_type_support(
+        AutoRouteStatusSetTypeSupport.get_instance(),
+        AutoRouteStatusSetTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+        RouteDataTypeSupport.get_instance(),
+        RouteDataTypeSupport.get_type_name()
+    );
+    DomainParticipantFactory.get_instance().register_type_support(
+        RouteStatusSetTypeSupport.get_instance(),
+        RouteStatusSetTypeSupport.get_type_name()
     );
 
     // create participant from config
@@ -379,42 +494,203 @@ public class Prometheus extends AbstractIdleService {
         (DataReaderWatcherListener<DataWriterEntityMatchedSubscriptionWithLocatorStatistics>) (sample, info) ->
             dataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor.process(sample, info)
     );
+
+    dataReaderWatcherRoutingServiceData = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::RoutingServiceData"),
+        readConditionParams,
+        new SampleTaker<>(new RoutingServiceDataSeq()),
+        (DataReaderWatcherListener<RoutingServiceData>) (sample, info) ->
+            routingServiceDataMetricProcessor.process(sample, info)
+    );
+    dataReaderWatcherRoutingServiceStatusSet = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::RoutingServiceStatusSet"),
+        readConditionParams,
+        new SampleTaker<>(new RoutingServiceStatusSetSeq()),
+        (DataReaderWatcherListener<RoutingServiceStatusSet>) (sample, info) ->
+            routingServiceStatusSetMetricProcessor.process(sample, info)
+    );
+
+    dataReaderWatcherDomainRouteData = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::DomainRouteData"),
+        readConditionParams,
+        new SampleTaker<>(new DomainRouteDataSeq()),
+        (DataReaderWatcherListener<DomainRouteData>) (sample, info) ->
+            domainRouteDataMetricProcessor.process(sample, info)
+    );
+    dataReaderWatcherDomainRouteStatusSet = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::DomainRouteStatusSet"),
+        readConditionParams,
+        new SampleTaker<>(new DomainRouteStatusSetSeq()),
+        (DataReaderWatcherListener<DomainRouteStatusSet>) (sample, info) ->
+            domainRouteStatusSetMetricProcessor.process(sample, info)
+    );
+
+    dataReaderWatcherSessionData = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::SessionData"),
+        readConditionParams,
+        new SampleTaker<>(new SessionDataSeq()),
+        (DataReaderWatcherListener<SessionData>) (sample, info) ->
+            sessionDataMetricProcessor.process(sample, info)
+    );
+    dataReaderWatcherSessionStatusSet = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::SessionStatusSet"),
+        readConditionParams,
+        new SampleTaker<>(new SessionStatusSetSeq()),
+        (DataReaderWatcherListener<SessionStatusSet>) (sample, info) ->
+            sessionStatusSetMetricProcessor.process(sample, info)
+    );
+
+    dataReaderWatcherAutoRouteData = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::AutoRouteData"),
+        readConditionParams,
+        new SampleTaker<>(new AutoRouteDataSeq()),
+        (DataReaderWatcherListener<AutoRouteData>) (sample, info) ->
+            autoRouteDataMetricProcessor.process(sample, info)
+    );
+    dataReaderWatcherAutoRouteStatusSet = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::AutoRouteStatusSet"),
+        readConditionParams,
+        new SampleTaker<>(new AutoRouteStatusSetSeq()),
+        (DataReaderWatcherListener<AutoRouteStatusSet>) (sample, info) ->
+            autoRouteStatusSetMetricProcessor.process(sample, info)
+    );
+
+    dataReaderWatcherRouteData = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::RouteData"),
+        readConditionParams,
+        new SampleTaker<>(new RouteDataSeq()),
+        (DataReaderWatcherListener<RouteData>) (sample, info) ->
+            routeDataMetricProcessor.process(sample, info)
+    );
+    dataReaderWatcherRouteStatusSet = new DataReaderWatcher<>(
+        domainParticipant.lookup_datareader_by_name("Subscriber::RouteStatusSet"),
+        readConditionParams,
+        new SampleTaker<>(new RouteStatusSetSeq()),
+        (DataReaderWatcherListener<RouteStatusSet>) (sample, info) ->
+            routeStatusSetMetricProcessor.process(sample, info)
+    );
   }
 
   private void stopSubscription() {
-    // signal termination
-    dataReaderWatcherDomainParticipantDescription.close();
-    dataReaderWatcherDomainParticipantEntityStatistics.close();
-    dataReaderWatcherTopicDescription.close();
-    dataReaderWatcherTopicEntityStatistics.close();
-    dataReaderWatcherPublisherDescription.close();
-    dataReaderWatcherSubscriberDescription.close();
-    dataReaderWatcherDataReaderDescription.close();
-    dataReaderWatcherDataReaderEntityStatistics.close();
-    dataReaderWatcherDataReaderEntityMatchedPublicationStatistics.close();
-    dataReaderWatcherDataWriterDescription.close();
-    dataReaderWatcherDataWriterEntityStatistics.close();
-    dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics.close();
-    dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics.close();
+    if (dataReaderWatcherDomainParticipantDescription != null) {
+      dataReaderWatcherDomainParticipantDescription.close();
+      dataReaderWatcherDomainParticipantDescription = null;
+    }
 
-    // set objects to null
-    dataReaderWatcherDomainParticipantDescription = null;
-    dataReaderWatcherDomainParticipantEntityStatistics = null;
-    dataReaderWatcherTopicDescription = null;
-    dataReaderWatcherTopicEntityStatistics = null;
-    dataReaderWatcherPublisherDescription = null;
-    dataReaderWatcherSubscriberDescription = null;
-    dataReaderWatcherDataReaderDescription = null;
-    dataReaderWatcherDataReaderEntityStatistics = null;
-    dataReaderWatcherDataReaderEntityMatchedPublicationStatistics = null;
-    dataReaderWatcherDataWriterDescription = null;
-    dataReaderWatcherDataWriterEntityStatistics = null;
-    dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics = null;
-    dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics = null;
+    if (dataReaderWatcherDomainParticipantEntityStatistics != null) {
+      dataReaderWatcherDomainParticipantEntityStatistics.close();
+      dataReaderWatcherDomainParticipantEntityStatistics = null;
+    }
 
-    // terminate http server
-    httpServer.stop();
-    httpServer = null;
+    if (dataReaderWatcherTopicDescription != null) {
+      dataReaderWatcherTopicDescription.close();
+      dataReaderWatcherTopicDescription = null;
+    }
+
+    if (dataReaderWatcherTopicEntityStatistics != null) {
+      dataReaderWatcherTopicEntityStatistics.close();
+      dataReaderWatcherTopicEntityStatistics = null;
+    }
+
+    if (dataReaderWatcherPublisherDescription != null) {
+      dataReaderWatcherPublisherDescription.close();
+      dataReaderWatcherPublisherDescription = null;
+    }
+
+    if (dataReaderWatcherSubscriberDescription != null) {
+      dataReaderWatcherSubscriberDescription.close();
+      dataReaderWatcherSubscriberDescription = null;
+    }
+
+    if (dataReaderWatcherDataReaderDescription != null) {
+      dataReaderWatcherDataReaderDescription.close();
+      dataReaderWatcherDataReaderDescription = null;
+    }
+
+    if (dataReaderWatcherDataReaderEntityStatistics != null) {
+      dataReaderWatcherDataReaderEntityStatistics.close();
+      dataReaderWatcherDataReaderEntityStatistics = null;
+    }
+
+    if (dataReaderWatcherDataReaderEntityMatchedPublicationStatistics != null) {
+      dataReaderWatcherDataReaderEntityMatchedPublicationStatistics.close();
+      dataReaderWatcherDataReaderEntityMatchedPublicationStatistics = null;
+    }
+
+    if (dataReaderWatcherDataWriterDescription != null) {
+      dataReaderWatcherDataWriterDescription.close();
+      dataReaderWatcherDataWriterDescription = null;
+    }
+
+    if (dataReaderWatcherDataWriterEntityStatistics != null) {
+      dataReaderWatcherDataWriterEntityStatistics.close();
+      dataReaderWatcherDataWriterEntityStatistics = null;
+    }
+
+    if (dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics != null) {
+      dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics.close();
+      dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics = null;
+    }
+
+    if (dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics != null) {
+      dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics.close();
+      dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics = null;
+    }
+
+    if (dataReaderWatcherRoutingServiceData != null) {
+      dataReaderWatcherRoutingServiceData.close();
+      dataReaderWatcherRoutingServiceData = null;
+    }
+
+    if (dataReaderWatcherRoutingServiceStatusSet != null) {
+      dataReaderWatcherRoutingServiceStatusSet.close();
+      dataReaderWatcherRoutingServiceStatusSet = null;
+    }
+
+    if (dataReaderWatcherDomainRouteData != null) {
+      dataReaderWatcherDomainRouteData.close();
+      dataReaderWatcherDomainRouteData = null;
+    }
+
+    if (dataReaderWatcherDomainRouteStatusSet != null) {
+      dataReaderWatcherDomainRouteStatusSet.close();
+      dataReaderWatcherDomainRouteStatusSet = null;
+    }
+
+    if (dataReaderWatcherSessionData != null) {
+      dataReaderWatcherSessionData.close();
+      dataReaderWatcherSessionData = null;
+    }
+
+    if (dataReaderWatcherSessionStatusSet != null) {
+      dataReaderWatcherSessionStatusSet.close();
+      dataReaderWatcherSessionStatusSet = null;
+    }
+
+    if (dataReaderWatcherAutoRouteData != null) {
+      dataReaderWatcherAutoRouteData.close();
+      dataReaderWatcherAutoRouteData = null;
+    }
+
+    if (dataReaderWatcherAutoRouteStatusSet != null) {
+      dataReaderWatcherAutoRouteStatusSet.close();
+      dataReaderWatcherAutoRouteStatusSet = null;
+    }
+
+    if (dataReaderWatcherRouteData != null) {
+      dataReaderWatcherRouteData.close();
+      dataReaderWatcherRouteData = null;
+    }
+
+    if (dataReaderWatcherRouteStatusSet != null) {
+      dataReaderWatcherRouteStatusSet.close();
+      dataReaderWatcherRouteStatusSet = null;
+    }
+
+    if (httpServer != null) {
+      httpServer.stop();
+      httpServer = null;
+    }
   }
 
   private void shutdownDds() {
