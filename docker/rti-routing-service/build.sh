@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # copy needed files
-cp -f ./../rpms/rti-connext-dds-53-runtime-pro-x64Linux3gcc4.8.2-5.3.1.0-3.x86_64.rpm .
-cp -f ./../rpms/rti-connext-dds-53-routing-service-5.3.1.0-3.x86_64.rpm .
+cp -f ./../rpms/rti-connext-dds-53-runtime-pro-x64Linux3gcc4.8.2-5.3.1.14-1.x86_64.rpm .
+cp -f ./../rpms/rti-connext-dds-53-routing-service-5.3.1.14-1.x86_64.rpm .
 
 # start build of docker file
 docker build -t rti-routing-service:5.3.1 .
