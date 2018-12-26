@@ -38,11 +38,6 @@
         <wire_protocol>
           <rtps_auto_id_kind>RTPS_AUTO_ID_FROM_UUID</rtps_auto_id_kind>
         </wire_protocol>
-        <resource_limits>
-          <participant_property_string_max_length>4096</participant_property_string_max_length>
-          <participant_property_list_max_length>45</participant_property_list_max_length>
-          <type_object_max_serialized_length>35840</type_object_max_serialized_length>
-        </resource_limits>
       </participant_qos>
 
       <datawriter_qos>
@@ -106,6 +101,11 @@
 
     <qos_profile name="Monitoring" base_name="Base">
       <participant_qos>
+        <resource_limits>
+          <participant_property_string_max_length>4096</participant_property_string_max_length>
+          <participant_property_list_max_length>45</participant_property_list_max_length>
+          <type_object_max_serialized_length>35840</type_object_max_serialized_length>
+        </resource_limits>
         <property>
           <value>
             <element>
