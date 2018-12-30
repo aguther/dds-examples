@@ -43,7 +43,7 @@ class SubscriberDescriptionMetricProcessor {
     }
 
     // update gauges
-    dummy.labels(getLabelValues(sample)).set(0);
+    dummy.labels(getLabelValues(sample)).set(1);
   }
 
   private String[] getLabelNames() {

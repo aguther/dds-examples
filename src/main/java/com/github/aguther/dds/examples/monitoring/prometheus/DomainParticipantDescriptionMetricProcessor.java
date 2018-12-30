@@ -43,7 +43,7 @@ class DomainParticipantDescriptionMetricProcessor {
     }
 
     // update gauges
-    dummy.labels(labelValues).set(0);
+    dummy.labels(labelValues).set(1);
   }
 
   private String[] getLabelNames() {
