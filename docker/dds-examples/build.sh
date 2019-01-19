@@ -10,7 +10,7 @@ pushd ./../../
 popd
 
 # copy needed files
-cp -f ./../../build/libs/*all.jar .
+cp -f ./../../build/libs/dds-examples*.jar .
 cp -f ./../rpms/rti-connext-dds-53-runtime-pro-x64Linux3gcc4.8.2-5.3.1.14-1.x86_64.rpm .
 
 # start build of docker file

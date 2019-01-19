@@ -13,7 +13,7 @@ RUN yum -y install /tmp/*.rpm \
     && rm -f /tmp/*.rpm
 
 # add application files
-ADD dds-examples*all.jar /app/application.jar
+ADD dds-examples*.jar /app/application.jar
 
 # switch user to non-root
 USER app
