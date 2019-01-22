@@ -1,13 +1,13 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.routing;
 
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.RTI.RoutingService.Monitoring.RouteStatusSet;
+import idl.RTI.RoutingService.Monitoring.AutoRouteStatusSet;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class RouteStatusSetMetricProcessor {
+public class AutoRouteStatusSetMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
@@ -42,192 +42,192 @@ class RouteStatusSetMetricProcessor {
   private final Gauge latencySMaximum;
   private final Gauge latencySStdDev;
 
-  RouteStatusSetMetricProcessor() {
+  public AutoRouteStatusSetMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     inputSamplesPerSPeriodMs = Gauge.build()
-        .name("route_status_set_input_samples_per_s_period_ms")
+        .name("auto_route_status_set_input_samples_per_s_period_ms")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_samples_per_s_period_ms")
+        .help("auto_route_status_set_input_samples_per_s_period_ms")
         .register();
 
     inputSamplesPerSCount = Gauge.build()
-        .name("route_status_set_input_samples_per_s_count")
+        .name("auto_route_status_set_input_samples_per_s_count")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_samples_per_s_count")
+        .help("auto_route_status_set_input_samples_per_s_count")
         .register();
 
     inputSamplesPerSMean = Gauge.build()
-        .name("route_status_set_input_samples_per_s_mean")
+        .name("auto_route_status_set_input_samples_per_s_mean")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_samples_per_s_mean")
+        .help("auto_route_status_set_input_samples_per_s_mean")
         .register();
 
     inputSamplesPerSMinimum = Gauge.build()
-        .name("route_status_set_input_samples_per_s_minimum")
+        .name("auto_route_status_set_input_samples_per_s_minimum")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_samples_per_s_minimum")
+        .help("auto_route_status_set_input_samples_per_s_minimum")
         .register();
 
     inputSamplesPerSMaximum = Gauge.build()
-        .name("route_status_set_input_samples_per_s_maximum")
+        .name("auto_route_status_set_input_samples_per_s_maximum")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_samples_per_s_maximum")
+        .help("auto_route_status_set_input_samples_per_s_maximum")
         .register();
 
     inputSamplesPerSStdDev = Gauge.build()
-        .name("route_status_set_input_samples_per_s_std_dev")
+        .name("auto_route_status_set_input_samples_per_s_std_dev")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_samples_per_s_std_dev")
+        .help("auto_route_status_set_input_samples_per_s_std_dev")
         .register();
 
     inputBytesPerSPeriodMs = Gauge.build()
-        .name("route_status_set_input_bytes_per_s_period_ms")
+        .name("auto_route_status_set_input_bytes_per_s_period_ms")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_bytes_per_s_period_ms")
+        .help("auto_route_status_set_input_bytes_per_s_period_ms")
         .register();
 
     inputBytesPerSCount = Gauge.build()
-        .name("route_status_set_input_bytes_per_s_count")
+        .name("auto_route_status_set_input_bytes_per_s_count")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_bytes_per_s_count")
+        .help("auto_route_status_set_input_bytes_per_s_count")
         .register();
 
     inputBytesPerSMean = Gauge.build()
-        .name("route_status_set_input_bytes_per_s_mean")
+        .name("auto_route_status_set_input_bytes_per_s_mean")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_bytes_per_s_mean")
+        .help("auto_route_status_set_input_bytes_per_s_mean")
         .register();
 
     inputBytesPerSMinimum = Gauge.build()
-        .name("route_status_set_input_bytes_per_s_minimum")
+        .name("auto_route_status_set_input_bytes_per_s_minimum")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_bytes_per_s_minimum")
+        .help("auto_route_status_set_input_bytes_per_s_minimum")
         .register();
 
     inputBytesPerSMaximum = Gauge.build()
-        .name("route_status_set_input_bytes_per_s_maximum")
+        .name("auto_route_status_set_input_bytes_per_s_maximum")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_bytes_per_s_maximum")
+        .help("auto_route_status_set_input_bytes_per_s_maximum")
         .register();
 
     inputBytesPerSStdDev = Gauge.build()
-        .name("route_status_set_input_bytes_per_s_std_dev")
+        .name("auto_route_status_set_input_bytes_per_s_std_dev")
         .labelNames(getLabelNames())
-        .help("route_status_set_input_bytes_per_s_std_dev")
+        .help("auto_route_status_set_input_bytes_per_s_std_dev")
         .register();
 
     outputSamplesPerSPeriodMs = Gauge.build()
-        .name("route_status_set_output_samples_per_s_period_ms")
+        .name("auto_route_status_set_output_samples_per_s_period_ms")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_samples_per_s_period_ms")
+        .help("auto_route_status_set_output_samples_per_s_period_ms")
         .register();
 
     outputSamplesPerSCount = Gauge.build()
-        .name("route_status_set_output_samples_per_s_count")
+        .name("auto_route_status_set_output_samples_per_s_count")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_samples_per_s_count")
+        .help("auto_route_status_set_output_samples_per_s_count")
         .register();
 
     outputSamplesPerSMean = Gauge.build()
-        .name("route_status_set_output_samples_per_s_mean")
+        .name("auto_route_status_set_output_samples_per_s_mean")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_samples_per_s_mean")
+        .help("auto_route_status_set_output_samples_per_s_mean")
         .register();
 
     outputSamplesPerSMinimum = Gauge.build()
-        .name("route_status_set_output_samples_per_s_minimum")
+        .name("auto_route_status_set_output_samples_per_s_minimum")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_samples_per_s_minimum")
+        .help("auto_route_status_set_output_samples_per_s_minimum")
         .register();
 
     outputSamplesPerSMaximum = Gauge.build()
-        .name("route_status_set_output_samples_per_s_maximum")
+        .name("auto_route_status_set_output_samples_per_s_maximum")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_samples_per_s_maximum")
+        .help("auto_route_status_set_output_samples_per_s_maximum")
         .register();
 
     outputSamplesPerSStdDev = Gauge.build()
-        .name("route_status_set_output_samples_per_s_std_dev")
+        .name("auto_route_status_set_output_samples_per_s_std_dev")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_samples_per_s_std_dev")
+        .help("auto_route_status_set_output_samples_per_s_std_dev")
         .register();
 
     outputBytesPerSPeriodMs = Gauge.build()
-        .name("route_status_set_output_bytes_per_s_period_ms")
+        .name("auto_route_status_set_output_bytes_per_s_period_ms")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_bytes_per_s_period_ms")
+        .help("auto_route_status_set_output_bytes_per_s_period_ms")
         .register();
 
     outputBytesPerSCount = Gauge.build()
-        .name("route_status_set_output_bytes_per_s_count")
+        .name("auto_route_status_set_output_bytes_per_s_count")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_bytes_per_s_count")
+        .help("auto_route_status_set_output_bytes_per_s_count")
         .register();
 
     outputBytesPerSMean = Gauge.build()
-        .name("route_status_set_output_bytes_per_s_mean")
+        .name("auto_route_status_set_output_bytes_per_s_mean")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_bytes_per_s_mean")
+        .help("auto_route_status_set_output_bytes_per_s_mean")
         .register();
 
     outputBytesPerSMinimum = Gauge.build()
-        .name("route_status_set_output_bytes_per_s_minimum")
+        .name("auto_route_status_set_output_bytes_per_s_minimum")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_bytes_per_s_minimum")
+        .help("auto_route_status_set_output_bytes_per_s_minimum")
         .register();
 
     outputBytesPerSMaximum = Gauge.build()
-        .name("route_status_set_output_bytes_per_s_maximum")
+        .name("auto_route_status_set_output_bytes_per_s_maximum")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_bytes_per_s_maximum")
+        .help("auto_route_status_set_output_bytes_per_s_maximum")
         .register();
 
     outputBytesPerSStdDev = Gauge.build()
-        .name("route_status_set_output_bytes_per_s_std_dev")
+        .name("auto_route_status_set_output_bytes_per_s_std_dev")
         .labelNames(getLabelNames())
-        .help("route_status_set_output_bytes_per_s_std_dev")
+        .help("auto_route_status_set_output_bytes_per_s_std_dev")
         .register();
 
     latencySPeriodMs = Gauge.build()
-        .name("route_status_set_latency_s_period_ms")
+        .name("auto_route_status_set_latency_s_period_ms")
         .labelNames(getLabelNames())
-        .help("route_status_set_latency_s_period_ms")
+        .help("auto_route_status_set_latency_s_period_ms")
         .register();
 
     latencySCount = Gauge.build()
-        .name("route_status_set_latency_s_count")
+        .name("auto_route_status_set_latency_s_count")
         .labelNames(getLabelNames())
-        .help("route_status_set_latency_s_count")
+        .help("auto_route_status_set_latency_s_count")
         .register();
 
     latencySMean = Gauge.build()
-        .name("route_status_set_latency_s_mean")
+        .name("auto_route_status_set_latency_s_mean")
         .labelNames(getLabelNames())
-        .help("route_status_set_latency_s_mean")
+        .help("auto_route_status_set_latency_s_mean")
         .register();
 
     latencySMinimum = Gauge.build()
-        .name("route_status_set_latency_s_minimum")
+        .name("auto_route_status_set_latency_s_minimum")
         .labelNames(getLabelNames())
-        .help("route_status_set_latency_s_minimum")
+        .help("auto_route_status_set_latency_s_minimum")
         .register();
 
     latencySMaximum = Gauge.build()
-        .name("route_status_set_latency_s_maximum")
+        .name("auto_route_status_set_latency_s_maximum")
         .labelNames(getLabelNames())
-        .help("route_status_set_latency_s_maximum")
+        .help("auto_route_status_set_latency_s_maximum")
         .register();
 
     latencySStdDev = Gauge.build()
-        .name("route_status_set_latency_s_std_dev")
+        .name("auto_route_status_set_latency_s_std_dev")
         .labelNames(getLabelNames())
-        .help("route_status_set_latency_s_std_dev")
+        .help("auto_route_status_set_latency_s_std_dev")
         .register();
   }
 
-  void process(
-      RouteStatusSet sample,
+  public void process(
+      AutoRouteStatusSet sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -341,12 +341,12 @@ class RouteStatusSetMetricProcessor {
         "routing_service_name",
         "domain_route_name",
         "session_name",
-        "name",
+        "auto_route_name",
     };
   }
 
   private String[] getLabelValues(
-      RouteStatusSet sample
+      AutoRouteStatusSet sample
   ) {
     return new String[]{
         sample.routing_service_name,

@@ -1,31 +1,31 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
 import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.rti.dds.monitoring.TopicEntityStatistics;
+import idl.rti.dds.monitoring.SubscriberDescription;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class TopicEntityStatisticsMetricProcessor {
+public class SubscriberDescriptionMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
-  private final Gauge inconsistentTopicStatusTotalCount;
+  private final Gauge dummy;
 
-  TopicEntityStatisticsMetricProcessor() {
+  public SubscriberDescriptionMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
-    inconsistentTopicStatusTotalCount = Gauge.build()
-        .name("topic_entity_statistics_inconsistent_topic_status_total_count")
+    dummy = Gauge.build()
+        .name("subscriber_description")
         .labelNames(getLabelNames())
-        .help("topic_entity_statistics_inconsistent_topic_status_total_count")
+        .help("subscriber_description")
         .register();
   }
 
-  void process(
-      TopicEntityStatistics sample,
+  public void process(
+      SubscriberDescription sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -36,42 +36,39 @@ class TopicEntityStatisticsMetricProcessor {
     // check if sample is alive and contains valid data
     if (info.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE || !info.valid_data) {
       // remove labels
-      inconsistentTopicStatusTotalCount.remove(labelValues);
+      dummy.remove(labelValues);
       // remove instance from hash map
       instanceHandleHashMap.remove(info.instance_handle);
       return;
     }
 
     // update gauges
-    inconsistentTopicStatusTotalCount.labels(labelValues).set(
-        sample.inconsistent_topic_status.status.total_count);
+    dummy.labels(getLabelValues(sample)).set(1);
   }
 
   private String[] getLabelNames() {
     return new String[]{
-        "topic_key",
-        "period",
+        "subscriber_key",
         "participant_key",
-        "topic_name",
-        "type_name",
         "domain_id",
         "host_id",
-        "process_id"
+        "process_id",
+        "subscriber_name",
+        "subscriber_role_name"
     };
   }
 
   private String[] getLabelValues(
-      TopicEntityStatistics sample
+      SubscriberDescription sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.topic_key.value),
-        Long.toUnsignedString((long) sample.period.sec * 1000000000 + (long) sample.period.nanosec),
-        BuiltinTopicHelper.toString(sample.participant_key.value),
-        sample.topic_name,
-        sample.type_name,
+        BuiltinTopicHelper.toString(sample.entity_key.value),
+        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
         Integer.toUnsignedString(sample.domain_id),
         Integer.toUnsignedString(sample.host_id),
         Integer.toUnsignedString(sample.process_id),
+        sample.qos.subscriber_name.name,
+        sample.qos.subscriber_name.role_name
     };
   }
 }

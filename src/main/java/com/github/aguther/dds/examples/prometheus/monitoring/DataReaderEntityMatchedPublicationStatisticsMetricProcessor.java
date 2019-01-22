@@ -1,4 +1,4 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
 import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -8,7 +8,7 @@ import idl.rti.dds.monitoring.DataReaderEntityMatchedPublicationStatistics;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class DataReaderEntityMatchedPublicationStatisticsMetricProcessor {
+public class DataReaderEntityMatchedPublicationStatisticsMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
@@ -35,7 +35,7 @@ class DataReaderEntityMatchedPublicationStatisticsMetricProcessor {
   private final Gauge datareaderProtocolStatusLastCommittedSampleSequenceNumberLow;
   private final Gauge datareaderProtocolStatusUncommittedSampleCount;
 
-  DataReaderEntityMatchedPublicationStatisticsMetricProcessor() {
+  public DataReaderEntityMatchedPublicationStatisticsMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     datareaderProtocolStatusReceivedSampleCount = Gauge.build()
@@ -183,7 +183,7 @@ class DataReaderEntityMatchedPublicationStatisticsMetricProcessor {
         .register();
   }
 
-  void process(
+  public void process(
       DataReaderEntityMatchedPublicationStatistics sample,
       SampleInfo info
   ) {

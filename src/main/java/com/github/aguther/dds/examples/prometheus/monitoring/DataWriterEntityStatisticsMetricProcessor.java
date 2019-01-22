@@ -1,4 +1,4 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
 import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -8,7 +8,7 @@ import idl.rti.dds.monitoring.DataWriterEntityStatistics;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class DataWriterEntityStatisticsMetricProcessor {
+public class DataWriterEntityStatisticsMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
@@ -60,7 +60,7 @@ class DataWriterEntityStatisticsMetricProcessor {
   private final Gauge datawriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberHigh;
   private final Gauge datawriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberLow;
 
-  DataWriterEntityStatisticsMetricProcessor() {
+  public DataWriterEntityStatisticsMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     livelinessLostStatusTotalCount = Gauge.build()
@@ -364,7 +364,7 @@ class DataWriterEntityStatisticsMetricProcessor {
         .register();
   }
 
-  void process(
+  public void process(
       DataWriterEntityStatistics sample,
       SampleInfo info
   ) {

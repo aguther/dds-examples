@@ -1,37 +1,30 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.routing;
 
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.RTI.RoutingService.Monitoring.AutoRouteData;
+import idl.RTI.RoutingService.Monitoring.DomainRouteData;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class AutoRouteDataMetricProcessor {
+public class DomainRouteDataMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
-  private final Gauge enabledRouteCount;
-  private final Gauge paused;
+  private final Gauge dummy;
 
-  AutoRouteDataMetricProcessor() {
+  public DomainRouteDataMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
-    enabledRouteCount = Gauge.build()
-        .name("auto_route_status_set_enabled_route_count")
+    dummy = Gauge.build()
+        .name("domain_route_data")
         .labelNames(getLabelNames())
-        .help("auto_route_status_set_enabled_route_count")
-        .register();
-
-    paused = Gauge.build()
-        .name("auto_route_status_set_paused")
-        .labelNames(getLabelNames())
-        .help("auto_route_status_set_paused")
+        .help("domain_route_data")
         .register();
   }
 
-  void process(
-      AutoRouteData sample,
+  public void process(
+      DomainRouteData sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -42,36 +35,28 @@ class AutoRouteDataMetricProcessor {
     // check if sample is alive and contains valid data
     if (info.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE || !info.valid_data) {
       // remove labels
-      enabledRouteCount.remove(labelValues);
-      paused.remove(labelValues);
+      dummy.remove(labelValues);
       // remove instance from hash map
       instanceHandleHashMap.remove(info.instance_handle);
       return;
     }
 
     // update gauges
-    enabledRouteCount.labels(labelValues)
-        .set(sample.enabled_route_count);
-    paused.labels(labelValues)
-        .set(sample.paused ? 1 : 0);
+    dummy.labels(labelValues).set(1);
   }
 
   private String[] getLabelNames() {
     return new String[]{
         "routing_service_name",
         "domain_route_name",
-        "session_name",
-        "name",
     };
   }
 
   private String[] getLabelValues(
-      AutoRouteData sample
+      DomainRouteData sample
   ) {
     return new String[]{
         sample.routing_service_name,
-        sample.domain_route_name,
-        sample.session_name,
         sample.name,
     };
   }

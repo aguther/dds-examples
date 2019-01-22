@@ -1,31 +1,37 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.routing;
 
-import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.rti.dds.monitoring.PublisherDescription;
+import idl.RTI.RoutingService.Monitoring.AutoRouteData;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class PublisherDescriptionMetricProcessor {
+public class AutoRouteDataMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
-  private final Gauge dummy;
+  private final Gauge enabledRouteCount;
+  private final Gauge paused;
 
-  PublisherDescriptionMetricProcessor() {
+  public AutoRouteDataMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
-    dummy = Gauge.build()
-        .name("publisher_description")
+    enabledRouteCount = Gauge.build()
+        .name("auto_route_status_set_enabled_route_count")
         .labelNames(getLabelNames())
-        .help("publisher_description")
+        .help("auto_route_status_set_enabled_route_count")
+        .register();
+
+    paused = Gauge.build()
+        .name("auto_route_status_set_paused")
+        .labelNames(getLabelNames())
+        .help("auto_route_status_set_paused")
         .register();
   }
 
-  void process(
-      PublisherDescription sample,
+  public void process(
+      AutoRouteData sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -36,39 +42,37 @@ class PublisherDescriptionMetricProcessor {
     // check if sample is alive and contains valid data
     if (info.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE || !info.valid_data) {
       // remove labels
-      dummy.remove(labelValues);
+      enabledRouteCount.remove(labelValues);
+      paused.remove(labelValues);
       // remove instance from hash map
       instanceHandleHashMap.remove(info.instance_handle);
       return;
     }
 
     // update gauges
-    dummy.labels(getLabelValues(sample)).set(1);
+    enabledRouteCount.labels(labelValues)
+        .set(sample.enabled_route_count);
+    paused.labels(labelValues)
+        .set(sample.paused ? 1 : 0);
   }
 
   private String[] getLabelNames() {
     return new String[]{
-        "entity_key",
-        "participant_entity_key",
-        "domain_id",
-        "host_id",
-        "process_id",
-        "publisher_name",
-        "publisher_role_name"
+        "routing_service_name",
+        "domain_route_name",
+        "session_name",
+        "auto_route_name",
     };
   }
 
   private String[] getLabelValues(
-      PublisherDescription sample
+      AutoRouteData sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.entity_key.value),
-        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
-        sample.qos.publisher_name.name,
-        sample.qos.publisher_name.role_name
+        sample.routing_service_name,
+        sample.domain_route_name,
+        sample.session_name,
+        sample.name,
     };
   }
 }

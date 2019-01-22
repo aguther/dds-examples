@@ -1,30 +1,31 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
+import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.RTI.RoutingService.Monitoring.RoutingServiceData;
+import idl.rti.dds.monitoring.PublisherDescription;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class RoutingServiceDataMetricProcessor {
+public class PublisherDescriptionMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
   private final Gauge dummy;
 
-  RoutingServiceDataMetricProcessor() {
+  public PublisherDescriptionMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     dummy = Gauge.build()
-        .name("routing_service_data")
+        .name("publisher_description")
         .labelNames(getLabelNames())
-        .help("routing_service_data")
+        .help("publisher_description")
         .register();
   }
 
-  void process(
-      RoutingServiceData sample,
+  public void process(
+      PublisherDescription sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -42,28 +43,32 @@ class RoutingServiceDataMetricProcessor {
     }
 
     // update gauges
-    dummy.labels(labelValues).set(1);
+    dummy.labels(getLabelValues(sample)).set(1);
   }
 
   private String[] getLabelNames() {
     return new String[]{
-        "name",
-        "group_name",
-        "host_name",
+        "publisher_key",
+        "participant_key",
+        "domain_id",
         "host_id",
-        "app_id",
+        "process_id",
+        "publisher_name",
+        "publisher_role_name"
     };
   }
 
   private String[] getLabelValues(
-      RoutingServiceData sample
+      PublisherDescription sample
   ) {
     return new String[]{
-        sample.name,
-        sample.group_name,
-        sample.host_name,
+        BuiltinTopicHelper.toString(sample.entity_key.value),
+        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
+        Integer.toUnsignedString(sample.domain_id),
         Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.app_id),
+        Integer.toUnsignedString(sample.process_id),
+        sample.qos.publisher_name.name,
+        sample.qos.publisher_name.role_name
     };
   }
 }

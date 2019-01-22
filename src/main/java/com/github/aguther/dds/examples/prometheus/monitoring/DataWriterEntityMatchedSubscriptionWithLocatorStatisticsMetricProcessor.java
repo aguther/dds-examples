@@ -1,14 +1,14 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
 import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.rti.dds.monitoring.DataWriterEntityMatchedSubscriptionStatistics;
+import idl.rti.dds.monitoring.DataWriterEntityMatchedSubscriptionWithLocatorStatistics;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class DataWriterEntityMatchedSubscriptionStatisticsMetricProcessor {
+public class DataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
@@ -43,220 +43,252 @@ class DataWriterEntityMatchedSubscriptionStatisticsMetricProcessor {
   private final Gauge datawriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberHigh;
   private final Gauge datawriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberLow;
 
-  DataWriterEntityMatchedSubscriptionStatisticsMetricProcessor() {
+  public DataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     datawriterProtocolStatusPushedSampleCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pushed_sample_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pushed_sample_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pushed_sample_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pushed_sample_count")
         .register();
 
     datawriterProtocolStatusPushedSampleBytes = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pushed_sample_bytes")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pushed_sample_bytes")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pushed_sample_bytes")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pushed_sample_bytes")
         .register();
 
     datawriterProtocolStatusFilteredSampleCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_filtered_sample_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_filtered_sample_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_filtered_sample_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_filtered_sample_count")
         .register();
 
     datawriterProtocolStatusFilteredSampleBytes = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_filtered_sample_bytes")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_filtered_sample_bytes")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_filtered_sample_bytes")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_filtered_sample_bytes")
         .register();
 
     datawriterProtocolStatusSentHeartbeatCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_heartbeat_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_heartbeat_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_heartbeat_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_heartbeat_count")
         .register();
 
     datawriterProtocolStatusSentHeartbeatBytes = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_heartbeat_bytes")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_heartbeat_bytes")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_heartbeat_bytes")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_heartbeat_bytes")
         .register();
 
     datawriterProtocolStatusPulledSampleCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pulled_sample_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pulled_sample_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pulled_sample_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pulled_sample_count")
         .register();
 
     datawriterProtocolStatusPulledSampleBytes = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pulled_sample_bytes")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pulled_sample_bytes")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_pulled_sample_bytes")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_pulled_sample_bytes")
         .register();
 
     datawriterProtocolStatusReceivedAckCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_ack_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_ack_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_ack_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_ack_count")
         .register();
 
     datawriterProtocolStatusReceivedAckBytes = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_ack_bytes")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_ack_bytes")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_ack_bytes")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_ack_bytes")
         .register();
 
     datawriterProtocolStatusReceivedNackCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_nack_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_nack_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_nack_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_nack_count")
         .register();
 
     datawriterProtocolStatusReceivedNackBytes = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_nack_bytes")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_nack_bytes")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_received_nack_bytes")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_received_nack_bytes")
         .register();
 
     datawriterProtocolStatusSentGapCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_gap_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_gap_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_gap_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_gap_count")
         .register();
 
     datawriterProtocolStatusSentGapBytes = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_gap_bytes")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_gap_bytes")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_sent_gap_bytes")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_sent_gap_bytes")
         .register();
 
     datawriterProtocolStatusRejectedSampleCount = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_rejected_sample_count")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_rejected_sample_count")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_rejected_sample_count")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_rejected_sample_count")
         .register();
 
     datawriterProtocolStatusSendWindowSize = Gauge.build()
-        .name("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_send_window_size")
+        .name(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_send_window_size")
         .labelNames(getLabelNames())
-        .help("datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_send_window_size")
+        .help(
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_send_window_size")
         .register();
 
     datawriterProtocolStatusFirstAvailableSequenceNumberHigh = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sequence_number_high")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sequence_number_high")
         .register();
 
     datawriterProtocolStatusFirstAvailableSequenceNumberLow = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sequence_number_low")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sequence_number_low")
         .register();
 
     datawriterProtocolStatusLastAvailableSequenceNumberHigh = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sequence_number_high")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sequence_number_high")
         .register();
 
     datawriterProtocolStatusLastAvailableSequenceNumberLow = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sequence_number_low")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sequence_number_low")
         .register();
 
     datawriterProtocolStatusFirstUnacknowledgedSampleSequenceNumberHigh = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_high")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_high")
         .register();
 
     datawriterProtocolStatusFirstUnacknowledgedSampleSequenceNumberLow = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_low")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_sequence_number_low")
         .register();
 
     datawriterProtocolStatusFirstAvailableSampleVirtualSequenceNumberHigh = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_high")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_high")
         .register();
 
     datawriterProtocolStatusFirstAvailableSampleVirtualSequenceNumberLow = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_low")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_available_sample_virtual_sequence_number_low")
         .register();
 
     datawriterProtocolStatusLastAvailableSampleVirtualSequenceNumberHigh = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_high")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_high")
         .register();
 
     datawriterProtocolStatusLastAvailableSampleVirtualSequenceNumberLow = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_low")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_last_available_sample_virtual_sequence_number_low")
         .register();
 
     datawriterProtocolStatusFirstUnacknowledgedSampleVirtualSequenceNumberHigh = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
         .register();
 
     datawriterProtocolStatusFirstUnacknowledgedSampleVirtualSequenceNumberLow = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
         .register();
 
     datawriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberHigh = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
         .register();
 
     datawriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberLow = Gauge.build()
         .name(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
         .labelNames(getLabelNames())
         .help(
-            "datawriter_entity_matched_subscription_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
+            "datawriter_entity_matched_subscription_with_locator_statistics_datawriter_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
         .register();
   }
 
-  void process(
-      DataWriterEntityMatchedSubscriptionStatistics sample,
+  public void process(
+      DataWriterEntityMatchedSubscriptionWithLocatorStatistics sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -397,17 +429,21 @@ class DataWriterEntityMatchedSubscriptionStatisticsMetricProcessor {
   private String[] getLabelNames() {
     return new String[]{
         "datawriter_key",
-        "subscription_handle",
+        "subscription_locator_kind",
+        "subscription_locator_address",
+        "subscription_locator_port",
         "period"
     };
   }
 
   private String[] getLabelValues(
-      DataWriterEntityMatchedSubscriptionStatistics sample
+      DataWriterEntityMatchedSubscriptionWithLocatorStatistics sample
   ) {
     return new String[]{
         BuiltinTopicHelper.toString(sample.datawriter_key.value),
-        BuiltinTopicHelper.toString(sample.subscription_handle.value),
+        Integer.toUnsignedString(sample.subscription_locator.kind),
+        BuiltinTopicHelper.toString(sample.subscription_locator.address),
+        Integer.toUnsignedString(sample.subscription_locator._port),
         Long.toUnsignedString((long) sample.period.sec * 1000000000 + (long) sample.period.nanosec)
     };
   }

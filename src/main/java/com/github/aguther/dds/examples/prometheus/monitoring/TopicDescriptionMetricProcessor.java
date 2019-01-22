@@ -1,30 +1,31 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
+import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.RTI.RoutingService.Monitoring.RouteData;
+import idl.rti.dds.monitoring.TopicDescription;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class RouteDataMetricProcessor {
+public class TopicDescriptionMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
-  private final Gauge paused;
+  private final Gauge tcSerializedSize;
 
-  RouteDataMetricProcessor() {
+  public TopicDescriptionMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
-    paused = Gauge.build()
-        .name("route_status_set_paused")
+    tcSerializedSize = Gauge.build()
+        .name("topic_description_tc_serialized_size")
         .labelNames(getLabelNames())
-        .help("route_status_set_paused")
+        .help("topic_description_tc_serialized_size")
         .register();
   }
 
-  void process(
-      RouteData sample,
+  public void process(
+      TopicDescription sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -35,34 +36,39 @@ class RouteDataMetricProcessor {
     // check if sample is alive and contains valid data
     if (info.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE || !info.valid_data) {
       // remove labels
-      paused.remove(labelValues);
+      tcSerializedSize.remove(labelValues);
       // remove instance from hash map
       instanceHandleHashMap.remove(info.instance_handle);
       return;
     }
 
     // update gauges
-    paused.labels(labelValues)
-        .set(sample.paused ? 1 : 0);
+    tcSerializedSize.labels(getLabelValues(sample)).set(sample.tc_serialized_size);
   }
 
   private String[] getLabelNames() {
     return new String[]{
-        "routing_service_name",
-        "domain_route_name",
-        "session_name",
-        "name",
+        "topic_key",
+        "participant_key",
+        "domain_id",
+        "host_id",
+        "process_id",
+        "topic_name",
+        "type_name",
     };
   }
 
   private String[] getLabelValues(
-      RouteData sample
+      TopicDescription sample
   ) {
     return new String[]{
-        sample.routing_service_name,
-        sample.domain_route_name,
-        sample.session_name,
-        sample.name,
+        BuiltinTopicHelper.toString(sample.entity_key.value),
+        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
+        Integer.toUnsignedString(sample.domain_id),
+        Integer.toUnsignedString(sample.host_id),
+        Integer.toUnsignedString(sample.process_id),
+        sample.topic_name,
+        sample.type_name
     };
   }
 }

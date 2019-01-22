@@ -1,31 +1,30 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.routing;
 
-import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.rti.dds.monitoring.SubscriberDescription;
+import idl.RTI.RoutingService.Monitoring.SessionData;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class SubscriberDescriptionMetricProcessor {
+public class SessionDataMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
-  private final Gauge dummy;
+  private final Gauge enabledRouteCount;
 
-  SubscriberDescriptionMetricProcessor() {
+  public SessionDataMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
-    dummy = Gauge.build()
-        .name("subscriber_description")
+    enabledRouteCount = Gauge.build()
+        .name("session_data_enabled_route_count")
         .labelNames(getLabelNames())
-        .help("subscriber_description")
+        .help("session_data_enabled_route_count")
         .register();
   }
 
-  void process(
-      SubscriberDescription sample,
+  public void process(
+      SessionData sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -36,39 +35,31 @@ class SubscriberDescriptionMetricProcessor {
     // check if sample is alive and contains valid data
     if (info.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE || !info.valid_data) {
       // remove labels
-      dummy.remove(labelValues);
+      enabledRouteCount.remove(labelValues);
       // remove instance from hash map
       instanceHandleHashMap.remove(info.instance_handle);
       return;
     }
 
     // update gauges
-    dummy.labels(getLabelValues(sample)).set(1);
+    enabledRouteCount.labels(labelValues).set(sample.enabled_route_count);
   }
 
   private String[] getLabelNames() {
     return new String[]{
-        "entity_key",
-        "participant_entity_key",
-        "domain_id",
-        "host_id",
-        "process_id",
-        "subscriber_name",
-        "subscriber_role_name"
+        "routing_service_name",
+        "domain_route_name",
+        "session_name",
     };
   }
 
   private String[] getLabelValues(
-      SubscriberDescription sample
+      SessionData sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.entity_key.value),
-        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
-        sample.qos.subscriber_name.name,
-        sample.qos.subscriber_name.role_name
+        sample.routing_service_name,
+        sample.domain_route_name,
+        sample.name,
     };
   }
 }

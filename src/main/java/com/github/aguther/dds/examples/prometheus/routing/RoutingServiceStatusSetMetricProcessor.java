@@ -1,4 +1,4 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.routing;
 
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
@@ -7,7 +7,7 @@ import idl.RTI.RoutingService.Monitoring.RoutingServiceStatusSet;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class RoutingServiceStatusSetMetricProcessor {
+public class RoutingServiceStatusSetMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
@@ -52,7 +52,7 @@ class RoutingServiceStatusSetMetricProcessor {
   private final Gauge hostTotalSwapMemoryKb;
   private final Gauge hostUptime;
 
-  RoutingServiceStatusSetMetricProcessor() {
+  public RoutingServiceStatusSetMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     cpuUsagePercentagePeriodMs = Gauge.build()
@@ -296,7 +296,7 @@ class RoutingServiceStatusSetMetricProcessor {
         .register();
   }
 
-  void process(
+  public void process(
       RoutingServiceStatusSet sample,
       SampleInfo info
   ) {
@@ -438,7 +438,7 @@ class RoutingServiceStatusSetMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "name",
+        "routing_service_name",
     };
   }
 

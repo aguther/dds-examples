@@ -1,14 +1,14 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
 import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
-import idl.rti.dds.monitoring.DataReaderDescription;
+import idl.rti.dds.monitoring.DataWriterDescription;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class DataReaderDescriptionMetricProcessor {
+public class DataWriterDescriptionMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
@@ -16,30 +16,30 @@ class DataReaderDescriptionMetricProcessor {
   private final Gauge serializedSampleMinSize;
   private final Gauge serializedKeyMaxSize;
 
-  DataReaderDescriptionMetricProcessor() {
+  public DataWriterDescriptionMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     serializedSampleMaxSize = Gauge.build()
-        .name("datareader_description_serialized_sample_max_size")
+        .name("datawriter_description_serialized_sample_max_size")
         .labelNames(getLabelNames())
-        .help("datareader_description_serialized_sample_max_size")
+        .help("datawriter_description_serialized_sample_max_size")
         .register();
 
     serializedSampleMinSize = Gauge.build()
-        .name("datareader_description_serialized_sample_min_size")
+        .name("datawriter_description_serialized_sample_min_size")
         .labelNames(getLabelNames())
-        .help("datareader_description_serialized_sample_min_size")
+        .help("datawriter_description_serialized_sample_min_size")
         .register();
 
     serializedKeyMaxSize = Gauge.build()
-        .name("datareader_description_serialized_key_max_size")
+        .name("datawriter_description_serialized_key_max_size")
         .labelNames(getLabelNames())
-        .help("datareader_description_serialized_key_max_size")
+        .help("datawriter_description_serialized_key_max_size")
         .register();
   }
 
-  void process(
-      DataReaderDescription sample,
+  public void process(
+      DataWriterDescription sample,
       SampleInfo info
   ) {
     // put instance handle to hash map if not present
@@ -66,33 +66,33 @@ class DataReaderDescriptionMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "entity_key",
-        "subscriber_entity_key",
-        "topic_entity_key",
+        "datawriter_key",
+        "publisher_key",
+        "topic_key",
         "domain_id",
         "host_id",
         "process_id",
         "type_name",
         "topic_name",
-        "subscription_name",
-        "subscription_role_name"
+        "publication_name",
+        "publication_role_name"
     };
   }
 
   private String[] getLabelValues(
-      DataReaderDescription sample
+      DataWriterDescription sample
   ) {
     return new String[]{
         BuiltinTopicHelper.toString(sample.entity_key.value),
-        BuiltinTopicHelper.toString(sample.subscriber_entity_key.value),
+        BuiltinTopicHelper.toString(sample.publisher_entity_key.value),
         BuiltinTopicHelper.toString(sample.topic_entity_key.value),
         Integer.toUnsignedString(sample.domain_id),
         Integer.toUnsignedString(sample.host_id),
         Integer.toUnsignedString(sample.process_id),
         sample.type_name,
         sample.topic_name,
-        sample.qos.subscription_name.name,
-        sample.qos.subscription_name.role_name
+        sample.qos.publication_name.name,
+        sample.qos.publication_name.role_name
     };
   }
 }

@@ -1,4 +1,4 @@
-package com.github.aguther.dds.examples.monitoring.prometheus;
+package com.github.aguther.dds.examples.prometheus.monitoring;
 
 import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -9,7 +9,7 @@ import idl.rti.dds.monitoring.DomainParticipantEntityStatistics;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-class DomainParticipantEntityStatisticsMetricProcessor {
+public class DomainParticipantEntityStatisticsMetricProcessor {
 
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
@@ -21,7 +21,7 @@ class DomainParticipantEntityStatisticsMetricProcessor {
   private final Gauge remoteWriterCount;
   private final Gauge remoteReaderCount;
 
-  DomainParticipantEntityStatisticsMetricProcessor() {
+  public DomainParticipantEntityStatisticsMetricProcessor() {
     instanceHandleHashMap = new HashMap<>();
 
     userCpuTime = Gauge.build()
@@ -68,7 +68,7 @@ class DomainParticipantEntityStatisticsMetricProcessor {
 
   }
 
-  void process(
+  public void process(
       DomainParticipantEntityStatistics sample,
       SampleInfo info
   ) {
