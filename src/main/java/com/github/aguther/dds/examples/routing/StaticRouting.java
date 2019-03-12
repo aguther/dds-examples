@@ -80,11 +80,14 @@ public class StaticRouting extends AbstractIdleService {
     // log service start
     LOGGER.info("Service is starting");
 
-    // start DDS logger
+    // create routing service
+    startUpCreateRoutingService();
+
+    // attach DDS logger
     startUpDdsLogger();
 
     // start routing service
-    startUpRoutingService();
+    startUpStartRoutingService();
 
     // log service start
     LOGGER.info("Service start finished");
@@ -106,7 +109,7 @@ public class StaticRouting extends AbstractIdleService {
     Slf4jDdsLogger.createRegisterLogger();
   }
 
-  private void startUpRoutingService() {
+  private void startUpCreateRoutingService() {
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
     routingServiceProperty.cfgFile = ROUTING_SERVICE_CONFIG_FILE;
@@ -117,6 +120,11 @@ public class StaticRouting extends AbstractIdleService {
     // create routing service instance
     routingService = new RoutingService(routingServiceProperty);
 
+    // start routing service
+    routingService.start();
+  }
+
+  private void startUpStartRoutingService() {
     // start routing service
     routingService.start();
   }

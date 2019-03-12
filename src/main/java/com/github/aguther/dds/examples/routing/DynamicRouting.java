@@ -92,11 +92,14 @@ public class DynamicRouting extends AbstractIdleService {
     // prepare DDS factory
     startUpPrepareDomainParticipantFactory();
 
-    // start DDS logger
+    // create routing service
+    startUpCreateRoutingService();
+
+    // attach DDS logger
     startUpDdsLogger();
 
     // start routing service
-    startUpRoutingService();
+    startUpStartRoutingService();
 
     // start dynamic routing
     startUpDynamicRouting();
@@ -131,7 +134,7 @@ public class DynamicRouting extends AbstractIdleService {
     Slf4jDdsLogger.createRegisterLogger();
   }
 
-  private void startUpRoutingService() {
+  private void startUpCreateRoutingService() {
     // setup routing service properties
     final RoutingServiceProperty routingServiceProperty = new RoutingServiceProperty();
     routingServiceProperty.cfgFile = ROUTING_SERVICE_CONFIG_FILE_XML;
@@ -141,7 +144,9 @@ public class DynamicRouting extends AbstractIdleService {
 
     // create routing service instance
     routingService = new RoutingService(routingServiceProperty);
+  }
 
+  private void startUpStartRoutingService() {
     // start routing service
     routingService.start();
   }
