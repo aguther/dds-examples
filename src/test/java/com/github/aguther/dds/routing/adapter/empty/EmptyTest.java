@@ -100,13 +100,6 @@ public class EmptyTest {
     StreamReader outputDiscoveryStreamReader = emptyConnection.getOutputStreamDiscoveryReader();
     assertTrue(outputDiscoveryStreamReader instanceof EmptyStreamReader);
 
-    try {
-      emptyConnection.getAttributes();
-      fail("AdapterException was expected.");
-    } catch (AdapterException ex) {
-      // exception was expected
-    }
-
     emptyConnection.update(properties);
 
     try {

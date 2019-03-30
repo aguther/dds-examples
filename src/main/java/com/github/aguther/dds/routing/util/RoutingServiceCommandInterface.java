@@ -36,12 +36,12 @@ import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.ServiceQosPolicyKind;
-import idl.RTI.RoutingService.Administration.COMMAND_REQUEST_TOPIC_NAME;
-import idl.RTI.RoutingService.Administration.COMMAND_RESPONSE_TOPIC_NAME;
-import idl.RTI.RoutingService.Administration.CommandRequest;
-import idl.RTI.RoutingService.Administration.CommandRequestTypeSupport;
-import idl.RTI.RoutingService.Administration.CommandResponse;
-import idl.RTI.RoutingService.Administration.CommandResponseTypeSupport;
+import idl.RTI.Service.Admin.COMMAND_REPLY_TOPIC_NAME;
+import idl.RTI.Service.Admin.COMMAND_REQUEST_TOPIC_NAME;
+import idl.RTI.Service.Admin.CommandReply;
+import idl.RTI.Service.Admin.CommandReplyTypeSupport;
+import idl.RTI.Service.Admin.CommandRequest;
+import idl.RTI.Service.Admin.CommandRequestTypeSupport;
 import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -54,12 +54,7 @@ public class RoutingServiceCommandInterface implements Closeable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingServiceCommandInterface.class);
 
-  private final Requester<CommandRequest, CommandResponse> requester;
-
-  private final int hostId;
-  private final int applicationId;
-
-  private int invocationCounter;
+  private final Requester<CommandRequest, CommandReply> requester;
 
   /**
    * Instantiates a new routing service command helper.
@@ -75,20 +70,15 @@ public class RoutingServiceCommandInterface implements Closeable {
     // get host and app id from wire protocol of domain participant
     DomainParticipantQos domainParticipantQos = new DomainParticipantQos();
     domainParticipant.get_qos(domainParticipantQos);
-    hostId = domainParticipantQos.wire_protocol.rtps_host_id;
-    applicationId = domainParticipantQos.wire_protocol.rtps_app_id;
-
-    // set invocation counter
-    invocationCounter = 0;
 
     // create parameters for requester
     RequesterParams requesterParams = new RequesterParams(
         domainParticipant,
         CommandRequestTypeSupport.get_instance(),
-        CommandResponseTypeSupport.get_instance()
+        CommandReplyTypeSupport.get_instance()
     );
     requesterParams.setRequestTopicName(COMMAND_REQUEST_TOPIC_NAME.VALUE);
-    requesterParams.setReplyTopicName(COMMAND_RESPONSE_TOPIC_NAME.VALUE);
+    requesterParams.setReplyTopicName(COMMAND_REPLY_TOPIC_NAME.VALUE);
 
     // create requester for routing service administration
     requester = new Requester<>(requesterParams);
@@ -203,16 +193,11 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @param timeUnit time unit of timeout
    * @return response if received within timeout, otherwise null
    */
-  public CommandResponse sendRequest(
+  public CommandReply sendRequest(
       final CommandRequest commandRequest,
       final long timeOut,
       final TimeUnit timeUnit
   ) {
-    // set identification
-    commandRequest.id.host = hostId;
-    commandRequest.id.app = applicationId;
-    commandRequest.id.invocation = ++invocationCounter;
-
     // logging
     logCommandRequest(commandRequest);
 
@@ -220,7 +205,7 @@ public class RoutingServiceCommandInterface implements Closeable {
     requester.sendRequest(commandRequest);
 
     // create reply
-    Sample<CommandResponse> reply = requester.createReplySample();
+    Sample<CommandReply> reply = requester.createReplySample();
 
     // wait for reply
     boolean replyReceived = requester.receiveReply(
@@ -246,8 +231,8 @@ public class RoutingServiceCommandInterface implements Closeable {
     // trace logs
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "CommandRequest.command.entity_desc.xml_url.content.length()='{}'",
-          commandRequest.command.entity_desc.xml_url.content.length()
+          "CommandRequest.string_body.length()='{}'",
+          commandRequest.string_body.length()
       );
       LOGGER.trace(
           "CommandRequest {}",
@@ -263,13 +248,13 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @param replyReceived true if response is valid, otherwise false
    */
   private void logCommandResponse(
-      final Sample<CommandResponse> reply,
+      final Sample<CommandReply> reply,
       final boolean replyReceived
   ) {
     // trace logs
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "CommandResponse {}",
+          "CommandReply {}",
           replyReceived ?
               reply.getData().toString().replace(
                   "\n", "").replaceAll("[ ]{2,}", " ")

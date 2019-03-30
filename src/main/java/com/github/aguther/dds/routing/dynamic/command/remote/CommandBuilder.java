@@ -28,8 +28,8 @@ import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandPro
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
-import idl.RTI.RoutingService.Administration.CommandKind;
-import idl.RTI.RoutingService.Administration.CommandRequest;
+import idl.RTI.Service.Admin.CommandActionKind;
+import idl.RTI.Service.Admin.CommandRequest;
 
 class CommandBuilder {
 
@@ -52,11 +52,13 @@ class CommandBuilder {
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = provider.getSessionParent(session);
-    commandRequest.command.entity_desc.xml_url.is_final = true;
-    commandRequest.command.entity_desc.xml_url.content = provider.getSessionConfiguration(session);
+    commandRequest.action = CommandActionKind.CREATE_ACTION;
+    commandRequest.resource_identifier = String.format(
+        "/routing_services/%s/domain_routes/%s/sessions",
+        targetRoutingService,
+        provider.getSessionParent(session)
+    );
+    commandRequest.string_body = provider.getSessionConfiguration(session);
 
     // create and return command
     return new Command(
@@ -77,9 +79,13 @@ class CommandBuilder {
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = provider.getSessionEntityName(session);
+    commandRequest.action = CommandActionKind.DELETE_ACTION;
+    commandRequest.resource_identifier = String.format(
+        "/routing_services/%s/domain_routes/%s/sessions/%s",
+        targetRoutingService,
+        provider.getSessionParent(session),
+        provider.getSessionEntityName(session)
+    );
 
     // create and return command
     return new Command(
@@ -101,11 +107,14 @@ class CommandBuilder {
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
-    commandRequest.command.entity_desc.name = provider.getSessionEntityName(session);
-    commandRequest.command.entity_desc.xml_url.is_final = true;
-    commandRequest.command.entity_desc.xml_url.content = provider.getTopicRouteConfiguration(session, topicRoute);
+    commandRequest.action = CommandActionKind.CREATE_ACTION;
+    commandRequest.resource_identifier = String.format(
+        "/routing_services/%s/domain_routes/%s/%s/routes",
+        targetRoutingService,
+        provider.getSessionParent(session),
+        provider.getSessionEntityName(session)
+    );
+    commandRequest.string_body = provider.getTopicRouteConfiguration(session, topicRoute);
 
     // create and return command
     return new Command(
@@ -129,9 +138,14 @@ class CommandBuilder {
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
-    commandRequest.target_router = targetRoutingService;
-    commandRequest.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
-    commandRequest.command.entity_name = provider.getTopicRouteEntityName(session, topicRoute);
+    commandRequest.action = CommandActionKind.DELETE_ACTION;
+    commandRequest.resource_identifier = String.format(
+        "/routing_services/%s/domain_routes/%s/%s/routes/%s",
+        targetRoutingService,
+        provider.getSessionParent(session),
+        provider.getSessionEntityName(session),
+        provider.getTopicRouteEntityName(session, topicRoute)
+    );
 
     // create and return command
     return new Command(

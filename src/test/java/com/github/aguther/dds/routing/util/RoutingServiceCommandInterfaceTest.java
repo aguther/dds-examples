@@ -50,10 +50,10 @@ import com.rti.dds.infrastructure.ServiceQosPolicy;
 import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.infrastructure.WireProtocolQosPolicy;
 import com.rti.dds.publication.DataWriter;
-import idl.RTI.RoutingService.Administration.CommandRequest;
-import idl.RTI.RoutingService.Administration.CommandRequestTypeSupport;
-import idl.RTI.RoutingService.Administration.CommandResponse;
-import idl.RTI.RoutingService.Administration.CommandResponseTypeSupport;
+import idl.RTI.Service.Admin.CommandReply;
+import idl.RTI.Service.Admin.CommandReplyTypeSupport;
+import idl.RTI.Service.Admin.CommandRequest;
+import idl.RTI.Service.Admin.CommandRequestTypeSupport;
 import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
@@ -76,7 +76,7 @@ import org.powermock.reflect.Whitebox;
     WireProtocolQosPolicy.class,
     ParticipantBuiltinTopicData.class,
     CommandRequestTypeSupport.class,
-    CommandResponseTypeSupport.class,
+    CommandReplyTypeSupport.class,
     Requester.class
 })
 @SuppressStaticInitializationFor({
@@ -98,9 +98,9 @@ public class RoutingServiceCommandInterfaceTest {
   private DomainParticipantQos domainParticipantQos;
 
   private CommandRequestTypeSupport commandRequestTypeSupport;
-  private CommandResponseTypeSupport commandResponseTypeSupport;
+  private CommandReplyTypeSupport commandResponseTypeSupport;
 
-  private Requester<CommandRequest, CommandResponse> requester;
+  private Requester<CommandRequest, CommandReply> requester;
 
   private RoutingServiceCommandInterface commandInterface;
 
@@ -119,13 +119,13 @@ public class RoutingServiceCommandInterfaceTest {
     commandRequestTypeSupport = mock(CommandRequestTypeSupport.class);
     Whitebox.setInternalState(CommandRequestTypeSupport.class, "_singleton", commandRequestTypeSupport);
 
-    commandResponseTypeSupport = mock(CommandResponseTypeSupport.class);
-    Whitebox.setInternalState(CommandResponseTypeSupport.class, "_singleton", commandResponseTypeSupport);
+    commandResponseTypeSupport = mock(CommandReplyTypeSupport.class);
+    Whitebox.setInternalState(CommandReplyTypeSupport.class, "_singleton", commandResponseTypeSupport);
 
     requester = mock(Requester.class);
     {
       Sample responseSample = mock(Sample.class);
-      when(responseSample.getData()).thenReturn(new CommandResponse());
+      when(responseSample.getData()).thenReturn(new CommandReply());
       when(requester.createReplySample()).thenReturn(responseSample);
     }
     PowerMockito.whenNew(Requester.class).withAnyArguments().thenReturn(requester);
@@ -253,7 +253,7 @@ public class RoutingServiceCommandInterfaceTest {
     CommandRequest commandRequest = commandInterface.createCommandRequest();
 
     when(requester.receiveReply(any(Sample.class), any(Duration_t.class))).thenReturn(true);
-    CommandResponse response = commandInterface.sendRequest(commandRequest, 1, TimeUnit.SECONDS);
+    CommandReply response = commandInterface.sendRequest(commandRequest, 1, TimeUnit.SECONDS);
 
     assertNotNull(response);
 
@@ -268,7 +268,7 @@ public class RoutingServiceCommandInterfaceTest {
     CommandRequest commandRequest = commandInterface.createCommandRequest();
 
     when(requester.receiveReply(any(Sample.class), any(Duration_t.class))).thenReturn(false);
-    CommandResponse response = commandInterface.sendRequest(commandRequest, 1, TimeUnit.SECONDS);
+    CommandReply response = commandInterface.sendRequest(commandRequest, 1, TimeUnit.SECONDS);
 
     assertNull(response);
 

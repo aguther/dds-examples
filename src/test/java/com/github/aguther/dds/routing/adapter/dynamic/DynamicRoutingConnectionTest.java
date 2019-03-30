@@ -115,12 +115,6 @@ public class DynamicRoutingConnectionTest {
   }
 
   @Test
-  public void testGetAttributes() throws AdapterException {
-    // get attributes
-    assertEquals(properties, dynamicRoutingConnection.getAttributes());
-  }
-
-  @Test
   public void testCreateSession() throws AdapterException {
     assertTrue(dynamicRoutingConnection.createSession(properties) instanceof EmptySession);
     verifyZeroInteractions(dynamicRoutingManager);

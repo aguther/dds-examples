@@ -26,7 +26,7 @@ package com.github.aguther.dds.routing.dynamic.command.remote;
 
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
-import idl.RTI.RoutingService.Administration.CommandRequest;
+import idl.RTI.Service.Admin.CommandRequest;
 import java.util.Objects;
 
 public class Command {

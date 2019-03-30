@@ -85,11 +85,6 @@ public class DynamicRoutingConnection extends EmptyConnection implements Closeab
   }
 
   @Override
-  public Properties getAttributes() throws AdapterException {
-    return dynamicRoutingManager.getProperties();
-  }
-
-  @Override
   public void update(
       final Properties properties
   ) throws AdapterException {

@@ -86,11 +86,6 @@ public class EmptyConnection implements DiscoveryConnection {
   }
 
   @Override
-  public Properties getAttributes() throws AdapterException {
-    throw new AdapterException(0, "Operation not supported");
-  }
-
-  @Override
   public void update(
       final Properties properties
   ) throws AdapterException {

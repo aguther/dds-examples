@@ -33,9 +33,9 @@ import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import com.google.common.base.Strings;
-import idl.RTI.RoutingService.Administration.CommandRequest;
-import idl.RTI.RoutingService.Administration.CommandResponse;
-import idl.RTI.RoutingService.Administration.CommandResponseKind;
+import idl.RTI.Service.Admin.CommandReply;
+import idl.RTI.Service.Admin.CommandReplyRetcode;
+import idl.RTI.Service.Admin.CommandRequest;
 import java.io.Closeable;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
@@ -315,7 +315,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     CommandRequest commandRequest = command.getCommandRequest();
 
     // send request and get response
-    CommandResponse commandResponse = routingServiceCommandInterface.sendRequest(
+    CommandReply commandResponse = routingServiceCommandInterface.sendRequest(
         commandRequest,
         requestTimeout,
         requestTimeoutTimeUnit
@@ -339,14 +339,14 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    */
   private boolean checkResponse(
       final CommandRequest commandRequest,
-      final CommandResponse commandResponse,
+      final CommandReply commandResponse,
       final String loggingFormat
   ) {
     // response received?
     if (commandResponse == null) {
       LOGGER.error(
           "No response received request='{}', {}; retry in '{} {}'",
-          commandRequest.command._d,
+          commandRequest.action,
           loggingFormat,
 
           retryDelay,
@@ -356,11 +356,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     }
 
     // success?
-    if (commandResponse.kind == CommandResponseKind.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK) {
+    if (commandResponse.retcode == CommandReplyRetcode.OK_RETCODE) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Success request='{}', {}",
-            commandRequest.command._d,
+            commandRequest.action,
             loggingFormat
         );
       }
@@ -370,10 +370,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     // failed
     LOGGER.error(
         "Failed request='{}', {}, reason='{}', message='{}'; retry in '{} {}'",
-        commandRequest.command._d,
+        commandRequest.action,
         loggingFormat,
-        commandResponse.kind,
-        commandResponse.message,
+        commandResponse.retcode,
+        commandResponse.string_body,
         retryDelay,
         retryDelayTimeUnit
     );
