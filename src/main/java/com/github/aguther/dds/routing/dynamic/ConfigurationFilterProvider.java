@@ -393,7 +393,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
       final Session session
   ) {
     return String.format(
-        "str://\"<session name=\"%1$s\" enabled=\"true\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%2$s</element></name></partition></subscriber_qos></session>\"",
+        "<session name=\"%1$s\" enabled=\"true\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%2$s</element></name></partition></subscriber_qos></session>",
         getSessionName(session),
         session.getPartition()
     );
@@ -428,7 +428,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     checkNotNull(configuration);
 
     return String.format(
-        "str://\"<topic_route name=\"%1$s\" enabled=\"true\">%5$s<input participant=\"%2$d\"><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%6$s</input><output><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%7$s</output></topic_route>\"",
+        "<topic_route name=\"%1$s\" enabled=\"true\">%5$s<input participant=\"%2$d\"><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%6$s</input><output><topic_name>%3$s</topic_name><registered_type_name>%4$s</registered_type_name>%7$s</output></topic_route>",
         getTopicRouteName(session, topicRoute),
         topicRoute.getDirection() == Direction.OUT ? 1 : 2,
         session.getTopic(),

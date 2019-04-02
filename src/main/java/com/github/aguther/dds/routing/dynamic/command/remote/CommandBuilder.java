@@ -54,7 +54,7 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.action = CommandActionKind.CREATE_ACTION;
     commandRequest.resource_identifier = String.format(
-        "/routing_services/%s/domain_routes/%s/sessions",
+        "/routing_services/%s/domain_routes/%s",
         targetRoutingService,
         provider.getSessionParent(session)
     );
@@ -84,7 +84,7 @@ class CommandBuilder {
         "/routing_services/%s/domain_routes/%s/sessions/%s",
         targetRoutingService,
         provider.getSessionParent(session),
-        provider.getSessionEntityName(session)
+        provider.getSessionName(session)
     );
 
     // create and return command
@@ -109,10 +109,10 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.action = CommandActionKind.CREATE_ACTION;
     commandRequest.resource_identifier = String.format(
-        "/routing_services/%s/domain_routes/%s/%s/routes",
+        "/routing_services/%s/domain_routes/%s/sessions/%s",
         targetRoutingService,
         provider.getSessionParent(session),
-        provider.getSessionEntityName(session)
+        provider.getSessionName(session)
     );
     commandRequest.string_body = provider.getTopicRouteConfiguration(session, topicRoute);
 
@@ -140,11 +140,11 @@ class CommandBuilder {
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.action = CommandActionKind.DELETE_ACTION;
     commandRequest.resource_identifier = String.format(
-        "/routing_services/%s/domain_routes/%s/%s/routes/%s",
+        "/routing_services/%s/domain_routes/%s/sessions/%s/routes/%s",
         targetRoutingService,
         provider.getSessionParent(session),
-        provider.getSessionEntityName(session),
-        provider.getTopicRouteEntityName(session, topicRoute)
+        provider.getSessionName(session),
+        provider.getTopicRouteName(session, topicRoute)
     );
 
     // create and return command
