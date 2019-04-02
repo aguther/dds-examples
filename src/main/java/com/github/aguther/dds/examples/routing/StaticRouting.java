@@ -116,12 +116,10 @@ public class StaticRouting extends AbstractIdleService {
     routingServiceProperty.serviceName = ROUTING_SERVICE_NAME;
     routingServiceProperty.applicationName = routingServiceProperty.serviceName;
     routingServiceProperty.serviceVerbosity = 3;
+    routingServiceProperty.enforceXsdValidation = false;
 
     // create routing service instance
     routingService = new RoutingService(routingServiceProperty);
-
-    // start routing service
-    routingService.start();
   }
 
   private void startUpStartRoutingService() {
