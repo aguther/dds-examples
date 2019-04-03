@@ -91,21 +91,18 @@ import org.powermock.reflect.Whitebox;
 })
 public class PublicationObserverTest {
 
-  private DataReader dataReader;
   private PublicationObserver publicationObserver;
-  private PublicationObserverListener publicationObserverListener;
 
-  private PublicationBuiltinTopicData publicationBuiltinTopicData;
-  private PublicationBuiltinTopicDataSeq publicationBuiltinTopicDataSeq;
-
-  private SampleInfo sampleInfo;
-  private SampleInfoSeq sampleInfoSeq;
+  private DataReader mockDataReader;
+  private PublicationObserverListener mockPublicationObserverListener;
+  private PublicationBuiltinTopicData mockPublicationBuiltinTopicData;
+  private SampleInfo mockSampleInfo;
 
   @Before
   public void setUp() throws Exception {
     DomainParticipant domainParticipant = mock(DomainParticipant.class);
     Subscriber subscriber = mock(Subscriber.class);
-    dataReader = mock(DataReader.class);
+    mockDataReader = mock(DataReader.class);
 
     Whitebox.setInternalState(
         PublicationBuiltinTopicDataTypeSupport.class,
@@ -113,36 +110,36 @@ public class PublicationObserverTest {
         "PublicationBuiltinTopicName"
     );
 
-    publicationBuiltinTopicData = mock(PublicationBuiltinTopicData.class);
-    publicationBuiltinTopicData.topic_name = "Square";
-    publicationBuiltinTopicData.type_name = "ShapeType";
+    mockPublicationBuiltinTopicData = mock(PublicationBuiltinTopicData.class);
+    mockPublicationBuiltinTopicData.topic_name = "Square";
+    mockPublicationBuiltinTopicData.type_name = "ShapeType";
     PowerMockito.whenNew(PublicationBuiltinTopicData.class).withAnyArguments().thenReturn(
-        publicationBuiltinTopicData);
+        mockPublicationBuiltinTopicData);
 
-    publicationBuiltinTopicDataSeq = mock(PublicationBuiltinTopicDataSeq.class);
+    PublicationBuiltinTopicDataSeq publicationBuiltinTopicDataSeq = mock(PublicationBuiltinTopicDataSeq.class);
     PowerMockito.whenNew(PublicationBuiltinTopicDataSeq.class).withAnyArguments().thenReturn(
         publicationBuiltinTopicDataSeq);
 
-    sampleInfo = mock(SampleInfo.class);
-    Whitebox.setInternalState(sampleInfo, "instance_handle", InstanceHandle_t.HANDLE_NIL);
-    PowerMockito.whenNew(SampleInfo.class).withAnyArguments().thenReturn(sampleInfo);
+    mockSampleInfo = mock(SampleInfo.class);
+    Whitebox.setInternalState(mockSampleInfo, "instance_handle", InstanceHandle_t.HANDLE_NIL);
+    PowerMockito.whenNew(SampleInfo.class).withAnyArguments().thenReturn(mockSampleInfo);
 
-    sampleInfoSeq = mock(SampleInfoSeq.class);
-    PowerMockito.whenNew(SampleInfoSeq.class).withAnyArguments().thenReturn(sampleInfoSeq);
+    SampleInfoSeq mockSampleInfoSeq = mock(SampleInfoSeq.class);
+    PowerMockito.whenNew(SampleInfoSeq.class).withAnyArguments().thenReturn(mockSampleInfoSeq);
 
     when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
     when(subscriber.lookup_datareader(anyString()))
-        .thenReturn(dataReader);
+        .thenReturn(mockDataReader);
 
     publicationObserver = new PublicationObserver(domainParticipant);
 
-    publicationObserverListener = mock(PublicationObserverListener.class);
-    publicationObserver.addListener(publicationObserverListener, false);
+    mockPublicationObserverListener = mock(PublicationObserverListener.class);
+    publicationObserver.addListener(mockPublicationObserverListener, false);
   }
 
   @After
   public void tearDown() {
-    publicationObserver.removeListener(publicationObserverListener);
+    publicationObserver.removeListener(mockPublicationObserverListener);
     publicationObserver.close();
   }
 
@@ -209,26 +206,26 @@ public class PublicationObserverTest {
           return null;
         }
     ).doThrow(new RETCODE_NO_DATA()
-    ).when(dataReader).read_next_sample_untyped(
-        eq(publicationBuiltinTopicData),
-        eq(sampleInfo)
+    ).when(mockDataReader).read_next_sample_untyped(
+        eq(mockPublicationBuiltinTopicData),
+        eq(mockSampleInfo)
     );
 
     // execute tested method
     publicationObserver.run();
 
     // verify results
-    verify(publicationObserverListener, times(1)).publicationDiscovered(
+    verify(mockPublicationObserverListener, times(1)).publicationDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
 
-    verify(publicationObserverListener, times(1)).publicationModified(
+    verify(mockPublicationObserverListener, times(1)).publicationModified(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
 
-    verify(publicationObserverListener, times(1)).publicationLost(
+    verify(mockPublicationObserverListener, times(1)).publicationLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
@@ -238,21 +235,21 @@ public class PublicationObserverTest {
   public void testRunError() {
     // prepare answers
     doThrow(new RETCODE_ERROR()
-    ).when(dataReader).read_next_sample_untyped(
-        eq(publicationBuiltinTopicData),
-        eq(sampleInfo)
+    ).when(mockDataReader).read_next_sample_untyped(
+        eq(mockPublicationBuiltinTopicData),
+        eq(mockSampleInfo)
     );
 
     // execute tested method
     publicationObserver.run();
 
     // verify results
-    verify(publicationObserverListener, times(0)).publicationDiscovered(
+    verify(mockPublicationObserverListener, times(0)).publicationDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
 
-    verify(publicationObserverListener, times(0)).publicationLost(
+    verify(mockPublicationObserverListener, times(0)).publicationLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
@@ -272,9 +269,9 @@ public class PublicationObserverTest {
           return null;
         }
     ).doThrow(new RETCODE_NO_DATA()
-    ).when(dataReader).read_next_sample_untyped(
-        eq(publicationBuiltinTopicData),
-        eq(sampleInfo)
+    ).when(mockDataReader).read_next_sample_untyped(
+        eq(mockPublicationBuiltinTopicData),
+        eq(mockSampleInfo)
     );
 
     // execute run method so sample is stored in cache
@@ -284,11 +281,11 @@ public class PublicationObserverTest {
     publicationObserver.addListener(listener);
 
     // verify results
-    verify(publicationObserverListener, times(1)).publicationDiscovered(
+    verify(mockPublicationObserverListener, times(1)).publicationDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));
-    verify(publicationObserverListener, times(0)).publicationLost(
+    verify(mockPublicationObserverListener, times(0)).publicationLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(PublicationBuiltinTopicData.class));

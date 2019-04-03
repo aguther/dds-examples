@@ -34,19 +34,9 @@ import com.rti.routingservice.adapter.StreamReader;
 import com.rti.routingservice.adapter.StreamWriter;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.util.Properties;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class EmptyTest {
-
-  @Before
-  public void setUp() throws Exception {
-  }
-
-  @After
-  public void tearDown() throws Exception {
-  }
 
   @Test
   public void testAdapter() throws AdapterException {

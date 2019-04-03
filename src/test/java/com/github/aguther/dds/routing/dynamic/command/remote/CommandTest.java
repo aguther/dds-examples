@@ -8,17 +8,35 @@ import static org.junit.Assert.assertTrue;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
+import idl.RTI.Service.Admin.CommandRequest;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CommandTest {
 
-/*
+  private static final String TOPIC = "Square";
+  private static final String TYPE = "ShapeType";
+
+  private Session sessionEmpty;
+  private Session sessionSquareA;
+  private Session sessionSquareB;
+  private TopicRoute topicRouteOutSquareShapeType;
+  private TopicRoute topicRouteInSquareShapeType;
+
+  @Before
+  public void setUp() {
+    sessionEmpty = new Session("", "");
+    sessionSquareA = new Session(TOPIC, "A");
+    sessionSquareB = new Session(TOPIC, "B");
+    topicRouteOutSquareShapeType = new TopicRoute(Direction.OUT, TOPIC, TYPE);
+    topicRouteInSquareShapeType = new TopicRoute(Direction.IN, TOPIC, TYPE);
+  }
 
   @Test
   public void testGetter() {
     CommandType commandType = CommandType.COMMAND_TYPE_DELETE;
-    Session session = new Session("Square", "A");
-    TopicRoute topicRoute = new TopicRoute(Direction.OUT, "Square", "ShapeType");
+    Session session = sessionSquareA;
+    TopicRoute topicRoute = topicRouteOutSquareShapeType;
     CommandRequest commandRequest = new CommandRequest();
     String loggingFormat = "A";
 
@@ -39,273 +57,273 @@ public class CommandTest {
 
   @Test
   public void testEqualsSameObject() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertEquals(A, A);
+    assertEquals(commandA, commandA);
   }
 
   @Test
   public void testEqualsSameContent() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertEquals(A, B);
+    assertEquals(commandA, commandB);
   }
 
   @Test
   public void testEqualsOtherObjectType() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertNotEquals(A, new Session("", ""));
+    assertNotEquals(commandA, sessionEmpty);
   }
 
   @Test
   public void testEqualsCommandType() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_DELETE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertNotEquals(A, B);
+    assertNotEquals(commandA, commandB);
   }
 
   @Test
   public void testEqualsSession() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "B"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareB,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertNotEquals(A, B);
+    assertNotEquals(commandA, commandB);
   }
 
   @Test
   public void testEqualsTopicRoute() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.IN, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteInSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertNotEquals(A, B);
+    assertNotEquals(commandA, commandB);
   }
 
   @Test
   public void testEqualsCommandRequest() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         null,
         "A"
     );
-    assertEquals(A, B);
+    assertEquals(commandA, commandB);
   }
 
   @Test
   public void testEqualsLoggingFormat() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "B"
     );
-    assertEquals(A, B);
+    assertEquals(commandA, commandB);
   }
 
   @Test
   public void testHashCodeSameObject() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertEquals(A.hashCode(), A.hashCode());
+    assertEquals(commandA.hashCode(), commandA.hashCode());
   }
 
   @Test
   public void testHashCodeSameContent() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertEquals(A.hashCode(), B.hashCode());
+    assertEquals(commandA.hashCode(), commandB.hashCode());
   }
 
   @Test
   public void testHashCodeCommandType() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_DELETE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertNotEquals(A.hashCode(), B.hashCode());
+    assertNotEquals(commandA.hashCode(), commandB.hashCode());
   }
 
   @Test
   public void testHashCodeSession() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "B"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareB,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertNotEquals(A.hashCode(), B.hashCode());
+    assertNotEquals(commandA.hashCode(), commandB.hashCode());
   }
 
   @Test
   public void testHashCodeTopicRoute() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.IN, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteInSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    assertNotEquals(A.hashCode(), B.hashCode());
+    assertNotEquals(commandA.hashCode(), commandB.hashCode());
   }
 
   @Test
   public void testHashCodeCommandRequest() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         null,
         "A"
     );
-    assertEquals(A.hashCode(), B.hashCode());
+    assertEquals(commandA.hashCode(), commandB.hashCode());
   }
 
   @Test
   public void testHashCodeLoggingFormat() {
-    Command A = new Command(
+    Command commandA = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "A"
     );
-    Command B = new Command(
+    Command commandB = new Command(
         CommandType.COMMAND_TYPE_CREATE,
-        new Session("Square", "A"),
-        new TopicRoute(Direction.OUT, "Square", "ShapeType"),
+        sessionSquareA,
+        topicRouteOutSquareShapeType,
         new CommandRequest(),
         "B"
     );
-    assertEquals(A.hashCode(), B.hashCode());
+    assertEquals(commandA.hashCode(), commandB.hashCode());
   }
 
   @Test
   public void testToString() {
     CommandType commandType = CommandType.COMMAND_TYPE_DELETE;
-    Session session = new Session("Square", "A");
-    TopicRoute topicRoute = new TopicRoute(Direction.OUT, "Square", "ShapeType");
+    Session session = sessionSquareA;
+    TopicRoute topicRoute = topicRouteOutSquareShapeType;
     CommandRequest commandRequest = new CommandRequest();
     String loggingFormat = "LoggingFormat";
 
@@ -325,5 +343,4 @@ public class CommandTest {
     assertFalse(result.contains(commandRequest.toString()));
     assertFalse(result.contains(loggingFormat));
   }
-*/
 }

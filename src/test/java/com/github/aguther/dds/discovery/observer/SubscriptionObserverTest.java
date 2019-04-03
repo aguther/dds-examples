@@ -91,15 +91,12 @@ import org.powermock.reflect.Whitebox;
 })
 public class SubscriptionObserverTest {
 
-  private DataReader dataReader;
   private SubscriptionObserver subscriptionObserver;
-  private SubscriptionObserverListener subscriptionObserverListener;
 
-  private SubscriptionBuiltinTopicData subscriptionBuiltinTopicData;
-  private SubscriptionBuiltinTopicDataSeq subscriptionBuiltinTopicDataSeq;
-
-  private SampleInfo sampleInfo;
-  private SampleInfoSeq sampleInfoSeq;
+  private DataReader dataReader;
+  private SubscriptionObserverListener mockSubscriptionObserverListener;
+  private SubscriptionBuiltinTopicData mockSubscriptionBuiltinTopicData;
+  private SampleInfo mockSampleInfo;
 
   @Before
   public void setUp() throws Exception {
@@ -113,21 +110,21 @@ public class SubscriptionObserverTest {
         "SubscriptionBuiltinTopicName"
     );
 
-    subscriptionBuiltinTopicData = mock(SubscriptionBuiltinTopicData.class);
-    subscriptionBuiltinTopicData.topic_name = "Square";
-    subscriptionBuiltinTopicData.type_name = "ShapeType";
+    mockSubscriptionBuiltinTopicData = mock(SubscriptionBuiltinTopicData.class);
+    mockSubscriptionBuiltinTopicData.topic_name = "Square";
+    mockSubscriptionBuiltinTopicData.type_name = "ShapeType";
     PowerMockito.whenNew(SubscriptionBuiltinTopicData.class).withAnyArguments().thenReturn(
-        subscriptionBuiltinTopicData);
+        mockSubscriptionBuiltinTopicData);
 
-    subscriptionBuiltinTopicDataSeq = mock(SubscriptionBuiltinTopicDataSeq.class);
+    SubscriptionBuiltinTopicDataSeq subscriptionBuiltinTopicDataSeq = mock(SubscriptionBuiltinTopicDataSeq.class);
     PowerMockito.whenNew(SubscriptionBuiltinTopicDataSeq.class).withAnyArguments().thenReturn(
         subscriptionBuiltinTopicDataSeq);
 
-    sampleInfo = mock(SampleInfo.class);
-    Whitebox.setInternalState(sampleInfo, "instance_handle", InstanceHandle_t.HANDLE_NIL);
-    PowerMockito.whenNew(SampleInfo.class).withAnyArguments().thenReturn(sampleInfo);
+    mockSampleInfo = mock(SampleInfo.class);
+    Whitebox.setInternalState(mockSampleInfo, "instance_handle", InstanceHandle_t.HANDLE_NIL);
+    PowerMockito.whenNew(SampleInfo.class).withAnyArguments().thenReturn(mockSampleInfo);
 
-    sampleInfoSeq = mock(SampleInfoSeq.class);
+    SampleInfoSeq sampleInfoSeq = mock(SampleInfoSeq.class);
     PowerMockito.whenNew(SampleInfoSeq.class).withAnyArguments().thenReturn(sampleInfoSeq);
 
     when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
@@ -136,13 +133,13 @@ public class SubscriptionObserverTest {
 
     subscriptionObserver = new SubscriptionObserver(domainParticipant);
 
-    subscriptionObserverListener = mock(SubscriptionObserverListener.class);
-    subscriptionObserver.addListener(subscriptionObserverListener, false);
+    mockSubscriptionObserverListener = mock(SubscriptionObserverListener.class);
+    subscriptionObserver.addListener(mockSubscriptionObserverListener, false);
   }
 
   @After
   public void tearDown() {
-    subscriptionObserver.removeListener(subscriptionObserverListener);
+    subscriptionObserver.removeListener(mockSubscriptionObserverListener);
     subscriptionObserver.close();
   }
 
@@ -210,25 +207,25 @@ public class SubscriptionObserverTest {
         }
     ).doThrow(new RETCODE_NO_DATA()
     ).when(dataReader).read_next_sample_untyped(
-        eq(subscriptionBuiltinTopicData),
-        eq(sampleInfo)
+        eq(mockSubscriptionBuiltinTopicData),
+        eq(mockSampleInfo)
     );
 
     // execute tested method
     subscriptionObserver.run();
 
     // verify results
-    verify(subscriptionObserverListener, times(1)).subscriptionDiscovered(
+    verify(mockSubscriptionObserverListener, times(1)).subscriptionDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
 
-    verify(subscriptionObserverListener, times(1)).subscriptionModified(
+    verify(mockSubscriptionObserverListener, times(1)).subscriptionModified(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
 
-    verify(subscriptionObserverListener, times(1)).subscriptionLost(
+    verify(mockSubscriptionObserverListener, times(1)).subscriptionLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
@@ -239,20 +236,20 @@ public class SubscriptionObserverTest {
     // prepare answers
     doThrow(new RETCODE_ERROR()
     ).when(dataReader).read_next_sample_untyped(
-        eq(subscriptionBuiltinTopicData),
-        eq(sampleInfo)
+        eq(mockSubscriptionBuiltinTopicData),
+        eq(mockSampleInfo)
     );
 
     // execute tested method
     subscriptionObserver.run();
 
     // verify results
-    verify(subscriptionObserverListener, times(0)).subscriptionDiscovered(
+    verify(mockSubscriptionObserverListener, times(0)).subscriptionDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
 
-    verify(subscriptionObserverListener, times(0)).subscriptionLost(
+    verify(mockSubscriptionObserverListener, times(0)).subscriptionLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
@@ -273,8 +270,8 @@ public class SubscriptionObserverTest {
         }
     ).doThrow(new RETCODE_NO_DATA()
     ).when(dataReader).read_next_sample_untyped(
-        eq(subscriptionBuiltinTopicData),
-        eq(sampleInfo)
+        eq(mockSubscriptionBuiltinTopicData),
+        eq(mockSampleInfo)
     );
 
     // execute run method so sample is stored in cache
@@ -284,11 +281,11 @@ public class SubscriptionObserverTest {
     subscriptionObserver.addListener(listener);
 
     // verify results
-    verify(subscriptionObserverListener, times(1)).subscriptionDiscovered(
+    verify(mockSubscriptionObserverListener, times(1)).subscriptionDiscovered(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));
-    verify(subscriptionObserverListener, times(0)).subscriptionLost(
+    verify(mockSubscriptionObserverListener, times(0)).subscriptionLost(
         any(DomainParticipant.class),
         any(InstanceHandle_t.class),
         any(SubscriptionBuiltinTopicData.class));

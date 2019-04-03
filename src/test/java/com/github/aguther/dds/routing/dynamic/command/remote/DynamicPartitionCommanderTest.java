@@ -38,8 +38,10 @@ import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
+import idl.RTI.Service.Admin.CommandActionKind;
 import idl.RTI.Service.Admin.CommandReply;
 import idl.RTI.Service.Admin.CommandReplyRetcode;
+import idl.RTI.Service.Admin.CommandRequest;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
@@ -48,23 +50,32 @@ import org.powermock.reflect.Whitebox;
 
 public class DynamicPartitionCommanderTest {
 
-  private CommandReply CommandReplyOk;
-  private CommandReply CommandReplyError;
+  private static final String COMMAND_COMMAND_BUILDER_FIELD = "commandBuilder";
+  private static final String LOGGING_FORMAT = "Logging";
+  private static final String SESSION_XML = "str://\"<session></session>\"";
+  private static final String SHAPE_TYPE = "ShapeType";
+  private static final String TARGET_ROUTING_SERVICE = "UnitTest";
+  private static final String TOPIC_ROUTE_XML = "str://\"<topic_route></topic_route>\"";
+
+  private CommandReply commandReplyOk;
+  private CommandReply commandReplyError;
 
   private RoutingServiceCommandInterface commandInterface;
   private DynamicPartitionCommandProvider commanderProvider;
-  private CommandBuilder commandBuilder;
 
   private DynamicPartitionCommander commander;
 
-/*
+  private Session sessionSquareA;
+
   @Before
   public void setUp() {
-    CommandReplyOk = new CommandReply();
-    CommandReplyOk.retcode = CommandReplyRetcode.OK_RETCODE;
+    sessionSquareA = new Session("Square", "A");
 
-    CommandReplyError = new CommandReply();
-    CommandReplyError.retcode = CommandReplyRetcode.ERROR_RETCODE;
+    commandReplyOk = new CommandReply();
+    commandReplyOk.retcode = CommandReplyRetcode.OK_RETCODE;
+
+    commandReplyError = new CommandReply();
+    commandReplyError.retcode = CommandReplyRetcode.ERROR_RETCODE;
 
     commandInterface = mock(RoutingServiceCommandInterface.class);
     commanderProvider = mock(DynamicPartitionCommandProvider.class);
@@ -72,7 +83,7 @@ public class DynamicPartitionCommanderTest {
     commander = new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         100,
         TimeUnit.MILLISECONDS,
         100,
@@ -90,7 +101,7 @@ public class DynamicPartitionCommanderTest {
     DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest"
+        TARGET_ROUTING_SERVICE
     );
     assertNotNull(dynamicPartitionCommander);
   }
@@ -100,7 +111,7 @@ public class DynamicPartitionCommanderTest {
     DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         100,
         TimeUnit.MILLISECONDS
     );
@@ -109,7 +120,7 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorTargetRouterNull() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
         null,
@@ -120,7 +131,7 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorTargetRouterEmpty() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
         "",
@@ -131,10 +142,10 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorRetryZero() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         0,
         TimeUnit.MILLISECONDS
     );
@@ -142,10 +153,10 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorRetryBelowZero() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         -1,
         TimeUnit.MILLISECONDS
     );
@@ -153,10 +164,10 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = NullPointerException.class)
   public void testConstructorRetryTimeUnitNull() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         100,
         null
     );
@@ -164,10 +175,10 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorTimeoutZero() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         100,
         TimeUnit.MILLISECONDS,
         0,
@@ -177,10 +188,10 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorTimeoutBelowZero() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         100,
         TimeUnit.MILLISECONDS,
         -1,
@@ -190,10 +201,10 @@ public class DynamicPartitionCommanderTest {
 
   @Test(expected = NullPointerException.class)
   public void testConstructorTimeoutTimeUnitNull() {
-    DynamicPartitionCommander dynamicPartitionCommander = new DynamicPartitionCommander(
+    new DynamicPartitionCommander(
         commandInterface,
         commanderProvider,
-        "UnitTest",
+        TARGET_ROUTING_SERVICE,
         100,
         TimeUnit.MILLISECONDS,
         100,
@@ -203,16 +214,16 @@ public class DynamicPartitionCommanderTest {
 
   @Test
   public void testCreateSession() {
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.OK_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
     when(commanderProvider.getSessionConfiguration(any(Session.class)))
-        .thenReturn("str://\"<session></session>\"");
+        .thenReturn(SESSION_XML);
 
     commander.createSession(session);
 
@@ -226,16 +237,16 @@ public class DynamicPartitionCommanderTest {
 
   @Test
   public void testCreateSessionTimeout() {
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.OK_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(null).thenReturn(null).thenReturn(CommandReply);
+        .thenReturn(null).thenReturn(null).thenReturn(commandReply);
     when(commanderProvider.getSessionConfiguration(any(Session.class)))
-        .thenReturn("str://\"<session></session>\"");
+        .thenReturn(SESSION_XML);
 
     commander.createSession(session);
 
@@ -249,16 +260,16 @@ public class DynamicPartitionCommanderTest {
 
   @Test
   public void testCreateSessionFailed() {
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_ERROR;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.ERROR_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
     when(commanderProvider.getSessionConfiguration(any(Session.class)))
-        .thenReturn("str://\"<session></session>\"");
+        .thenReturn(SESSION_XML);
 
     commander.createSession(session);
 
@@ -272,38 +283,42 @@ public class DynamicPartitionCommanderTest {
 
   @Test
   public void testDeleteSession() {
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.OK_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
 
     commander.deleteSession(session);
 
     verify(commanderProvider, timeout(5000).times(1))
-        .getSessionEntityName(session);
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionName(session);
     verify(commandInterface, timeout(5000).times(1))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
   }
 
   @Test
   public void testDeleteSessionFailed() {
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_ERROR;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.ERROR_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
 
     commander.deleteSession(session);
 
     verify(commanderProvider, timeout(5000).times(1))
-        .getSessionEntityName(session);
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionName(session);
     verify(commandInterface, timeout(5000).times(1))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
   }
@@ -311,10 +326,10 @@ public class DynamicPartitionCommanderTest {
   @Test
   @SuppressWarnings("squid:S2925")
   public void testCreateDeleteSessionWithAbort() {
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.OK_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
@@ -323,7 +338,7 @@ public class DynamicPartitionCommanderTest {
           return null;
         });
     when(commanderProvider.getSessionConfiguration(any(Session.class)))
-        .thenReturn("str://\"<session></session>\"");
+        .thenReturn(SESSION_XML);
 
     commander.createSession(session);
 
@@ -337,7 +352,7 @@ public class DynamicPartitionCommanderTest {
 
     commander.createSession(session);
 
-    verify(commanderProvider, timeout(5000).times(2))
+    verify(commanderProvider, timeout(5000).times(3))
         .getSessionParent(session);
     verify(commanderProvider, timeout(5000).times(2))
         .getSessionConfiguration(session);
@@ -347,22 +362,24 @@ public class DynamicPartitionCommanderTest {
 
   @Test
   public void testCreateTopicRoute() {
-    Session session = new Session("Square", "A");
-    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+    Session session = sessionSquareA;
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), SHAPE_TYPE);
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.OK_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
     when(commanderProvider.getTopicRouteConfiguration(any(Session.class), any(TopicRoute.class)))
-        .thenReturn("str://\"<topic_route></topic_route>\"");
+        .thenReturn(TOPIC_ROUTE_XML);
 
     commander.createTopicRoute(session, topicRoute);
 
     verify(commanderProvider, timeout(5000).times(1))
-        .getSessionEntityName(session);
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionName(session);
     verify(commanderProvider, timeout(5000).times(1))
         .getTopicRouteConfiguration(session, topicRoute);
     verify(commandInterface, timeout(5000).times(1))
@@ -371,22 +388,24 @@ public class DynamicPartitionCommanderTest {
 
   @Test
   public void testCreateTopicRouteFailed() {
-    Session session = new Session("Square", "A");
-    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+    Session session = sessionSquareA;
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), SHAPE_TYPE);
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_ERROR;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.ERROR_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
     when(commanderProvider.getTopicRouteConfiguration(any(Session.class), any(TopicRoute.class)))
-        .thenReturn("str://\"<topic_route></topic_route>\"");
+        .thenReturn(TOPIC_ROUTE_XML);
 
     commander.createTopicRoute(session, topicRoute);
 
     verify(commanderProvider, timeout(5000).times(1))
-        .getSessionEntityName(session);
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionName(session);
     verify(commanderProvider, timeout(5000).times(1))
         .getTopicRouteConfiguration(session, topicRoute);
     verify(commandInterface, timeout(5000).times(1))
@@ -395,40 +414,48 @@ public class DynamicPartitionCommanderTest {
 
   @Test
   public void testDeleteTopicRoute() {
-    Session session = new Session("Square", "A");
-    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+    Session session = sessionSquareA;
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), SHAPE_TYPE);
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.OK_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
 
     commander.deleteTopicRoute(session, topicRoute);
 
     verify(commanderProvider, timeout(5000).times(1))
-        .getTopicRouteEntityName(session, topicRoute);
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionName(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getTopicRouteName(session, topicRoute);
     verify(commandInterface, timeout(5000).times(1))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
   }
 
   @Test
   public void testDeleteTopicRouteFailed() {
-    Session session = new Session("Square", "A");
-    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+    Session session = sessionSquareA;
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), SHAPE_TYPE);
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_ERROR;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.ERROR_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
-        .thenReturn(CommandReply);
+        .thenReturn(commandReply);
 
     commander.deleteTopicRoute(session, topicRoute);
 
     verify(commanderProvider, timeout(5000).times(1))
-        .getTopicRouteEntityName(session, topicRoute);
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getSessionName(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getTopicRouteName(session, topicRoute);
     verify(commandInterface, timeout(5000).times(1))
         .sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class));
   }
@@ -436,11 +463,11 @@ public class DynamicPartitionCommanderTest {
   @Test
   @SuppressWarnings("squid:S2925")
   public void testCreateDeleteTopicRouteWithAbort() {
-    Session session = new Session("Square", "A");
-    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
+    Session session = sessionSquareA;
+    TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), SHAPE_TYPE);
 
-    CommandReply CommandReply = new CommandReply();
-    CommandReply.kind = CommandReplyRetcode.RTI_ROUTING_SERVICE_COMMAND_RESPONSE_OK;
+    CommandReply commandReply = new CommandReply();
+    commandReply.retcode = CommandReplyRetcode.OK_RETCODE;
 
     when(commandInterface.createCommandRequest()).thenReturn(new CommandRequest());
     when(commandInterface.sendRequest(any(CommandRequest.class), anyLong(), any(TimeUnit.class)))
@@ -449,7 +476,7 @@ public class DynamicPartitionCommanderTest {
           return null;
         });
     when(commanderProvider.getTopicRouteConfiguration(any(Session.class), any(TopicRoute.class)))
-        .thenReturn("str://\"<topic_route></topic_route>\"");
+        .thenReturn(TOPIC_ROUTE_XML);
 
     commander.createTopicRoute(session, topicRoute);
 
@@ -463,8 +490,12 @@ public class DynamicPartitionCommanderTest {
 
     commander.createTopicRoute(session, topicRoute);
 
-    verify(commanderProvider, timeout(5000).times(2))
-        .getSessionEntityName(session);
+    verify(commanderProvider, timeout(5000).times(3))
+        .getSessionParent(session);
+    verify(commanderProvider, timeout(5000).times(3))
+        .getSessionName(session);
+    verify(commanderProvider, timeout(5000).times(1))
+        .getTopicRouteName(session, topicRoute);
     verify(commanderProvider, timeout(5000).times(2))
         .getTopicRouteConfiguration(session, topicRoute);
     verify(commandInterface, timeout(5000).times(1))
@@ -477,30 +508,28 @@ public class DynamicPartitionCommanderTest {
   public void testCaseFlowRunSuccess() {
 
     // replace command builder with mock
-    CommandBuilder commandBuilder = mock(CommandBuilder.class);
-    Whitebox.setInternalState(commander, "commandBuilder", commandBuilder);
+    CommandBuilder commandBuilderMock = mock(CommandBuilder.class);
+    Whitebox.setInternalState(commander, COMMAND_COMMAND_BUILDER_FIELD, commandBuilderMock);
 
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
     CommandRequest commandRequestCreate = new CommandRequest();
-    commandRequestCreate.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
+    commandRequestCreate.action = CommandActionKind.CREATE_ACTION;
     Command commandCreate = new Command(
         CommandType.COMMAND_TYPE_CREATE,
         session,
         null,
         commandRequestCreate,
-        "Logging"
+        LOGGING_FORMAT
     );
 
-    when(commandBuilder.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
+    when(commandBuilderMock.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
 
     when(commandInterface.sendRequest(
         eq(commandRequestCreate),
         anyLong(),
         any(TimeUnit.class))
-    ).thenAnswer(invocation -> {
-      return CommandReplyOk;
-    });
+    ).thenAnswer(invocation -> commandReplyOk);
 
     commander.createSession(session);
 
@@ -513,32 +542,28 @@ public class DynamicPartitionCommanderTest {
   // A -> run -> failed -> wait retry -> run -> success -> end
   public void testCaseFlowRunFailedWaitRetryRunSuccess() {
     // replace command builder with mock
-    CommandBuilder commandBuilder = mock(CommandBuilder.class);
-    Whitebox.setInternalState(commander, "commandBuilder", commandBuilder);
+    CommandBuilder commandBuilderMock = mock(CommandBuilder.class);
+    Whitebox.setInternalState(commander, COMMAND_COMMAND_BUILDER_FIELD, commandBuilderMock);
 
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
     CommandRequest commandRequestCreate = new CommandRequest();
-    commandRequestCreate.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
+    commandRequestCreate.action = CommandActionKind.CREATE_ACTION;
     Command commandCreate = new Command(
         CommandType.COMMAND_TYPE_CREATE,
         session,
         null,
         commandRequestCreate,
-        "Logging"
+        LOGGING_FORMAT
     );
 
-    when(commandBuilder.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
+    when(commandBuilderMock.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
 
     when(commandInterface.sendRequest(
         eq(commandRequestCreate),
         anyLong(),
         any(TimeUnit.class))
-    ).thenAnswer(invocation -> {
-      return CommandReplyError;
-    }).thenAnswer(invocation -> {
-      return CommandReplyOk;
-    });
+    ).thenAnswer(invocation -> commandReplyError).thenAnswer(invocation -> commandReplyOk);
 
     commander.createSession(session);
 
@@ -551,32 +576,28 @@ public class DynamicPartitionCommanderTest {
   // A -> run -> failed -> wait retry -> run -> success -> end
   public void testCaseFlowRunTimeoutWaitRetryRunSuccess() {
     // replace command builder with mock
-    CommandBuilder commandBuilder = mock(CommandBuilder.class);
-    Whitebox.setInternalState(commander, "commandBuilder", commandBuilder);
+    CommandBuilder commandBuilderMock = mock(CommandBuilder.class);
+    Whitebox.setInternalState(commander, COMMAND_COMMAND_BUILDER_FIELD, commandBuilderMock);
 
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
     CommandRequest commandRequestCreate = new CommandRequest();
-    commandRequestCreate.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
+    commandRequestCreate.action = CommandActionKind.CREATE_ACTION;
     Command commandCreate = new Command(
         CommandType.COMMAND_TYPE_CREATE,
         session,
         null,
         commandRequestCreate,
-        "Logging"
+        LOGGING_FORMAT
     );
 
-    when(commandBuilder.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
+    when(commandBuilderMock.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
 
     when(commandInterface.sendRequest(
         eq(commandRequestCreate),
         anyLong(),
         any(TimeUnit.class))
-    ).thenAnswer(invocation -> {
-      return null;
-    }).thenAnswer(invocation -> {
-      return CommandReplyOk;
-    });
+    ).thenAnswer(invocation -> null).thenAnswer(invocation -> commandReplyOk);
 
     commander.createSession(session);
 
@@ -589,33 +610,33 @@ public class DynamicPartitionCommanderTest {
   // Case 3: A -> run -> failed -> wait retry -> B -> abort (A) -> run (B) -> success -> end
   public void testCaseFlowRunFailedWaitRetryAbortRunSuccess() throws InterruptedException {
     // replace command builder with mock
-    CommandBuilder commandBuilder = mock(CommandBuilder.class);
-    Whitebox.setInternalState(commander, "commandBuilder", commandBuilder);
+    CommandBuilder commandBuilderMock = mock(CommandBuilder.class);
+    Whitebox.setInternalState(commander, COMMAND_COMMAND_BUILDER_FIELD, commandBuilderMock);
 
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
     CommandRequest commandRequestCreate = new CommandRequest();
-    commandRequestCreate.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
+    commandRequestCreate.action = CommandActionKind.CREATE_ACTION;
     Command commandCreate = new Command(
         CommandType.COMMAND_TYPE_CREATE,
         session,
         null,
         commandRequestCreate,
-        "Logging"
+        LOGGING_FORMAT
     );
 
     CommandRequest commandRequestDelete = new CommandRequest();
-    commandRequestDelete.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
+    commandRequestDelete.action = CommandActionKind.DELETE_ACTION;
     Command commandDelete = new Command(
         CommandType.COMMAND_TYPE_DELETE,
         session,
         null,
         commandRequestDelete,
-        "Logging"
+        LOGGING_FORMAT
     );
 
-    when(commandBuilder.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
-    when(commandBuilder.buildDeleteSessionCommand(eq(session))).thenReturn(commandDelete);
+    when(commandBuilderMock.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
+    when(commandBuilderMock.buildDeleteSessionCommand(eq(session))).thenReturn(commandDelete);
 
     when(commandInterface.sendRequest(
         eq(commandRequestCreate),
@@ -623,7 +644,7 @@ public class DynamicPartitionCommanderTest {
         any(TimeUnit.class))
     ).thenAnswer(invocation -> {
       Thread.sleep(0);
-      return CommandReplyError;
+      return commandReplyError;
     });
     when(commandInterface.sendRequest(
         eq(commandRequestDelete),
@@ -631,7 +652,7 @@ public class DynamicPartitionCommanderTest {
         any(TimeUnit.class))
     ).thenAnswer(invocation -> {
       Thread.sleep(0);
-      return CommandReplyOk;
+      return commandReplyOk;
     });
 
     commander.createSession(session);
@@ -649,33 +670,33 @@ public class DynamicPartitionCommanderTest {
   // A -> run -> B -> abort (A) -> success (A) -> run (B) -> success (B) -> end
   public void testCaseFlowRunAbortSuccessRunSuccess() throws InterruptedException {
     // replace command builder with mock
-    CommandBuilder commandBuilder = mock(CommandBuilder.class);
-    Whitebox.setInternalState(commander, "commandBuilder", commandBuilder);
+    CommandBuilder commandBuilderMock = mock(CommandBuilder.class);
+    Whitebox.setInternalState(commander, COMMAND_COMMAND_BUILDER_FIELD, commandBuilderMock);
 
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
     CommandRequest commandRequestCreate = new CommandRequest();
-    commandRequestCreate.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
+    commandRequestCreate.action = CommandActionKind.CREATE_ACTION;
     Command commandCreate = new Command(
         CommandType.COMMAND_TYPE_CREATE,
         session,
         null,
         commandRequestCreate,
-        "Logging"
+        LOGGING_FORMAT
     );
 
     CommandRequest commandRequestDelete = new CommandRequest();
-    commandRequestDelete.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
+    commandRequestDelete.action = CommandActionKind.DELETE_ACTION;
     Command commandDelete = new Command(
         CommandType.COMMAND_TYPE_DELETE,
         session,
         null,
         commandRequestDelete,
-        "Logging"
+        LOGGING_FORMAT
     );
 
-    when(commandBuilder.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
-    when(commandBuilder.buildDeleteSessionCommand(eq(session))).thenReturn(commandDelete);
+    when(commandBuilderMock.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
+    when(commandBuilderMock.buildDeleteSessionCommand(eq(session))).thenReturn(commandDelete);
 
     when(commandInterface.sendRequest(
         eq(commandRequestCreate),
@@ -683,7 +704,7 @@ public class DynamicPartitionCommanderTest {
         any(TimeUnit.class))
     ).thenAnswer(invocation -> {
       Thread.sleep(75);
-      return CommandReplyOk;
+      return commandReplyOk;
     });
     when(commandInterface.sendRequest(
         eq(commandRequestDelete),
@@ -691,7 +712,7 @@ public class DynamicPartitionCommanderTest {
         any(TimeUnit.class))
     ).thenAnswer(invocation -> {
       Thread.sleep(0);
-      return CommandReplyOk;
+      return commandReplyOk;
     });
 
     commander.createSession(session);
@@ -709,33 +730,33 @@ public class DynamicPartitionCommanderTest {
   // A -> run -> B -> abort (A) -> failed (A) -> end
   public void testCaseFlowRunAbortFailed() throws InterruptedException {
     // replace command builder with mock
-    CommandBuilder commandBuilder = mock(CommandBuilder.class);
-    Whitebox.setInternalState(commander, "commandBuilder", commandBuilder);
+    CommandBuilder commandBuilderMock = mock(CommandBuilder.class);
+    Whitebox.setInternalState(commander, COMMAND_COMMAND_BUILDER_FIELD, commandBuilderMock);
 
-    Session session = new Session("Square", "A");
+    Session session = sessionSquareA;
 
     CommandRequest commandRequestCreate = new CommandRequest();
-    commandRequestCreate.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_CREATE;
+    commandRequestCreate.action = CommandActionKind.CREATE_ACTION;
     Command commandCreate = new Command(
         CommandType.COMMAND_TYPE_CREATE,
         session,
         null,
         commandRequestCreate,
-        "Logging"
+        LOGGING_FORMAT
     );
 
     CommandRequest commandRequestDelete = new CommandRequest();
-    commandRequestDelete.command._d = CommandKind.RTI_ROUTING_SERVICE_COMMAND_DELETE;
+    commandRequestDelete.action = CommandActionKind.DELETE_ACTION;
     Command commandDelete = new Command(
         CommandType.COMMAND_TYPE_DELETE,
         session,
         null,
         commandRequestDelete,
-        "Logging"
+        LOGGING_FORMAT
     );
 
-    when(commandBuilder.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
-    when(commandBuilder.buildDeleteSessionCommand(eq(session))).thenReturn(commandDelete);
+    when(commandBuilderMock.buildCreateSessionCommand(eq(session))).thenReturn(commandCreate);
+    when(commandBuilderMock.buildDeleteSessionCommand(eq(session))).thenReturn(commandDelete);
 
     when(commandInterface.sendRequest(
         eq(commandRequestCreate),
@@ -743,7 +764,7 @@ public class DynamicPartitionCommanderTest {
         any(TimeUnit.class))
     ).thenAnswer(invocation -> {
       Thread.sleep(75);
-      return CommandReplyError;
+      return commandReplyError;
     });
     when(commandInterface.sendRequest(
         eq(commandRequestDelete),
@@ -751,7 +772,7 @@ public class DynamicPartitionCommanderTest {
         any(TimeUnit.class))
     ).thenAnswer(invocation -> {
       Thread.sleep(0);
-      return CommandReplyOk;
+      return commandReplyOk;
     });
 
     commander.createSession(session);
@@ -763,5 +784,4 @@ public class DynamicPartitionCommanderTest {
     verify(commandInterface, timeout(5000).times(0))
         .sendRequest(eq(commandRequestDelete), anyLong(), any(TimeUnit.class));
   }
-*/
 }

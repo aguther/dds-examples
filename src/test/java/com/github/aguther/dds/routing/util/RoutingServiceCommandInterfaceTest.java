@@ -56,7 +56,6 @@ import idl.RTI.Service.Admin.CommandRequest;
 import idl.RTI.Service.Admin.CommandRequestTypeSupport;
 import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,53 +88,37 @@ import org.powermock.reflect.Whitebox;
     "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
     "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
     "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport",
-    "idl.RTI.RoutingService.Administration.CommandRequestTypeSupport",
-    "idl.RTI.RoutingService.Administration.CommandResponseTypeSupport"
+    "idl.RTI.Service.Admin.CommandRequestTypeSupport",
+    "idl.RTI.Service.Admin.CommandReplyTypeSupport"
 })
 public class RoutingServiceCommandInterfaceTest {
 
-  private DomainParticipant domainParticipant;
-  private DomainParticipantQos domainParticipantQos;
-
-  private CommandRequestTypeSupport commandRequestTypeSupport;
-  private CommandReplyTypeSupport commandResponseTypeSupport;
-
   private Requester<CommandRequest, CommandReply> requester;
-
   private RoutingServiceCommandInterface commandInterface;
 
   @Before
   @SuppressWarnings("unchecked")
   public void setUp() throws Exception {
-    domainParticipant = mock(DomainParticipant.class);
+    DomainParticipant domainParticipant = mock(DomainParticipant.class);
 
-    domainParticipantQos = mock(DomainParticipantQos.class);
-    {
-      WireProtocolQosPolicy wireProtocolQosPolicy = PowerMockito.mock(WireProtocolQosPolicy.class);
-      Whitebox.setInternalState(domainParticipantQos, "wire_protocol", wireProtocolQosPolicy);
-    }
+    DomainParticipantQos domainParticipantQos = mock(DomainParticipantQos.class);
+    WireProtocolQosPolicy wireProtocolQosPolicy = PowerMockito.mock(WireProtocolQosPolicy.class);
+    Whitebox.setInternalState(domainParticipantQos, "wire_protocol", wireProtocolQosPolicy);
     PowerMockito.whenNew(DomainParticipantQos.class).withAnyArguments().thenReturn(domainParticipantQos);
 
-    commandRequestTypeSupport = mock(CommandRequestTypeSupport.class);
+    CommandRequestTypeSupport commandRequestTypeSupport = mock(CommandRequestTypeSupport.class);
     Whitebox.setInternalState(CommandRequestTypeSupport.class, "_singleton", commandRequestTypeSupport);
 
-    commandResponseTypeSupport = mock(CommandReplyTypeSupport.class);
+    CommandReplyTypeSupport commandResponseTypeSupport = mock(CommandReplyTypeSupport.class);
     Whitebox.setInternalState(CommandReplyTypeSupport.class, "_singleton", commandResponseTypeSupport);
 
     requester = mock(Requester.class);
-    {
-      Sample responseSample = mock(Sample.class);
-      when(responseSample.getData()).thenReturn(new CommandReply());
-      when(requester.createReplySample()).thenReturn(responseSample);
-    }
+    Sample responseSample = mock(Sample.class);
+    when(responseSample.getData()).thenReturn(new CommandReply());
+    when(requester.createReplySample()).thenReturn(responseSample);
     PowerMockito.whenNew(Requester.class).withAnyArguments().thenReturn(requester);
 
     commandInterface = new RoutingServiceCommandInterface(domainParticipant);
-  }
-
-  @After
-  public void tearDown() {
-
   }
 
   @Test
@@ -152,15 +135,13 @@ public class RoutingServiceCommandInterfaceTest {
 
     // setup mock for participant data
     ParticipantBuiltinTopicData participantBuiltinTopicData = mock(ParticipantBuiltinTopicData.class);
-    {
-      ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
-      serviceQosPolicy.kind = ServiceQosPolicyKind.ROUTING_SERVICE_QOS;
-      Whitebox.setInternalState(participantBuiltinTopicData, "service", serviceQosPolicy);
+    ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
+    serviceQosPolicy.kind = ServiceQosPolicyKind.ROUTING_SERVICE_QOS;
+    Whitebox.setInternalState(participantBuiltinTopicData, "service", serviceQosPolicy);
 
-      EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
-      entityNameQosPolicy.name = String.format("RTI Routing Service: %s", targetRouter);
-      Whitebox.setInternalState(participantBuiltinTopicData, "participant_name", entityNameQosPolicy);
-    }
+    EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
+    entityNameQosPolicy.name = String.format("RTI Routing Service: %s", targetRouter);
+    Whitebox.setInternalState(participantBuiltinTopicData, "participant_name", entityNameQosPolicy);
     PowerMockito.whenNew(ParticipantBuiltinTopicData.class).withAnyArguments().thenReturn(participantBuiltinTopicData);
 
     // prepare answer to get subscription data
@@ -190,15 +171,13 @@ public class RoutingServiceCommandInterfaceTest {
 
     // setup mock for participant data
     ParticipantBuiltinTopicData participantBuiltinTopicData = mock(ParticipantBuiltinTopicData.class);
-    {
-      ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
-      serviceQosPolicy.kind = ServiceQosPolicyKind.NO_SERVICE_QOS;
-      Whitebox.setInternalState(participantBuiltinTopicData, "service", serviceQosPolicy);
+    ServiceQosPolicy serviceQosPolicy = PowerMockito.mock(ServiceQosPolicy.class);
+    serviceQosPolicy.kind = ServiceQosPolicyKind.NO_SERVICE_QOS;
+    Whitebox.setInternalState(participantBuiltinTopicData, "service", serviceQosPolicy);
 
-      EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
-      entityNameQosPolicy.name = "Some other participant";
-      Whitebox.setInternalState(participantBuiltinTopicData, "participant_name", entityNameQosPolicy);
-    }
+    EntityNameQosPolicy entityNameQosPolicy = PowerMockito.mock(EntityNameQosPolicy.class);
+    entityNameQosPolicy.name = "Some other participant";
+    Whitebox.setInternalState(participantBuiltinTopicData, "participant_name", entityNameQosPolicy);
     PowerMockito.whenNew(ParticipantBuiltinTopicData.class).withAnyArguments().thenReturn(participantBuiltinTopicData);
 
     // prepare answer to get subscription data
@@ -218,9 +197,6 @@ public class RoutingServiceCommandInterfaceTest {
   public void testWaitForRoutingServiceThreadInterrupted() throws Exception {
     // set target router name
     String targetRouter = "Test";
-
-    // instance handle for identification
-    InstanceHandle_t instanceHandle = new InstanceHandle_t(ByteBuffer.allocate(4).putInt(1).array());
 
     // setup mock for data writer
     DataWriter dataWriter = mock(DataWriter.class);
