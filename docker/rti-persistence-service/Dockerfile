@@ -4,10 +4,10 @@ FROM guther/centos-java:latest
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>" \
       application="rti-persistence-service" \
-      version="5.3.1"
+      version="6.0.0"
 
 # add RTI Connext DDS runtime
-ADD rti-connext-dds-53-persistence-service-*.rpm /tmp
+ADD rti-connext-dds-60-persistence-service-*.rpm /tmp
 
 # install java
 RUN yum -y install /tmp/*.rpm \

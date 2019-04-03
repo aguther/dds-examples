@@ -4,11 +4,11 @@ FROM guther/centos-java:latest
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>" \
       application="rti-cloud-discovery-service" \
-      version="5.3.1"
+      version="6.0.0"
 
 # add RTI Connext DDS runtime
-ADD rti-connext-dds-53-runtime-pro-*.rpm /tmp
-ADD rti-connext-dds-53-cloud-discovery-service-*.rpm /tmp
+ADD rti-connext-dds-60-runtime-pro-*.rpm /tmp
+ADD rti-connext-dds-60-cloud-discovery-service-*.rpm /tmp
 
 # install java
 RUN yum -y install /tmp/*.rpm \

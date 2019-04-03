@@ -6,7 +6,7 @@ LABEL maintainer="Andreas Guther <andreas@guther.net>" \
       application="dds-examples"
 
 # add RTI Connext DDS runtime
-ADD rti-connext-dds-53-runtime-pro-*.rpm /tmp
+ADD rti-connext-dds-60-runtime-pro-*.rpm /tmp
 
 # install java
 RUN yum -y install /tmp/*.rpm \
