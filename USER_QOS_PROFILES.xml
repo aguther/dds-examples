@@ -193,7 +193,8 @@
     <domain_participant name="MutablePublisher" domain_ref="DomainLibrary::Mutable_v1">
       <publisher name="Publisher">
         <data_writer name="MutableTypeDataWriter" topic_ref="Mutable">
-          <datawriter_qos base_name="QosLibrary::Base"/>
+          <datawriter_qos base_name="QosLibrary::Base">
+          </datawriter_qos>
         </data_writer>
       </publisher>
       <participant_qos base_name="QosLibrary::Base">
@@ -205,7 +206,8 @@
     <domain_participant name="MutableSubscriber" domain_ref="DomainLibrary::Mutable_v2">
       <subscriber name="Subscriber">
         <data_reader name="MutableTypeDataReader" topic_ref="Mutable">
-          <datareader_qos base_name="QosLibrary::Base"/>
+          <datareader_qos base_name="QosLibrary::Base">
+          </datareader_qos>
         </data_reader>
       </subscriber>
       <participant_qos base_name="QosLibrary::Base">
