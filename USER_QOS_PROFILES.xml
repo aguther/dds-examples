@@ -131,11 +131,6 @@
   <domain_participant_library name="DomainParticipantLibrary">
     <!-- Shape -->
     <domain_participant name="ShapePublisher" domain_ref="DomainLibrary::Shape">
-      <participant_qos base_name="QosLibrary::Base">
-        <participant_name>
-          <name>ShapePublisher</name>
-        </participant_name>
-      </participant_qos>
       <publisher name="Publisher">
         <data_writer name="SquareDataWriter" topic_ref="Square">
           <datawriter_qos base_name="QosLibrary::Base">
@@ -150,13 +145,13 @@
           </datawriter_qos>
         </data_writer>
       </publisher>
-    </domain_participant>
-    <domain_participant name="ShapeSubscriber" domain_ref="DomainLibrary::Shape">
       <participant_qos base_name="QosLibrary::Base">
         <participant_name>
-          <name>ShapeSubscriber</name>
+          <name>ShapePublisher</name>
         </participant_name>
       </participant_qos>
+    </domain_participant>
+    <domain_participant name="ShapeSubscriber" domain_ref="DomainLibrary::Shape">
       <subscriber name="Subscriber">
         <data_reader name="SquareDataReader" topic_ref="Square">
           <datareader_qos base_name="QosLibrary::Base">
@@ -171,6 +166,11 @@
           </datareader_qos>
         </data_reader>
       </subscriber>
+      <participant_qos base_name="QosLibrary::Base">
+        <participant_name>
+          <name>ShapeSubscriber</name>
+        </participant_name>
+      </participant_qos>
     </domain_participant>
 
     <!-- RequestReply -->
@@ -191,28 +191,28 @@
 
     <!-- Mutable -->
     <domain_participant name="MutablePublisher" domain_ref="DomainLibrary::Mutable_v1">
-      <participant_qos base_name="QosLibrary::Base">
-        <participant_name>
-          <name>MutablePublisher</name>
-        </participant_name>
-      </participant_qos>
       <publisher name="Publisher">
         <data_writer name="MutableTypeDataWriter" topic_ref="Mutable">
           <datawriter_qos base_name="QosLibrary::Base"/>
         </data_writer>
       </publisher>
-    </domain_participant>
-    <domain_participant name="MutableSubscriber" domain_ref="DomainLibrary::Mutable_v2">
       <participant_qos base_name="QosLibrary::Base">
         <participant_name>
-          <name>MutableSubscriber</name>
+          <name>MutablePublisher</name>
         </participant_name>
       </participant_qos>
+    </domain_participant>
+    <domain_participant name="MutableSubscriber" domain_ref="DomainLibrary::Mutable_v2">
       <subscriber name="Subscriber">
         <data_reader name="MutableTypeDataReader" topic_ref="Mutable">
           <datareader_qos base_name="QosLibrary::Base"/>
         </data_reader>
       </subscriber>
+      <participant_qos base_name="QosLibrary::Base">
+        <participant_name>
+          <name>MutableSubscriber</name>
+        </participant_name>
+      </participant_qos>
     </domain_participant>
   </domain_participant_library>
 </dds>
