@@ -58,7 +58,10 @@ class CommandBuilder {
         targetRoutingService,
         provider.getSessionParent(session)
     );
-    commandRequest.string_body = provider.getSessionConfiguration(session);
+    commandRequest.string_body = String.format(
+      "str://\"%s\"",
+      provider.getSessionConfiguration(session)
+    );
 
     // create and return command
     return new Command(
@@ -114,7 +117,10 @@ class CommandBuilder {
         provider.getSessionParent(session),
         provider.getSessionName(session)
     );
-    commandRequest.string_body = provider.getTopicRouteConfiguration(session, topicRoute);
+    commandRequest.string_body = String.format(
+      "str://\"%s\"",
+      provider.getTopicRouteConfiguration(session, topicRoute)
+    );
 
     // create and return command
     return new Command(
