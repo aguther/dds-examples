@@ -11,6 +11,9 @@
             <priority>THREAD_PRIORITY_HIGH</priority>
           </thread>
         </event>
+        <resource_limits>
+          <type_object_max_serialized_length>65535</type_object_max_serialized_length>
+        </resource_limits>
         <property>
           <value>
             <element>
