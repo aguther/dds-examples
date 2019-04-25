@@ -38,9 +38,6 @@
             </element>
           </value>
         </property>
-        <wire_protocol>
-          <rtps_auto_id_kind>RTPS_AUTO_ID_FROM_UUID</rtps_auto_id_kind>
-        </wire_protocol>
       </participant_qos>
 
       <datawriter_qos>
