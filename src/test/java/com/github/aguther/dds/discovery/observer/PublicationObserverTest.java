@@ -48,8 +48,9 @@ import com.rti.dds.subscription.SampleInfo;
 import com.rti.dds.subscription.SampleInfoSeq;
 import com.rti.dds.subscription.Subscriber;
 import com.rti.dds.util.LoanableSequence;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -155,15 +156,15 @@ public class PublicationObserverTest {
     // remember current level
     Level originalLevel = LogManager.getRootLogger().getLevel();
     try {
-      // set logging to TRACE
-      LogManager.getRootLogger().setLevel(Level.DEBUG);
+      // set logging to DEBUG
+      Configurator.setRootLevel(Level.DEBUG);
 
       // execute run method
       testRun();
 
     } finally {
       // restore level
-      LogManager.getRootLogger().setLevel(originalLevel);
+      Configurator.setRootLevel(originalLevel);
     }
   }
 
@@ -173,14 +174,14 @@ public class PublicationObserverTest {
     Level originalLevel = LogManager.getRootLogger().getLevel();
     try {
       // set logging to TRACE
-      LogManager.getRootLogger().setLevel(Level.TRACE);
+      Configurator.setRootLevel(Level.TRACE);
 
       // execute run method
       testRun();
 
     } finally {
       // restore level
-      LogManager.getRootLogger().setLevel(originalLevel);
+      Configurator.setRootLevel(originalLevel);
     }
   }
 
