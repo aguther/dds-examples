@@ -216,5 +216,120 @@
         </participant_name>
       </participant_qos>
     </domain_participant>
+
+    <!-- Shape Support Example -->
+    <domain_participant name="ShapeSupportPublisher" domain_ref="DomainLibrary::Shape">
+      <publisher name="SquarePublisher">
+        <data_writer name="SquareDataWriter" topic_ref="Square">
+          <datawriter_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+            <lifespan>
+              <duration>
+                <sec>2</sec>
+                <nanosec>0</nanosec>
+              </duration>
+            </lifespan>
+            <protocol>
+              <serialize_key_with_dispose>true</serialize_key_with_dispose>
+            </protocol>
+          </datawriter_qos>
+        </data_writer>
+      </publisher>
+      <publisher name="CirclePublisher">
+        <data_writer name="CircleDataWriter" topic_ref="Circle">
+          <datawriter_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+            <lifespan>
+              <duration>
+                <sec>2</sec>
+                <nanosec>0</nanosec>
+              </duration>
+            </lifespan>
+            <protocol>
+              <serialize_key_with_dispose>true</serialize_key_with_dispose>
+            </protocol>
+          </datawriter_qos>
+        </data_writer>
+      </publisher>
+      <publisher name="TrianglePublisher">
+        <data_writer name="TriangleDataWriter" topic_ref="Triangle">
+          <datawriter_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+            <lifespan>
+              <duration>
+                <sec>2</sec>
+                <nanosec>0</nanosec>
+              </duration>
+            </lifespan>
+            <protocol>
+              <serialize_key_with_dispose>true</serialize_key_with_dispose>
+            </protocol>
+          </datawriter_qos>
+        </data_writer>
+      </publisher>
+      <participant_qos base_name="QosLibrary::Base">
+        <participant_name>
+          <name>ShapeSupportPublisher</name>
+        </participant_name>
+      </participant_qos>
+    </domain_participant>
+    <domain_participant name="ShapeSupportSubscriber" domain_ref="DomainLibrary::Shape">
+      <subscriber name="SquareSubscriber">
+        <data_reader name="SquareDataReader" topic_ref="Square">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+      </subscriber>
+      <subscriber name="CircleSubscriber">
+        <data_reader name="CircleDataReader" topic_ref="Circle">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+      </subscriber>
+      <subscriber name="TriangleSubscriber">
+        <data_reader name="TriangleDataReader" topic_ref="Triangle">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+      </subscriber>
+      <participant_qos base_name="QosLibrary::Base">
+        <participant_name>
+          <name>ShapeSupportSubscriber</name>
+        </participant_name>
+      </participant_qos>
+    </domain_participant>
   </domain_participant_library>
 </dds>
