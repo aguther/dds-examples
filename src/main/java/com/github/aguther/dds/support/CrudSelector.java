@@ -24,49 +24,9 @@
 
 package com.github.aguther.dds.support;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.SampleInfo;
 
-public class SampleInterpreterCrud<T> implements OnDataAvailableListener<T> {
+public interface CrudSelector {
 
-  private final CrudSelector crudSelector;
-  private CrudListener<T> listener;
-
-  public SampleInterpreterCrud(
-    CrudSelector crudSelector,
-    CrudListener<T> listener
-  ) {
-    checkNotNull(crudSelector);
-    this.crudSelector = crudSelector;
-    checkNotNull(listener);
-    this.listener = listener;
-  }
-
-  @Override
-  public void onDataAvailable(
-    DataReader dataReader,
-    T sample,
-    SampleInfo info
-  ) {
-    // interpret how to treat samples
-    switch (crudSelector.select(info)) {
-      case ADD:
-        listener.add(sample);
-        break;
-
-      case MODIFY:
-        listener.modify(sample);
-        break;
-
-      case DELETE:
-        dataReader.get_key_value_untyped(sample, info.instance_handle);
-        listener.delete(sample);
-        break;
-
-      default:
-        // no action
-    }
-  }
+  CrudFunction select(SampleInfo info);
 }

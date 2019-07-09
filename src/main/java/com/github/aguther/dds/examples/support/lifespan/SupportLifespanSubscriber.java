@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.github.aguther.dds.support.CrudListener;
+import com.github.aguther.dds.support.CrudSelectorNotAliveNoWriters;
 import com.github.aguther.dds.support.DataReaderWatcher;
 import com.github.aguther.dds.support.SampleInterpreterCrud;
 import com.github.aguther.dds.support.SampleTaker;
@@ -141,7 +142,7 @@ public class SupportLifespanSubscriber extends AbstractIdleService implements Cr
       dataReaderSquare,
       readConditionParams,
       new SampleTaker<>(new ShapeTypeExtendedSeq()),
-      new SampleInterpreterCrud<>(this)
+      new SampleInterpreterCrud<>(new CrudSelectorNotAliveNoWriters(), this)
     );
   }
 

@@ -24,49 +24,40 @@
 
 package com.github.aguther.dds.support;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.rti.dds.subscription.DataReader;
+import com.google.common.base.Preconditions;
+import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
+import com.rti.dds.subscription.SampleStateKind;
+import com.rti.dds.subscription.ViewStateKind;
 
-public class SampleInterpreterCrud<T> implements OnDataAvailableListener<T> {
-
-  private final CrudSelector crudSelector;
-  private CrudListener<T> listener;
-
-  public SampleInterpreterCrud(
-    CrudSelector crudSelector,
-    CrudListener<T> listener
-  ) {
-    checkNotNull(crudSelector);
-    this.crudSelector = crudSelector;
-    checkNotNull(listener);
-    this.listener = listener;
-  }
+public class CrudSelectorNotAliveNoWriters implements CrudSelector {
 
   @Override
-  public void onDataAvailable(
-    DataReader dataReader,
-    T sample,
-    SampleInfo info
-  ) {
-    // interpret how to treat samples
-    switch (crudSelector.select(info)) {
-      case ADD:
-        listener.add(sample);
-        break;
+  public CrudFunction select(SampleInfo info) {
+    // ensure sample info is not null
+    Preconditions.checkNotNull(info);
 
-      case MODIFY:
-        listener.modify(sample);
-        break;
+    // check if data is valid and instance is alive
+    if (info.valid_data
+      && info.instance_state == InstanceStateKind.ALIVE_INSTANCE_STATE
+      && info.sample_state == SampleStateKind.NOT_READ_SAMPLE_STATE) {
+      // check if instance is new
+      if (info.view_state == ViewStateKind.NEW_VIEW_STATE) {
+        return CrudFunction.ADD;
+      } else {
+        return CrudFunction.MODIFY;
+      }
+    } else {
+      // when instance is not alive
+      switch (info.instance_state) {
+        case InstanceStateKind.NOT_ALIVE_INSTANCE_STATE:
+        case InstanceStateKind.NOT_ALIVE_DISPOSED_INSTANCE_STATE:
+        case InstanceStateKind.NOT_ALIVE_NO_WRITERS_INSTANCE_STATE:
+          return CrudFunction.DELETE;
 
-      case DELETE:
-        dataReader.get_key_value_untyped(sample, info.instance_handle);
-        listener.delete(sample);
-        break;
-
-      default:
-        // no action
+        default:
+          return CrudFunction.NONE;
+      }
     }
   }
 }
