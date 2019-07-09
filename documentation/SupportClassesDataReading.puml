@@ -2,7 +2,7 @@
 
 participant DataReader
 participant DataReaderWatcher
-participant SampleTaker <<OnDataAvailableListener>>
+participant SampleTaker <<DataReaderWatcherExecutor>>
 participant SampleInterpreterCrud <<OnDataAvailableListener>>
 participant CrudSelector
 participant Application <<CrudListener>>
@@ -10,7 +10,7 @@ participant Application <<CrudListener>>
 DataReader -> DataReaderWatcher : on_data_available()
 activate DataReaderWatcher
 
-DataReaderWatcher -> SampleTaker : onDataAvailable()
+DataReaderWatcher -> SampleTaker : execute()
 activate SampleTaker
 
 SampleTaker -> SampleInterpreterCrud : onDataAvailable()
