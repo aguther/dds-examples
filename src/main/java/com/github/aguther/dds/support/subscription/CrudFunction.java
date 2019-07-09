@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.support;
+package com.github.aguther.dds.support.subscription;
 
 public enum CrudFunction {
   NONE,

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.support;
+package com.github.aguther.dds.support.subscription;
 
 import com.google.common.base.Preconditions;
 import com.rti.dds.subscription.InstanceStateKind;

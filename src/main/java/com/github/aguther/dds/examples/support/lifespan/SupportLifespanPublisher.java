@@ -27,7 +27,7 @@ package com.github.aguther.dds.examples.support.lifespan;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
-import com.github.aguther.dds.support.DataWriterAutomaticUnregisterDecorator;
+import com.github.aguther.dds.support.publication.DataWriterAutomaticUnregisterDecorator;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;

@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.support;
+package com.github.aguther.dds.support.subscription;
 
-public interface CrudListener<T> {
+import com.rti.dds.subscription.SampleInfo;
 
-  void add(T sample);
+public interface CrudSelector {
 
-  void modify(T sample);
-
-  void delete(T sample);
+  CrudFunction select(SampleInfo info);
 }

@@ -22,51 +22,61 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.support;
+package com.github.aguther.dds.support.subscription;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.rti.dds.infrastructure.ResourceLimitsQosPolicy;
 import com.rti.dds.subscription.DataReader;
-import com.rti.dds.subscription.SampleInfo;
+import com.rti.dds.subscription.ReadCondition;
+import com.rti.dds.subscription.SampleInfoSeq;
+import com.rti.dds.util.LoanableSequence;
+import java.util.List;
 
-public class SampleInterpreterCrud<T> implements OnDataAvailableListener<T> {
+public class SampleReader<T> implements DataReaderWatcherExecutor<T> {
 
-  private final CrudSelector crudSelector;
-  private CrudListener<T> listener;
+  private List<T> sampleSeq;
+  private SampleInfoSeq sampleInfoSeq;
 
-  public SampleInterpreterCrud(
-    CrudSelector crudSelector,
-    CrudListener<T> listener
+  @SuppressWarnings("unchecked")
+  public SampleReader(
+    LoanableSequence sampleSeq
   ) {
-    checkNotNull(crudSelector);
-    this.crudSelector = crudSelector;
-    checkNotNull(listener);
-    this.listener = listener;
+    checkNotNull(sampleSeq);
+
+    this.sampleSeq = sampleSeq;
+    this.sampleInfoSeq = new SampleInfoSeq();
   }
 
-  @Override
-  public void onDataAvailable(
+  public void execute(
     DataReader dataReader,
-    T sample,
-    SampleInfo info
+    ReadCondition readCondition,
+    OnDataAvailableListener<T> listener
   ) {
-    // interpret how to treat samples
-    switch (crudSelector.select(info)) {
-      case ADD:
-        listener.add(sample);
-        break;
+    try {
+      // take data
+      dataReader.read_w_condition_untyped(
+        sampleSeq,
+        sampleInfoSeq,
+        ResourceLimitsQosPolicy.LENGTH_UNLIMITED,
+        readCondition
+      );
 
-      case MODIFY:
-        listener.modify(sample);
-        break;
+      // iterate over data
+      for (int i = 0; i < sampleSeq.size(); i++) {
+        listener.onDataAvailable(
+          dataReader,
+          sampleSeq.get(i),
+          sampleInfoSeq.get(i)
+        );
+      }
 
-      case DELETE:
-        dataReader.get_key_value_untyped(sample, info.instance_handle);
-        listener.delete(sample);
-        break;
-
-      default:
-        // no action
+    } finally {
+      // return data
+      dataReader.return_loan_untyped(
+        sampleSeq,
+        sampleInfoSeq
+      );
     }
   }
 }

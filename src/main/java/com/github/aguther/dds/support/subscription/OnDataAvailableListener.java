@@ -22,11 +22,17 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.support;
+package com.github.aguther.dds.support.subscription;
 
+import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.SampleInfo;
 
-public interface CrudSelector {
+public interface OnDataAvailableListener<T> {
 
-  CrudFunction select(SampleInfo info);
+  void onDataAvailable(
+    DataReader dataReader,
+    T sample,
+    SampleInfo info
+  );
+
 }

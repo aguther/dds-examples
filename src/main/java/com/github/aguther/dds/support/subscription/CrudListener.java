@@ -22,17 +22,13 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.support;
+package com.github.aguther.dds.support.subscription;
 
-import com.rti.dds.subscription.DataReader;
-import com.rti.dds.subscription.ReadCondition;
+public interface CrudListener<T> {
 
-public interface DataReaderWatcherExecutor<T> {
+  void add(T sample);
 
-  void execute(
-      DataReader dataReader,
-      ReadCondition readCondition,
-      OnDataAvailableListener<T> listener
-  );
+  void modify(T sample);
 
+  void delete(T sample);
 }
