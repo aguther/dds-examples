@@ -1,0 +1,39 @@
+@startuml
+
+participant DataReader
+participant DataReaderWatcher
+participant SampleTaker <<OnDataAvailableListener>>
+participant SampleInterpreterCrud <<OnDataAvailableListener>>
+participant CrudSelector
+participant Application <<CrudListener>>
+
+DataReader -> DataReaderWatcher : on_data_available()
+activate DataReaderWatcher
+
+DataReaderWatcher -> SampleTaker : onDataAvailable()
+activate SampleTaker
+
+SampleTaker -> SampleInterpreterCrud : onDataAvailable()
+activate SampleInterpreterCrud
+
+SampleInterpreterCrud -> CrudSelector : determineCrudFunction()
+activate CrudSelector
+return
+deactivate CrudSelector
+
+alt add
+	SampleInterpreterCrud -> Application : add()
+    Application -> Application : processing
+else modify
+	SampleInterpreterCrud -> Application : modify()
+    Application -> Application : processing
+else delete
+	SampleInterpreterCrud -> Application : delete()
+    Application -> Application : processing
+end
+
+deactivate SampleInterpreterCrud
+deactivate SampleTaker
+deactivate DataReaderWatcher
+
+@enduml
