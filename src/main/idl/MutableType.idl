@@ -41,25 +41,36 @@ module v1 {
   @nested
   @mutable
   struct StructTwo {
-    @id(1) long number;
-    @id(2) string<128> text;
+    @id(1)
+    long number;
+    @id(2)
+    string<128> text;
   };
 
   @nested
   @mutable
   union UnionType switch (UnionTypeDiscriminant) {
     case ONE:
-      @id(1) StructOne one;
+      @id(1)
+      StructOne one;
     case TWO:
-      @id(2) StructTwo two;
+      @id(2)
+      StructTwo two;
   };
 
   @mutable
   struct MutableType {
-    @id(1) @key long key;
-    @id(2) UnionType unionType;
-    @id(3) StructTwo arrayType[2];
-    @id(4) sequence<StructTwo, 2> sequenceType;
+    @key
+    @id(1)
+    long key;
+    @id(2)
+    UnionType unionType;
+    @id(3)
+    StructTwo arrayType[2];
+    @id(4)
+    sequence<StructTwo, 2> sequenceType;
+    @id(10)
+    string<255> text;
   };
 
 };
@@ -78,40 +89,55 @@ module v2 {
   @nested
   @mutable
   struct StructOne {
-    @id(1) long number;
+    @id(1)
+    long number;
   };
 
   @nested
   @mutable
   struct StructTwo {
-    @id(1) long number;
-    @id(2) string<128> text;
+    @id(1)
+    long number;
+    @id(2)
+    string<128> text;
   };
 
   @nested
   @mutable
   struct StructThree {
-    @id(1) string<128> text;
+    @id(1)
+    string<128> text;
   };
 
   @nested
   @mutable
   union UnionType switch (UnionTypeDiscriminant) {
     case ONE:
-      @id(1) StructOne one;
+      @id(1)
+      StructOne one;
     case TWO:
-      @id(2) StructTwo two;
+      @id(2)
+      StructTwo two;
     case THREE:
-      @id(3) StructThree three;
+      @id(3)
+      StructThree three;
   };
 
   @mutable
   struct MutableType {
-    @id(1) @key long key;
-    @id(2) UnionType unionType;
-    @id(3) StructTwo arrayType[2];
-    @id(4) sequence<StructTwo, 2> sequenceType;
-    @id(5) long newNumber;
+    @key
+    @id(1)
+    long key;
+    @id(2)
+    UnionType unionType;
+    @id(3)
+    StructTwo arrayType[2];
+    @id(4)
+    sequence<StructTwo, 2> sequenceType;
+    @id(5)
+    long newNumber;
+    @id(10)
+    string<255> text;
   };
 
 };
