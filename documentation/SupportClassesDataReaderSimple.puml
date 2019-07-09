@@ -1,0 +1,20 @@
+@startuml
+
+participant DataReader
+participant DataReaderWatcher
+participant SampleTaker <<DataReaderWatcherExecutor>>
+participant Application <<OnDataAvailableListener>>
+
+DataReader -> DataReaderWatcher : on_data_available()
+activate DataReaderWatcher
+
+DataReaderWatcher -> SampleTaker : execute()
+activate SampleTaker
+
+SampleTaker -> Application : onDataAvailable()
+Application -> Application : processing
+
+deactivate SampleTaker
+deactivate DataReaderWatcher
+
+@enduml
