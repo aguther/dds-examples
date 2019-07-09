@@ -16,7 +16,7 @@ activate SampleTaker
 SampleTaker -> SampleInterpreterCrud : onDataAvailable()
 activate SampleInterpreterCrud
 
-SampleInterpreterCrud -> CrudSelector : determineCrudFunction()
+SampleInterpreterCrud -> CrudSelector : select()
 activate CrudSelector
 return
 deactivate CrudSelector
