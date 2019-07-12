@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,16 +36,16 @@ public class EmptyStreamReader implements StreamReader {
 
   @Override
   public void read(
-      final List<Object> sampleList,
-      final List<Object> infoList
+    final List<Object> sampleList,
+    final List<Object> infoList
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public void returnLoan(
-      final List<Object> sampleList,
-      final List<Object> infoList
+    final List<Object> sampleList,
+    final List<Object> infoList
   ) throws AdapterException {
     // do nothing
 
@@ -53,7 +53,7 @@ public class EmptyStreamReader implements StreamReader {
 
   @Override
   public void update(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     // do nothing
   }

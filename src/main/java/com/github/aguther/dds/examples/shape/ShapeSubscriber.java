@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,13 +48,13 @@ public class ShapeSubscriber extends AbstractIdleService implements Callable<Sha
   private ShapeTypeExtendedListener shapeTypeExtendedListener;
 
   @Option(
-      names = {"--shape"},
-      defaultValue = "SQUARE"
+    names = {"--shape"},
+    defaultValue = "SQUARE"
   )
   private ShapeKind shapeKind;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // create service
     serviceInstance = CommandLine.call(new ShapeSubscriber(), args);
@@ -84,15 +84,15 @@ public class ShapeSubscriber extends AbstractIdleService implements Callable<Sha
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", ShapeSubscriber.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", ShapeSubscriber.class.getName())
     ));
   }
 
@@ -137,20 +137,20 @@ public class ShapeSubscriber extends AbstractIdleService implements Callable<Sha
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        ShapeTypeExtendedTypeSupport.get_instance(),
-        ShapeTypeTypeSupport.get_type_name()
+      ShapeTypeExtendedTypeSupport.get_instance(),
+      ShapeTypeTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::ShapeSubscriber"
+      "DomainParticipantLibrary::ShapeSubscriber"
     );
   }
 
   private void startSubscription() {
     // start subscription
     shapeTypeExtendedListener = new ShapeTypeExtendedListener(
-        domainParticipant.lookup_datareader_by_name(String.format("Subscriber::%sDataReader", shapeKind))
+      domainParticipant.lookup_datareader_by_name(String.format("Subscriber::%sDataReader", shapeKind))
     );
   }
 

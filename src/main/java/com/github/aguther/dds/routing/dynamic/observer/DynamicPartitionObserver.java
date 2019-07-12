@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -96,7 +96,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param listener the listener
    */
   public void addListener(
-      final DynamicPartitionObserverListener listener
+    final DynamicPartitionObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
     listeners.add(listener);
@@ -108,7 +108,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param listener the listener
    */
   public void removeListener(
-      final DynamicPartitionObserverListener listener
+    final DynamicPartitionObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
     listeners.remove(listener);
@@ -120,7 +120,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param filter the filter
    */
   public void addFilter(
-      final DynamicPartitionObserverFilter filter
+    final DynamicPartitionObserverFilter filter
   ) {
     checkNotNull(filter, "Filter must not be null");
     filters.add(filter);
@@ -132,7 +132,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param filter the filter
    */
   public void removeFilter(
-      final DynamicPartitionObserverFilter filter
+    final DynamicPartitionObserverFilter filter
   ) {
     checkNotNull(filter, "Filter must not be null");
     filters.remove(filter);
@@ -140,9 +140,9 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
   @Override
   public void publicationDiscovered(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     // ignore the publication?
     if (ignorePublication(domainParticipant, instanceHandle, data)) {
@@ -151,19 +151,19 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
     // handle discovered entity
     handleDiscovered(
-        instanceHandle,
-        Direction.OUT,
-        data.topic_name,
-        data.type_name,
-        convertPartitionsToList(data.partition.name)
+      instanceHandle,
+      Direction.OUT,
+      data.topic_name,
+      data.type_name,
+      convertPartitionsToList(data.partition.name)
     );
   }
 
   @Override
   public void publicationModified(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+    DomainParticipant domainParticipant,
+    InstanceHandle_t instanceHandle,
+    PublicationBuiltinTopicData data
   ) {
     // ignore the publication?
     if (ignorePublication(domainParticipant, instanceHandle, data)) {
@@ -172,19 +172,19 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
     // handle discovered entity
     handleModified(
-        instanceHandle,
-        Direction.OUT,
-        data.topic_name,
-        data.type_name,
-        convertPartitionsToList(data.partition.name)
+      instanceHandle,
+      Direction.OUT,
+      data.topic_name,
+      data.type_name,
+      convertPartitionsToList(data.partition.name)
     );
   }
 
   @Override
   public void publicationLost(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     // ignore the publication?
     if (ignorePublication(domainParticipant, instanceHandle, data)) {
@@ -193,19 +193,19 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
     // handle lost entity
     handleLost(
-        instanceHandle,
-        Direction.OUT,
-        data.topic_name,
-        data.type_name,
-        convertPartitionsToList(data.partition.name)
+      instanceHandle,
+      Direction.OUT,
+      data.topic_name,
+      data.type_name,
+      convertPartitionsToList(data.partition.name)
     );
   }
 
   @Override
   public void subscriptionDiscovered(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     // ignore the publication?
     if (ignoreSubscription(domainParticipant, instanceHandle, data)) {
@@ -214,19 +214,19 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
     // handle discovered entity
     handleDiscovered(
-        instanceHandle,
-        Direction.IN,
-        data.topic_name,
-        data.type_name,
-        convertPartitionsToList(data.partition.name)
+      instanceHandle,
+      Direction.IN,
+      data.topic_name,
+      data.type_name,
+      convertPartitionsToList(data.partition.name)
     );
   }
 
   @Override
   public void subscriptionModified(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+    DomainParticipant domainParticipant,
+    InstanceHandle_t instanceHandle,
+    SubscriptionBuiltinTopicData data
   ) {
     // ignore the publication?
     if (ignoreSubscription(domainParticipant, instanceHandle, data)) {
@@ -235,19 +235,19 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
     // handle discovered entity
     handleModified(
-        instanceHandle,
-        Direction.IN,
-        data.topic_name,
-        data.type_name,
-        convertPartitionsToList(data.partition.name)
+      instanceHandle,
+      Direction.IN,
+      data.topic_name,
+      data.type_name,
+      convertPartitionsToList(data.partition.name)
     );
   }
 
   @Override
   public void subscriptionLost(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     // ignore the publication?
     if (ignoreSubscription(domainParticipant, instanceHandle, data)) {
@@ -256,11 +256,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
 
     // handle lost entity
     handleLost(
-        instanceHandle,
-        Direction.IN,
-        data.topic_name,
-        data.type_name,
-        convertPartitionsToList(data.partition.name)
+      instanceHandle,
+      Direction.IN,
+      data.topic_name,
+      data.type_name,
+      convertPartitionsToList(data.partition.name)
     );
   }
 
@@ -274,11 +274,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param partitions partitions
    */
   private void handleDiscovered(
-      final InstanceHandle_t instanceHandle,
-      final Direction direction,
-      final String topicName,
-      final String typeName,
-      final List<String> partitions
+    final InstanceHandle_t instanceHandle,
+    final Direction direction,
+    final String topicName,
+    final String typeName,
+    final List<String> partitions
   ) {
     synchronized (mapping) {
       for (String partition : partitions) {
@@ -288,9 +288,9 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         }
         // add instance handle to map
         addInstanceHandleToMap(
-            instanceHandle,
-            new Session(topicName, partition),
-            new TopicRoute(direction, topicName, typeName)
+          instanceHandle,
+          new Session(topicName, partition),
+          new TopicRoute(direction, topicName, typeName)
         );
       }
     }
@@ -306,11 +306,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param partitions partitions
    */
   private void handleModified(
-      final InstanceHandle_t instanceHandle,
-      final Direction direction,
-      final String topicName,
-      final String typeName,
-      final List<String> partitions
+    final InstanceHandle_t instanceHandle,
+    final Direction direction,
+    final String topicName,
+    final String typeName,
+    final List<String> partitions
   ) {
     synchronized (mapping) {
       // remove routes for partitions that no longer exist
@@ -319,9 +319,9 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         if (!partitions.contains(session.getPartition())) {
           // remove instance handles from map
           removeInstanceHandleFromMap(
-              instanceHandle,
-              session,
-              new TopicRoute(direction, topicName, typeName)
+            instanceHandle,
+            session,
+            new TopicRoute(direction, topicName, typeName)
           );
         }
       }
@@ -329,14 +329,14 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       for (String partition : partitions) {
         // ignore partition?
         if (ignorePartition(topicName, partition)
-            || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition))) {
+          || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition))) {
           continue;
         }
         // add instance handle to map
         addInstanceHandleToMap(
-            instanceHandle,
-            new Session(topicName, partition),
-            new TopicRoute(direction, topicName, typeName)
+          instanceHandle,
+          new Session(topicName, partition),
+          new TopicRoute(direction, topicName, typeName)
         );
       }
     }
@@ -352,11 +352,11 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param partitions partitions
    */
   private void handleLost(
-      final InstanceHandle_t instanceHandle,
-      final Direction direction,
-      final String topicName,
-      final String typeName,
-      final List<String> partitions
+    final InstanceHandle_t instanceHandle,
+    final Direction direction,
+    final String topicName,
+    final String typeName,
+    final List<String> partitions
   ) {
     synchronized (mapping) {
       // delete routes for all partitions we lost
@@ -367,9 +367,9 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         }
         // remove instance handle from map
         removeInstanceHandleFromMap(
-            instanceHandle,
-            new Session(topicName, partition),
-            new TopicRoute(direction, topicName, typeName)
+          instanceHandle,
+          new Session(topicName, partition),
+          new TopicRoute(direction, topicName, typeName)
         );
       }
     }
@@ -383,20 +383,20 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @return true if publication should be ignored, false if not
    */
   private boolean ignorePublication(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     synchronized (filters) {
       for (DynamicPartitionObserverFilter filter : filters) {
         if (filter.ignorePublication(domainParticipant, instanceHandle, data)) {
           if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "Ignoring publication topic='{}', type='{}', instance='{}' through filter '{}'",
-                data.topic_name,
-                data.type_name,
-                instanceHandle,
-                filter.getClass().getCanonicalName());
+              "Ignoring publication topic='{}', type='{}', instance='{}' through filter '{}'",
+              data.topic_name,
+              data.type_name,
+              instanceHandle,
+              filter.getClass().getCanonicalName());
           }
           return true;
         }
@@ -413,20 +413,20 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @return true if subscriptions should be ignored, false if not
    */
   private boolean ignoreSubscription(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     synchronized (filters) {
       for (DynamicPartitionObserverFilter filter : filters) {
         if (filter.ignoreSubscription(domainParticipant, instanceHandle, data)) {
           if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "Ignoring subscription topic='{}', type='{}', instance='{}' through filter '{}'",
-                data.topic_name,
-                data.type_name,
-                instanceHandle,
-                filter.getClass().getCanonicalName());
+              "Ignoring subscription topic='{}', type='{}', instance='{}' through filter '{}'",
+              data.topic_name,
+              data.type_name,
+              instanceHandle,
+              filter.getClass().getCanonicalName());
           }
           return true;
         }
@@ -443,18 +443,18 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @return true if publication should be ignored, false if not
    */
   private boolean ignorePartition(
-      final String topicName,
-      final String partition
+    final String topicName,
+    final String partition
   ) {
     synchronized (filters) {
       for (DynamicPartitionObserverFilter filter : filters) {
         if (filter.ignorePartition(topicName, partition)) {
           if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                "Ignoring partition topic='{}', name='{}' through filter '{}'",
-                topicName,
-                partition,
-                filter.getClass().getCanonicalName());
+              "Ignoring partition topic='{}', name='{}' through filter '{}'",
+              topicName,
+              partition,
+              filter.getClass().getCanonicalName());
           }
           return true;
         }
@@ -471,9 +471,9 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param topicRoute topic route
    */
   private void addInstanceHandleToMap(
-      final InstanceHandle_t instanceHandle,
-      final Session session,
-      final TopicRoute topicRoute
+    final InstanceHandle_t instanceHandle,
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     // create topic session if first item discovered
     if (!mapping.containsKey(session)) {
@@ -501,14 +501,14 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param topicRoute topic route
    */
   private void removeInstanceHandleFromMap(
-      final InstanceHandle_t instanceHandle,
-      final Session session,
-      final TopicRoute topicRoute
+    final InstanceHandle_t instanceHandle,
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     // ensure session and topic route are existing
     // otherwise we have nothing do to
     if (!mapping.containsKey(session)
-        || !mapping.get(session).containsKey(topicRoute)) {
+      || !mapping.get(session).containsKey(topicRoute)) {
       return;
     }
 
@@ -534,13 +534,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param session session that should be created
    */
   private void createSession(
-      final Session session
+    final Session session
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Calling 'createSession' on listeners with topic='{}', partition='{}'",
-          session.getTopic(),
-          session.getPartition()
+        "Calling 'createSession' on listeners with topic='{}', partition='{}'",
+        session.getTopic(),
+        session.getPartition()
       );
     }
     // invoke listener
@@ -559,13 +559,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param session session that should be deleted
    */
   private void deleteSession(
-      final Session session
+    final Session session
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Calling 'deleteSession' on listeners with topic='{}', partition='{}'",
-          session.getTopic(),
-          session.getPartition()
+        "Calling 'deleteSession' on listeners with topic='{}', partition='{}'",
+        session.getTopic(),
+        session.getPartition()
       );
     }
     // invoke listener
@@ -585,16 +585,16 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param topicRoute topic route that should be created
    */
   private void createTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Calling 'createTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
-          session.getTopic(),
-          topicRoute.getType(),
-          session.getPartition(),
-          topicRoute.getDirection()
+        "Calling 'createTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition(),
+        topicRoute.getDirection()
       );
     }
     // invoke listener
@@ -614,16 +614,16 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @param topicRoute topic route that should be deleted
    */
   private void deleteTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Calling 'deleteTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
-          session.getTopic(),
-          topicRoute.getType(),
-          session.getPartition(),
-          topicRoute.getDirection()
+        "Calling 'deleteTopicRoute' on listeners with topic='{}', type='{}', partition='{}', direction='{}'",
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition(),
+        topicRoute.getDirection()
       );
     }
     // invoke listener
@@ -644,7 +644,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
    * @return List of partitions
    */
   private List<String> convertPartitionsToList(
-      StringSeq stringSeq
+    StringSeq stringSeq
   ) {
     // check argument
     checkNotNull(stringSeq, "String sequence must not be null!");

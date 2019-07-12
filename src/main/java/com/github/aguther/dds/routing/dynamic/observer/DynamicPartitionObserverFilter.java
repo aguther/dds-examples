@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,9 +45,9 @@ public interface DynamicPartitionObserverFilter {
    * @return true to ignore publication, false to allow
    */
   boolean ignorePublication(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   );
 
   /**
@@ -59,9 +59,9 @@ public interface DynamicPartitionObserverFilter {
    * @return true to ignore publication, false to allow
    */
   boolean ignoreSubscription(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   );
 
   /**
@@ -72,7 +72,7 @@ public interface DynamicPartitionObserverFilter {
    * @return true to ignore partition, false to allow
    */
   boolean ignorePartition(
-      final String topicName,
-      final String partition
+    final String topicName,
+    final String partition
   );
 }

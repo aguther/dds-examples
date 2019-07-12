@@ -42,15 +42,15 @@ public class SubscriberDescriptionMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     dummy = Gauge.build()
-        .name("subscriber_description")
-        .labelNames(getLabelNames())
-        .help("subscriber_description")
-        .register();
+      .name("subscriber_description")
+      .labelNames(getLabelNames())
+      .help("subscriber_description")
+      .register();
   }
 
   public void process(
-      SubscriberDescription sample,
-      SampleInfo info
+    SubscriberDescription sample,
+    SampleInfo info
   ) {
     // put instance handle to hash map if not present
     instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
@@ -72,27 +72,27 @@ public class SubscriberDescriptionMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "subscriber_key",
-        "participant_key",
-        "domain_id",
-        "host_id",
-        "process_id",
-        "subscriber_name",
-        "subscriber_role_name"
+      "subscriber_key",
+      "participant_key",
+      "domain_id",
+      "host_id",
+      "process_id",
+      "subscriber_name",
+      "subscriber_role_name"
     };
   }
 
   private String[] getLabelValues(
-      SubscriberDescription sample
+    SubscriberDescription sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.entity_key.value),
-        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
-        sample.qos.subscriber_name.name,
-        sample.qos.subscriber_name.role_name
+      BuiltinTopicHelper.toString(sample.entity_key.value),
+      BuiltinTopicHelper.toString(sample.participant_entity_key.value),
+      Integer.toUnsignedString(sample.domain_id),
+      Integer.toUnsignedString(sample.host_id),
+      Integer.toUnsignedString(sample.process_id),
+      sample.qos.subscriber_name.name,
+      sample.qos.subscriber_name.role_name
     };
   }
 }

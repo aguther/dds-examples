@@ -42,15 +42,15 @@ public class PublisherDescriptionMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     dummy = Gauge.build()
-        .name("publisher_description")
-        .labelNames(getLabelNames())
-        .help("publisher_description")
-        .register();
+      .name("publisher_description")
+      .labelNames(getLabelNames())
+      .help("publisher_description")
+      .register();
   }
 
   public void process(
-      PublisherDescription sample,
-      SampleInfo info
+    PublisherDescription sample,
+    SampleInfo info
   ) {
     // put instance handle to hash map if not present
     instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
@@ -72,27 +72,27 @@ public class PublisherDescriptionMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "publisher_key",
-        "participant_key",
-        "domain_id",
-        "host_id",
-        "process_id",
-        "publisher_name",
-        "publisher_role_name"
+      "publisher_key",
+      "participant_key",
+      "domain_id",
+      "host_id",
+      "process_id",
+      "publisher_name",
+      "publisher_role_name"
     };
   }
 
   private String[] getLabelValues(
-      PublisherDescription sample
+    PublisherDescription sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.entity_key.value),
-        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
-        sample.qos.publisher_name.name,
-        sample.qos.publisher_name.role_name
+      BuiltinTopicHelper.toString(sample.entity_key.value),
+      BuiltinTopicHelper.toString(sample.participant_entity_key.value),
+      Integer.toUnsignedString(sample.domain_id),
+      Integer.toUnsignedString(sample.host_id),
+      Integer.toUnsignedString(sample.process_id),
+      sample.qos.publisher_name.name,
+      sample.qos.publisher_name.role_name
     };
   }
 }

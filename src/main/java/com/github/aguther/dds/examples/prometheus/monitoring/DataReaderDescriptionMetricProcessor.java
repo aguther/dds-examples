@@ -44,27 +44,27 @@ public class DataReaderDescriptionMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     serializedSampleMaxSize = Gauge.build()
-        .name("datareader_description_serialized_sample_max_size")
-        .labelNames(getLabelNames())
-        .help("datareader_description_serialized_sample_max_size")
-        .register();
+      .name("datareader_description_serialized_sample_max_size")
+      .labelNames(getLabelNames())
+      .help("datareader_description_serialized_sample_max_size")
+      .register();
 
     serializedSampleMinSize = Gauge.build()
-        .name("datareader_description_serialized_sample_min_size")
-        .labelNames(getLabelNames())
-        .help("datareader_description_serialized_sample_min_size")
-        .register();
+      .name("datareader_description_serialized_sample_min_size")
+      .labelNames(getLabelNames())
+      .help("datareader_description_serialized_sample_min_size")
+      .register();
 
     serializedKeyMaxSize = Gauge.build()
-        .name("datareader_description_serialized_key_max_size")
-        .labelNames(getLabelNames())
-        .help("datareader_description_serialized_key_max_size")
-        .register();
+      .name("datareader_description_serialized_key_max_size")
+      .labelNames(getLabelNames())
+      .help("datareader_description_serialized_key_max_size")
+      .register();
   }
 
   public void process(
-      DataReaderDescription sample,
-      SampleInfo info
+    DataReaderDescription sample,
+    SampleInfo info
   ) {
     // put instance handle to hash map if not present
     instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
@@ -90,33 +90,33 @@ public class DataReaderDescriptionMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "datareader_key",
-        "subscriber_key",
-        "topic_key",
-        "domain_id",
-        "host_id",
-        "process_id",
-        "type_name",
-        "topic_name",
-        "subscription_name",
-        "subscription_role_name"
+      "datareader_key",
+      "subscriber_key",
+      "topic_key",
+      "domain_id",
+      "host_id",
+      "process_id",
+      "type_name",
+      "topic_name",
+      "subscription_name",
+      "subscription_role_name"
     };
   }
 
   private String[] getLabelValues(
-      DataReaderDescription sample
+    DataReaderDescription sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.entity_key.value),
-        BuiltinTopicHelper.toString(sample.subscriber_entity_key.value),
-        BuiltinTopicHelper.toString(sample.topic_entity_key.value),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
-        sample.type_name,
-        sample.topic_name,
-        sample.qos.subscription_name.name,
-        sample.qos.subscription_name.role_name
+      BuiltinTopicHelper.toString(sample.entity_key.value),
+      BuiltinTopicHelper.toString(sample.subscriber_entity_key.value),
+      BuiltinTopicHelper.toString(sample.topic_entity_key.value),
+      Integer.toUnsignedString(sample.domain_id),
+      Integer.toUnsignedString(sample.host_id),
+      Integer.toUnsignedString(sample.process_id),
+      sample.type_name,
+      sample.topic_name,
+      sample.qos.subscription_name.name,
+      sample.qos.subscription_name.role_name
     };
   }
 }

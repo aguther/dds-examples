@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,26 +41,26 @@ public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
 
   @Override
   public boolean ignorePublication(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     return false;
   }
 
   @Override
   public boolean ignoreSubscription(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     return false;
   }
 
   @Override
   public boolean ignorePartition(
-      final String topicName,
-      final String partition
+    final String topicName,
+    final String partition
   ) {
     // check if partition contains asterisk
     boolean result = partition.contains("*");
@@ -68,11 +68,11 @@ public class WildcardPartitionFilter implements DynamicPartitionObserverFilter {
     // log decision
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "topic='{}', partition='{}', ignore='{}' (filter='{}')",
-          topicName,
-          partition,
-          result,
-          "contains(\"*\")"
+        "topic='{}', partition='{}', ignore='{}' (filter='{}')",
+        topicName,
+        partition,
+        result,
+        "contains(\"*\")"
       );
     }
 

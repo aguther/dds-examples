@@ -63,153 +63,153 @@ public class DataReaderEntityMatchedPublicationStatisticsMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     datareaderProtocolStatusReceivedSampleCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_count")
+      .register();
 
     datareaderProtocolStatusReceivedSampleBytes = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_bytes")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_bytes")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_sample_bytes")
+      .register();
 
     datareaderProtocolStatusDuplicateSampleCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_count")
+      .register();
 
     datareaderProtocolStatusDuplicateSampleBytes = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_bytes")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_bytes")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_duplicate_sample_bytes")
+      .register();
 
     datareaderProtocolStatusFilteredSampleCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_count")
+      .register();
 
     datareaderProtocolStatusFilteredSampleBytes = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_bytes")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_bytes")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_filtered_sample_bytes")
+      .register();
 
     datareaderProtocolStatusReceivedHeartbeatCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_count")
+      .register();
 
     datareaderProtocolStatusReceivedHeartbeatBytes = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_bytes")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_bytes")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_heartbeat_bytes")
+      .register();
 
     datareaderProtocolStatusSentAckCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_count")
+      .register();
 
     datareaderProtocolStatusSentAckBytes = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_bytes")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_bytes")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_ack_bytes")
+      .register();
 
     datareaderProtocolStatusSentNackCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_count")
+      .register();
 
     datareaderProtocolStatusSentNackBytes = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_bytes")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_bytes")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_sent_nack_bytes")
+      .register();
 
     datareaderProtocolStatusReceivedGapCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_count")
+      .register();
 
     datareaderProtocolStatusReceivedGapBytes = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_bytes")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_bytes")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_received_gap_bytes")
+      .register();
 
     datareaderProtocolStatusRejectedSampleCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_rejected_sample_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_rejected_sample_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_rejected_sample_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_rejected_sample_count")
+      .register();
 
     datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh = Gauge.build()
-        .name(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_high")
-        .labelNames(getLabelNames())
-        .help(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_high")
-        .register();
+      .name(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_high")
+      .labelNames(getLabelNames())
+      .help(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_high")
+      .register();
 
     datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow = Gauge.build()
-        .name(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_low")
-        .labelNames(getLabelNames())
-        .help(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_low")
-        .register();
+      .name(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_low")
+      .labelNames(getLabelNames())
+      .help(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_first_available_sample_sequence_number_low")
+      .register();
 
     datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh = Gauge.build()
-        .name(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_high")
-        .labelNames(getLabelNames())
-        .help(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_high")
-        .register();
+      .name(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_high")
+      .labelNames(getLabelNames())
+      .help(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_high")
+      .register();
 
     datareaderProtocolStatusLastAvailableSampleSequenceNumberLow = Gauge.build()
-        .name(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_low")
-        .labelNames(getLabelNames())
-        .help(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_low")
-        .register();
+      .name(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_low")
+      .labelNames(getLabelNames())
+      .help(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_available_sample_sequence_number_low")
+      .register();
 
     datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh = Gauge.build()
-        .name(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_high")
-        .labelNames(getLabelNames())
-        .help(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_high")
-        .register();
+      .name(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_high")
+      .labelNames(getLabelNames())
+      .help(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_high")
+      .register();
 
     datareaderProtocolStatusLastCommittedSampleSequenceNumberLow = Gauge.build()
-        .name(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_low")
-        .labelNames(getLabelNames())
-        .help(
-            "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_low")
-        .register();
+      .name(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_low")
+      .labelNames(getLabelNames())
+      .help(
+        "datareader_entity_matched_publication_statistics_datareader_protocol_status_last_committed_sample_sequence_number_low")
+      .register();
 
     datareaderProtocolStatusUncommittedSampleCount = Gauge.build()
-        .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_uncommitted_sample_count")
-        .labelNames(getLabelNames())
-        .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_uncommitted_sample_count")
-        .register();
+      .name("datareader_entity_matched_publication_statistics_datareader_protocol_status_uncommitted_sample_count")
+      .labelNames(getLabelNames())
+      .help("datareader_entity_matched_publication_statistics_datareader_protocol_status_uncommitted_sample_count")
+      .register();
   }
 
   public void process(
-      DataReaderEntityMatchedPublicationStatistics sample,
-      SampleInfo info
+    DataReaderEntityMatchedPublicationStatistics sample,
+    SampleInfo info
   ) {
     // put instance handle to hash map if not present
     instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
@@ -248,87 +248,87 @@ public class DataReaderEntityMatchedPublicationStatisticsMetricProcessor {
 
     // update gauges
     datareaderProtocolStatusReceivedSampleCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.received_sample_count);
+      sample.datareader_protocol_status.status.received_sample_count);
 
     datareaderProtocolStatusReceivedSampleBytes.labels(labelValues).set(
-        sample.datareader_protocol_status.status.received_sample_bytes);
+      sample.datareader_protocol_status.status.received_sample_bytes);
 
     datareaderProtocolStatusDuplicateSampleCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.duplicate_sample_count);
+      sample.datareader_protocol_status.status.duplicate_sample_count);
 
     datareaderProtocolStatusDuplicateSampleBytes.labels(labelValues).set(
-        sample.datareader_protocol_status.status.duplicate_sample_bytes);
+      sample.datareader_protocol_status.status.duplicate_sample_bytes);
 
     datareaderProtocolStatusFilteredSampleCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.filtered_sample_count);
+      sample.datareader_protocol_status.status.filtered_sample_count);
 
     datareaderProtocolStatusFilteredSampleBytes.labels(labelValues).set(
-        sample.datareader_protocol_status.status.filtered_sample_bytes);
+      sample.datareader_protocol_status.status.filtered_sample_bytes);
 
     datareaderProtocolStatusReceivedHeartbeatCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.received_heartbeat_count);
+      sample.datareader_protocol_status.status.received_heartbeat_count);
 
     datareaderProtocolStatusReceivedHeartbeatBytes.labels(labelValues).set(
-        sample.datareader_protocol_status.status.received_heartbeat_bytes);
+      sample.datareader_protocol_status.status.received_heartbeat_bytes);
 
     datareaderProtocolStatusSentAckCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.sent_ack_count);
+      sample.datareader_protocol_status.status.sent_ack_count);
 
     datareaderProtocolStatusSentAckBytes.labels(labelValues).set(
-        sample.datareader_protocol_status.status.sent_ack_bytes);
+      sample.datareader_protocol_status.status.sent_ack_bytes);
 
     datareaderProtocolStatusSentNackCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.sent_nack_count);
+      sample.datareader_protocol_status.status.sent_nack_count);
 
     datareaderProtocolStatusSentNackBytes.labels(labelValues).set(
-        sample.datareader_protocol_status.status.sent_nack_bytes);
+      sample.datareader_protocol_status.status.sent_nack_bytes);
 
     datareaderProtocolStatusReceivedGapCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.received_gap_count);
+      sample.datareader_protocol_status.status.received_gap_count);
 
     datareaderProtocolStatusReceivedGapBytes.labels(labelValues).set(
-        sample.datareader_protocol_status.status.received_gap_bytes);
+      sample.datareader_protocol_status.status.received_gap_bytes);
 
     datareaderProtocolStatusRejectedSampleCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.rejected_sample_count);
+      sample.datareader_protocol_status.status.rejected_sample_count);
 
     datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh.labels(labelValues).set(
-        sample.datareader_protocol_status.status.first_available_sample_sequence_number.high);
+      sample.datareader_protocol_status.status.first_available_sample_sequence_number.high);
 
     datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow.labels(labelValues).set(
-        sample.datareader_protocol_status.status.first_available_sample_sequence_number.low);
+      sample.datareader_protocol_status.status.first_available_sample_sequence_number.low);
 
     datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh.labels(labelValues).set(
-        sample.datareader_protocol_status.status.last_available_sample_sequence_number.high);
+      sample.datareader_protocol_status.status.last_available_sample_sequence_number.high);
 
     datareaderProtocolStatusLastAvailableSampleSequenceNumberLow.labels(labelValues).set(
-        sample.datareader_protocol_status.status.last_available_sample_sequence_number.low);
+      sample.datareader_protocol_status.status.last_available_sample_sequence_number.low);
 
     datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh.labels(labelValues).set(
-        sample.datareader_protocol_status.status.last_committed_sample_sequence_number.high);
+      sample.datareader_protocol_status.status.last_committed_sample_sequence_number.high);
 
     datareaderProtocolStatusLastCommittedSampleSequenceNumberLow.labels(labelValues).set(
-        sample.datareader_protocol_status.status.last_committed_sample_sequence_number.low);
+      sample.datareader_protocol_status.status.last_committed_sample_sequence_number.low);
 
     datareaderProtocolStatusUncommittedSampleCount.labels(labelValues).set(
-        sample.datareader_protocol_status.status.uncommitted_sample_count);
+      sample.datareader_protocol_status.status.uncommitted_sample_count);
   }
 
   private String[] getLabelNames() {
     return new String[]{
-        "datareader_key",
-        "publication_handle",
-        "period",
+      "datareader_key",
+      "publication_handle",
+      "period",
     };
   }
 
   private String[] getLabelValues(
-      DataReaderEntityMatchedPublicationStatistics sample
+    DataReaderEntityMatchedPublicationStatistics sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.datareader_key.value),
-        BuiltinTopicHelper.toString(sample.publication_handle.value),
-        Long.toUnsignedString((long) sample.period.sec * 1000000000 + (long) sample.period.nanosec),
+      BuiltinTopicHelper.toString(sample.datareader_key.value),
+      BuiltinTopicHelper.toString(sample.publication_handle.value),
+      Long.toUnsignedString((long) sample.period.sec * 1000000000 + (long) sample.period.nanosec),
     };
   }
 }

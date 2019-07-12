@@ -42,15 +42,15 @@ public class DomainParticipantDescriptionMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     dummy = Gauge.build()
-        .name("domainparticipant_description")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_description")
-        .register();
+      .name("domainparticipant_description")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_description")
+      .register();
   }
 
   public void process(
-      DomainParticipantDescription sample,
-      SampleInfo info
+    DomainParticipantDescription sample,
+    SampleInfo info
   ) {
     // put instance handle to hash map if not present
     instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
@@ -72,25 +72,25 @@ public class DomainParticipantDescriptionMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "participant_key",
-        "domain_id",
-        "host_id",
-        "process_id",
-        "participant_name",
-        "participant_role_name"
+      "participant_key",
+      "domain_id",
+      "host_id",
+      "process_id",
+      "participant_name",
+      "participant_role_name"
     };
   }
 
   private String[] getLabelValues(
-      DomainParticipantDescription sample
+    DomainParticipantDescription sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.entity_key.value),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
-        sample.qos.participant_name.name,
-        sample.qos.participant_name.role_name
+      BuiltinTopicHelper.toString(sample.entity_key.value),
+      Integer.toUnsignedString(sample.domain_id),
+      Integer.toUnsignedString(sample.host_id),
+      Integer.toUnsignedString(sample.process_id),
+      sample.qos.participant_name.name,
+      sample.qos.participant_name.role_name
     };
   }
 }

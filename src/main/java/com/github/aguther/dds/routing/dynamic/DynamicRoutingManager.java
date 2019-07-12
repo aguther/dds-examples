@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,30 +60,30 @@ import org.slf4j.LoggerFactory;
 public class DynamicRoutingManager implements Closeable {
 
   private static final String PROPERTY_ADMINISTRATION_LOCAL
-      = "administration.local";
+    = "administration.local";
   private static final String DEFAULT_PROPERTY_ADMINISTRATION_LOCAL
-      = "false";
+    = "false";
 
   private static final String PROPERTY_ADMINISTRATION_DOMAIN_ID
-      = "administration.domain_id";
+    = "administration.domain_id";
 
   private static final String PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
-      = "administration.discovery.wait_time";
+    = "administration.discovery.wait_time";
   private static final String DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
-      = "30000";
+    = "30000";
 
   private static final String PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
-      = "administration.request.timeout";
+    = "administration.request.timeout";
   private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
-      = "15000";
+    = "15000";
 
   private static final String PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
-      = "administration.request.retry_delay";
+    = "administration.request.retry_delay";
   private static final String DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
-      = "45000";
+    = "45000";
 
   private static final String PROPERTY_DISCOVERY_DOMAIN_ID
-      = "discovery.domain_id";
+    = "discovery.domain_id";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingManager.class);
 
@@ -110,17 +110,17 @@ public class DynamicRoutingManager implements Closeable {
    * @param properties configuration properties
    */
   public DynamicRoutingManager(
-      final String routingServiceName,
-      final String routingServiceGroupName,
-      final String propertiesPrefix,
-      final Properties properties
+    final String routingServiceName,
+    final String routingServiceGroupName,
+    final String propertiesPrefix,
+    final Properties properties
   ) {
     this(
-        null,
-        routingServiceName,
-        routingServiceGroupName,
-        propertiesPrefix,
-        properties
+      null,
+      routingServiceName,
+      routingServiceGroupName,
+      propertiesPrefix,
+      properties
     );
   }
 
@@ -134,23 +134,23 @@ public class DynamicRoutingManager implements Closeable {
    * @param properties configuration properties
    */
   public DynamicRoutingManager(
-      final RoutingService routingService,
-      final String routingServiceName,
-      final String routingServiceGroupName,
-      final String propertiesPrefix,
-      final Properties properties
+    final RoutingService routingService,
+    final String routingServiceName,
+    final String routingServiceGroupName,
+    final String propertiesPrefix,
+    final Properties properties
   ) {
     checkNotNull(
-        routingServiceGroupName,
-        "Group name must not be null"
+      routingServiceGroupName,
+      "Group name must not be null"
     );
     checkNotNull(
-        propertiesPrefix,
-        "Property prefix must not be null"
+      propertiesPrefix,
+      "Property prefix must not be null"
     );
     checkNotNull(
-        properties,
-        "Properties must not be null"
+      properties,
+      "Properties must not be null"
     );
 
     // store properties and prefix
@@ -161,16 +161,16 @@ public class DynamicRoutingManager implements Closeable {
     if (LOGGER.isInfoEnabled()) {
       for (String key : properties.stringPropertyNames()) {
         LOGGER.info(
-            "key='{}', value='{}'",
-            key,
-            properties.getProperty(key)
+          "key='{}', value='{}'",
+          key,
+          properties.getProperty(key)
         );
       }
     }
 
     // create configuration filter
     ConfigurationFilterProvider configurationFilterProvider = new ConfigurationFilterProvider(
-        propertiesPrefix, properties);
+      propertiesPrefix, properties);
 
     // create dynamic partition observer
     dynamicPartitionObserver = new DynamicPartitionObserver();
@@ -183,7 +183,7 @@ public class DynamicRoutingManager implements Closeable {
 
     // create domain participant for discovery
     domainParticipantDiscovery = createDiscoveryDomainParticipant(
-        Integer.parseInt(StringSubstitutor.replace(getProperty(PROPERTY_DISCOVERY_DOMAIN_ID), System.getenv()))
+      Integer.parseInt(StringSubstitutor.replace(getProperty(PROPERTY_DISCOVERY_DOMAIN_ID), System.getenv()))
     );
 
     // create new publication observer
@@ -196,7 +196,7 @@ public class DynamicRoutingManager implements Closeable {
 
     // depending on provided property start either local or remote administration interface
     if (Boolean.parseBoolean(StringSubstitutor
-        .replace(getProperty(PROPERTY_ADMINISTRATION_LOCAL, DEFAULT_PROPERTY_ADMINISTRATION_LOCAL), System.getenv()))) {
+      .replace(getProperty(PROPERTY_ADMINISTRATION_LOCAL, DEFAULT_PROPERTY_ADMINISTRATION_LOCAL), System.getenv()))) {
       createLocalAdministration(routingService, configurationFilterProvider);
     } else {
       createRemoteAdministration(routingServiceName, configurationFilterProvider);
@@ -249,7 +249,7 @@ public class DynamicRoutingManager implements Closeable {
    * @param properties new configuration properties
    */
   public void update(
-      final Properties properties
+    final Properties properties
   ) {
     throw new UnsupportedOperationException("Not yet implemented");
   }
@@ -261,10 +261,10 @@ public class DynamicRoutingManager implements Closeable {
    * @return property value
    */
   private String getProperty(
-      String name
+    String name
   ) {
     return properties.getProperty(
-        String.format("%s%s", propertiesPrefix, name)
+      String.format("%s%s", propertiesPrefix, name)
     );
   }
 
@@ -276,12 +276,12 @@ public class DynamicRoutingManager implements Closeable {
    * @return property value, provided default if not found
    */
   private String getProperty(
-      String name,
-      String defaultValue
+    String name,
+    String defaultValue
   ) {
     return properties.getProperty(
-        String.format("%s%s", propertiesPrefix, name),
-        defaultValue
+      String.format("%s%s", propertiesPrefix, name),
+      defaultValue
     );
   }
 
@@ -292,24 +292,24 @@ public class DynamicRoutingManager implements Closeable {
    * @param configurationFilterProvider configuration filter provider
    */
   private void createLocalAdministration(
-      RoutingService routingService,
-      ConfigurationFilterProvider configurationFilterProvider
+    RoutingService routingService,
+    ConfigurationFilterProvider configurationFilterProvider
   ) {
     checkNotNull(
-        routingService,
-        "Routing Service must not be null when local interface enabled"
+      routingService,
+      "Routing Service must not be null when local interface enabled"
     );
     checkNotNull(
-        configurationFilterProvider,
-        "Configuration Filter Provider must not be null"
+      configurationFilterProvider,
+      "Configuration Filter Provider must not be null"
     );
 
     // add listener to dynamic partition observer
     dynamicPartitionObserver.addListener(
-        new com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander(
-            routingService,
-            configurationFilterProvider
-        )
+      new com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander(
+        routingService,
+        configurationFilterProvider
+      )
     );
   }
 
@@ -320,40 +320,40 @@ public class DynamicRoutingManager implements Closeable {
    * @param configurationFilterProvider configuration filter provider
    */
   private void createRemoteAdministration(
-      String routingServiceName,
-      ConfigurationFilterProvider configurationFilterProvider
+    String routingServiceName,
+    ConfigurationFilterProvider configurationFilterProvider
   ) {
     checkArgument(
-        !Strings.isNullOrEmpty(routingServiceName),
-        "Routing Service name is expected not to be null or empty"
+      !Strings.isNullOrEmpty(routingServiceName),
+      "Routing Service name is expected not to be null or empty"
     );
     checkNotNull(
-        configurationFilterProvider,
-        "Configuration Filter Provider must not be null"
+      configurationFilterProvider,
+      "Configuration Filter Provider must not be null"
     );
 
     // create domain participant for administration interface and ensure it will be enabled
     domainParticipantAdministration = createRemoteAdministrationDomainParticipant(
-        Integer.parseInt(StringSubstitutor.replace(getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID), System.getenv()))
+      Integer.parseInt(StringSubstitutor.replace(getProperty(PROPERTY_ADMINISTRATION_DOMAIN_ID), System.getenv()))
     );
     domainParticipantAdministration.enable();
 
     // create routing service administration
     routingServiceCommandInterface = new RoutingServiceCommandInterface(
-        domainParticipantAdministration);
+      domainParticipantAdministration);
 
     // wait for routing service to be discovered
     LOGGER.info("Waiting for remote administration interface of routing service to be discovered");
     if (routingServiceCommandInterface.waitForDiscovery(
-        routingServiceName,
-        Long.parseLong(StringSubstitutor.replace(
-            getProperty(
-                PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME,
-                DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
-            ),
-            System.getenv()
-        )),
-        TimeUnit.MILLISECONDS)) {
+      routingServiceName,
+      Long.parseLong(StringSubstitutor.replace(
+        getProperty(
+          PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME,
+          DEFAULT_PROPERTY_ADMINISTRATION_DISCOVERY_WAIT_TIME
+        ),
+        System.getenv()
+      )),
+      TimeUnit.MILLISECONDS)) {
       LOGGER.info("Remote administration interface of routing service was discovered");
     } else {
       LOGGER.warn("Remote administration interface of routing service could not be discovered within time out");
@@ -361,25 +361,25 @@ public class DynamicRoutingManager implements Closeable {
 
     // create commander
     dynamicPartitionCommanderRemote = new DynamicPartitionCommander(
-        routingServiceCommandInterface,
-        configurationFilterProvider,
-        routingServiceName,
-        Long.parseLong(StringSubstitutor.replace(
-            getProperty(
-                PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY,
-                DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
-            ),
-            System.getenv()
-        )),
-        TimeUnit.MILLISECONDS,
-        Long.parseLong(StringSubstitutor.replace(
-            getProperty(
-                PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT,
-                DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
-            ),
-            System.getenv()
-        )),
-        TimeUnit.MILLISECONDS
+      routingServiceCommandInterface,
+      configurationFilterProvider,
+      routingServiceName,
+      Long.parseLong(StringSubstitutor.replace(
+        getProperty(
+          PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY,
+          DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_RETRY_DELAY
+        ),
+        System.getenv()
+      )),
+      TimeUnit.MILLISECONDS,
+      Long.parseLong(StringSubstitutor.replace(
+        getProperty(
+          PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT,
+          DEFAULT_PROPERTY_ADMINISTRATION_REQUEST_TIMEOUT
+        ),
+        System.getenv()
+      )),
+      TimeUnit.MILLISECONDS
     );
 
     // add listener to dynamic partition observer
@@ -393,7 +393,7 @@ public class DynamicRoutingManager implements Closeable {
    * @return enabled domain participant if successful, otherwise null
    */
   private DomainParticipant createRemoteAdministrationDomainParticipant(
-      final int domainId
+    final int domainId
   ) {
     return createDomainParticipant(domainId, "RTI Routing Service: remote administration");
   }
@@ -405,7 +405,7 @@ public class DynamicRoutingManager implements Closeable {
    * @return not enabled domain participant if successful, otherwise null
    */
   private DomainParticipant createDiscoveryDomainParticipant(
-      final int domainId
+    final int domainId
   ) {
     // get current state
     boolean wasEnabled = AutoEnableCreatedEntitiesHelper.isEnabled();
@@ -432,8 +432,8 @@ public class DynamicRoutingManager implements Closeable {
    * @return domain participant if successful, otherwise null
    */
   private DomainParticipant createDomainParticipant(
-      final int domainId,
-      final String participantName
+    final int domainId,
+    final String participantName
   ) {
     // create default participant qos marked as routing service entity
     DomainParticipantQos domainParticipantQos = new DomainParticipantQos();
@@ -443,10 +443,10 @@ public class DynamicRoutingManager implements Closeable {
 
     // create domain participant for administration interface
     return DomainParticipantFactory.get_instance().create_participant(
-        domainId,
-        domainParticipantQos,
-        null,
-        StatusKind.STATUS_MASK_NONE
+      domainId,
+      domainParticipantQos,
+      null,
+      StatusKind.STATUS_MASK_NONE
     );
   }
 }

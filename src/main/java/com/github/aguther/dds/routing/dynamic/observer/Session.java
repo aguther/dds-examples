@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,14 +32,14 @@ public class Session {
   private final String partition;
 
   public Session(
-      final String topic
+    final String topic
   ) {
     this(topic, "");
   }
 
   public Session(
-      final String topic,
-      final String partition
+    final String topic,
+    final String partition
   ) {
     this.topic = topic;
     this.partition = partition;
@@ -55,7 +55,7 @@ public class Session {
 
   @Override
   public boolean equals(
-      Object o
+    Object o
   ) {
     if (this == o) {
       return true;
@@ -65,7 +65,7 @@ public class Session {
     }
     Session session = (Session) o;
     return Objects.equals(topic, session.topic) &&
-        Objects.equals(partition, session.partition);
+      Objects.equals(partition, session.partition);
   }
 
   @Override
@@ -77,9 +77,9 @@ public class Session {
   @Override
   public String toString() {
     return String.format(
-        "Session { topic='%s', partition='%s' }",
-        topic,
-        partition
+      "Session { topic='%s', partition='%s' }",
+      topic,
+      partition
     );
   }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,11 +38,11 @@ public class Command {
   private final String loggingFormat;
 
   public Command(
-      CommandType type,
-      Session session,
-      TopicRoute topicRoute,
-      CommandRequest commandRequest,
-      String loggingFormat
+    CommandType type,
+    Session session,
+    TopicRoute topicRoute,
+    CommandRequest commandRequest,
+    String loggingFormat
   ) {
     this.type = type;
 
@@ -82,8 +82,8 @@ public class Command {
     }
     Command command = (Command) o;
     return type == command.type &&
-        Objects.equals(session, command.session) &&
-        Objects.equals(topicRoute, command.topicRoute);
+      Objects.equals(session, command.session) &&
+      Objects.equals(topicRoute, command.topicRoute);
   }
 
   @Override
@@ -95,10 +95,10 @@ public class Command {
   @Override
   public String toString() {
     return String.format(
-        "Command { type='%s', session='%s', topicRoute='%s' }",
-        type,
-        session,
-        topicRoute
+      "Command { type='%s', session='%s', topicRoute='%s' }",
+      type,
+      session,
+      topicRoute
     );
   }
 }

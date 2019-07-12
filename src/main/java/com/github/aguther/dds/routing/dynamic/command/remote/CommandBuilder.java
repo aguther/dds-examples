@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,9 +38,9 @@ class CommandBuilder {
   private final DynamicPartitionCommandProvider provider;
 
   CommandBuilder(
-      RoutingServiceCommandInterface routingServiceCommandInterface,
-      String targetRoutingService,
-      DynamicPartitionCommandProvider dynamicPartitionCommandProvider
+    RoutingServiceCommandInterface routingServiceCommandInterface,
+    String targetRoutingService,
+    DynamicPartitionCommandProvider dynamicPartitionCommandProvider
   ) {
     this.routingServiceCommandInterface = routingServiceCommandInterface;
     this.targetRoutingService = targetRoutingService;
@@ -48,15 +48,15 @@ class CommandBuilder {
   }
 
   Command buildCreateSessionCommand(
-      Session session
+    Session session
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.action = CommandActionKind.CREATE_ACTION;
     commandRequest.resource_identifier = String.format(
-        "/routing_services/%s/domain_routes/%s",
-        targetRoutingService,
-        provider.getSessionParent(session)
+      "/routing_services/%s/domain_routes/%s",
+      targetRoutingService,
+      provider.getSessionParent(session)
     );
     commandRequest.string_body = String.format(
       "str://\"%s\"",
@@ -65,57 +65,57 @@ class CommandBuilder {
 
     // create and return command
     return new Command(
-        CommandType.COMMAND_TYPE_CREATE,
-        session,
-        null,
-        commandRequest,
-        String.format(
-            "entity='Session', topic='%s', partition='%s'",
-            session.getTopic(),
-            session.getPartition()
-        )
+      CommandType.COMMAND_TYPE_CREATE,
+      session,
+      null,
+      commandRequest,
+      String.format(
+        "entity='Session', topic='%s', partition='%s'",
+        session.getTopic(),
+        session.getPartition()
+      )
     );
   }
 
   Command buildDeleteSessionCommand(
-      Session session
+    Session session
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.action = CommandActionKind.DELETE_ACTION;
     commandRequest.resource_identifier = String.format(
-        "/routing_services/%s/domain_routes/%s/sessions/%s",
-        targetRoutingService,
-        provider.getSessionParent(session),
-        provider.getSessionName(session)
+      "/routing_services/%s/domain_routes/%s/sessions/%s",
+      targetRoutingService,
+      provider.getSessionParent(session),
+      provider.getSessionName(session)
     );
 
     // create and return command
     return new Command(
-        CommandType.COMMAND_TYPE_DELETE,
-        session,
-        null,
-        commandRequest,
-        String.format(
-            "entity='Session', topic='%s', partition='%s'",
-            session.getTopic(),
-            session.getPartition()
-        )
+      CommandType.COMMAND_TYPE_DELETE,
+      session,
+      null,
+      commandRequest,
+      String.format(
+        "entity='Session', topic='%s', partition='%s'",
+        session.getTopic(),
+        session.getPartition()
+      )
     );
   }
 
   Command buildCreateTopicRouteCommand(
-      Session session,
-      TopicRoute topicRoute
+    Session session,
+    TopicRoute topicRoute
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.action = CommandActionKind.CREATE_ACTION;
     commandRequest.resource_identifier = String.format(
-        "/routing_services/%s/domain_routes/%s/sessions/%s",
-        targetRoutingService,
-        provider.getSessionParent(session),
-        provider.getSessionName(session)
+      "/routing_services/%s/domain_routes/%s/sessions/%s",
+      targetRoutingService,
+      provider.getSessionParent(session),
+      provider.getSessionName(session)
     );
     commandRequest.string_body = String.format(
       "str://\"%s\"",
@@ -124,48 +124,48 @@ class CommandBuilder {
 
     // create and return command
     return new Command(
-        CommandType.COMMAND_TYPE_CREATE,
-        session,
-        topicRoute,
-        commandRequest,
-        String.format(
-            "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
-            session.getTopic(),
-            topicRoute.getType(),
-            session.getPartition(),
-            topicRoute.getDirection().toString()
-        )
+      CommandType.COMMAND_TYPE_CREATE,
+      session,
+      topicRoute,
+      commandRequest,
+      String.format(
+        "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition(),
+        topicRoute.getDirection().toString()
+      )
     );
   }
 
   Command buildDeleteTopicRouteCommand(
-      Session session,
-      TopicRoute topicRoute
+    Session session,
+    TopicRoute topicRoute
   ) {
     // create request
     CommandRequest commandRequest = routingServiceCommandInterface.createCommandRequest();
     commandRequest.action = CommandActionKind.DELETE_ACTION;
     commandRequest.resource_identifier = String.format(
-        "/routing_services/%s/domain_routes/%s/sessions/%s/routes/%s",
-        targetRoutingService,
-        provider.getSessionParent(session),
-        provider.getSessionName(session),
-        provider.getTopicRouteName(session, topicRoute)
+      "/routing_services/%s/domain_routes/%s/sessions/%s/routes/%s",
+      targetRoutingService,
+      provider.getSessionParent(session),
+      provider.getSessionName(session),
+      provider.getTopicRouteName(session, topicRoute)
     );
 
     // create and return command
     return new Command(
-        CommandType.COMMAND_TYPE_DELETE,
-        session,
-        topicRoute,
-        commandRequest,
-        String.format(
-            "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
-            session.getTopic(),
-            topicRoute.getType(),
-            session.getPartition(),
-            topicRoute.getDirection().toString()
-        )
+      CommandType.COMMAND_TYPE_DELETE,
+      session,
+      topicRoute,
+      commandRequest,
+      String.format(
+        "entity='TopicRoute', topic='%s', type='%s', partition='%s', direction='%s'",
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition(),
+        topicRoute.getDirection().toString()
+      )
     );
   }
 }

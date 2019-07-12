@@ -42,15 +42,15 @@ public class TopicDescriptionMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     tcSerializedSize = Gauge.build()
-        .name("topic_description_tc_serialized_size")
-        .labelNames(getLabelNames())
-        .help("topic_description_tc_serialized_size")
-        .register();
+      .name("topic_description_tc_serialized_size")
+      .labelNames(getLabelNames())
+      .help("topic_description_tc_serialized_size")
+      .register();
   }
 
   public void process(
-      TopicDescription sample,
-      SampleInfo info
+    TopicDescription sample,
+    SampleInfo info
   ) {
     // put instance handle to hash map if not present
     instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
@@ -72,27 +72,27 @@ public class TopicDescriptionMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "topic_key",
-        "participant_key",
-        "domain_id",
-        "host_id",
-        "process_id",
-        "topic_name",
-        "type_name",
+      "topic_key",
+      "participant_key",
+      "domain_id",
+      "host_id",
+      "process_id",
+      "topic_name",
+      "type_name",
     };
   }
 
   private String[] getLabelValues(
-      TopicDescription sample
+    TopicDescription sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.entity_key.value),
-        BuiltinTopicHelper.toString(sample.participant_entity_key.value),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
-        sample.topic_name,
-        sample.type_name
+      BuiltinTopicHelper.toString(sample.entity_key.value),
+      BuiltinTopicHelper.toString(sample.participant_entity_key.value),
+      Integer.toUnsignedString(sample.domain_id),
+      Integer.toUnsignedString(sample.host_id),
+      Integer.toUnsignedString(sample.process_id),
+      sample.topic_name,
+      sample.type_name
     };
   }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -89,18 +89,18 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @param targetRoutingService the target routing service
    */
   public DynamicPartitionCommander(
-      final RoutingServiceCommandInterface routingServiceCommandInterface,
-      final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
-      final String targetRoutingService
+    final RoutingServiceCommandInterface routingServiceCommandInterface,
+    final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
+    final String targetRoutingService
   ) {
     this(
-        routingServiceCommandInterface,
-        dynamicPartitionCommandProvider,
-        targetRoutingService,
-        DEFAULT_RETRY_DELAY_SECONDS,
-        TimeUnit.SECONDS,
-        DEFAULT_REQUEST_TIMEOUT_SECONDS,
-        TimeUnit.SECONDS
+      routingServiceCommandInterface,
+      dynamicPartitionCommandProvider,
+      targetRoutingService,
+      DEFAULT_RETRY_DELAY_SECONDS,
+      TimeUnit.SECONDS,
+      DEFAULT_REQUEST_TIMEOUT_SECONDS,
+      TimeUnit.SECONDS
     );
   }
 
@@ -114,20 +114,20 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @param retryDelayTimeUnit the retry delay time unit
    */
   public DynamicPartitionCommander(
-      final RoutingServiceCommandInterface routingServiceCommandInterface,
-      final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
-      final String targetRoutingService,
-      final long retryDelay,
-      final TimeUnit retryDelayTimeUnit
+    final RoutingServiceCommandInterface routingServiceCommandInterface,
+    final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
+    final String targetRoutingService,
+    final long retryDelay,
+    final TimeUnit retryDelayTimeUnit
   ) {
     this(
-        routingServiceCommandInterface,
-        dynamicPartitionCommandProvider,
-        targetRoutingService,
-        retryDelay,
-        retryDelayTimeUnit,
-        DEFAULT_REQUEST_TIMEOUT_SECONDS,
-        TimeUnit.SECONDS
+      routingServiceCommandInterface,
+      dynamicPartitionCommandProvider,
+      targetRoutingService,
+      retryDelay,
+      retryDelayTimeUnit,
+      DEFAULT_REQUEST_TIMEOUT_SECONDS,
+      TimeUnit.SECONDS
     );
   }
 
@@ -143,13 +143,13 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @param requestTimeoutTimeUnit the request timeout time unit
    */
   public DynamicPartitionCommander(
-      final RoutingServiceCommandInterface routingServiceCommandInterface,
-      final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
-      final String targetRoutingService,
-      final long retryDelay,
-      final TimeUnit retryDelayTimeUnit,
-      final long requestTimeout,
-      final TimeUnit requestTimeoutTimeUnit
+    final RoutingServiceCommandInterface routingServiceCommandInterface,
+    final DynamicPartitionCommandProvider dynamicPartitionCommandProvider,
+    final String targetRoutingService,
+    final long retryDelay,
+    final TimeUnit retryDelayTimeUnit,
+    final long requestTimeout,
+    final TimeUnit requestTimeoutTimeUnit
   ) {
     checkNotNull(routingServiceCommandInterface, "Command interface must not be null.");
     checkNotNull(dynamicPartitionCommandProvider, "Provider must not be null.");
@@ -166,9 +166,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     this.requestTimeoutTimeUnit = requestTimeoutTimeUnit;
 
     commandBuilder = new CommandBuilder(
-        routingServiceCommandInterface,
-        targetRoutingService,
-        dynamicPartitionCommandProvider
+      routingServiceCommandInterface,
+      targetRoutingService,
+      dynamicPartitionCommandProvider
     );
 
     scheduledCommands = Collections.synchronizedMap(new HashMap<>());
@@ -176,8 +176,8 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     executorService = Executors.newSingleThreadScheduledExecutor();
 
     retryPolicy = new RetryPolicy()
-        .retryWhen(false)
-        .withDelay(retryDelay, retryDelayTimeUnit);
+      .retryWhen(false)
+      .withDelay(retryDelay, retryDelayTimeUnit);
 
     retryPolicyAfterRetry = new RetryPolicy();
   }
@@ -189,12 +189,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void createSession(
-      final Session session
+    final Session session
   ) {
     LOGGER.info(
-        "Create session: topic='{}', partition='{}'",
-        session.getTopic(),
-        session.getPartition()
+      "Create session: topic='{}', partition='{}'",
+      session.getTopic(),
+      session.getPartition()
     );
 
     // schedule creation of session
@@ -203,12 +203,12 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void deleteSession(
-      final Session session
+    final Session session
   ) {
     LOGGER.info(
-        "Delete session: topic='{}', partition='{}'",
-        session.getTopic(),
-        session.getPartition()
+      "Delete session: topic='{}', partition='{}'",
+      session.getTopic(),
+      session.getPartition()
     );
 
     // schedule deletion of session
@@ -217,15 +217,15 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void createTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     LOGGER.info(
-        "Create route: topic='{}', type='{}', partition='{}', direction='{}'",
-        session.getTopic(),
-        topicRoute.getType(),
-        session.getPartition(),
-        topicRoute.getDirection()
+      "Create route: topic='{}', type='{}', partition='{}', direction='{}'",
+      session.getTopic(),
+      topicRoute.getType(),
+      session.getPartition(),
+      topicRoute.getDirection()
     );
 
     // schedule creation of topic route
@@ -234,15 +234,15 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
   @Override
   public void deleteTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     LOGGER.info(
-        "Delete route: topic='{}', type='{}', partition='{}', direction='{}'",
-        session.getTopic(),
-        topicRoute.getType(),
-        session.getPartition(),
-        topicRoute.getDirection()
+      "Delete route: topic='{}', type='{}', partition='{}', direction='{}'",
+      session.getTopic(),
+      topicRoute.getType(),
+      session.getPartition(),
+      topicRoute.getDirection()
     );
 
     // schedule deletion of topic route
@@ -267,11 +267,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @param command command to be scheduled
    */
   private void scheduleCommand(
-      Command command
+    Command command
   ) {
     // create entry for command
     SimpleEntry<Session, TopicRoute> commandKey = new SimpleEntry<>(
-        command.getSession(), command.getTopicRoute());
+      command.getSession(), command.getTopicRoute());
 
     // select default retry policy
     RetryPolicy appliedRetryPolicy = retryPolicy;
@@ -289,10 +289,10 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // schedule creation of session
     FailsafeFuture commandFuture = Failsafe
-        .with(appliedRetryPolicy)
-        .with(executorService)
-        .onSuccess(result -> scheduledCommands.remove(commandKey))
-        .get(() -> sendRequest(command));
+      .with(appliedRetryPolicy)
+      .with(executorService)
+      .onSuccess(result -> scheduledCommands.remove(commandKey))
+      .get(() -> sendRequest(command));
 
     // add command to scheduled commands
     synchronized (scheduledCommands) {
@@ -309,23 +309,23 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if request was successful, false if not
    */
   private boolean sendRequest(
-      final Command command
+    final Command command
   ) {
     // get command request (this needs to be done, otherwise this function is somehow called twice)
     CommandRequest commandRequest = command.getCommandRequest();
 
     // send request and get response
     CommandReply commandResponse = routingServiceCommandInterface.sendRequest(
-        commandRequest,
-        requestTimeout,
-        requestTimeoutTimeUnit
+      commandRequest,
+      requestTimeout,
+      requestTimeoutTimeUnit
     );
 
     // check response
     return checkResponse(
-        command.getCommandRequest(),
-        commandResponse,
-        command.getLoggingFormat()
+      command.getCommandRequest(),
+      commandResponse,
+      command.getLoggingFormat()
     );
   }
 
@@ -338,19 +338,19 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
    * @return true if request was successful, false if not
    */
   private boolean checkResponse(
-      final CommandRequest commandRequest,
-      final CommandReply commandResponse,
-      final String loggingFormat
+    final CommandRequest commandRequest,
+    final CommandReply commandResponse,
+    final String loggingFormat
   ) {
     // response received?
     if (commandResponse == null) {
       LOGGER.error(
-          "No response received request='{}', {}; retry in '{} {}'",
-          commandRequest.action,
-          loggingFormat,
+        "No response received request='{}', {}; retry in '{} {}'",
+        commandRequest.action,
+        loggingFormat,
 
-          retryDelay,
-          retryDelayTimeUnit
+        retryDelay,
+        retryDelayTimeUnit
       );
       return false;
     }
@@ -359,9 +359,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
     if (commandResponse.retcode == CommandReplyRetcode.OK_RETCODE) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
-            "Success request='{}', {}",
-            commandRequest.action,
-            loggingFormat
+          "Success request='{}', {}",
+          commandRequest.action,
+          loggingFormat
         );
       }
       return true;
@@ -369,13 +369,13 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
 
     // failed
     LOGGER.error(
-        "Failed request='{}', {}, reason='{}', message='{}'; retry in '{} {}'",
-        commandRequest.action,
-        loggingFormat,
-        commandResponse.retcode,
-        commandResponse.string_body,
-        retryDelay,
-        retryDelayTimeUnit
+      "Failed request='{}', {}, reason='{}', message='{}'; retry in '{} {}'",
+      commandRequest.action,
+      loggingFormat,
+      commandResponse.retcode,
+      commandResponse.string_body,
+      retryDelay,
+      retryDelayTimeUnit
     );
     return false;
   }

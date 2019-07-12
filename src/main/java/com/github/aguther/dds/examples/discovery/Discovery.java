@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Discovery extends AbstractIdleService
-    implements PublicationObserverListener, SubscriptionObserverListener {
+  implements PublicationObserverListener, SubscriptionObserverListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Discovery.class);
 
@@ -52,7 +52,7 @@ public class Discovery extends AbstractIdleService
   private SubscriptionObserver subscriptionObserver;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -72,15 +72,15 @@ public class Discovery extends AbstractIdleService
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", Discovery.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", Discovery.class.getName())
     ));
   }
 
@@ -94,10 +94,10 @@ public class Discovery extends AbstractIdleService
 
     // create domain participant for discovery
     domainParticipant = DomainParticipantFactory.get_instance().create_participant(
-        0,
-        DomainParticipantFactory.PARTICIPANT_QOS_DEFAULT,
-        null,
-        StatusKind.STATUS_MASK_NONE);
+      0,
+      DomainParticipantFactory.PARTICIPANT_QOS_DEFAULT,
+      null,
+      StatusKind.STATUS_MASK_NONE);
 
     // create new publication observer
     publicationObserver = new PublicationObserver(domainParticipant);
@@ -139,7 +139,7 @@ public class Discovery extends AbstractIdleService
   }
 
   private String convertInstanceHandleToString(
-      final InstanceHandle_t instanceHandle
+    final InstanceHandle_t instanceHandle
   ) {
     StringBuilder stringBuilder = new StringBuilder();
     byte[] values = instanceHandle.get_valuesI();
@@ -154,7 +154,7 @@ public class Discovery extends AbstractIdleService
   }
 
   private String convertPartitionQosPolicyToString(
-      final PartitionQosPolicy partitionQosPolicy
+    final PartitionQosPolicy partitionQosPolicy
   ) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append('[');
@@ -173,102 +173,102 @@ public class Discovery extends AbstractIdleService
 
   @Override
   public void publicationDiscovered(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(
-          "Discovered Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
-          convertInstanceHandleToString(instanceHandle),
-          data.topic_name,
-          data.type_name,
-          convertPartitionQosPolicyToString(data.partition)
+        "Discovered Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
+        convertInstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        convertPartitionQosPolicyToString(data.partition)
       );
     }
   }
 
   @Override
   public void publicationModified(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      PublicationBuiltinTopicData data
+    DomainParticipant domainParticipant,
+    InstanceHandle_t instanceHandle,
+    PublicationBuiltinTopicData data
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(
-          "Modified Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
-          convertInstanceHandleToString(instanceHandle),
-          data.topic_name,
-          data.type_name,
-          convertPartitionQosPolicyToString(data.partition)
+        "Modified Publication : instance='{}', topic='{}', type='{}', partitions='{}'",
+        convertInstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        convertPartitionQosPolicyToString(data.partition)
       );
     }
   }
 
   @Override
   public void publicationLost(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(
-          "Lost Publication       : instance='{}', topic='{}', type='{}', partitions='{}'",
-          convertInstanceHandleToString(instanceHandle),
-          data.topic_name,
-          data.type_name,
-          convertPartitionQosPolicyToString(data.partition)
+        "Lost Publication       : instance='{}', topic='{}', type='{}', partitions='{}'",
+        convertInstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        convertPartitionQosPolicyToString(data.partition)
       );
     }
   }
 
   @Override
   public void subscriptionDiscovered(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(
-          "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
-          convertInstanceHandleToString(instanceHandle),
-          data.topic_name,
-          data.type_name,
-          convertPartitionQosPolicyToString(data.partition)
+        "Discovered Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
+        convertInstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        convertPartitionQosPolicyToString(data.partition)
       );
     }
   }
 
   @Override
   public void subscriptionModified(
-      DomainParticipant domainParticipant,
-      InstanceHandle_t instanceHandle,
-      SubscriptionBuiltinTopicData data
+    DomainParticipant domainParticipant,
+    InstanceHandle_t instanceHandle,
+    SubscriptionBuiltinTopicData data
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(
-          "Modified Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
-          convertInstanceHandleToString(instanceHandle),
-          data.topic_name,
-          data.type_name,
-          convertPartitionQosPolicyToString(data.partition)
+        "Modified Subscription: instance='{}', topic='{}', type='{}', partitions='{}'",
+        convertInstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        convertPartitionQosPolicyToString(data.partition)
       );
     }
   }
 
   @Override
   public void subscriptionLost(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(
-          "Lost Subscription      : instance='{}', topic='{}', type='{}', partitions='{}'",
-          convertInstanceHandleToString(instanceHandle),
-          data.topic_name,
-          data.type_name,
-          convertPartitionQosPolicyToString(data.partition)
+        "Lost Subscription      : instance='{}', topic='{}', type='{}', partitions='{}'",
+        convertInstanceHandleToString(instanceHandle),
+        data.topic_name,
+        data.type_name,
+        convertPartitionQosPolicyToString(data.partition)
       );
     }
   }

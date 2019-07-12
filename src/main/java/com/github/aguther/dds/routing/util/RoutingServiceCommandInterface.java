@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @param domainParticipant domain participant to send and receive commands
    */
   public RoutingServiceCommandInterface(
-      final DomainParticipant domainParticipant
+    final DomainParticipant domainParticipant
   ) {
     // check input parameters
     checkNotNull(domainParticipant, "DomainParticipant must not be null");
@@ -73,9 +73,9 @@ public class RoutingServiceCommandInterface implements Closeable {
 
     // create parameters for requester
     RequesterParams requesterParams = new RequesterParams(
-        domainParticipant,
-        CommandRequestTypeSupport.get_instance(),
-        CommandReplyTypeSupport.get_instance()
+      domainParticipant,
+      CommandRequestTypeSupport.get_instance(),
+      CommandReplyTypeSupport.get_instance()
     );
     requesterParams.setRequestTopicName(COMMAND_REQUEST_TOPIC_NAME.VALUE);
     requesterParams.setReplyTopicName(COMMAND_REPLY_TOPIC_NAME.VALUE);
@@ -101,16 +101,16 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @return true if target routing service was discovered, false if not within timeout
    */
   public boolean waitForDiscovery(
-      final String targetRouter,
-      final long timeOut,
-      final TimeUnit timeOutUnit
+    final String targetRouter,
+    final long timeOut,
+    final TimeUnit timeOutUnit
   ) {
     return waitForDiscovery(
-        targetRouter,
-        timeOut,
-        timeOutUnit,
-        250L,
-        TimeUnit.MILLISECONDS
+      targetRouter,
+      timeOut,
+      timeOutUnit,
+      250L,
+      TimeUnit.MILLISECONDS
     );
   }
 
@@ -125,11 +125,11 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @return true if target routing service was discovered, false if not within timeout
    */
   public boolean waitForDiscovery(
-      final String targetRouter,
-      final long timeOut,
-      final TimeUnit timeOutUnit,
-      final long sleepTime,
-      final TimeUnit sleepTimeUnit
+    final String targetRouter,
+    final long timeOut,
+    final TimeUnit timeOutUnit,
+    final long sleepTime,
+    final TimeUnit sleepTimeUnit
   ) {
     // create participant name for target router according RTI conventions
     String participantNameTargetRouter = String.format("RTI Routing Service: %s", targetRouter);
@@ -152,13 +152,13 @@ public class RoutingServiceCommandInterface implements Closeable {
         for (Object participantHandle : instanceHandles) {
           // get participant data of subscription
           requester.getRequestDataWriter().get_matched_subscription_participant_data(
-              participantData,
-              (InstanceHandle_t) participantHandle
+            participantData,
+            (InstanceHandle_t) participantHandle
           );
 
           // check if related participant is from routing service
           if (participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS
-              && participantData.participant_name.name.equals(participantNameTargetRouter)) {
+            && participantData.participant_name.name.equals(participantNameTargetRouter)) {
             // we discovered the target routing service
             return true;
           }
@@ -194,9 +194,9 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @return response if received within timeout, otherwise null
    */
   public CommandReply sendRequest(
-      final CommandRequest commandRequest,
-      final long timeOut,
-      final TimeUnit timeUnit
+    final CommandRequest commandRequest,
+    final long timeOut,
+    final TimeUnit timeUnit
   ) {
     // logging
     logCommandRequest(commandRequest);
@@ -209,8 +209,8 @@ public class RoutingServiceCommandInterface implements Closeable {
 
     // wait for reply
     boolean replyReceived = requester.receiveReply(
-        reply,
-        DurationFactory.from(timeOut, timeUnit)
+      reply,
+      DurationFactory.from(timeOut, timeUnit)
     );
 
     // logging
@@ -226,17 +226,17 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @param commandRequest request that should be logged
    */
   private void logCommandRequest(
-      final CommandRequest commandRequest
+    final CommandRequest commandRequest
   ) {
     // trace logs
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "CommandRequest.string_body.length()='{}'",
-          commandRequest.string_body.length()
+        "CommandRequest.string_body.length()='{}'",
+        commandRequest.string_body.length()
       );
       LOGGER.trace(
-          "CommandRequest {}",
-          commandRequest.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
+        "CommandRequest {}",
+        commandRequest.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
       );
     }
   }
@@ -248,17 +248,17 @@ public class RoutingServiceCommandInterface implements Closeable {
    * @param replyReceived true if response is valid, otherwise false
    */
   private void logCommandResponse(
-      final Sample<CommandReply> reply,
-      final boolean replyReceived
+    final Sample<CommandReply> reply,
+    final boolean replyReceived
   ) {
     // trace logs
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "CommandReply {}",
-          replyReceived ?
-              reply.getData().toString().replace(
-                  "\n", "").replaceAll("[ ]{2,}", " ")
-              : "<no response received>"
+        "CommandReply {}",
+        replyReceived ?
+          reply.getData().toString().replace(
+            "\n", "").replaceAll("[ ]{2,}", " ")
+          : "<no response received>"
       );
     }
   }

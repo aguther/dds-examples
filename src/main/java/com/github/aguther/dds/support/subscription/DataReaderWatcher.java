@@ -55,10 +55,10 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
   private DataReaderWatcherExecutor<T> executor;
 
   public DataReaderWatcher(
-      DataReader dataReader,
-      ReadConditionParams readConditionParams,
-      DataReaderWatcherExecutor<T> executor,
-      OnDataAvailableListener<T> listener
+    DataReader dataReader,
+    ReadConditionParams readConditionParams,
+    DataReaderWatcherExecutor<T> executor,
+    OnDataAvailableListener<T> listener
   ) {
     checkNotNull(dataReader);
     checkNotNull(readConditionParams);
@@ -129,9 +129,9 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
 
       // read or take samples
       executor.execute(
-          dataReader,
-          readCondition,
-          listener
+        dataReader,
+        readCondition,
+        listener
       );
 
     } while (!guardCondition.get_trigger_value());

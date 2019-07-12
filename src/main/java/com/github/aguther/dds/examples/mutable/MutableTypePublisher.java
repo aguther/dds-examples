@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,19 +59,19 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
   private int counter;
 
   MutableTypePublisher(
-      final DomainParticipant domainParticipant,
-      final String dataWriterName,
-      final int sleepTime
+    final DomainParticipant domainParticipant,
+    final String dataWriterName,
+    final int sleepTime
   ) {
     this(
-        domainParticipant.lookup_datawriter_by_name(dataWriterName),
-        sleepTime
+      domainParticipant.lookup_datawriter_by_name(dataWriterName),
+      sleepTime
     );
   }
 
   MutableTypePublisher(
-      final DataWriter dataWriter,
-      final int sleepTime
+    final DataWriter dataWriter,
+    final int sleepTime
   ) {
     checkNotNull(dataWriter, "DataWriter must not be null");
     checkArgument(sleepTime >= 0, "Sleep time expected to be 0 or greater");
@@ -97,10 +97,10 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
         // log number of sample
         LOGGER.info(
-            "Writing sample: key='{}', union='{}', array[0].number='{}'",
-            sample.key,
-            sample.unionType._d,
-            sample.arrayType[0].number
+          "Writing sample: key='{}', union='{}', array[0].number='{}'",
+          sample.key,
+          sample.unionType._d,
+          sample.arrayType[0].number
         );
 
         // write sample
@@ -149,8 +149,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_offered_deadline_missed(
-      final DataWriter dataWriter,
-      final OfferedDeadlineMissedStatus offeredDeadlineMissedStatus
+    final DataWriter dataWriter,
+    final OfferedDeadlineMissedStatus offeredDeadlineMissedStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", offeredDeadlineMissedStatus.toString());
@@ -159,8 +159,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_offered_incompatible_qos(
-      final DataWriter dataWriter,
-      final OfferedIncompatibleQosStatus offeredIncompatibleQosStatus
+    final DataWriter dataWriter,
+    final OfferedIncompatibleQosStatus offeredIncompatibleQosStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", offeredIncompatibleQosStatus.toString());
@@ -169,8 +169,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_liveliness_lost(
-      final DataWriter dataWriter,
-      final LivelinessLostStatus livelinessLostStatus
+    final DataWriter dataWriter,
+    final LivelinessLostStatus livelinessLostStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", livelinessLostStatus.toString());
@@ -179,8 +179,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_publication_matched(
-      final DataWriter dataWriter,
-      final PublicationMatchedStatus publicationMatchedStatus
+    final DataWriter dataWriter,
+    final PublicationMatchedStatus publicationMatchedStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", publicationMatchedStatus.toString());
@@ -189,8 +189,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_reliable_writer_cache_changed(
-      final DataWriter dataWriter,
-      final ReliableWriterCacheChangedStatus reliableWriterCacheChangedStatus
+    final DataWriter dataWriter,
+    final ReliableWriterCacheChangedStatus reliableWriterCacheChangedStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", reliableWriterCacheChangedStatus.toString());
@@ -199,8 +199,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_reliable_reader_activity_changed(
-      final DataWriter dataWriter,
-      final ReliableReaderActivityChangedStatus reliableReaderActivityChangedStatus
+    final DataWriter dataWriter,
+    final ReliableReaderActivityChangedStatus reliableReaderActivityChangedStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", reliableReaderActivityChangedStatus.toString());
@@ -209,9 +209,9 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_destination_unreachable(
-      final DataWriter dataWriter,
-      final InstanceHandle_t instanceHandle,
-      final Locator_t locator
+    final DataWriter dataWriter,
+    final InstanceHandle_t instanceHandle,
+    final Locator_t locator
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("{}; {}", instanceHandle.toString(), locator.toString());
@@ -220,17 +220,17 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public Object on_data_request(
-      final DataWriter dataWriter,
-      final Cookie_t cookie
+    final DataWriter dataWriter,
+    final Cookie_t cookie
   ) {
     return null;
   }
 
   @Override
   public void on_data_return(
-      final DataWriter dataWriter,
-      final Object o,
-      final Cookie_t cookie
+    final DataWriter dataWriter,
+    final Object o,
+    final Cookie_t cookie
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{} {}", o.toString(), cookie.toString());
@@ -239,8 +239,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_sample_removed(
-      final DataWriter dataWriter,
-      final Cookie_t cookie
+    final DataWriter dataWriter,
+    final Cookie_t cookie
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", cookie.toString());
@@ -249,8 +249,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_instance_replaced(
-      final DataWriter dataWriter,
-      final InstanceHandle_t instanceHandle
+    final DataWriter dataWriter,
+    final InstanceHandle_t instanceHandle
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", instanceHandle.toString());
@@ -259,8 +259,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_application_acknowledgment(
-      final DataWriter dataWriter,
-      final AcknowledgmentInfo acknowledgmentInfo
+    final DataWriter dataWriter,
+    final AcknowledgmentInfo acknowledgmentInfo
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("{}", acknowledgmentInfo.toString());
@@ -269,8 +269,8 @@ public class MutableTypePublisher implements Runnable, DataWriterListener {
 
   @Override
   public void on_service_request_accepted(
-      final DataWriter dataWriter,
-      final ServiceRequestAcceptedStatus serviceRequestAcceptedStatus
+    final DataWriter dataWriter,
+    final ServiceRequestAcceptedStatus serviceRequestAcceptedStatus
   ) {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("{}", serviceRequestAcceptedStatus.toString());

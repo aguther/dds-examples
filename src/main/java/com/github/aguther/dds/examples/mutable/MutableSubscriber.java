@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ public class MutableSubscriber extends AbstractIdleService {
   private MutableTypeListener mutableTypeListener;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -63,15 +63,15 @@ public class MutableSubscriber extends AbstractIdleService {
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", MutableSubscriber.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", MutableSubscriber.class.getName())
     ));
   }
 
@@ -116,20 +116,20 @@ public class MutableSubscriber extends AbstractIdleService {
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        MutableTypeTypeSupport.get_instance(),
-        MutableTypeTypeSupport.get_type_name()
+      MutableTypeTypeSupport.get_instance(),
+      MutableTypeTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::MutableSubscriber"
+      "DomainParticipantLibrary::MutableSubscriber"
     );
   }
 
   private void startSubscription() {
     // start subscription
     mutableTypeListener = new MutableTypeListener(
-        domainParticipant.lookup_datareader_by_name("Subscriber::MutableTypeDataReader")
+      domainParticipant.lookup_datareader_by_name("Subscriber::MutableTypeDataReader")
     );
   }
 

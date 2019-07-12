@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
    * @param domainParticipant the domain participant (that is not yet enabled)
    */
   public PublicationObserver(
-      final DomainParticipant domainParticipant
+    final DomainParticipant domainParticipant
   ) {
     // create the parent observer with the built-in publication topic
     super(domainParticipant, PublicationBuiltinTopicDataTypeSupport.PUBLICATION_TOPIC_NAME);
@@ -82,7 +82,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
    * @param listener the listener
    */
   public void addListener(
-      final PublicationObserverListener listener
+    final PublicationObserverListener listener
   ) {
     addListener(listener, true);
   }
@@ -94,8 +94,8 @@ public class PublicationObserver extends BuiltinTopicObserver {
    * @param deliverReadSamples true to deliver already read samples
    */
   public void addListener(
-      final PublicationObserverListener listener,
-      final boolean deliverReadSamples
+    final PublicationObserverListener listener,
+    final boolean deliverReadSamples
   ) {
     checkNotNull(listener, "Listener must not be null");
 
@@ -105,9 +105,9 @@ public class PublicationObserver extends BuiltinTopicObserver {
       if (deliverReadSamples) {
         for (Entry<InstanceHandle_t, PublicationBuiltinTopicData> entry : sampleCache.entrySet()) {
           listener.publicationDiscovered(
-              domainParticipant,
-              entry.getKey(),
-              entry.getValue()
+            domainParticipant,
+            entry.getKey(),
+            entry.getValue()
           );
         }
       }
@@ -120,7 +120,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
    * @param listener the listener
    */
   public void removeListener(
-      final PublicationObserverListener listener
+    final PublicationObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
     synchronized (listeners) {
@@ -178,8 +178,8 @@ public class PublicationObserver extends BuiltinTopicObserver {
    * @param sampleInfo publication info
    */
   private void invokePublicationDiscovered(
-      PublicationBuiltinTopicData sample,
-      SampleInfo sampleInfo
+    PublicationBuiltinTopicData sample,
+    SampleInfo sampleInfo
   ) {
     synchronized (listeners) {
       // log information
@@ -188,9 +188,9 @@ public class PublicationObserver extends BuiltinTopicObserver {
       // iterate over listeners and invoke them
       for (PublicationObserverListener listener : listeners) {
         listener.publicationDiscovered(
-            domainParticipant,
-            sampleInfo.instance_handle,
-            sample
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
         );
       }
     }
@@ -203,8 +203,8 @@ public class PublicationObserver extends BuiltinTopicObserver {
    * @param sampleInfo publication info
    */
   private void invokePublicationModified(
-      PublicationBuiltinTopicData sample,
-      SampleInfo sampleInfo
+    PublicationBuiltinTopicData sample,
+    SampleInfo sampleInfo
   ) {
     synchronized (listeners) {
       // log information
@@ -213,9 +213,9 @@ public class PublicationObserver extends BuiltinTopicObserver {
       // iterate over listeners and invoke them
       for (PublicationObserverListener listener : listeners) {
         listener.publicationModified(
-            domainParticipant,
-            sampleInfo.instance_handle,
-            sample
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
         );
       }
     }
@@ -228,8 +228,8 @@ public class PublicationObserver extends BuiltinTopicObserver {
    * @param sampleInfo publication info
    */
   private void invokePublicationLost(
-      PublicationBuiltinTopicData sample,
-      SampleInfo sampleInfo
+    PublicationBuiltinTopicData sample,
+    SampleInfo sampleInfo
   ) {
     synchronized (listeners) {
       // log information
@@ -238,36 +238,36 @@ public class PublicationObserver extends BuiltinTopicObserver {
       // iterate over listeners and invoke them
       for (PublicationObserverListener listener : listeners) {
         listener.publicationLost(
-            domainParticipant,
-            sampleInfo.instance_handle,
-            sample
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
         );
       }
     }
   }
 
   private void logListenerInvocation(
-      String name,
-      SampleInfo sampleInfo,
-      PublicationBuiltinTopicData sample
+    String name,
+    SampleInfo sampleInfo,
+    PublicationBuiltinTopicData sample
   ) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
-          name,
-          sampleInfo.instance_handle,
-          sample.topic_name,
-          sample.type_name,
-          sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
-          sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
+        "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
+        name,
+        sampleInfo.instance_handle,
+        sample.topic_name,
+        sample.type_name,
+        sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
+        sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
       );
     } else if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
-          name,
-          sampleInfo.instance_handle,
-          sample.topic_name,
-          sample.type_name
+        "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
+        name,
+        sampleInfo.instance_handle,
+        sample.topic_name,
+        sample.type_name
       );
     }
   }

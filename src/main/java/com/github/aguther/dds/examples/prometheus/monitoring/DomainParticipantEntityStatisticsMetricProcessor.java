@@ -49,52 +49,52 @@ public class DomainParticipantEntityStatisticsMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     userCpuTime = Gauge.build()
-        .name("domainparticipant_entity_statistics_user_cpu_time")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_entity_statistics_user_cpu_time")
-        .register();
+      .name("domainparticipant_entity_statistics_user_cpu_time")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_entity_statistics_user_cpu_time")
+      .register();
 
     kernelCpuTime = Gauge.build()
-        .name("domainparticipant_entity_statistics_kernel_cpu_time")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_entity_statistics_kernel_cpu_time")
-        .register();
+      .name("domainparticipant_entity_statistics_kernel_cpu_time")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_entity_statistics_kernel_cpu_time")
+      .register();
 
     physicalMemoryBytes = Gauge.build()
-        .name("domainparticipant_entity_statistics_physical_memory_bytes")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_entity_statistics_physical_memory_bytes")
-        .register();
+      .name("domainparticipant_entity_statistics_physical_memory_bytes")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_entity_statistics_physical_memory_bytes")
+      .register();
 
     totalMemoryBytes = Gauge.build()
-        .name("domainparticipant_entity_statistics_total_memory_bytes")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_entity_statistics_total_memory_bytes")
-        .register();
+      .name("domainparticipant_entity_statistics_total_memory_bytes")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_entity_statistics_total_memory_bytes")
+      .register();
 
     remoteParticipantCount = Gauge.build()
-        .name("domainparticipant_entity_statistics_remote_participant_count")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_entity_statistics_remote_participant_count")
-        .register();
+      .name("domainparticipant_entity_statistics_remote_participant_count")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_entity_statistics_remote_participant_count")
+      .register();
 
     remoteWriterCount = Gauge.build()
-        .name("domainparticipant_entity_statistics_remote_writer_count")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_entity_statistics_remote_writer_count")
-        .register();
+      .name("domainparticipant_entity_statistics_remote_writer_count")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_entity_statistics_remote_writer_count")
+      .register();
 
     remoteReaderCount = Gauge.build()
-        .name("domainparticipant_entity_statistics_remote_reader_count")
-        .labelNames(getLabelNames())
-        .help("domainparticipant_entity_statistics_remote_reader_count")
-        .register();
+      .name("domainparticipant_entity_statistics_remote_reader_count")
+      .labelNames(getLabelNames())
+      .help("domainparticipant_entity_statistics_remote_reader_count")
+      .register();
 
   }
 
   public void process(
-      DomainParticipantEntityStatistics sample,
-      SampleInfo info
+    DomainParticipantEntityStatistics sample,
+    SampleInfo info
   ) {
     // put instance handle to hash map if not present
     instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
@@ -128,28 +128,28 @@ public class DomainParticipantEntityStatisticsMetricProcessor {
 
   private String[] getLabelNames() {
     return new String[]{
-        "participant_key",
-        "period",
-        "domain_id",
-        "host_id",
-        "process_id"
+      "participant_key",
+      "period",
+      "domain_id",
+      "host_id",
+      "process_id"
     };
   }
 
   private String[] getLabelValues(
-      DomainParticipantEntityStatistics sample
+    DomainParticipantEntityStatistics sample
   ) {
     return new String[]{
-        BuiltinTopicHelper.toString(sample.participant_key.value),
-        Long.toUnsignedString((long) sample.period.sec * 1000000000 + (long) sample.period.nanosec),
-        Integer.toUnsignedString(sample.domain_id),
-        Integer.toUnsignedString(sample.host_id),
-        Integer.toUnsignedString(sample.process_id),
+      BuiltinTopicHelper.toString(sample.participant_key.value),
+      Long.toUnsignedString((long) sample.period.sec * 1000000000 + (long) sample.period.nanosec),
+      Integer.toUnsignedString(sample.domain_id),
+      Integer.toUnsignedString(sample.host_id),
+      Integer.toUnsignedString(sample.process_id),
     };
   }
 
   private long getDurationNanosec(
-      Duration_t duration
+    Duration_t duration
   ) {
     return ((long) duration.sec * 1000000000) + (long) duration.nanosec;
   }

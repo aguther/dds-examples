@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ public class DomainParticipantHelper {
    * @return True if enabled, false if not enabled
    */
   public static boolean isEnabled(
-      final DomainParticipant domainParticipant
+    final DomainParticipant domainParticipant
   ) {
     try {
       // try to get discovered participants; this call will trigger

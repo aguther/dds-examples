@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,30 +37,30 @@ public class ShapeAttributes {
 
   public ShapeAttributes() {
     this(
-        "BLUE",
-        30,
-        ShapeFillKind.SOLID_FILL,
-        0.0f
+      "BLUE",
+      30,
+      ShapeFillKind.SOLID_FILL,
+      0.0f
     );
   }
 
   public ShapeAttributes(
-      final String color,
-      final int size
+    final String color,
+    final int size
   ) {
     this(
-        color,
-        size,
-        ShapeFillKind.SOLID_FILL,
-        0.0f
+      color,
+      size,
+      ShapeFillKind.SOLID_FILL,
+      0.0f
     );
   }
 
   public ShapeAttributes(
-      final String color,
-      final int size,
-      final ShapeFillKind fillKind,
-      final float angle
+    final String color,
+    final int size,
+    final ShapeFillKind fillKind,
+    final float angle
   ) {
     this.color = color;
     this.size = size;

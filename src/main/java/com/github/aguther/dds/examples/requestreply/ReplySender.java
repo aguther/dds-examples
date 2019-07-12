@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ public class ReplySender implements SimpleReplierListener<RequestType, ReplyType
 
   @Override
   public ReplyType onRequestAvailable(
-      final Sample<RequestType> sample
+    final Sample<RequestType> sample
   ) {
     // check if request is valid
     if (!sample.getInfo().valid_data) {
@@ -52,9 +52,9 @@ public class ReplySender implements SimpleReplierListener<RequestType, ReplyType
     // log request
     RequestType request = sample.getData();
     LOGGER.info(
-        "Received request (id='{}', request='{}')",
-        request.id,
-        request.request
+      "Received request (id='{}', request='{}')",
+      request.id,
+      request.request
     );
 
     // create reply
@@ -64,9 +64,9 @@ public class ReplySender implements SimpleReplierListener<RequestType, ReplyType
 
     // log reply
     LOGGER.info(
-        "Writing reply (result='{}', description='{}')",
-        reply.result,
-        reply.description
+      "Writing reply (result='{}', description='{}')",
+      reply.result,
+      reply.description
     );
 
     // send reply
@@ -75,7 +75,7 @@ public class ReplySender implements SimpleReplierListener<RequestType, ReplyType
 
   @Override
   public void returnLoan(
-      final ReplyType replyType
+    final ReplyType replyType
   ) {
     // nothing to do
   }

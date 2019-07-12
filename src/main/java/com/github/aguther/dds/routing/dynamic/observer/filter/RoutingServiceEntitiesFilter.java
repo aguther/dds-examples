@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,61 +45,61 @@ public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFil
 
   @Override
   public boolean ignorePublication(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     return isRoutingServiceEntity(
-        domainParticipant,
-        instanceHandle,
-        data.participant_key
+      domainParticipant,
+      instanceHandle,
+      data.participant_key
     );
   }
 
   @Override
   public boolean ignoreSubscription(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     return isRoutingServiceEntity(
-        domainParticipant,
-        instanceHandle,
-        data.participant_key
+      domainParticipant,
+      instanceHandle,
+      data.participant_key
     );
   }
 
   @Override
   public boolean ignorePartition(
-      final String topicName,
-      final String partition
+    final String topicName,
+    final String partition
   ) {
     return false;
   }
 
   private boolean isRoutingServiceEntity(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final BuiltinTopicKey_t participantKey
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
     ParticipantBuiltinTopicData participantData = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant,
-        participantKey
+      domainParticipant,
+      participantKey
     );
 
     // check if participant belongs to a routing service
     boolean result = (participantData != null
-        && participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS);
+      && participantData.service.kind == ServiceQosPolicyKind.ROUTING_SERVICE_QOS);
 
     // log decision
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "instance='{}', ignore='{}' (filter='{}', service.kind='{}')",
-          instanceHandle,
-          result,
-          ServiceQosPolicyKind.ROUTING_SERVICE_QOS.toString(),
-          participantData != null ? participantData.service.kind.toString() : "unknown"
+        "instance='{}', ignore='{}' (filter='{}', service.kind='{}')",
+        instanceHandle,
+        result,
+        ServiceQosPolicyKind.ROUTING_SERVICE_QOS.toString(),
+        participantData != null ? participantData.service.kind.toString() : "unknown"
       );
     }
 

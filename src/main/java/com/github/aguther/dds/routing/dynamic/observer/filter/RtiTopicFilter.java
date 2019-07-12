@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,39 +41,39 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
 
   @Override
   public boolean ignorePublication(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     return isRtiTopic(
-        instanceHandle,
-        data.topic_name
+      instanceHandle,
+      data.topic_name
     );
   }
 
   @Override
   public boolean ignoreSubscription(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     return isRtiTopic(
-        instanceHandle,
-        data.topic_name
+      instanceHandle,
+      data.topic_name
     );
   }
 
   @Override
   public boolean ignorePartition(
-      final String topicName,
-      final String partition
+    final String topicName,
+    final String partition
   ) {
     return false;
   }
 
   private boolean isRtiTopic(
-      final InstanceHandle_t instanceHandle,
-      final String topicName
+    final InstanceHandle_t instanceHandle,
+    final String topicName
   ) {
     // ignore all rti topics
     boolean result = topicName.startsWith("rti");
@@ -81,11 +81,11 @@ public class RtiTopicFilter implements DynamicPartitionObserverFilter {
     // log decision
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "instance='{}', ignore='{}' (filter='{}', topic='{}')",
-          instanceHandle,
-          result,
-          "startsWith(\"rti\")",
-          topicName
+        "instance='{}', ignore='{}' (filter='{}', topic='{}')",
+        instanceHandle,
+        result,
+        "startsWith(\"rti\")",
+        topicName
       );
     }
 

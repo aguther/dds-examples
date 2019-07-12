@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,9 +37,9 @@ public class TopicRoute {
   private final String type;
 
   public TopicRoute(
-      final Direction direction,
-      final String topic,
-      final String type
+    final Direction direction,
+    final String topic,
+    final String type
   ) {
     this.direction = direction;
     this.topic = topic;
@@ -60,7 +60,7 @@ public class TopicRoute {
 
   @Override
   public boolean equals(
-      Object o
+    Object o
   ) {
     if (this == o) {
       return true;
@@ -70,8 +70,8 @@ public class TopicRoute {
     }
     TopicRoute that = (TopicRoute) o;
     return direction == that.direction &&
-        Objects.equals(topic, that.topic) &&
-        Objects.equals(type, that.type);
+      Objects.equals(topic, that.topic) &&
+      Objects.equals(type, that.type);
   }
 
   @Override
@@ -82,10 +82,10 @@ public class TopicRoute {
   @Override
   public String toString() {
     return String.format(
-        "TopicRoute { topic='%s', type='%s', direction='%s' }",
-        topic,
-        type,
-        direction.toString()
+      "TopicRoute { topic='%s', type='%s', direction='%s' }",
+      topic,
+      type,
+      direction.toString()
     );
   }
 }

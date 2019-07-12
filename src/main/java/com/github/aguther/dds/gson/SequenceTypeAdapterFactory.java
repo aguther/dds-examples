@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,8 +40,8 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
 
   @Override
   public <T> TypeAdapter<T> create(
-      final Gson gson,
-      final TypeToken<T> typeToken
+    final Gson gson,
+    final TypeToken<T> typeToken
   ) {
 
     // get raw type
@@ -67,8 +67,8 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
 
       // return new type adapter
       return (TypeAdapter<T>) new SequenceTypeAdapter(
-          rawType,
-          nestedTypeAdapter
+        rawType,
+        nestedTypeAdapter
       );
 
     } catch (NoSuchMethodException e) {
@@ -84,8 +84,8 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
     private TypeAdapter<E> typeAdapter;
 
     private SequenceTypeAdapter(
-        final Class clazz,
-        final TypeAdapter<E> typeAdapter
+      final Class clazz,
+      final TypeAdapter<E> typeAdapter
     ) {
       this.clazz = clazz;
       this.typeAdapter = typeAdapter;
@@ -93,8 +93,8 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public void write(
-        final JsonWriter out,
-        final T value
+      final JsonWriter out,
+      final T value
     ) throws IOException {
 
       if (value == null) {
@@ -113,7 +113,7 @@ public class SequenceTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public T read(
-        final JsonReader in
+      final JsonReader in
     ) throws IOException {
 
       if (in.peek() == JsonToken.NULL) {

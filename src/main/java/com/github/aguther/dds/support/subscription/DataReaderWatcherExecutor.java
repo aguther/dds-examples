@@ -30,9 +30,9 @@ import com.rti.dds.subscription.ReadCondition;
 public interface DataReaderWatcherExecutor<T> {
 
   void execute(
-      DataReader dataReader,
-      ReadCondition readCondition,
-      OnDataAvailableListener<T> listener
+    DataReader dataReader,
+    ReadCondition readCondition,
+    OnDataAvailableListener<T> listener
   );
 
 }

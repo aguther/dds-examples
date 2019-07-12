@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -67,30 +67,30 @@ public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
 
   @Override
   public void write(
-      final LogMessage logMessage
+    final LogMessage logMessage
   ) {
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_ERROR
-        && LOGGER.isErrorEnabled()) {
+      && LOGGER.isErrorEnabled()) {
       LOGGER.error(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_WARNING
-        && LOGGER.isWarnEnabled()) {
+      && LOGGER.isWarnEnabled()) {
       LOGGER.warn(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_STATUS_LOCAL
-        && LOGGER.isTraceEnabled()) {
+      && LOGGER.isTraceEnabled()) {
       LOGGER.trace(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_STATUS_REMOTE
-        && LOGGER.isTraceEnabled()) {
+      && LOGGER.isTraceEnabled()) {
       LOGGER.trace(logMessage.text.replace('\n', ' '));
       return;
     }
     if (logMessage.level == NDDS_CONFIG_LOG_LEVEL_DEBUG
-        && LOGGER.isDebugEnabled()) {
+      && LOGGER.isDebugEnabled()) {
       LOGGER.debug(logMessage.text.replace('\n', ' '));
     }
   }

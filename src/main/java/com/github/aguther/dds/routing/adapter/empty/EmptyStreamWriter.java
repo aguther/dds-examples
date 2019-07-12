@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,15 +36,15 @@ public class EmptyStreamWriter implements StreamWriter {
 
   @Override
   public int write(
-      final List<Object> sampleList,
-      final List<Object> infoList
+    final List<Object> sampleList,
+    final List<Object> infoList
   ) throws AdapterException {
     return 0;
   }
 
   @Override
   public void update(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     // do nothing
   }
