@@ -287,7 +287,7 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-      "DomainParticipantLibrary::Prometheus"
+      "DomainParticipantLibrary::DdsMonitoringLibraryPrometheus"
     );
   }
 

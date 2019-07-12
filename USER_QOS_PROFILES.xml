@@ -12,6 +12,8 @@
           </thread>
         </event>
         <resource_limits>
+          <participant_property_string_max_length>4096</participant_property_string_max_length>
+          <participant_property_list_max_length>45</participant_property_list_max_length>
           <type_object_max_serialized_length>65535</type_object_max_serialized_length>
         </resource_limits>
         <property>
@@ -98,6 +100,23 @@
         </property>
       </datareader_qos>
     </qos_profile>
+
+    <qos_profile name="Monitoring" base_name="Base">
+      <participant_qos>
+        <property>
+          <value>
+            <element>
+              <name>rti.monitor.library</name>
+              <value>rtimonitoring</value>
+            </element>
+            <element>
+              <name>rti.monitor.create_function</name>
+              <value>RTIDefaultMonitor_create</value>
+            </element>
+          </value>
+        </property>
+      </participant_qos>
+    </qos_profile>
   </qos_library>
 
   <!-- Domains -->
@@ -125,6 +144,61 @@
       <register_type name="v1::MutableType"/>
       <topic name="Mutable" register_type_ref="v2::MutableType"/>
     </domain>
+
+    <!-- DdsMonitoringLibraryPrometheus -->
+    <domain name="DdsMonitoringLibraryPrometheus" domain_id="0">
+      <register_type name="rti::dds::monitoring::DataReaderDescription"/>
+      <topic name="rti/dds/monitoring/dataReaderDescription"
+        register_type_ref="rti::dds::monitoring::DataReaderDescription"/>
+
+      <register_type name="rti::dds::monitoring::DataReaderEntityMatchedPublicationStatistics"/>
+      <topic name="rti/dds/monitoring/dataReaderEntityMatchedPublicationStatistics"
+        register_type_ref="rti::dds::monitoring::DataReaderEntityMatchedPublicationStatistics"/>
+
+      <register_type name="rti::dds::monitoring::DataReaderEntityStatistics"/>
+      <topic name="rti/dds/monitoring/dataReaderEntityStatistics"
+        register_type_ref="rti::dds::monitoring::DataReaderEntityStatistics"/>
+
+      <register_type name="rti::dds::monitoring::DataWriterDescription"/>
+      <topic name="rti/dds/monitoring/dataWriterDescription"
+        register_type_ref="rti::dds::monitoring::DataWriterDescription"/>
+
+      <register_type name="rti::dds::monitoring::DataWriterEntityMatchedSubscriptionStatistics"/>
+      <topic name="rti/dds/monitoring/dataWriterEntityMatchedSubscriptionStatistics"
+        register_type_ref="rti::dds::monitoring::DataWriterEntityMatchedSubscriptionStatistics"/>
+
+      <register_type name="rti::dds::monitoring::DataWriterEntityMatchedSubscriptionWithLocatorStatistics"/>
+      <topic name="rti/dds/monitoring/dataWriterEntityMatchedSubscriptionWithLocatorStatistics"
+        register_type_ref="rti::dds::monitoring::DataWriterEntityMatchedSubscriptionWithLocatorStatistics"/>
+
+      <register_type name="rti::dds::monitoring::DataWriterEntityStatistics"/>
+      <topic name="rti/dds/monitoring/dataWriterEntityStatistics"
+        register_type_ref="rti::dds::monitoring::DataWriterEntityStatistics"/>
+
+      <register_type name="rti::dds::monitoring::DomainParticipantDescription"/>
+      <topic name="rti/dds/monitoring/domainParticipantDescription"
+        register_type_ref="rti::dds::monitoring::DomainParticipantDescription"/>
+
+      <register_type name="rti::dds::monitoring::DomainParticipantEntityStatistics"/>
+      <topic name="rti/dds/monitoring/domainParticipantEntityStatistics"
+        register_type_ref="rti::dds::monitoring::DomainParticipantEntityStatistics"/>
+
+      <register_type name="rti::dds::monitoring::PublisherDescription"/>
+      <topic name="rti/dds/monitoring/publisherDescription"
+        register_type_ref="rti::dds::monitoring::PublisherDescription"/>
+
+      <register_type name="rti::dds::monitoring::SubscriberDescription"/>
+      <topic name="rti/dds/monitoring/subscriberDescription"
+        register_type_ref="rti::dds::monitoring::SubscriberDescription"/>
+
+      <register_type name="rti::dds::monitoring::TopicDescription"/>
+      <topic name="rti/dds/monitoring/topicDescription"
+        register_type_ref="rti::dds::monitoring::TopicDescription"/>
+
+      <register_type name="rti::dds::monitoring::TopicEntityStatistics"/>
+      <topic name="rti/dds/monitoring/topicEntityStatistics"
+        register_type_ref="rti::dds::monitoring::TopicEntityStatistics"/>
+    </domain>
   </domain_library>
 
   <!-- Participants -->
@@ -145,7 +219,7 @@
           </datawriter_qos>
         </data_writer>
       </publisher>
-      <participant_qos base_name="QosLibrary::Base">
+      <participant_qos base_name="QosLibrary::Monitoring">
         <participant_name>
           <name>ShapePublisher</name>
         </participant_name>
@@ -166,7 +240,7 @@
           </datareader_qos>
         </data_reader>
       </subscriber>
-      <participant_qos base_name="QosLibrary::Base">
+      <participant_qos base_name="QosLibrary::Monitoring">
         <participant_name>
           <name>ShapeSubscriber</name>
         </participant_name>
@@ -328,6 +402,112 @@
       <participant_qos base_name="QosLibrary::Base">
         <participant_name>
           <name>ShapeSupportSubscriber</name>
+        </participant_name>
+      </participant_qos>
+    </domain_participant>
+
+    <!-- Prometheus -->
+    <domain_participant name="DdsMonitoringLibraryPrometheus"
+      domain_ref="DomainLibrary::DdsMonitoringLibraryPrometheus">
+      <subscriber name="Subscriber">
+        <data_reader name="DataReaderDescription"
+          topic_ref="rti/dds/monitoring/dataReaderDescription">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="DataReaderEntityMatchedPublicationStatistics"
+          topic_ref="rti/dds/monitoring/dataReaderEntityMatchedPublicationStatistics">
+          <datareader_qos base_name="QosLibrary::Base"/>
+        </data_reader>
+        <data_reader name="DataReaderEntityStatistics"
+          topic_ref="rti/dds/monitoring/dataReaderEntityStatistics">
+          <datareader_qos base_name="QosLibrary::Base"/>
+        </data_reader>
+        <data_reader name="DataWriterDescription"
+          topic_ref="rti/dds/monitoring/dataWriterDescription">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="DataWriterEntityMatchedSubscriptionStatistics"
+          topic_ref="rti/dds/monitoring/dataWriterEntityMatchedSubscriptionStatistics">
+          <datareader_qos base_name="QosLibrary::Base"/>
+        </data_reader>
+        <data_reader name="DataWriterEntityMatchedSubscriptionWithLocatorStatistics"
+          topic_ref="rti/dds/monitoring/dataWriterEntityMatchedSubscriptionWithLocatorStatistics">
+          <datareader_qos base_name="QosLibrary::Base"/>
+        </data_reader>
+        <data_reader name="DataWriterEntityStatistics"
+          topic_ref="rti/dds/monitoring/dataWriterEntityStatistics">
+          <datareader_qos base_name="QosLibrary::Base"/>
+        </data_reader>
+        <data_reader name="DomainParticipantDescription"
+          topic_ref="rti/dds/monitoring/domainParticipantDescription">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="DomainParticipantEntityStatistics"
+          topic_ref="rti/dds/monitoring/domainParticipantEntityStatistics">
+          <datareader_qos base_name="QosLibrary::Base"/>
+        </data_reader>
+        <data_reader name="PublisherDescription"
+          topic_ref="rti/dds/monitoring/publisherDescription">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="SubscriberDescription"
+          topic_ref="rti/dds/monitoring/subscriberDescription">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="TopicDescription"
+          topic_ref="rti/dds/monitoring/topicDescription">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="TopicEntityStatistics"
+          topic_ref="rti/dds/monitoring/topicEntityStatistics">
+          <datareader_qos base_name="QosLibrary::Base"/>
+        </data_reader>
+      </subscriber>
+      <participant_qos base_name="QosLibrary::Base">
+        <participant_name>
+          <name>DdsMonitoringLibraryPrometheus</name>
         </participant_name>
       </participant_qos>
     </domain_participant>
