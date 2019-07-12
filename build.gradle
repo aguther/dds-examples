@@ -2,21 +2,21 @@ group 'com.github.aguther.dds.examples'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+  repositories {
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
     }
-    dependencies {
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
-        classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
-        classpath "gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.5"
-    }
+  }
+  dependencies {
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
+    classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
+    classpath "gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.5"
+  }
 }
 
 repositories {
-    jcenter()
+  jcenter()
 }
 
 apply plugin: "java"
@@ -29,93 +29,93 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 sonarqube {
-    properties {
-        property "sonar.exclusions", "**generated/**, **/examples/**"
-    }
+  properties {
+    property "sonar.exclusions", "**generated/**, **/examples/**"
+  }
 }
 
 sourceSets {
-    generated
+  generated
 }
 
 dependencies {
-    // generated
-    generatedCompile files('/usr/lib/java/nddsjava.jar')
+  // generated
+  generatedCompile files('/usr/lib/java/nddsjava.jar')
 
-    // main
-    compile sourceSets.generated.output
-    compile files('/usr/lib/java/nddsjava.jar')
-    compile files('/usr/lib/java/rticonnextmsg.jar')
-    compile files('/usr/lib/java/rtiroutingservice.jar')
-    compile files('/usr/lib/java/rtirsadapter.jar')
-    compile 'org.apache.logging.log4j:log4j-api:2.12.0'
-    compile 'org.apache.logging.log4j:log4j-core:2.12.0'
-    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.12.0'
-    compile 'org.apache.commons:commons-text:1.7'
-    compile 'com.google.code.gson:gson:2.8.5'
-    compile 'com.google.guava:guava:28.0-jre'
-    compile 'com.esotericsoftware:reflectasm:1.11.9'
-    compile 'net.jodah:failsafe:1.1.1'
-    compile 'info.picocli:picocli:3.9.6'
-    compile 'io.prometheus:simpleclient:0.6.0'
-    compile 'io.prometheus:simpleclient_hotspot:0.6.0'
-    compile 'io.prometheus:simpleclient_httpserver:0.6.0'
+  // main
+  compile sourceSets.generated.output
+  compile files('/usr/lib/java/nddsjava.jar')
+  compile files('/usr/lib/java/rticonnextmsg.jar')
+  compile files('/usr/lib/java/rtiroutingservice.jar')
+  compile files('/usr/lib/java/rtirsadapter.jar')
+  compile 'org.apache.logging.log4j:log4j-api:2.12.0'
+  compile 'org.apache.logging.log4j:log4j-core:2.12.0'
+  compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.12.0'
+  compile 'org.apache.commons:commons-text:1.7'
+  compile 'com.google.code.gson:gson:2.8.5'
+  compile 'com.google.guava:guava:28.0-jre'
+  compile 'com.esotericsoftware:reflectasm:1.11.9'
+  compile 'net.jodah:failsafe:1.1.1'
+  compile 'info.picocli:picocli:3.9.6'
+  compile 'io.prometheus:simpleclient:0.6.0'
+  compile 'io.prometheus:simpleclient_hotspot:0.6.0'
+  compile 'io.prometheus:simpleclient_httpserver:0.6.0'
 
-    // test
-    testCompile "junit:junit:4.12"
-    testCompile "org.mockito:mockito-core:3.0.0"
-    testCompile "org.powermock:powermock-module-junit4:2.0.2"
-    testCompile "org.powermock:powermock-api-mockito2:2.0.2"
+  // test
+  testCompile "junit:junit:4.12"
+  testCompile "org.mockito:mockito-core:3.0.0"
+  testCompile "org.powermock:powermock-module-junit4:2.0.2"
+  testCompile "org.powermock:powermock-api-mockito2:2.0.2"
 }
 
 jar {
-    from sourceSets.main.output
-    from sourceSets.generated.output
+  from sourceSets.main.output
+  from sourceSets.generated.output
 }
 
 task compileIdl {
-    group = 'build'
+  group = 'build'
 
-    // define IDL directory
-    def idlDirectory = file('src/main/idl')
+  // define IDL directory
+  def idlDirectory = file('src/main/idl')
 
-    // ensure output directory is created
-    sourceSets.generated.java.srcDirs[0].mkdirs()
+  // ensure output directory is created
+  sourceSets.generated.java.srcDirs[0].mkdirs()
 
-    // compile IDL files
-    fileTree(dir: idlDirectory, include: "*.idl").each { File file ->
-        // define task name
-        def taskName = "compileIdl_" + idlDirectory.toPath().relativize(file.toPath()).toString().replaceAll(File.separator, "_")
+  // compile IDL files
+  fileTree(dir: idlDirectory, include: "*.idl").each { File file ->
+    // define task name
+    def taskName = "compileIdl_" + idlDirectory.toPath().relativize(file.toPath()).toString().replaceAll(File.separator, "_")
 
-        // create task
-        task "$taskName"(type: Exec) {
-            inputs.files file
-            outputs.dir sourceSets.generated.java.srcDirs[0]
-            executable = 'rtiddsgen'
-            args = [
-                    '-unboundedSupport',
-                    '-replace',
-                    '-I', idlDirectory,
-                    '-language', 'Java',
-                    '-package', 'idl',
-                    '-d', sourceSets.generated.java.srcDirs[0],
-                    file
-            ]
-        }
-
-        // our current tasks depends on the created task
-        compileIdl.dependsOn "$taskName"
+    // create task
+    task "$taskName"(type: Exec) {
+      inputs.files file
+      outputs.dir sourceSets.generated.java.srcDirs[0]
+      executable = 'rtiddsgen'
+      args = [
+        '-unboundedSupport',
+        '-replace',
+        '-I', idlDirectory,
+        '-language', 'Java',
+        '-package', 'idl',
+        '-d', sourceSets.generated.java.srcDirs[0],
+        file
+      ]
     }
+
+    // our current tasks depends on the created task
+    compileIdl.dependsOn "$taskName"
+  }
 }
 
 task cleanIdl(type: Delete) {
-    group = 'build'
+  group = 'build'
 
-    doLast {
-        sourceSets.generated.java.srcDirs[0].list().each {
-            f -> delete "${sourceSets.generated.java.srcDirs[0]}/${f}"
-        }
+  doLast {
+    sourceSets.generated.java.srcDirs[0].list().each {
+      f -> delete "${sourceSets.generated.java.srcDirs[0]}/${f}"
     }
+  }
 }
 
 compileJava.dependsOn compileIdl
@@ -126,200 +126,200 @@ project.ext.jacocoOfflineSourceSets = ['main', 'generated']
 // to get coverage for tests that make use of PowerMockito,
 // we need to use offline instrumentation that is performed by this task
 task instrument(dependsOn: [classes, project.configurations.jacocoAnt]) {
-    group = 'verification'
+  group = 'verification'
 
-    inputs.files classes.outputs.files
-    File outputDir = new File(project.buildDir, 'instrumentedClasses')
-    outputs.dir outputDir
-    doFirst {
-        project.delete(outputDir)
-        ant.taskdef(
-                resource: 'org/jacoco/ant/antlib.xml',
-                classpath: project.configurations.jacocoAnt.asPath,
-                uri: 'jacoco'
-        )
-        def instrumented = false
-        jacocoOfflineSourceSets.each { sourceSetName ->
-            if (sourceSets[(String) sourceSetName].output.getClassesDirs()[0].exists()) {
-                def instrumentedClassedDir = "${outputDir}/${sourceSetName}"
-                ant.'jacoco:instrument'(destdir: instrumentedClassedDir) {
-                    fileset(dir: sourceSets[(String) sourceSetName].output.getClassesDirs()[0], includes: '**/*.class')
-                }
-                //Replace the classes dir in the test classpath with the instrumented one
-                sourceSets.test.runtimeClasspath -= files(sourceSets[(String) sourceSetName].output.getClassesDirs()[0])
-                sourceSets.test.runtimeClasspath += files(instrumentedClassedDir)
-                instrumented = true
-            }
+  inputs.files classes.outputs.files
+  File outputDir = new File(project.buildDir, 'instrumentedClasses')
+  outputs.dir outputDir
+  doFirst {
+    project.delete(outputDir)
+    ant.taskdef(
+      resource: 'org/jacoco/ant/antlib.xml',
+      classpath: project.configurations.jacocoAnt.asPath,
+      uri: 'jacoco'
+    )
+    def instrumented = false
+    jacocoOfflineSourceSets.each { sourceSetName ->
+      if (sourceSets[(String) sourceSetName].output.getClassesDirs()[0].exists()) {
+        def instrumentedClassedDir = "${outputDir}/${sourceSetName}"
+        ant.'jacoco:instrument'(destdir: instrumentedClassedDir) {
+          fileset(dir: sourceSets[(String) sourceSetName].output.getClassesDirs()[0], includes: '**/*.class')
         }
-        if (instrumented) {
-            //Disable class verification based on https://github.com/jayway/powermock/issues/375
-            test.jvmArgs += '-noverify'
-        }
+        //Replace the classes dir in the test classpath with the instrumented one
+        sourceSets.test.runtimeClasspath -= files(sourceSets[(String) sourceSetName].output.getClassesDirs()[0])
+        sourceSets.test.runtimeClasspath += files(instrumentedClassedDir)
+        instrumented = true
+      }
     }
+    if (instrumented) {
+      //Disable class verification based on https://github.com/jayway/powermock/issues/375
+      test.jvmArgs += '-noverify'
+    }
+  }
 }
 test.dependsOn instrument
 
 idea.project.settings {
-    taskTriggers {
-        beforeBuild tasks.getByName("compileIdl")
-    }
+  taskTriggers {
+    beforeBuild tasks.getByName("compileIdl")
+  }
 }
 
 task copyRuntimeLibraries(type: Copy) {
-    into "$buildDir/libs-runtime"
-    from configurations.runtime
-    exclude('idl')
+  into "$buildDir/libs-runtime"
+  from configurations.runtime
+  exclude('idl')
 }
 
 task runShapePublisher(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.shape.ShapePublisher'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.shape.ShapePublisher'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runShapeSubscriber(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.shape.ShapeSubscriber'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.shape.ShapeSubscriber'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runRequestReplyRequest(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.requestreply.Request'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.requestreply.Request'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runRequestReplyReply(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.requestreply.Reply'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.requestreply.Reply'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runJson(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.json.Json'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.json.Json'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runMutableBuffer(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.mutable.MutableBuffer'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.mutable.MutableBuffer'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runMutablePublisher(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.mutable.MutablePublisher'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.mutable.MutablePublisher'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runMutableSubscriber(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.mutable.MutableSubscriber'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.mutable.MutableSubscriber'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runStaticRouting(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.routing.StaticRouting'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.routing.StaticRouting'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runDynamicRouting(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.routing.DynamicRouting'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.routing.DynamicRouting'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
 
 task runAdapterRouting(type: Exec) {
-    dependsOn build, copyRuntimeLibraries
+  dependsOn build, copyRuntimeLibraries
 
-    // set working directory
-    workingDir = '.'
+  // set working directory
+  workingDir = '.'
 
-    // executable
-    executable = "/usr/bin/rtiroutingservice -cfgFile configuration/routing-adapter.xml -cfgName dds-examples-routing-adapter -verbosity 1"
+  // executable
+  executable = "/usr/bin/rtiroutingservice -cfgFile configuration/routing-adapter.xml -cfgName dds-examples-routing-adapter -verbosity 1"
 }
 
 task runDiscovery(type: JavaExec) {
-    // set classpath
-    classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
-    // set main class
-    main = 'com.github.aguther.dds.examples.discovery.Discovery'
-    // set working directory
-    workingDir = '.'
-    // jvm settings
-    jvmArgs = ['-Xmx4096m']
-    // set system properties
-    systemProperties System.getProperties()
+  // set classpath
+  classpath = files(sourceSets.main.runtimeClasspath, sourceSets.generated.runtimeClasspath)
+  // set main class
+  main = 'com.github.aguther.dds.examples.discovery.Discovery'
+  // set working directory
+  workingDir = '.'
+  // jvm settings
+  jvmArgs = ['-Xmx4096m']
+  // set system properties
+  systemProperties System.getProperties()
 }
