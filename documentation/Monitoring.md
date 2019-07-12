@@ -13,21 +13,318 @@
     - Data Reader
       - Matched Publications
 
-| Entity                       | Used topic                                               |
-| ---------------------------- | -------------------------------------------------------- |
-| Domain Participant           | DomainParticipantDescription                             |
-|                              | DomainParticipantEntityStatistics                        |
-| Topic                        | TopicDescription                                         |
-|                              | TopicEntityStatistics                                    |
-| Publisher                    | PublisherDescription                                     |
-| Data Writer                  | DataWriterDescription                                    |
-|                              | DataWriterEntityStatistics                               |
-| Matched Subscriptions        | DataWriterEntityMatchedSubscriptionStatistics            |
-| Matched Subscription Locator | DataWriterEntityMatchedSubscriptionWithLocatorStatistics |
-| Subscriber                   | SubscriberDescription                                    |
-| Data Reader                  | DataReaderDescription                                    |
-|                              | DataReaderEntityStatistics                               |
-| Matched Publications         | DataReaderEntityMatchedPublicationStatistics             |
+### Domain Participant
+
+#### Types
+- DomainParticipantDescription
+- DomainParticipantEntityStatistics
+
+#### Labels
+- participant_key
+- domain_id
+- host_id
+- process_id
+- participant_name
+- participant_role_name
+
+#### Gauges
+- domainparticipant_user_cpu_time
+- domainparticipant_kernel_cpu_time
+- domainparticipant_physical_memory_bytes
+- domainparticipant_total_memory_bytes
+- domainparticipant_remote_participant_count
+- domainparticipant_remote_writer_count
+- domainparticipant_remote_reader_count
+
+### Topic
+
+#### Types
+- DomainParticipantDescription
+- TopicDescription
+- TopicEntityStatistics
+
+#### Labels
+- participant_key
+- domain_id
+- host_id
+- process_id
+- participant_name
+- participant_role_name
+- topic_key
+- topic_name
+- type_name
+
+#### Gauges
+- topic_tc_serialized_size
+- topic_inconsistent_topic_status_total_count
+
+### Data Reader
+
+#### Types
+- DomainParticipantDescription
+- TopicDescription
+- SubscriberDescription
+- DataReaderDescription
+- DataReaderEntityStatistics
+
+#### Labels
+- participant_key
+- domain_id
+- host_id
+- process_id
+- participant_name
+- participant_role_name
+- topic_key
+- topic_name
+- type_name
+- subscriber_key
+- subscriber_name
+- subscriber_role_name
+- datareader_key
+- subscription_name
+- subscription_role_name
+
+#### Gauges
+- datareader_serialized_sample_max_size
+- datareader_serialized_sample_min_size
+- datareader_serialized_key_max_size
+- datareader_is_content_filtered
+- datareader_sample_rejected_status_total_count
+- datareader_sample_rejected_status_last_reason
+- datareader_liveliness_changed_status_alive_count
+- datareader_liveliness_changed_status_not_alive_count
+- datareader_requested_deadline_missed_status_total_count
+- datareader_requested_incompatible_qos_status_total_count
+- datareader_requested_incompatible_qos_status_last_policy_id
+- datareader_sample_lost_status_total_count
+- datareader_sample_lost_status_last_reason
+- datareader_subscription_matched_status_total_count
+- datareader_subscription_matched_status_current_count
+- datareader_subscription_matched_status_current_count_peak
+- datareader_cache_status_sample_count
+- datareader_cache_status_sample_count_peak
+- datareader_protocol_status_received_sample_count
+- datareader_protocol_status_received_sample_bytes
+- datareader_protocol_status_duplicate_sample_count
+- datareader_protocol_status_duplicate_sample_bytes
+- datareader_protocol_status_filtered_sample_count
+- datareader_protocol_status_filtered_sample_bytes
+- datareader_protocol_status_received_heartbeat_count
+- datareader_protocol_status_received_heartbeat_bytes
+- datareader_protocol_status_sent_ack_count
+- datareader_protocol_status_sent_ack_bytes
+- datareader_protocol_status_sent_nack_count
+- datareader_protocol_status_sent_nack_bytes
+- datareader_protocol_status_received_gap_count
+- datareader_protocol_status_received_gap_bytes
+- datareader_protocol_status_rejected_sample_count
+- datareader_protocol_status_first_available_sample_sequence_number_high
+- datareader_protocol_status_first_available_sample_sequence_number_low
+- datareader_protocol_status_last_available_sample_sequence_number_high
+- datareader_protocol_status_last_available_sample_sequence_number_low
+- datareader_protocol_status_last_committed_sample_sequence_number_high
+- datareader_protocol_status_last_committed_sample_sequence_number_low
+- datareader_protocol_status_uncommitted_sample_count
+
+### Data Reader Matched Publication
+
+#### Types
+- DomainParticipantDescription
+- TopicDescription
+- SubscriberDescription
+- DataReaderDescription
+- DataReaderEntityMatchedPublicationStatistics
+
+#### Labels
+- participant_key
+- domain_id
+- host_id
+- process_id
+- participant_name
+- participant_role_name
+- topic_key
+- topic_name
+- type_name
+- subscriber_key
+- subscriber_name
+- subscriber_role_name
+- datareader_key
+- subscription_name
+- subscription_role_name
+- publication_handle
+
+#### Gauges
+- datareader_matched_publication_protocol_status_received_sample_count
+- datareader_matched_publication_protocol_status_received_sample_bytes
+- datareader_matched_publication_protocol_status_duplicate_sample_count
+- datareader_matched_publication_protocol_status_duplicate_sample_bytes
+- datareader_matched_publication_protocol_status_filtered_sample_count
+- datareader_matched_publication_protocol_status_filtered_sample_bytes
+- datareader_matched_publication_protocol_status_received_heartbeat_count
+- datareader_matched_publication_protocol_status_received_heartbeat_bytes
+- datareader_matched_publication_protocol_status_sent_ack_count
+- datareader_matched_publication_protocol_status_sent_ack_bytes
+- datareader_matched_publication_protocol_status_sent_nack_count
+- datareader_matched_publication_protocol_status_sent_nack_bytes
+- datareader_matched_publication_protocol_status_received_gap_count
+- datareader_matched_publication_protocol_status_received_gap_bytes
+- datareader_matched_publication_protocol_status_rejected_sample_count
+- datareader_matched_publication_protocol_status_first_available_sample_sequence_number_high
+- datareader_matched_publication_protocol_status_first_available_sample_sequence_number_low
+- datareader_matched_publication_protocol_status_last_available_sample_sequence_number_high
+- datareader_matched_publication_protocol_status_last_available_sample_sequence_number_low
+- datareader_matched_publication_protocol_status_last_committed_sample_sequence_number_high
+- datareader_matched_publication_protocol_status_last_committed_sample_sequence_number_low
+- datareader_matched_publication_protocol_status_uncommitted_sample_count
+
+### Data Writer
+
+#### Types
+- DomainParticipantDescription
+- TopicDescription
+- PublisherDescription
+- DataWriterDescription
+- DataWriterEntityStatistics
+
+#### Labels
+- participant_key
+- domain_id
+- host_id
+- process_id
+- participant_name
+- participant_role_name
+- topic_key
+- topic_name
+- type_name
+- publisher_key
+- publisher_name
+- publisher_role_name
+- datawriter_key
+- publication_name
+- publication_role_name
+
+#### Gauges
+
+### Data Writer Matched Subscription
+
+#### Types
+- DomainParticipantDescription
+- TopicDescription
+- PublisherDescription
+- DataWriterDescription
+- DataWriterEntityMatchedSubscriptionStatistics
+
+#### Labels
+- participant_key
+- domain_id
+- host_id
+- process_id
+- participant_name
+- participant_role_name
+- topic_key
+- topic_name
+- type_name
+- publisher_key
+- publisher_name
+- publisher_role_name
+- datawriter_key
+- publication_name
+- publication_role_name
+- subscription_handle
+
+#### Gauges
+- datawriter_matched_subscription_protocol_status_pushed_sample_count
+- datawriter_matched_subscription_protocol_status_pushed_sample_bytes
+- datawriter_matched_subscription_protocol_status_filtered_sample_count
+- datawriter_matched_subscription_protocol_status_filtered_sample_bytes
+- datawriter_matched_subscription_protocol_status_sent_heartbeat_count
+- datawriter_matched_subscription_protocol_status_sent_heartbeat_bytes
+- datawriter_matched_subscription_protocol_status_pulled_sample_count
+- datawriter_matched_subscription_protocol_status_pulled_sample_bytes
+- datawriter_matched_subscription_protocol_status_received_ack_count
+- datawriter_matched_subscription_protocol_status_received_ack_bytes
+- datawriter_matched_subscription_protocol_status_received_nack_count
+- datawriter_matched_subscription_protocol_status_received_nack_bytes
+- datawriter_matched_subscription_protocol_status_sent_gap_count
+- datawriter_matched_subscription_protocol_status_sent_gap_bytes
+- datawriter_matched_subscription_protocol_status_rejected_sample_count
+- datawriter_matched_subscription_protocol_status_send_window_size
+- datawriter_matched_subscription_protocol_status_first_available_sequence_number_high
+- datawriter_matched_subscription_protocol_status_first_available_sequence_number_low
+- datawriter_matched_subscription_protocol_status_last_available_sequence_number_high
+- datawriter_matched_subscription_protocol_status_last_available_sequence_number_low
+- datawriter_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_high
+- datawriter_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_low
+- datawriter_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_high
+- datawriter_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_low
+- datawriter_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_high
+- datawriter_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_low
+- datawriter_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high
+- datawriter_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low
+- datawriter_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high
+- datawriter_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low
+
+### Data Writer Matched Subscription Locator
+
+#### Types
+- DomainParticipantDescription
+- TopicDescription
+- PublisherDescription
+- DataWriterDescription
+- DataWriterEntityMatchedSubscriptionWithLocatorStatistics
+
+#### Labels
+- participant_key
+- domain_id
+- host_id
+- process_id
+- participant_name
+- participant_role_name
+- topic_key
+- topic_name
+- type_name
+- publisher_key
+- publisher_name
+- publisher_role_name
+- datawriter_key
+- publication_name
+- publication_role_name
+- subscription_handle
+- subscription_locator_kind
+- subscription_locator_address
+- subscription_locator_port
+
+#### Gauges
+- datawriter_matched_subscription_locator_protocol_status_pushed_sample_count
+- datawriter_matched_subscription_locator_protocol_status_pushed_sample_bytes
+- datawriter_matched_subscription_locator_protocol_status_filtered_sample_count
+- datawriter_matched_subscription_locator_protocol_status_filtered_sample_bytes
+- datawriter_matched_subscription_locator_protocol_status_sent_heartbeat_count
+- datawriter_matched_subscription_locator_protocol_status_sent_heartbeat_bytes
+- datawriter_matched_subscription_locator_protocol_status_pulled_sample_count
+- datawriter_matched_subscription_locator_protocol_status_pulled_sample_bytes
+- datawriter_matched_subscription_locator_protocol_status_received_ack_count
+- datawriter_matched_subscription_locator_protocol_status_received_ack_bytes
+- datawriter_matched_subscription_locator_protocol_status_received_nack_count
+- datawriter_matched_subscription_locator_protocol_status_received_nack_bytes
+- datawriter_matched_subscription_locator_protocol_status_sent_gap_count
+- datawriter_matched_subscription_locator_protocol_status_sent_gap_bytes
+- datawriter_matched_subscription_locator_protocol_status_rejected_sample_count
+- datawriter_matched_subscription_locator_protocol_status_send_window_size
+- datawriter_matched_subscription_locator_protocol_status_first_available_sequence_number_high
+- datawriter_matched_subscription_locator_protocol_status_first_available_sequence_number_low
+- datawriter_matched_subscription_locator_protocol_status_last_available_sequence_number_high
+- datawriter_matched_subscription_locator_protocol_status_last_available_sequence_number_low
+- datawriter_matched_subscription_locator_protocol_status_first_unacknowledged_sample_sequence_number_high
+- datawriter_matched_subscription_locator_protocol_status_first_unacknowledged_sample_sequence_number_low
+- datawriter_matched_subscription_locator_protocol_status_first_available_sample_virtual_sequence_number_high
+- datawriter_matched_subscription_locator_protocol_status_first_available_sample_virtual_sequence_number_low
+- datawriter_matched_subscription_locator_protocol_status_last_available_sample_virtual_sequence_number_high
+- datawriter_matched_subscription_locator_protocol_status_last_available_sample_virtual_sequence_number_low
+- datawriter_matched_subscription_locator_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high
+- datawriter_matched_subscription_locator_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low
+- datawriter_matched_subscription_locator_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high
+- datawriter_matched_subscription_locator_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low
 
 ## Routing Service
 
@@ -35,3 +332,7 @@
 ## Possible helpers
 * https://github.com/j-easy/easy-batch
 * https://github.com/google/guava
+
+
+
+

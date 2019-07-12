@@ -24,18 +24,27 @@
 
 package com.github.aguther.dds.examples.prometheus.monitoring;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
+import idl.rti.dds.monitoring.DataReaderDescription;
 import idl.rti.dds.monitoring.DataReaderEntityStatistics;
+import idl.rti.dds.monitoring.DomainParticipantDescription;
+import idl.rti.dds.monitoring.SubscriberDescription;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
-public class DataReaderEntityStatisticsMetricProcessor {
+public class DataReaderMetricsProcessor {
 
+  private final DescriptionProcessorCache descriptionProcessorCache;
   private final HashMap<InstanceHandle_t, String[]> instanceHandleHashMap;
 
+  private final Gauge serializedSampleMaxSize;
+  private final Gauge serializedSampleMinSize;
+  private final Gauge serializedKeyMaxSize;
   private final Gauge isContentFiltered;
   private final Gauge sampleRejectedStatusTotalCount;
   private final Gauge sampleRejectedStatusLastReason;
@@ -74,229 +83,251 @@ public class DataReaderEntityStatisticsMetricProcessor {
   private final Gauge datareaderProtocolStatusLastCommittedSampleSequenceNumberLow;
   private final Gauge datareaderProtocolStatusUncommittedSampleCount;
 
-  public DataReaderEntityStatisticsMetricProcessor() {
+  public DataReaderMetricsProcessor(
+    DescriptionProcessorCache descriptionProcessorCache
+  ) {
+    checkNotNull(descriptionProcessorCache);
+    this.descriptionProcessorCache = descriptionProcessorCache;
     instanceHandleHashMap = new HashMap<>();
 
-    isContentFiltered = Gauge.build()
-      .name("datareader_entity_statistics_is_content_filtered")
+    serializedSampleMaxSize = Gauge.build()
+      .name("datareader_serialized_sample_max_size_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_is_content_filtered")
+      .help("datareader_serialized_sample_max_size_bytes")
+      .register();
+
+    serializedSampleMinSize = Gauge.build()
+      .name("datareader_serialized_sample_min_size_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_serialized_sample_min_size_bytes")
+      .register();
+
+    serializedKeyMaxSize = Gauge.build()
+      .name("datareader_serialized_key_max_size_bytes")
+      .labelNames(getLabelNames())
+      .help("datareader_serialized_key_max_size_bytes")
+      .register();
+
+    isContentFiltered = Gauge.build()
+      .name("datareader_is_content_filtered")
+      .labelNames(getLabelNames())
+      .help("datareader_is_content_filtered")
       .register();
 
     sampleRejectedStatusTotalCount = Gauge.build()
-      .name("datareader_entity_statistics_sample_rejected_status_total_count")
+      .name("datareader_sample_rejected_status_total_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_sample_rejected_status_total_count")
+      .help("datareader_sample_rejected_status_total_count")
       .register();
 
     sampleRejectedStatusLastReason = Gauge.build()
-      .name("datareader_entity_statistics_sample_rejected_status_last_reason")
+      .name("datareader_sample_rejected_status_last_reason")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_sample_rejected_status_last_reason")
+      .help("datareader_sample_rejected_status_last_reason")
       .register();
 
     livelinessChangedStatusAliveCount = Gauge.build()
-      .name("datareader_entity_statistics_liveliness_changed_status_alive_count")
+      .name("datareader_liveliness_changed_status_alive_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_liveliness_changed_status_alive_count")
+      .help("datareader_liveliness_changed_status_alive_count")
       .register();
 
     livelinessChangedStatusNotAliveCount = Gauge.build()
-      .name("datareader_entity_statistics_liveliness_changed_status_not_alive_count")
+      .name("datareader_liveliness_changed_status_not_alive_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_liveliness_changed_status_not_alive_count")
+      .help("datareader_liveliness_changed_status_not_alive_count")
       .register();
 
     requestedDeadlineMissedStatusTotalCount = Gauge.build()
-      .name("datareader_entity_statistics_requested_deadline_missed_status_total_count")
+      .name("datareader_requested_deadline_missed_status_total_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_requested_deadline_missed_status_total_count")
+      .help("datareader_requested_deadline_missed_status_total_count")
       .register();
 
     requestedIncompatibleQosStatusTotalCount = Gauge.build()
-      .name("datareader_entity_statistics_requested_incompatible_qos_status_total_count")
+      .name("datareader_requested_incompatible_qos_status_total_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_requested_incompatible_qos_status_total_count")
+      .help("datareader_requested_incompatible_qos_status_total_count")
       .register();
 
     requestedIncompatibleQosStatusLastPolicyId = Gauge.build()
-      .name("datareader_entity_statistics_requested_incompatible_qos_status_last_policy_id")
+      .name("datareader_requested_incompatible_qos_status_last_policy_id")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_requested_incompatible_qos_status_last_policy_id")
+      .help("datareader_requested_incompatible_qos_status_last_policy_id")
       .register();
 
     sampleLostStatusTotalCount = Gauge.build()
-      .name("datareader_entity_statistics_sample_lost_status_total_count")
+      .name("datareader_sample_lost_status_total_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_sample_lost_status_total_count")
+      .help("datareader_sample_lost_status_total_count")
       .register();
 
     sampleLostStatusLastReason = Gauge.build()
-      .name("datareader_entity_statistics_sample_lost_status_last_reason")
+      .name("datareader_sample_lost_status_last_reason")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_sample_lost_status_last_reason")
+      .help("datareader_sample_lost_status_last_reason")
       .register();
 
     subscriptionMatchedStatusTotalCount = Gauge.build()
-      .name("datareader_entity_statistics_subscription_matched_status_total_count")
+      .name("datareader_subscription_matched_status_total_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_subscription_matched_status_total_count")
+      .help("datareader_subscription_matched_status_total_count")
       .register();
 
     subscriptionMatchedStatusCurrentCount = Gauge.build()
-      .name("datareader_entity_statistics_subscription_matched_status_current_count")
+      .name("datareader_subscription_matched_status_current_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_subscription_matched_status_current_count")
+      .help("datareader_subscription_matched_status_current_count")
       .register();
 
     subscriptionMatchedStatusCurrentCountPeak = Gauge.build()
-      .name("datareader_entity_statistics_subscription_matched_status_current_count_peak")
+      .name("datareader_subscription_matched_status_current_count_peak")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_subscription_matched_status_current_count_peak")
+      .help("datareader_subscription_matched_status_current_count_peak")
       .register();
 
     datareaderCacheStatusSampleCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_cache_status_sample_count")
+      .name("datareader_cache_status_sample_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_cache_status_sample_count")
+      .help("datareader_cache_status_sample_count")
       .register();
 
     datareaderCacheStatusSampleCountPeak = Gauge.build()
-      .name("datareader_entity_statistics_datareader_cache_status_sample_count_peak")
+      .name("datareader_cache_status_sample_count_peak")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_cache_status_sample_count_peak")
+      .help("datareader_cache_status_sample_count_peak")
       .register();
 
     datareaderProtocolStatusReceivedSampleCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_received_sample_count")
+      .name("datareader_protocol_status_received_sample_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_received_sample_count")
+      .help("datareader_protocol_status_received_sample_count")
       .register();
 
     datareaderProtocolStatusReceivedSampleBytes = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_received_sample_bytes")
+      .name("datareader_protocol_status_received_sample_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_received_sample_bytes")
+      .help("datareader_protocol_status_received_sample_bytes")
       .register();
 
     datareaderProtocolStatusDuplicateSampleCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_duplicate_sample_count")
+      .name("datareader_protocol_status_duplicate_sample_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_duplicate_sample_count")
+      .help("datareader_protocol_status_duplicate_sample_count")
       .register();
 
     datareaderProtocolStatusDuplicateSampleBytes = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_duplicate_sample_bytes")
+      .name("datareader_protocol_status_duplicate_sample_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_duplicate_sample_bytes")
+      .help("datareader_protocol_status_duplicate_sample_bytes")
       .register();
 
     datareaderProtocolStatusFilteredSampleCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_filtered_sample_count")
+      .name("datareader_protocol_status_filtered_sample_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_filtered_sample_count")
+      .help("datareader_protocol_status_filtered_sample_count")
       .register();
 
     datareaderProtocolStatusFilteredSampleBytes = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_filtered_sample_bytes")
+      .name("datareader_protocol_status_filtered_sample_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_filtered_sample_bytes")
+      .help("datareader_protocol_status_filtered_sample_bytes")
       .register();
 
     datareaderProtocolStatusReceivedHeartbeatCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_received_heartbeat_count")
+      .name("datareader_protocol_status_received_heartbeat_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_received_heartbeat_count")
+      .help("datareader_protocol_status_received_heartbeat_count")
       .register();
 
     datareaderProtocolStatusReceivedHeartbeatBytes = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_received_heartbeat_bytes")
+      .name("datareader_protocol_status_received_heartbeat_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_received_heartbeat_bytes")
+      .help("datareader_protocol_status_received_heartbeat_bytes")
       .register();
 
     datareaderProtocolStatusSentAckCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_sent_ack_count")
+      .name("datareader_protocol_status_sent_ack_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_sent_ack_count")
+      .help("datareader_protocol_status_sent_ack_count")
       .register();
 
     datareaderProtocolStatusSentAckBytes = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_sent_ack_bytes")
+      .name("datareader_protocol_status_sent_ack_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_sent_ack_bytes")
+      .help("datareader_protocol_status_sent_ack_bytes")
       .register();
 
     datareaderProtocolStatusSentNackCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_sent_nack_count")
+      .name("datareader_protocol_status_sent_nack_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_sent_nack_count")
+      .help("datareader_protocol_status_sent_nack_count")
       .register();
 
     datareaderProtocolStatusSentNackBytes = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_sent_nack_bytes")
+      .name("datareader_protocol_status_sent_nack_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_sent_nack_bytes")
+      .help("datareader_protocol_status_sent_nack_bytes")
       .register();
 
     datareaderProtocolStatusReceivedGapCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_received_gap_count")
+      .name("datareader_protocol_status_received_gap_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_received_gap_count")
+      .help("datareader_protocol_status_received_gap_count")
       .register();
 
     datareaderProtocolStatusReceivedGapBytes = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_received_gap_bytes")
+      .name("datareader_protocol_status_received_gap_bytes")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_received_gap_bytes")
+      .help("datareader_protocol_status_received_gap_bytes")
       .register();
 
     datareaderProtocolStatusRejectedSampleCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_rejected_sample_count")
+      .name("datareader_protocol_status_rejected_sample_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_rejected_sample_count")
+      .help("datareader_protocol_status_rejected_sample_count")
       .register();
 
     datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_first_available_sample_sequence_number_high")
+      .name("datareader_protocol_status_first_available_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_first_available_sample_sequence_number_high")
+      .help("datareader_protocol_status_first_available_sample_sequence_number_high")
       .register();
 
     datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_first_available_sample_sequence_number_low")
+      .name("datareader_protocol_status_first_available_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_first_available_sample_sequence_number_low")
+      .help("datareader_protocol_status_first_available_sample_sequence_number_low")
       .register();
 
     datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_last_available_sample_sequence_number_high")
+      .name("datareader_protocol_status_last_available_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_last_available_sample_sequence_number_high")
+      .help("datareader_protocol_status_last_available_sample_sequence_number_high")
       .register();
 
     datareaderProtocolStatusLastAvailableSampleSequenceNumberLow = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_last_available_sample_sequence_number_low")
+      .name("datareader_protocol_status_last_available_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_last_available_sample_sequence_number_low")
+      .help("datareader_protocol_status_last_available_sample_sequence_number_low")
       .register();
 
     datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_last_committed_sample_sequence_number_high")
+      .name("datareader_protocol_status_last_committed_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_last_committed_sample_sequence_number_high")
+      .help("datareader_protocol_status_last_committed_sample_sequence_number_high")
       .register();
 
     datareaderProtocolStatusLastCommittedSampleSequenceNumberLow = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_last_committed_sample_sequence_number_low")
+      .name("datareader_protocol_status_last_committed_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_last_committed_sample_sequence_number_low")
+      .help("datareader_protocol_status_last_committed_sample_sequence_number_low")
       .register();
 
     datareaderProtocolStatusUncommittedSampleCount = Gauge.build()
-      .name("datareader_entity_statistics_datareader_protocol_status_uncommitted_sample_count")
+      .name("datareader_protocol_status_uncommitted_sample_count")
       .labelNames(getLabelNames())
-      .help("datareader_entity_statistics_datareader_protocol_status_uncommitted_sample_count")
+      .help("datareader_protocol_status_uncommitted_sample_count")
       .register();
   }
 
@@ -304,57 +335,49 @@ public class DataReaderEntityStatisticsMetricProcessor {
     DataReaderEntityStatistics sample,
     SampleInfo info
   ) {
-    // put instance handle to hash map if not present
-    instanceHandleHashMap.putIfAbsent(info.instance_handle, getLabelValues(sample));
-    // get label values once to improve performance
-    final String[] labelValues = instanceHandleHashMap.get(info.instance_handle);
-
-    // check if sample is alive and contains valid data
-    if (info.instance_state != InstanceStateKind.ALIVE_INSTANCE_STATE || !info.valid_data) {
-      // remove labels
-      isContentFiltered.remove(labelValues);
-      sampleRejectedStatusTotalCount.remove(labelValues);
-      sampleRejectedStatusLastReason.remove(labelValues);
-      livelinessChangedStatusAliveCount.remove(labelValues);
-      livelinessChangedStatusNotAliveCount.remove(labelValues);
-      requestedDeadlineMissedStatusTotalCount.remove(labelValues);
-      requestedIncompatibleQosStatusTotalCount.remove(labelValues);
-      requestedIncompatibleQosStatusLastPolicyId.remove(labelValues);
-      sampleLostStatusTotalCount.remove(labelValues);
-      sampleLostStatusLastReason.remove(labelValues);
-      subscriptionMatchedStatusTotalCount.remove(labelValues);
-      subscriptionMatchedStatusCurrentCount.remove(labelValues);
-      subscriptionMatchedStatusCurrentCountPeak.remove(labelValues);
-      datareaderCacheStatusSampleCount.remove(labelValues);
-      datareaderCacheStatusSampleCountPeak.remove(labelValues);
-      datareaderProtocolStatusReceivedSampleCount.remove(labelValues);
-      datareaderProtocolStatusReceivedSampleBytes.remove(labelValues);
-      datareaderProtocolStatusDuplicateSampleCount.remove(labelValues);
-      datareaderProtocolStatusDuplicateSampleBytes.remove(labelValues);
-      datareaderProtocolStatusFilteredSampleCount.remove(labelValues);
-      datareaderProtocolStatusFilteredSampleBytes.remove(labelValues);
-      datareaderProtocolStatusReceivedHeartbeatCount.remove(labelValues);
-      datareaderProtocolStatusReceivedHeartbeatBytes.remove(labelValues);
-      datareaderProtocolStatusSentAckCount.remove(labelValues);
-      datareaderProtocolStatusSentAckBytes.remove(labelValues);
-      datareaderProtocolStatusSentNackCount.remove(labelValues);
-      datareaderProtocolStatusSentNackBytes.remove(labelValues);
-      datareaderProtocolStatusReceivedGapCount.remove(labelValues);
-      datareaderProtocolStatusReceivedGapBytes.remove(labelValues);
-      datareaderProtocolStatusRejectedSampleCount.remove(labelValues);
-      datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh.remove(labelValues);
-      datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow.remove(labelValues);
-      datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh.remove(labelValues);
-      datareaderProtocolStatusLastAvailableSampleSequenceNumberLow.remove(labelValues);
-      datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh.remove(labelValues);
-      datareaderProtocolStatusLastCommittedSampleSequenceNumberLow.remove(labelValues);
-      datareaderProtocolStatusUncommittedSampleCount.remove(labelValues);
-      // remove instance from hash map
-      instanceHandleHashMap.remove(info.instance_handle);
-      return;
+    if ((info.instance_state == InstanceStateKind.ALIVE_INSTANCE_STATE)
+      && (info.valid_data)
+      && (descriptionProcessorCache.getDomainParticipantDescription(sample.participant_key) != null)
+      && (descriptionProcessorCache.getSubscriberDescription(sample.subscriber_key) != null)
+      && (descriptionProcessorCache.getDataReaderDescription(sample.datareader_key) != null)) {
+      // add / update values
+      addUpdateGaugesForLabel(info.instance_handle, sample);
+    } else {
+      // remove values
+      removeLabelsFromGauges(info.instance_handle);
     }
+  }
+
+  private void addUpdateGaugesForLabel(
+    InstanceHandle_t instanceHandle,
+    DataReaderEntityStatistics sample
+  ) {
+    // put instance handle to hash map if not present
+    instanceHandleHashMap.putIfAbsent(
+      instanceHandle,
+      getLabelValues(
+        descriptionProcessorCache.getDomainParticipantDescription(sample.participant_key),
+        descriptionProcessorCache.getSubscriberDescription(sample.subscriber_key),
+        descriptionProcessorCache.getDataReaderDescription(sample.datareader_key)
+      )
+    );
+
+    // get label values once to improve performance
+    final String[] labelValues = instanceHandleHashMap.get(instanceHandle);
 
     // update gauges
+    DataReaderDescription dataReaderDescription = descriptionProcessorCache
+      .getDataReaderDescription(sample.datareader_key);
+
+    serializedSampleMaxSize.labels(labelValues).set(
+      dataReaderDescription.serialized_sample_max_size);
+
+    serializedSampleMinSize.labels(labelValues).set(
+      dataReaderDescription.serialized_sample_min_size);
+
+    serializedKeyMaxSize.labels(labelValues).set(
+      dataReaderDescription.serialized_key_max_size);
+
     isContentFiltered.labels(labelValues).set(
       sample.is_content_filtered ? 1 : 0);
 
@@ -467,33 +490,104 @@ public class DataReaderEntityStatisticsMetricProcessor {
       sample.datareader_protocol_status.status.uncommitted_sample_count);
   }
 
+  private void removeLabelsFromGauges(
+    InstanceHandle_t instanceHandle
+  ) {
+    // check if remove is necessary
+    if (!instanceHandleHashMap.containsKey(instanceHandle)) {
+      return;
+    }
+
+    // get label values
+    final String[] labelValues = instanceHandleHashMap.get(instanceHandle);
+
+    // remove labels
+    serializedSampleMaxSize.remove(labelValues);
+    serializedSampleMinSize.remove(labelValues);
+    serializedKeyMaxSize.remove(labelValues);
+    isContentFiltered.remove(labelValues);
+    sampleRejectedStatusTotalCount.remove(labelValues);
+    sampleRejectedStatusLastReason.remove(labelValues);
+    livelinessChangedStatusAliveCount.remove(labelValues);
+    livelinessChangedStatusNotAliveCount.remove(labelValues);
+    requestedDeadlineMissedStatusTotalCount.remove(labelValues);
+    requestedIncompatibleQosStatusTotalCount.remove(labelValues);
+    requestedIncompatibleQosStatusLastPolicyId.remove(labelValues);
+    sampleLostStatusTotalCount.remove(labelValues);
+    sampleLostStatusLastReason.remove(labelValues);
+    subscriptionMatchedStatusTotalCount.remove(labelValues);
+    subscriptionMatchedStatusCurrentCount.remove(labelValues);
+    subscriptionMatchedStatusCurrentCountPeak.remove(labelValues);
+    datareaderCacheStatusSampleCount.remove(labelValues);
+    datareaderCacheStatusSampleCountPeak.remove(labelValues);
+    datareaderProtocolStatusReceivedSampleCount.remove(labelValues);
+    datareaderProtocolStatusReceivedSampleBytes.remove(labelValues);
+    datareaderProtocolStatusDuplicateSampleCount.remove(labelValues);
+    datareaderProtocolStatusDuplicateSampleBytes.remove(labelValues);
+    datareaderProtocolStatusFilteredSampleCount.remove(labelValues);
+    datareaderProtocolStatusFilteredSampleBytes.remove(labelValues);
+    datareaderProtocolStatusReceivedHeartbeatCount.remove(labelValues);
+    datareaderProtocolStatusReceivedHeartbeatBytes.remove(labelValues);
+    datareaderProtocolStatusSentAckCount.remove(labelValues);
+    datareaderProtocolStatusSentAckBytes.remove(labelValues);
+    datareaderProtocolStatusSentNackCount.remove(labelValues);
+    datareaderProtocolStatusSentNackBytes.remove(labelValues);
+    datareaderProtocolStatusReceivedGapCount.remove(labelValues);
+    datareaderProtocolStatusReceivedGapBytes.remove(labelValues);
+    datareaderProtocolStatusRejectedSampleCount.remove(labelValues);
+    datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh.remove(labelValues);
+    datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow.remove(labelValues);
+    datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh.remove(labelValues);
+    datareaderProtocolStatusLastAvailableSampleSequenceNumberLow.remove(labelValues);
+    datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh.remove(labelValues);
+    datareaderProtocolStatusLastCommittedSampleSequenceNumberLow.remove(labelValues);
+    datareaderProtocolStatusUncommittedSampleCount.remove(labelValues);
+
+    // remove instance from hash map
+    instanceHandleHashMap.remove(instanceHandle);
+  }
+
   private String[] getLabelNames() {
     return new String[]{
-      "datareader_key",
-      "period",
       "participant_key",
-      "subscriber_key",
-      "topic_key",
-      "topic_name",
       "domain_id",
       "host_id",
       "process_id",
+      "participant_name",
+      "participant_role_name",
+      "topic_key",
+      "topic_name",
+      "type_name",
+      "subscriber_key",
+      "subscriber_name",
+      "subscriber_role_name",
+      "datareader_key",
+      "subscription_name",
+      "subscription_role_name",
     };
   }
 
   private String[] getLabelValues(
-    DataReaderEntityStatistics sample
+    DomainParticipantDescription domainParticipantDescription,
+    SubscriberDescription subscriberDescription,
+    DataReaderDescription dataReaderDescription
   ) {
     return new String[]{
-      BuiltinTopicHelper.toString(sample.datareader_key.value),
-      Long.toUnsignedString((long) sample.period.sec * 1000000000 + (long) sample.period.nanosec),
-      BuiltinTopicHelper.toString(sample.participant_key.value),
-      BuiltinTopicHelper.toString(sample.subscriber_key.value),
-      BuiltinTopicHelper.toString(sample.topic_key.value),
-      sample.topic_name,
-      Integer.toUnsignedString(sample.domain_id),
-      Integer.toUnsignedString(sample.host_id),
-      Integer.toUnsignedString(sample.process_id),
+      BuiltinTopicHelper.toString(domainParticipantDescription.entity_key.value),
+      Integer.toUnsignedString(domainParticipantDescription.domain_id),
+      Integer.toUnsignedString(domainParticipantDescription.host_id),
+      Integer.toUnsignedString(domainParticipantDescription.process_id),
+      domainParticipantDescription.qos.participant_name.name,
+      domainParticipantDescription.qos.participant_name.role_name,
+      BuiltinTopicHelper.toString(dataReaderDescription.topic_entity_key.value),
+      dataReaderDescription.topic_name,
+      dataReaderDescription.type_name,
+      BuiltinTopicHelper.toString(subscriberDescription.entity_key.value),
+      subscriberDescription.qos.subscriber_name.name,
+      subscriberDescription.qos.subscriber_name.role_name,
+      BuiltinTopicHelper.toString(dataReaderDescription.entity_key.value),
+      dataReaderDescription.qos.subscription_name.name,
+      dataReaderDescription.qos.subscription_name.role_name,
     };
   }
 }

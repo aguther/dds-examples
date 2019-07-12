@@ -90,44 +90,35 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
 
   private HTTPServer httpServer;
 
-  private DataReaderWatcher dataReaderWatcherDomainParticipantDescription;
-  private DomainParticipantDescriptionMetricProcessor domainParticipantDescriptionMetricProcessor;
-
   private DataReaderWatcher dataReaderWatcherDomainParticipantEntityStatistics;
-  private DomainParticipantEntityStatisticsMetricProcessor domainParticipantEntityStatisticsMetricProcessor;
 
+  private DataReaderWatcher dataReaderWatcherDomainParticipantDescription;
   private DataReaderWatcher dataReaderWatcherTopicDescription;
-  private TopicDescriptionMetricProcessor topicDescriptionMetricProcessor;
+  private DataReaderWatcher dataReaderWatcherPublisherDescription;
+  private DataReaderWatcher dataReaderWatcherDataWriterDescription;
+  private DataReaderWatcher dataReaderWatcherSubscriberDescription;
+  private DataReaderWatcher dataReaderWatcherDataReaderDescription;
+
+  private DescriptionProcessorCache descriptionProcessorCache;
+  private DomainParticipantMetricProcessor domainParticipantMetricProcessor;
 
   private DataReaderWatcher dataReaderWatcherTopicEntityStatistics;
-  private TopicEntityStatisticsMetricProcessor topicEntityStatisticsMetricProcessor;
-
-  private DataReaderWatcher dataReaderWatcherPublisherDescription;
-  private PublisherDescriptionMetricProcessor publisherDescriptionMetricProcessor;
-
-  private DataReaderWatcher dataReaderWatcherSubscriberDescription;
-  private SubscriberDescriptionMetricProcessor subscriberDescriptionMetricProcessor;
-
-  private DataReaderWatcher dataReaderWatcherDataReaderDescription;
-  private DataReaderDescriptionMetricProcessor dataReaderDescriptionMetricProcessor;
+  private TopicMetricsProcessor topicMetricsProcessor;
 
   private DataReaderWatcher dataReaderWatcherDataReaderEntityStatistics;
-  private DataReaderEntityStatisticsMetricProcessor dataReaderEntityStatisticsMetricProcessor;
+  private DataReaderMetricsProcessor dataReaderMetricsProcessor;
 
   private DataReaderWatcher dataReaderWatcherDataReaderEntityMatchedPublicationStatistics;
-  private DataReaderEntityMatchedPublicationStatisticsMetricProcessor dataReaderEntityMatchedPublicationStatisticsMetricProcessor;
-
-  private DataReaderWatcher dataReaderWatcherDataWriterDescription;
-  private DataWriterDescriptionMetricProcessor dataWriterDescriptionMetricProcessor;
+  private DataReaderMatchedPublicationMetricsProcessor dataReaderMatchedPublicationMetricsProcessor;
 
   private DataReaderWatcher dataReaderWatcherDataWriterEntityStatistics;
-  private DataWriterEntityStatisticsMetricProcessor dataWriterEntityStatisticsMetricProcessor;
+  private DataWriterMetricsProcessor dataWriterMetricsProcessor;
 
   private DataReaderWatcher dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics;
-  private DataWriterEntityMatchedSubscriptionStatisticsMetricProcessor dataWriterEntityMatchedSubscriptionStatisticsMetricProcessor;
+  private DataWriterMatchedSubscriptionMetricsProcessor dataWriterMatchedSubscriptionMetricsProcessor;
 
   private DataReaderWatcher dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics;
-  private DataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor dataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor;
+  private DataWriterMatchedSubscriptionWithLocatorMetricsProcessor dataWriterMatchedSubscriptionWithLocatorMetricsProcessor;
 
   public static void main(
     final String[] args
@@ -170,20 +161,30 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
     // start http server
     httpServer = new HTTPServer(9102);
 
+    // create description processor cache
+    descriptionProcessorCache = new DescriptionProcessorCache();
+
     // create metrics processors
-    domainParticipantDescriptionMetricProcessor = new DomainParticipantDescriptionMetricProcessor();
-    domainParticipantEntityStatisticsMetricProcessor = new DomainParticipantEntityStatisticsMetricProcessor();
-    topicDescriptionMetricProcessor = new TopicDescriptionMetricProcessor();
-    topicEntityStatisticsMetricProcessor = new TopicEntityStatisticsMetricProcessor();
-    publisherDescriptionMetricProcessor = new PublisherDescriptionMetricProcessor();
-    subscriberDescriptionMetricProcessor = new SubscriberDescriptionMetricProcessor();
-    dataReaderDescriptionMetricProcessor = new DataReaderDescriptionMetricProcessor();
-    dataReaderEntityStatisticsMetricProcessor = new DataReaderEntityStatisticsMetricProcessor();
-    dataReaderEntityMatchedPublicationStatisticsMetricProcessor = new DataReaderEntityMatchedPublicationStatisticsMetricProcessor();
-    dataWriterDescriptionMetricProcessor = new DataWriterDescriptionMetricProcessor();
-    dataWriterEntityStatisticsMetricProcessor = new DataWriterEntityStatisticsMetricProcessor();
-    dataWriterEntityMatchedSubscriptionStatisticsMetricProcessor = new DataWriterEntityMatchedSubscriptionStatisticsMetricProcessor();
-    dataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor = new DataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor();
+    domainParticipantMetricProcessor = new DomainParticipantMetricProcessor(
+      descriptionProcessorCache);
+
+    topicMetricsProcessor = new TopicMetricsProcessor(
+      descriptionProcessorCache);
+
+    dataReaderMetricsProcessor = new DataReaderMetricsProcessor(
+      descriptionProcessorCache);
+
+    dataReaderMatchedPublicationMetricsProcessor = new DataReaderMatchedPublicationMetricsProcessor(
+      descriptionProcessorCache);
+
+    dataWriterMetricsProcessor = new DataWriterMetricsProcessor(
+      descriptionProcessorCache);
+
+    dataWriterMatchedSubscriptionMetricsProcessor = new DataWriterMatchedSubscriptionMetricsProcessor(
+      descriptionProcessorCache);
+
+    dataWriterMatchedSubscriptionWithLocatorMetricsProcessor = new DataWriterMatchedSubscriptionWithLocatorMetricsProcessor(
+      descriptionProcessorCache);
 
     // startup DDS
     startupDds();
@@ -221,23 +222,57 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
+      DomainParticipantDescriptionTypeSupport.get_instance(),
+      DomainParticipantDescriptionTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+      TopicDescriptionTypeSupport.get_instance(),
+      TopicDescriptionTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+      SubscriberDescriptionTypeSupport.get_instance(),
+      SubscriberDescriptionTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
       DataReaderDescriptionTypeSupport.get_instance(),
       DataReaderDescriptionTypeSupport.get_type_name()
     );
 
     DomainParticipantFactory.get_instance().register_type_support(
-      DataReaderEntityMatchedPublicationStatisticsTypeSupport.get_instance(),
-      DataReaderEntityMatchedPublicationStatisticsTypeSupport.get_type_name()
+      PublisherDescriptionTypeSupport.get_instance(),
+      PublisherDescriptionTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+      DataWriterDescriptionTypeSupport.get_instance(),
+      DataWriterDescriptionTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+      DomainParticipantEntityStatisticsTypeSupport.get_instance(),
+      DomainParticipantEntityStatisticsTypeSupport.get_type_name()
+    );
+
+    DomainParticipantFactory.get_instance().register_type_support(
+      TopicEntityStatisticsTypeSupport.get_instance(),
+      TopicEntityStatisticsTypeSupport.get_type_name()
     );
 
     DomainParticipantFactory.get_instance().register_type_support(
       DataReaderEntityStatisticsTypeSupport.get_instance(),
       DataReaderEntityStatisticsTypeSupport.get_type_name()
     );
+    DomainParticipantFactory.get_instance().register_type_support(
+      DataReaderEntityMatchedPublicationStatisticsTypeSupport.get_instance(),
+      DataReaderEntityMatchedPublicationStatisticsTypeSupport.get_type_name()
+    );
 
     DomainParticipantFactory.get_instance().register_type_support(
-      DataWriterDescriptionTypeSupport.get_instance(),
-      DataWriterDescriptionTypeSupport.get_type_name()
+      DataWriterEntityStatisticsTypeSupport.get_instance(),
+      DataWriterEntityStatisticsTypeSupport.get_type_name()
     );
 
     DomainParticipantFactory.get_instance().register_type_support(
@@ -248,41 +283,6 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
     DomainParticipantFactory.get_instance().register_type_support(
       DataWriterEntityMatchedSubscriptionWithLocatorStatisticsTypeSupport.get_instance(),
       DataWriterEntityMatchedSubscriptionWithLocatorStatisticsTypeSupport.get_type_name()
-    );
-
-    DomainParticipantFactory.get_instance().register_type_support(
-      DataWriterEntityStatisticsTypeSupport.get_instance(),
-      DataWriterEntityStatisticsTypeSupport.get_type_name()
-    );
-
-    DomainParticipantFactory.get_instance().register_type_support(
-      DomainParticipantDescriptionTypeSupport.get_instance(),
-      DomainParticipantDescriptionTypeSupport.get_type_name()
-    );
-
-    DomainParticipantFactory.get_instance().register_type_support(
-      DomainParticipantEntityStatisticsTypeSupport.get_instance(),
-      DomainParticipantEntityStatisticsTypeSupport.get_type_name()
-    );
-
-    DomainParticipantFactory.get_instance().register_type_support(
-      PublisherDescriptionTypeSupport.get_instance(),
-      PublisherDescriptionTypeSupport.get_type_name()
-    );
-
-    DomainParticipantFactory.get_instance().register_type_support(
-      SubscriberDescriptionTypeSupport.get_instance(),
-      SubscriberDescriptionTypeSupport.get_type_name()
-    );
-
-    DomainParticipantFactory.get_instance().register_type_support(
-      TopicDescriptionTypeSupport.get_instance(),
-      TopicDescriptionTypeSupport.get_type_name()
-    );
-
-    DomainParticipantFactory.get_instance().register_type_support(
-      TopicEntityStatisticsTypeSupport.get_instance(),
-      TopicEntityStatisticsTypeSupport.get_type_name()
     );
 
     // create participant from config
@@ -304,7 +304,42 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
       readConditionParams,
       new SampleTaker<>(new DomainParticipantDescriptionSeq()),
       (OnDataAvailableListener<DomainParticipantDescription>) (dataReader, sample, info) ->
-        domainParticipantDescriptionMetricProcessor.process(sample, info)
+        descriptionProcessorCache.process(sample, info)
+    );
+    dataReaderWatcherTopicDescription = new DataReaderWatcher<>(
+      domainParticipant.lookup_datareader_by_name("Subscriber::TopicDescription"),
+      readConditionParams,
+      new SampleTaker<>(new TopicDescriptionSeq()),
+      (OnDataAvailableListener<TopicDescription>) (dataReader, sample, info) ->
+        descriptionProcessorCache.process(sample, info)
+    );
+    dataReaderWatcherPublisherDescription = new DataReaderWatcher<>(
+      domainParticipant.lookup_datareader_by_name("Subscriber::PublisherDescription"),
+      readConditionParams,
+      new SampleTaker<>(new PublisherDescriptionSeq()),
+      (OnDataAvailableListener<PublisherDescription>) (dataReader, sample, info) ->
+        descriptionProcessorCache.process(sample, info)
+    );
+    dataReaderWatcherDataWriterDescription = new DataReaderWatcher<>(
+      domainParticipant.lookup_datareader_by_name("Subscriber::DataWriterDescription"),
+      readConditionParams,
+      new SampleTaker<>(new DataWriterDescriptionSeq()),
+      (OnDataAvailableListener<DataWriterDescription>) (dataReader, sample, info) ->
+        descriptionProcessorCache.process(sample, info)
+    );
+    dataReaderWatcherSubscriberDescription = new DataReaderWatcher<>(
+      domainParticipant.lookup_datareader_by_name("Subscriber::SubscriberDescription"),
+      readConditionParams,
+      new SampleTaker<>(new SubscriberDescriptionSeq()),
+      (OnDataAvailableListener<SubscriberDescription>) (dataReader, sample, info) ->
+        descriptionProcessorCache.process(sample, info)
+    );
+    dataReaderWatcherDataReaderDescription = new DataReaderWatcher<>(
+      domainParticipant.lookup_datareader_by_name("Subscriber::DataReaderDescription"),
+      readConditionParams,
+      new SampleTaker<>(new DataReaderDescriptionSeq()),
+      (OnDataAvailableListener<DataReaderDescription>) (dataReader, sample, info) ->
+        descriptionProcessorCache.process(sample, info)
     );
 
     dataReaderWatcherDomainParticipantEntityStatistics = new DataReaderWatcher<>(
@@ -312,96 +347,50 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
       readConditionParams,
       new SampleTaker<>(new DomainParticipantEntityStatisticsSeq()),
       (OnDataAvailableListener<DomainParticipantEntityStatistics>) (dataReader, sample, info) ->
-        domainParticipantEntityStatisticsMetricProcessor.process(sample, info)
+        domainParticipantMetricProcessor.process(sample, info)
     );
-
-    dataReaderWatcherTopicDescription = new DataReaderWatcher<>(
-      domainParticipant.lookup_datareader_by_name("Subscriber::TopicDescription"),
-      readConditionParams,
-      new SampleTaker<>(new TopicDescriptionSeq()),
-      (OnDataAvailableListener<TopicDescription>) (dataReader, sample, info) ->
-        topicDescriptionMetricProcessor.process(sample, info)
-    );
-
     dataReaderWatcherTopicEntityStatistics = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::TopicEntityStatistics"),
       readConditionParams,
       new SampleTaker<>(new TopicEntityStatisticsSeq()),
       (OnDataAvailableListener<TopicEntityStatistics>) (dataReader, sample, info) ->
-        topicEntityStatisticsMetricProcessor.process(sample, info)
+        topicMetricsProcessor.process(sample, info)
     );
-
-    dataReaderWatcherPublisherDescription = new DataReaderWatcher<>(
-      domainParticipant.lookup_datareader_by_name("Subscriber::PublisherDescription"),
-      readConditionParams,
-      new SampleTaker<>(new PublisherDescriptionSeq()),
-      (OnDataAvailableListener<PublisherDescription>) (dataReader, sample, info) ->
-        publisherDescriptionMetricProcessor.process(sample, info)
-    );
-
-    dataReaderWatcherSubscriberDescription = new DataReaderWatcher<>(
-      domainParticipant.lookup_datareader_by_name("Subscriber::SubscriberDescription"),
-      readConditionParams,
-      new SampleTaker<>(new SubscriberDescriptionSeq()),
-      (OnDataAvailableListener<SubscriberDescription>) (dataReader, sample, info) ->
-        subscriberDescriptionMetricProcessor.process(sample, info)
-    );
-
-    dataReaderWatcherDataReaderDescription = new DataReaderWatcher<>(
-      domainParticipant.lookup_datareader_by_name("Subscriber::DataReaderDescription"),
-      readConditionParams,
-      new SampleTaker<>(new DataReaderDescriptionSeq()),
-      (OnDataAvailableListener<DataReaderDescription>) (dataReader, sample, info) ->
-        dataReaderDescriptionMetricProcessor.process(sample, info)
-    );
-
     dataReaderWatcherDataReaderEntityStatistics = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::DataReaderEntityStatistics"),
       readConditionParams,
       new SampleTaker<>(new DataReaderEntityStatisticsSeq()),
       (OnDataAvailableListener<DataReaderEntityStatistics>) (dataReader, sample, info) ->
-        dataReaderEntityStatisticsMetricProcessor.process(sample, info)
+        dataReaderMetricsProcessor.process(sample, info)
     );
-
     dataReaderWatcherDataReaderEntityMatchedPublicationStatistics = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::DataReaderEntityMatchedPublicationStatistics"),
       readConditionParams,
       new SampleTaker<>(new DataReaderEntityMatchedPublicationStatisticsSeq()),
       (OnDataAvailableListener<DataReaderEntityMatchedPublicationStatistics>) (dataReader, sample, info) ->
-        dataReaderEntityMatchedPublicationStatisticsMetricProcessor.process(sample, info)
+        dataReaderMatchedPublicationMetricsProcessor.process(sample, info)
     );
-
-    dataReaderWatcherDataWriterDescription = new DataReaderWatcher<>(
-      domainParticipant.lookup_datareader_by_name("Subscriber::DataWriterDescription"),
-      readConditionParams,
-      new SampleTaker<>(new DataWriterDescriptionSeq()),
-      (OnDataAvailableListener<DataWriterDescription>) (dataReader, sample, info) ->
-        dataWriterDescriptionMetricProcessor.process(sample, info)
-    );
-
     dataReaderWatcherDataWriterEntityStatistics = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::DataWriterEntityStatistics"),
       readConditionParams,
       new SampleTaker<>(new DataWriterEntityStatisticsSeq()),
       (OnDataAvailableListener<DataWriterEntityStatistics>) (dataReader, sample, info) ->
-        dataWriterEntityStatisticsMetricProcessor.process(sample, info)
+        dataWriterMetricsProcessor.process(sample, info)
     );
-
     dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::DataWriterEntityMatchedSubscriptionStatistics"),
       readConditionParams,
       new SampleTaker<>(new DataWriterEntityMatchedSubscriptionStatisticsSeq()),
       (OnDataAvailableListener<DataWriterEntityMatchedSubscriptionStatistics>) (dataReader, sample, info) ->
-        dataWriterEntityMatchedSubscriptionStatisticsMetricProcessor.process(sample, info)
+        dataWriterMatchedSubscriptionMetricsProcessor.process(sample, info)
     );
-
     dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics = new DataReaderWatcher<>(
       domainParticipant
         .lookup_datareader_by_name("Subscriber::DataWriterEntityMatchedSubscriptionWithLocatorStatistics"),
       readConditionParams,
       new SampleTaker<>(new DataWriterEntityMatchedSubscriptionWithLocatorStatisticsSeq()),
       (OnDataAvailableListener<DataWriterEntityMatchedSubscriptionWithLocatorStatistics>) (dataReader, sample, info) ->
-        dataWriterEntityMatchedSubscriptionWithLocatorStatisticsMetricProcessor.process(sample, info)
+        dataWriterMatchedSubscriptionWithLocatorMetricsProcessor.process(sample, info)
     );
   }
 
@@ -410,65 +399,58 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
       dataReaderWatcherDomainParticipantDescription.close();
       dataReaderWatcherDomainParticipantDescription = null;
     }
-
-    if (dataReaderWatcherDomainParticipantEntityStatistics != null) {
-      dataReaderWatcherDomainParticipantEntityStatistics.close();
-      dataReaderWatcherDomainParticipantEntityStatistics = null;
-    }
-
     if (dataReaderWatcherTopicDescription != null) {
       dataReaderWatcherTopicDescription.close();
       dataReaderWatcherTopicDescription = null;
     }
-
-    if (dataReaderWatcherTopicEntityStatistics != null) {
-      dataReaderWatcherTopicEntityStatistics.close();
-      dataReaderWatcherTopicEntityStatistics = null;
-    }
-
     if (dataReaderWatcherPublisherDescription != null) {
       dataReaderWatcherPublisherDescription.close();
       dataReaderWatcherPublisherDescription = null;
     }
-
+    if (dataReaderWatcherDataWriterDescription != null) {
+      dataReaderWatcherDataWriterDescription.close();
+      dataReaderWatcherDataWriterDescription = null;
+    }
     if (dataReaderWatcherSubscriberDescription != null) {
       dataReaderWatcherSubscriberDescription.close();
       dataReaderWatcherSubscriberDescription = null;
     }
-
     if (dataReaderWatcherDataReaderDescription != null) {
       dataReaderWatcherDataReaderDescription.close();
       dataReaderWatcherDataReaderDescription = null;
     }
 
+    if (dataReaderWatcherDomainParticipantEntityStatistics != null) {
+      dataReaderWatcherDomainParticipantEntityStatistics.close();
+      dataReaderWatcherDomainParticipantEntityStatistics = null;
+    }
+    if (dataReaderWatcherTopicEntityStatistics != null) {
+      dataReaderWatcherTopicEntityStatistics.close();
+      dataReaderWatcherTopicEntityStatistics = null;
+    }
     if (dataReaderWatcherDataReaderEntityStatistics != null) {
       dataReaderWatcherDataReaderEntityStatistics.close();
       dataReaderWatcherDataReaderEntityStatistics = null;
     }
-
     if (dataReaderWatcherDataReaderEntityMatchedPublicationStatistics != null) {
       dataReaderWatcherDataReaderEntityMatchedPublicationStatistics.close();
       dataReaderWatcherDataReaderEntityMatchedPublicationStatistics = null;
     }
-
-    if (dataReaderWatcherDataWriterDescription != null) {
-      dataReaderWatcherDataWriterDescription.close();
-      dataReaderWatcherDataWriterDescription = null;
-    }
-
     if (dataReaderWatcherDataWriterEntityStatistics != null) {
       dataReaderWatcherDataWriterEntityStatistics.close();
       dataReaderWatcherDataWriterEntityStatistics = null;
     }
-
     if (dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics != null) {
       dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics.close();
       dataReaderWatcherDataWriterEntityMatchedSubscriptionStatistics = null;
     }
-
     if (dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics != null) {
       dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics.close();
       dataReaderWatcherDataWriterEntityMatchedSubscriptionWithLocatorStatistics = null;
+    }
+
+    if (descriptionProcessorCache != null) {
+      descriptionProcessorCache = null;
     }
 
     if (httpServer != null) {
