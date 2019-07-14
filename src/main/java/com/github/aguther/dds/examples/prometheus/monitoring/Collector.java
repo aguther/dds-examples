@@ -28,6 +28,7 @@ import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.github.aguther.dds.support.subscription.DataReaderWatcher;
 import com.github.aguther.dds.support.subscription.OnDataAvailableListener;
 import com.github.aguther.dds.support.subscription.SampleTaker;
+import com.github.aguther.dds.support.subscription.SampleWithInfoCopier;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -303,43 +304,55 @@ public class Collector extends AbstractIdleService {
       domainParticipant.lookup_datareader_by_name("Subscriber::DomainParticipantDescription"),
       readConditionParams,
       new SampleTaker<>(new DomainParticipantDescriptionSeq()),
-      (OnDataAvailableListener<DomainParticipantDescription>) (dataReader, sample, info) ->
-        descriptionProcessorCache.process(sample, info)
+      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+        (OnDataAvailableListener<DomainParticipantDescription>) (dataReader, sample, info) ->
+          descriptionProcessorCache.process(sample, info)
+      )
     );
     dataReaderWatcherTopicDescription = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::TopicDescription"),
       readConditionParams,
       new SampleTaker<>(new TopicDescriptionSeq()),
-      (OnDataAvailableListener<TopicDescription>) (dataReader, sample, info) ->
-        descriptionProcessorCache.process(sample, info)
+      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+        (OnDataAvailableListener<TopicDescription>) (dataReader, sample, info) ->
+          descriptionProcessorCache.process(sample, info)
+      )
     );
     dataReaderWatcherPublisherDescription = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::PublisherDescription"),
       readConditionParams,
       new SampleTaker<>(new PublisherDescriptionSeq()),
-      (OnDataAvailableListener<PublisherDescription>) (dataReader, sample, info) ->
-        descriptionProcessorCache.process(sample, info)
+      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+        (OnDataAvailableListener<PublisherDescription>) (dataReader, sample, info) ->
+          descriptionProcessorCache.process(sample, info)
+      )
     );
     dataReaderWatcherDataWriterDescription = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::DataWriterDescription"),
       readConditionParams,
       new SampleTaker<>(new DataWriterDescriptionSeq()),
-      (OnDataAvailableListener<DataWriterDescription>) (dataReader, sample, info) ->
-        descriptionProcessorCache.process(sample, info)
+      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+        (OnDataAvailableListener<DataWriterDescription>) (dataReader, sample, info) ->
+          descriptionProcessorCache.process(sample, info)
+      )
     );
     dataReaderWatcherSubscriberDescription = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::SubscriberDescription"),
       readConditionParams,
       new SampleTaker<>(new SubscriberDescriptionSeq()),
-      (OnDataAvailableListener<SubscriberDescription>) (dataReader, sample, info) ->
-        descriptionProcessorCache.process(sample, info)
+      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+        (OnDataAvailableListener<SubscriberDescription>) (dataReader, sample, info) ->
+          descriptionProcessorCache.process(sample, info)
+      )
     );
     dataReaderWatcherDataReaderDescription = new DataReaderWatcher<>(
       domainParticipant.lookup_datareader_by_name("Subscriber::DataReaderDescription"),
       readConditionParams,
       new SampleTaker<>(new DataReaderDescriptionSeq()),
-      (OnDataAvailableListener<DataReaderDescription>) (dataReader, sample, info) ->
-        descriptionProcessorCache.process(sample, info)
+      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+        (OnDataAvailableListener<DataReaderDescription>) (dataReader, sample, info) ->
+          descriptionProcessorCache.process(sample, info)
+      )
     );
 
     dataReaderWatcherDomainParticipantEntityStatistics = new DataReaderWatcher<>(
