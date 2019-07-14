@@ -11,7 +11,7 @@ popd
 
 # copy needed files
 cp -f ./../../build/libs/*all.jar .
-cp -f ./../rpms/rti-connext-dds-53-runtime-pro-x64Linux3gcc4.8.2-5.3.1.0-3.x86_64.rpm .
+cp -f ./../rpms/rti-connext-dds-60-runtime-pro-x64Linux3gcc4.8.2-6.0.0.0-1.x86_64.rpm .
 
 # start build of docker file
 docker build -t dds-examples:latest .
