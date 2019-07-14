@@ -80,11 +80,11 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
+public class Collector extends AbstractIdleService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DdsMonitoringLibraryPrometheus.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Collector.class);
 
-  private static DdsMonitoringLibraryPrometheus serviceInstance;
+  private static Collector serviceInstance;
 
   private DomainParticipant domainParticipant;
 
@@ -127,7 +127,7 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
     registerShutdownHook();
 
     // create service
-    serviceInstance = new DdsMonitoringLibraryPrometheus();
+    serviceInstance = new Collector();
 
     // start the service
     serviceInstance.startAsync();
@@ -149,7 +149,7 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
         }
         LOGGER.info("Shutdown signal finished");
       },
-      String.format("ShutdownHook-%s", DdsMonitoringLibraryPrometheus.class.getName())
+      String.format("ShutdownHook-%s", Collector.class.getName())
     ));
   }
 
@@ -470,5 +470,4 @@ public class DdsMonitoringLibraryPrometheus extends AbstractIdleService {
     // finalize factory
     DomainParticipantFactory.finalize_instance();
   }
-
 }
