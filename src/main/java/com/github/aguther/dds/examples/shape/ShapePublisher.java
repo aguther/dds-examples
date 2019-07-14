@@ -196,7 +196,7 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-      "DomainParticipantLibrary::ShapePublisher"
+      String.format("DomainParticipantLibrary::ShapePublisher-%s", shapeKind.toString().toUpperCase())
     );
   }
 

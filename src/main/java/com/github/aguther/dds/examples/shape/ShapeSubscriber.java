@@ -143,7 +143,7 @@ public class ShapeSubscriber extends AbstractIdleService implements Callable<Sha
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-      "DomainParticipantLibrary::ShapeSubscriber"
+      String.format("DomainParticipantLibrary::ShapeSubscriber-%s", shapeKind.toString().toUpperCase())
     );
   }
 
