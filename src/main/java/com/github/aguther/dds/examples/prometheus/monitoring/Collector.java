@@ -313,7 +313,7 @@ public class Collector extends AbstractIdleService {
       domainParticipant.lookup_datareader_by_name("Subscriber::TopicDescription"),
       readConditionParams,
       new SampleTaker<>(new TopicDescriptionSeq()),
-      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+      new SampleWithInfoCopier<>(TopicDescription.class,
         (OnDataAvailableListener<TopicDescription>) (dataReader, sample, info) ->
           descriptionProcessorCache.process(sample, info)
       )
@@ -322,7 +322,7 @@ public class Collector extends AbstractIdleService {
       domainParticipant.lookup_datareader_by_name("Subscriber::PublisherDescription"),
       readConditionParams,
       new SampleTaker<>(new PublisherDescriptionSeq()),
-      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+      new SampleWithInfoCopier<>(PublisherDescription.class,
         (OnDataAvailableListener<PublisherDescription>) (dataReader, sample, info) ->
           descriptionProcessorCache.process(sample, info)
       )
@@ -331,7 +331,7 @@ public class Collector extends AbstractIdleService {
       domainParticipant.lookup_datareader_by_name("Subscriber::DataWriterDescription"),
       readConditionParams,
       new SampleTaker<>(new DataWriterDescriptionSeq()),
-      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+      new SampleWithInfoCopier<>(DataWriterDescription.class,
         (OnDataAvailableListener<DataWriterDescription>) (dataReader, sample, info) ->
           descriptionProcessorCache.process(sample, info)
       )
@@ -340,7 +340,7 @@ public class Collector extends AbstractIdleService {
       domainParticipant.lookup_datareader_by_name("Subscriber::SubscriberDescription"),
       readConditionParams,
       new SampleTaker<>(new SubscriberDescriptionSeq()),
-      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+      new SampleWithInfoCopier<>(SubscriberDescription.class,
         (OnDataAvailableListener<SubscriberDescription>) (dataReader, sample, info) ->
           descriptionProcessorCache.process(sample, info)
       )
@@ -349,7 +349,7 @@ public class Collector extends AbstractIdleService {
       domainParticipant.lookup_datareader_by_name("Subscriber::DataReaderDescription"),
       readConditionParams,
       new SampleTaker<>(new DataReaderDescriptionSeq()),
-      new SampleWithInfoCopier<>(DomainParticipantDescription.class,
+      new SampleWithInfoCopier<>(DataReaderDescription.class,
         (OnDataAvailableListener<DataReaderDescription>) (dataReader, sample, info) ->
           descriptionProcessorCache.process(sample, info)
       )
