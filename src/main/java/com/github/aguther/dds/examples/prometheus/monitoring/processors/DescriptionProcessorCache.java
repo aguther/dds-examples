@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.prometheus.monitoring;
+package com.github.aguther.dds.examples.prometheus.monitoring.processors;
 
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
@@ -154,37 +154,37 @@ public class DescriptionProcessorCache {
     );
   }
 
-  public DomainParticipantDescription getDomainParticipantDescription(
+  DomainParticipantDescription getDomainParticipantDescription(
     BuiltinTopicKey_t key
   ) {
     return domainParticipantDescriptionStore.get(key);
   }
 
-  public TopicDescription getTopicDescription(
+  TopicDescription getTopicDescription(
     BuiltinTopicKey_t key
   ) {
     return topicDescriptionStore.get(key);
   }
 
-  public PublisherDescription getPublisherDescription(
+  PublisherDescription getPublisherDescription(
     BuiltinTopicKey_t key
   ) {
     return publisherDescriptionStore.get(key);
   }
 
-  public DataWriterDescription getDataWriterDescription(
+  DataWriterDescription getDataWriterDescription(
     BuiltinTopicKey_t key
   ) {
     return dataWriterDescriptionStore.get(key);
   }
 
-  public SubscriberDescription getSubscriberDescription(
+  SubscriberDescription getSubscriberDescription(
     BuiltinTopicKey_t key
   ) {
     return subscriberDescriptionStore.get(key);
   }
 
-  public DataReaderDescription getDataReaderDescription(
+  DataReaderDescription getDataReaderDescription(
     BuiltinTopicKey_t key
   ) {
     return dataReaderDescriptionStore.get(key);

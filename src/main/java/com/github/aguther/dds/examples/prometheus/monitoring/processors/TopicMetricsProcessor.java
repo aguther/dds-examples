@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.prometheus.monitoring;
+package com.github.aguther.dds.examples.prometheus.monitoring.processors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -52,15 +52,15 @@ public class TopicMetricsProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     tcSerializedSize = Gauge.build()
-      .name("topic_type_serialized_size_bytes")
+      .name("dds_topic_type_serialized_size_bytes")
       .labelNames(getLabelNames())
-      .help("topic_type_serialized_size_bytes")
+      .help("dds_topic_type_serialized_size_bytes")
       .register();
 
     inconsistentTopicStatusTotalCount = Gauge.build()
-      .name("topic_inconsistent_topic_status_total_count")
+      .name("dds_topic_inconsistent_topic_status_total_count")
       .labelNames(getLabelNames())
-      .help("topic_inconsistent_topic_status_total_count")
+      .help("dds_topic_inconsistent_topic_status_total_count")
       .register();
   }
 

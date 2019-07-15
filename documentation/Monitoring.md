@@ -328,11 +328,111 @@
 
 ## Routing Service
 
+### Service
+
+#### Labels
+- routing_service
+
+#### Gauges
+- dds_routing_service_state
+- dds_routing_service_host_total_memory_kb
+- dds_routing_service_host_total_swap_memory_kb
+- dds_routing_service_host_cpu_usage_percentage
+- dds_routing_service_host_free_memory_kb
+- dds_routing_service_host_free_swap_memory_kb
+- dds_routing_service_process_cpu_usage_percentage
+- dds_routing_service_process_physical_memory_kb
+- dds_routing_service_process_total_memory_kb
+
+### Domain Route
+
+#### Labels
+- routing_service
+- domain_route
+
+#### Gauges
+- dds_routing_service_domain_route_state
+- dds_routing_service_domain_route_in_samples_per_sec
+- dds_routing_service_domain_route_in_bytes_per_sec
+- dds_routing_service_domain_route_out_samples_per_sec
+- dds_routing_service_domain_route_out_bytes_per_sec
+- dds_routing_service_domain_route_latency_millisec
+
+### Session
+
+#### Labels
+- routing_service
+- domain_route
+- session
+
+#### Gauges
+- dds_routing_service_session_state
+- dds_routing_service_session_in_samples_per_sec
+- dds_routing_service_session_in_bytes_per_sec
+- dds_routing_service_session_out_samples_per_sec
+- dds_routing_service_session_out_bytes_per_sec
+- dds_routing_service_session_latency_millisec
+
+### Auto Route
+
+#### Labels
+- routing_service
+- domain_route
+- session
+- auto_route
+
+#### Gauges
+- dds_routing_service_auto_route_state
+- dds_routing_service_auto_route_in_samples_per_sec
+- dds_routing_service_auto_route_in_bytes_per_sec
+- dds_routing_service_auto_route_out_samples_per_sec
+- dds_routing_service_auto_route_out_bytes_per_sec
+- dds_routing_service_auto_route_latency_millisec
+
+### Route
+
+#### Labels
+- routing_service
+- domain_route
+- session
+- route
+
+#### Gauges
+- dds_routing_service_route_state
+- dds_routing_service_route_in_samples_per_sec
+- dds_routing_service_route_in_bytes_per_sec
+- dds_routing_service_route_out_samples_per_sec
+- dds_routing_service_route_out_bytes_per_sec
+- dds_routing_service_route_latency_millisec
+
+### Input
+
+#### Labels
+- routing_service
+- domain_route
+- session
+- auto_route | route
+- input
+
+#### Gauges
+- dds_routing_service_input_state
+- dds_routing_service_input_samples_per_sec
+- dds_routing_service_input_bytes_per_sec
+
+### Output
+
+#### Labels
+- routing_service
+- domain_route
+- session
+- auto_route | route
+- output
+
+#### Gauges
+- dds_routing_service_output_state
+- dds_routing_service_output_samples_per_sec
+- dds_routing_service_output_bytes_per_sec
 
 ## Possible helpers
 * https://github.com/j-easy/easy-batch
 * https://github.com/google/guava
-
-
-
-

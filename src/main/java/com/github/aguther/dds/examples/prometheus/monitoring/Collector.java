@@ -24,6 +24,14 @@
 
 package com.github.aguther.dds.examples.prometheus.monitoring;
 
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.DataReaderMatchedPublicationMetricsProcessor;
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.DataReaderMetricsProcessor;
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.DataWriterMatchedSubscriptionMetricsProcessor;
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.DataWriterMatchedSubscriptionWithLocatorMetricsProcessor;
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.DataWriterMetricsProcessor;
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.DescriptionProcessorCache;
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.DomainParticipantMetricProcessor;
+import com.github.aguther.dds.examples.prometheus.monitoring.processors.TopicMetricsProcessor;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.github.aguther.dds.support.subscription.DataReaderWatcher;
 import com.github.aguther.dds.support.subscription.OnDataAvailableListener;
@@ -288,7 +296,7 @@ public class Collector extends AbstractIdleService {
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-      "DomainParticipantLibrary::DdsMonitoringLibraryPrometheus"
+      "DomainParticipantLibrary::PrometheusMonitoringCollector"
     );
   }
 

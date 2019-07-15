@@ -145,8 +145,8 @@
       <topic name="Mutable" register_type_ref="v2::MutableType"/>
     </domain>
 
-    <!-- DdsMonitoringLibraryPrometheus -->
-    <domain name="DdsMonitoringLibraryPrometheus" domain_id="0">
+    <!-- Prometheus -->
+    <domain name="PrometheusMonitoringCollector" domain_id="0">
       <register_type name="rti::dds::monitoring::DataReaderDescription"/>
       <topic name="rti/dds/monitoring/dataReaderDescription"
         register_type_ref="rti::dds::monitoring::DataReaderDescription"/>
@@ -198,6 +198,19 @@
       <register_type name="rti::dds::monitoring::TopicEntityStatistics"/>
       <topic name="rti/dds/monitoring/topicEntityStatistics"
         register_type_ref="rti::dds::monitoring::TopicEntityStatistics"/>
+    </domain>
+    <domain name="PrometheusRoutingCollector" domain_id="0">
+      <register_type name="RTI::Service::Monitoring::Config"/>
+      <topic name="rti/service/monitoring/config"
+        register_type_ref="RTI::Service::Monitoring::Config"/>
+
+      <register_type name="RTI::Service::Monitoring::Event"/>
+      <topic name="rti/service/monitoring/event"
+        register_type_ref="RTI::Service::Monitoring::Event"/>
+
+      <register_type name="RTI::Service::Monitoring::Periodic"/>
+      <topic name="rti/service/monitoring/periodic"
+        register_type_ref="RTI::Service::Monitoring::Periodic"/>
     </domain>
   </domain_library>
 
@@ -445,8 +458,7 @@
     </domain_participant>
 
     <!-- Prometheus -->
-    <domain_participant name="DdsMonitoringLibraryPrometheus"
-      domain_ref="DomainLibrary::DdsMonitoringLibraryPrometheus">
+    <domain_participant name="PrometheusMonitoringCollector" domain_ref="DomainLibrary::PrometheusMonitoringCollector">
       <subscriber name="Subscriber">
         <data_reader name="DataReaderDescription"
           topic_ref="rti/dds/monitoring/dataReaderDescription">
@@ -545,7 +557,46 @@
       </subscriber>
       <participant_qos base_name="QosLibrary::Base">
         <participant_name>
-          <name>DdsMonitoringLibraryPrometheus</name>
+          <name>PrometheusMonitoringCollector</name>
+        </participant_name>
+      </participant_qos>
+    </domain_participant>
+    <domain_participant name="PrometheusRoutingCollector" domain_ref="DomainLibrary::PrometheusRoutingCollector">
+      <subscriber name="Subscriber">
+        <data_reader name="Config" topic_ref="rti/service/monitoring/config">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="Event" topic_ref="rti/service/monitoring/event">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+        <data_reader name="Periodic" topic_ref="rti/service/monitoring/periodic">
+          <datareader_qos base_name="QosLibrary::Base">
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+          </datareader_qos>
+        </data_reader>
+      </subscriber>
+      <participant_qos base_name="QosLibrary::Base">
+        <participant_name>
+          <name>PrometheusMonitoringCollector</name>
         </participant_name>
       </participant_qos>
     </domain_participant>

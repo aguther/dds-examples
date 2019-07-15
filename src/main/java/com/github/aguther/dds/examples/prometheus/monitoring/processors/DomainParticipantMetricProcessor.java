@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.aguther.dds.examples.prometheus.monitoring;
+package com.github.aguther.dds.examples.prometheus.monitoring.processors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -58,45 +58,45 @@ public class DomainParticipantMetricProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     userCpuTime = Gauge.build()
-      .name("domainparticipant_user_cpu_time_nanoseconds")
+      .name("dds_domain_participant_user_cpu_time_nanoseconds")
       .labelNames(getLabelNames())
-      .help("domainparticipant_user_cpu_time_nanoseconds")
+      .help("dds_domain_participant_user_cpu_time_nanoseconds")
       .register();
 
     kernelCpuTime = Gauge.build()
-      .name("domainparticipant_kernel_cpu_time_nanoseconds")
+      .name("dds_domain_participant_kernel_cpu_time_nanoseconds")
       .labelNames(getLabelNames())
-      .help("domainparticipant_kernel_cpu_time_nanoseconds")
+      .help("dds_domain_participant_kernel_cpu_time_nanoseconds")
       .register();
 
     physicalMemoryBytes = Gauge.build()
-      .name("domainparticipant_physical_memory_bytes")
+      .name("dds_domain_participant_physical_memory_bytes")
       .labelNames(getLabelNames())
-      .help("domainparticipant_physical_memory_bytes")
+      .help("dds_domain_participant_physical_memory_bytes")
       .register();
 
     totalMemoryBytes = Gauge.build()
-      .name("domainparticipant_total_memory_bytes")
+      .name("dds_domain_participant_total_memory_bytes")
       .labelNames(getLabelNames())
-      .help("domainparticipant_total_memory_bytes")
+      .help("dds_domain_participant_total_memory_bytes")
       .register();
 
     remoteParticipantCount = Gauge.build()
-      .name("domainparticipant_remote_participant_count")
+      .name("dds_domain_participant_remote_participant_count")
       .labelNames(getLabelNames())
-      .help("domainparticipant_remote_participant_count")
+      .help("dds_domain_participant_remote_participant_count")
       .register();
 
     remoteWriterCount = Gauge.build()
-      .name("domainparticipant_remote_writer_count")
+      .name("dds_domain_participant_remote_writer_count")
       .labelNames(getLabelNames())
-      .help("domainparticipant_remote_writer_count")
+      .help("dds_domain_participant_remote_writer_count")
       .register();
 
     remoteReaderCount = Gauge.build()
-      .name("domainparticipant_remote_reader_count")
+      .name("dds_domain_participant_remote_reader_count")
       .labelNames(getLabelNames())
-      .help("domainparticipant_remote_reader_count")
+      .help("dds_domain_participant_remote_reader_count")
       .register();
 
   }
