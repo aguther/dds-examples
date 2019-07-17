@@ -82,226 +82,226 @@ public class DataWriterMatchedSubscriptionMetricsProcessor {
 
     dataWriterProtocolStatusPushedSampleCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_pushed_sample_count")
+        "dds_data_writer_matched_subscription_protocol_status_pushed_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_pushed_sample_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_pushed_sample_count")
       .register();
 
     dataWriterProtocolStatusPushedSampleBytes = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_pushed_sample_bytes")
+        "dds_data_writer_matched_subscription_protocol_status_pushed_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_pushed_sample_bytes")
+      .help("dds_data_writer_matched_subscription_protocol_status_pushed_sample_bytes")
       .register();
 
     dataWriterProtocolStatusFilteredSampleCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_filtered_sample_count")
+        "dds_data_writer_matched_subscription_protocol_status_filtered_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_filtered_sample_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_filtered_sample_count")
       .register();
 
     dataWriterProtocolStatusFilteredSampleBytes = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_filtered_sample_bytes")
+        "dds_data_writer_matched_subscription_protocol_status_filtered_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_filtered_sample_bytes")
+      .help("dds_data_writer_matched_subscription_protocol_status_filtered_sample_bytes")
       .register();
 
     dataWriterProtocolStatusSentHeartbeatCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_sent_heartbeat_count")
+        "dds_data_writer_matched_subscription_protocol_status_sent_heartbeat_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_sent_heartbeat_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_sent_heartbeat_count")
       .register();
 
     dataWriterProtocolStatusSentHeartbeatBytes = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_sent_heartbeat_bytes")
+        "dds_data_writer_matched_subscription_protocol_status_sent_heartbeat_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_sent_heartbeat_bytes")
+      .help("dds_data_writer_matched_subscription_protocol_status_sent_heartbeat_bytes")
       .register();
 
     dataWriterProtocolStatusPulledSampleCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_pulled_sample_count")
+        "dds_data_writer_matched_subscription_protocol_status_pulled_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_pulled_sample_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_pulled_sample_count")
       .register();
 
     dataWriterProtocolStatusPulledSampleBytes = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_pulled_sample_bytes")
+        "dds_data_writer_matched_subscription_protocol_status_pulled_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_pulled_sample_bytes")
+      .help("dds_data_writer_matched_subscription_protocol_status_pulled_sample_bytes")
       .register();
 
     dataWriterProtocolStatusReceivedAckCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_received_ack_count")
+        "dds_data_writer_matched_subscription_protocol_status_received_ack_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_received_ack_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_received_ack_count")
       .register();
 
     dataWriterProtocolStatusReceivedAckBytes = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_received_ack_bytes")
+        "dds_data_writer_matched_subscription_protocol_status_received_ack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_received_ack_bytes")
+      .help("dds_data_writer_matched_subscription_protocol_status_received_ack_bytes")
       .register();
 
     dataWriterProtocolStatusReceivedNackCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_received_nack_count")
+        "dds_data_writer_matched_subscription_protocol_status_received_nack_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_received_nack_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_received_nack_count")
       .register();
 
     dataWriterProtocolStatusReceivedNackBytes = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_received_nack_bytes")
+        "dds_data_writer_matched_subscription_protocol_status_received_nack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_received_nack_bytes")
+      .help("dds_data_writer_matched_subscription_protocol_status_received_nack_bytes")
       .register();
 
     dataWriterProtocolStatusSentGapCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_sent_gap_count")
+        "dds_data_writer_matched_subscription_protocol_status_sent_gap_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_sent_gap_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_sent_gap_count")
       .register();
 
     dataWriterProtocolStatusSentGapBytes = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_sent_gap_bytes")
+        "dds_data_writer_matched_subscription_protocol_status_sent_gap_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_sent_gap_bytes")
+      .help("dds_data_writer_matched_subscription_protocol_status_sent_gap_bytes")
       .register();
 
     dataWriterProtocolStatusRejectedSampleCount = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_rejected_sample_count")
+        "dds_data_writer_matched_subscription_protocol_status_rejected_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_rejected_sample_count")
+      .help("dds_data_writer_matched_subscription_protocol_status_rejected_sample_count")
       .register();
 
     dataWriterProtocolStatusSendWindowSize = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_send_window_size")
+        "dds_data_writer_matched_subscription_protocol_status_send_window_size")
       .labelNames(getLabelNames())
-      .help("dds_data writer_matched_subscription_protocol_status_send_window_size")
+      .help("dds_data_writer_matched_subscription_protocol_status_send_window_size")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSequenceNumberHigh = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sequence_number_high")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSequenceNumberLow = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sequence_number_low")
       .register();
 
     dataWriterProtocolStatusLastAvailableSequenceNumberHigh = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sequence_number_high")
       .register();
 
     dataWriterProtocolStatusLastAvailableSequenceNumberLow = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sequence_number_low")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleSequenceNumberHigh = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_high")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleSequenceNumberLow = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_sequence_number_low")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSampleVirtualSequenceNumberHigh = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_high")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSampleVirtualSequenceNumberLow = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_available_sample_virtual_sequence_number_low")
       .register();
 
     dataWriterProtocolStatusLastAvailableSampleVirtualSequenceNumberHigh = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_high")
       .register();
 
     dataWriterProtocolStatusLastAvailableSampleVirtualSequenceNumberLow = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_last_available_sample_virtual_sequence_number_low")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleVirtualSequenceNumberHigh = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleVirtualSequenceNumberLow = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
       .register();
 
     dataWriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberHigh = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
+        "dds_data_writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
       .register();
 
     dataWriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberLow = Gauge.build()
       .name(
-        "dds_data writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
+        "dds_data_writer_matched_subscription_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
       .register();
   }
 
