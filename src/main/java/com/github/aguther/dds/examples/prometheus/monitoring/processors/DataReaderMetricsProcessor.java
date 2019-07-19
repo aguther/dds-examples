@@ -58,30 +58,30 @@ public class DataReaderMetricsProcessor {
   private final Gauge subscriptionMatchedStatusTotalCount;
   private final Gauge subscriptionMatchedStatusCurrentCount;
   private final Gauge subscriptionMatchedStatusCurrentCountPeak;
-  private final Gauge datareaderCacheStatusSampleCount;
-  private final Gauge datareaderCacheStatusSampleCountPeak;
-  private final Gauge datareaderProtocolStatusReceivedSampleCount;
-  private final Gauge datareaderProtocolStatusReceivedSampleBytes;
-  private final Gauge datareaderProtocolStatusDuplicateSampleCount;
-  private final Gauge datareaderProtocolStatusDuplicateSampleBytes;
-  private final Gauge datareaderProtocolStatusFilteredSampleCount;
-  private final Gauge datareaderProtocolStatusFilteredSampleBytes;
-  private final Gauge datareaderProtocolStatusReceivedHeartbeatCount;
-  private final Gauge datareaderProtocolStatusReceivedHeartbeatBytes;
-  private final Gauge datareaderProtocolStatusSentAckCount;
-  private final Gauge datareaderProtocolStatusSentAckBytes;
-  private final Gauge datareaderProtocolStatusSentNackCount;
-  private final Gauge datareaderProtocolStatusSentNackBytes;
-  private final Gauge datareaderProtocolStatusReceivedGapCount;
-  private final Gauge datareaderProtocolStatusReceivedGapBytes;
-  private final Gauge datareaderProtocolStatusRejectedSampleCount;
-  private final Gauge datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh;
-  private final Gauge datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow;
-  private final Gauge datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh;
-  private final Gauge datareaderProtocolStatusLastAvailableSampleSequenceNumberLow;
-  private final Gauge datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh;
-  private final Gauge datareaderProtocolStatusLastCommittedSampleSequenceNumberLow;
-  private final Gauge datareaderProtocolStatusUncommittedSampleCount;
+  private final Gauge dataReaderCacheStatusSampleCount;
+  private final Gauge dataReaderCacheStatusSampleCountPeak;
+  private final Gauge dataReaderProtocolStatusReceivedSampleCount;
+  private final Gauge dataReaderProtocolStatusReceivedSampleBytes;
+  private final Gauge dataReaderProtocolStatusDuplicateSampleCount;
+  private final Gauge dataReaderProtocolStatusDuplicateSampleBytes;
+  private final Gauge dataReaderProtocolStatusFilteredSampleCount;
+  private final Gauge dataReaderProtocolStatusFilteredSampleBytes;
+  private final Gauge dataReaderProtocolStatusReceivedHeartbeatCount;
+  private final Gauge dataReaderProtocolStatusReceivedHeartbeatBytes;
+  private final Gauge dataReaderProtocolStatusSentAckCount;
+  private final Gauge dataReaderProtocolStatusSentAckBytes;
+  private final Gauge dataReaderProtocolStatusSentNackCount;
+  private final Gauge dataReaderProtocolStatusSentNackBytes;
+  private final Gauge dataReaderProtocolStatusReceivedGapCount;
+  private final Gauge dataReaderProtocolStatusReceivedGapBytes;
+  private final Gauge dataReaderProtocolStatusRejectedSampleCount;
+  private final Gauge dataReaderProtocolStatusFirstAvailableSampleSequenceNumberHigh;
+  private final Gauge dataReaderProtocolStatusFirstAvailableSampleSequenceNumberLow;
+  private final Gauge dataReaderProtocolStatusLastAvailableSampleSequenceNumberHigh;
+  private final Gauge dataReaderProtocolStatusLastAvailableSampleSequenceNumberLow;
+  private final Gauge dataReaderProtocolStatusLastCommittedSampleSequenceNumberHigh;
+  private final Gauge dataReaderProtocolStatusLastCommittedSampleSequenceNumberLow;
+  private final Gauge dataReaderProtocolStatusUncommittedSampleCount;
 
   public DataReaderMetricsProcessor(
     DescriptionProcessorCache descriptionProcessorCache
@@ -91,243 +91,243 @@ public class DataReaderMetricsProcessor {
     instanceHandleHashMap = new HashMap<>();
 
     serializedSampleMaxSize = Gauge.build()
-      .name("dds_datareader_serialized_sample_max_size_bytes")
+      .name("dds_data_reader_serialized_sample_max_size_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_serialized_sample_max_size_bytes")
+      .help("dds_data_reader_serialized_sample_max_size_bytes")
       .register();
 
     serializedSampleMinSize = Gauge.build()
-      .name("dds_datareader_serialized_sample_min_size_bytes")
+      .name("dds_data_reader_serialized_sample_min_size_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_serialized_sample_min_size_bytes")
+      .help("dds_data_reader_serialized_sample_min_size_bytes")
       .register();
 
     serializedKeyMaxSize = Gauge.build()
-      .name("dds_datareader_serialized_key_max_size_bytes")
+      .name("dds_data_reader_serialized_key_max_size_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_serialized_key_max_size_bytes")
+      .help("dds_data_reader_serialized_key_max_size_bytes")
       .register();
 
     isContentFiltered = Gauge.build()
-      .name("dds_datareader_is_content_filtered")
+      .name("dds_data_reader_is_content_filtered")
       .labelNames(getLabelNames())
-      .help("dds_datareader_is_content_filtered")
+      .help("dds_data_reader_is_content_filtered")
       .register();
 
     sampleRejectedStatusTotalCount = Gauge.build()
-      .name("dds_datareader_sample_rejected_status_total_count")
+      .name("dds_data_reader_sample_rejected_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_sample_rejected_status_total_count")
+      .help("dds_data_reader_sample_rejected_status_total_count")
       .register();
 
     sampleRejectedStatusLastReason = Gauge.build()
-      .name("dds_datareader_sample_rejected_status_last_reason")
+      .name("dds_data_reader_sample_rejected_status_last_reason")
       .labelNames(getLabelNames())
-      .help("dds_datareader_sample_rejected_status_last_reason")
+      .help("dds_data_reader_sample_rejected_status_last_reason")
       .register();
 
     livelinessChangedStatusAliveCount = Gauge.build()
-      .name("dds_datareader_liveliness_changed_status_alive_count")
+      .name("dds_data_reader_liveliness_changed_status_alive_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_liveliness_changed_status_alive_count")
+      .help("dds_data_reader_liveliness_changed_status_alive_count")
       .register();
 
     livelinessChangedStatusNotAliveCount = Gauge.build()
-      .name("dds_datareader_liveliness_changed_status_not_alive_count")
+      .name("dds_data_reader_liveliness_changed_status_not_alive_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_liveliness_changed_status_not_alive_count")
+      .help("dds_data_reader_liveliness_changed_status_not_alive_count")
       .register();
 
     requestedDeadlineMissedStatusTotalCount = Gauge.build()
-      .name("dds_datareader_requested_deadline_missed_status_total_count")
+      .name("dds_data_reader_requested_deadline_missed_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_requested_deadline_missed_status_total_count")
+      .help("dds_data_reader_requested_deadline_missed_status_total_count")
       .register();
 
     requestedIncompatibleQosStatusTotalCount = Gauge.build()
-      .name("dds_datareader_requested_incompatible_qos_status_total_count")
+      .name("dds_data_reader_requested_incompatible_qos_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_requested_incompatible_qos_status_total_count")
+      .help("dds_data_reader_requested_incompatible_qos_status_total_count")
       .register();
 
     requestedIncompatibleQosStatusLastPolicyId = Gauge.build()
-      .name("dds_datareader_requested_incompatible_qos_status_last_policy_id")
+      .name("dds_data_reader_requested_incompatible_qos_status_last_policy_id")
       .labelNames(getLabelNames())
-      .help("dds_datareader_requested_incompatible_qos_status_last_policy_id")
+      .help("dds_data_reader_requested_incompatible_qos_status_last_policy_id")
       .register();
 
     sampleLostStatusTotalCount = Gauge.build()
-      .name("dds_datareader_sample_lost_status_total_count")
+      .name("dds_data_reader_sample_lost_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_sample_lost_status_total_count")
+      .help("dds_data_reader_sample_lost_status_total_count")
       .register();
 
     sampleLostStatusLastReason = Gauge.build()
-      .name("dds_datareader_sample_lost_status_last_reason")
+      .name("dds_data_reader_sample_lost_status_last_reason")
       .labelNames(getLabelNames())
-      .help("dds_datareader_sample_lost_status_last_reason")
+      .help("dds_data_reader_sample_lost_status_last_reason")
       .register();
 
     subscriptionMatchedStatusTotalCount = Gauge.build()
-      .name("dds_datareader_subscription_matched_status_total_count")
+      .name("dds_data_reader_subscription_matched_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_subscription_matched_status_total_count")
+      .help("dds_data_reader_subscription_matched_status_total_count")
       .register();
 
     subscriptionMatchedStatusCurrentCount = Gauge.build()
-      .name("dds_datareader_subscription_matched_status_current_count")
+      .name("dds_data_reader_subscription_matched_status_current_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_subscription_matched_status_current_count")
+      .help("dds_data_reader_subscription_matched_status_current_count")
       .register();
 
     subscriptionMatchedStatusCurrentCountPeak = Gauge.build()
-      .name("dds_datareader_subscription_matched_status_current_count_peak")
+      .name("dds_data_reader_subscription_matched_status_current_count_peak")
       .labelNames(getLabelNames())
-      .help("dds_datareader_subscription_matched_status_current_count_peak")
+      .help("dds_data_reader_subscription_matched_status_current_count_peak")
       .register();
 
-    datareaderCacheStatusSampleCount = Gauge.build()
-      .name("dds_datareader_cache_status_sample_count")
+    dataReaderCacheStatusSampleCount = Gauge.build()
+      .name("dds_data_reader_cache_status_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_cache_status_sample_count")
+      .help("dds_data_reader_cache_status_sample_count")
       .register();
 
-    datareaderCacheStatusSampleCountPeak = Gauge.build()
-      .name("dds_datareader_cache_status_sample_count_peak")
+    dataReaderCacheStatusSampleCountPeak = Gauge.build()
+      .name("dds_data_reader_cache_status_sample_count_peak")
       .labelNames(getLabelNames())
-      .help("dds_datareader_cache_status_sample_count_peak")
+      .help("dds_data_reader_cache_status_sample_count_peak")
       .register();
 
-    datareaderProtocolStatusReceivedSampleCount = Gauge.build()
-      .name("dds_datareader_protocol_status_received_sample_count")
+    dataReaderProtocolStatusReceivedSampleCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_received_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_received_sample_count")
+      .help("dds_data_reader_protocol_status_received_sample_count")
       .register();
 
-    datareaderProtocolStatusReceivedSampleBytes = Gauge.build()
-      .name("dds_datareader_protocol_status_received_sample_bytes")
+    dataReaderProtocolStatusReceivedSampleBytes = Gauge.build()
+      .name("dds_data_reader_protocol_status_received_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_received_sample_bytes")
+      .help("dds_data_reader_protocol_status_received_sample_bytes")
       .register();
 
-    datareaderProtocolStatusDuplicateSampleCount = Gauge.build()
-      .name("dds_datareader_protocol_status_duplicate_sample_count")
+    dataReaderProtocolStatusDuplicateSampleCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_duplicate_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_duplicate_sample_count")
+      .help("dds_data_reader_protocol_status_duplicate_sample_count")
       .register();
 
-    datareaderProtocolStatusDuplicateSampleBytes = Gauge.build()
-      .name("dds_datareader_protocol_status_duplicate_sample_bytes")
+    dataReaderProtocolStatusDuplicateSampleBytes = Gauge.build()
+      .name("dds_data_reader_protocol_status_duplicate_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_duplicate_sample_bytes")
+      .help("dds_data_reader_protocol_status_duplicate_sample_bytes")
       .register();
 
-    datareaderProtocolStatusFilteredSampleCount = Gauge.build()
-      .name("dds_datareader_protocol_status_filtered_sample_count")
+    dataReaderProtocolStatusFilteredSampleCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_filtered_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_filtered_sample_count")
+      .help("dds_data_reader_protocol_status_filtered_sample_count")
       .register();
 
-    datareaderProtocolStatusFilteredSampleBytes = Gauge.build()
-      .name("dds_datareader_protocol_status_filtered_sample_bytes")
+    dataReaderProtocolStatusFilteredSampleBytes = Gauge.build()
+      .name("dds_data_reader_protocol_status_filtered_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_filtered_sample_bytes")
+      .help("dds_data_reader_protocol_status_filtered_sample_bytes")
       .register();
 
-    datareaderProtocolStatusReceivedHeartbeatCount = Gauge.build()
-      .name("dds_datareader_protocol_status_received_heartbeat_count")
+    dataReaderProtocolStatusReceivedHeartbeatCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_received_heartbeat_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_received_heartbeat_count")
+      .help("dds_data_reader_protocol_status_received_heartbeat_count")
       .register();
 
-    datareaderProtocolStatusReceivedHeartbeatBytes = Gauge.build()
-      .name("dds_datareader_protocol_status_received_heartbeat_bytes")
+    dataReaderProtocolStatusReceivedHeartbeatBytes = Gauge.build()
+      .name("dds_data_reader_protocol_status_received_heartbeat_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_received_heartbeat_bytes")
+      .help("dds_data_reader_protocol_status_received_heartbeat_bytes")
       .register();
 
-    datareaderProtocolStatusSentAckCount = Gauge.build()
-      .name("dds_datareader_protocol_status_sent_ack_count")
+    dataReaderProtocolStatusSentAckCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_sent_ack_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_sent_ack_count")
+      .help("dds_data_reader_protocol_status_sent_ack_count")
       .register();
 
-    datareaderProtocolStatusSentAckBytes = Gauge.build()
-      .name("dds_datareader_protocol_status_sent_ack_bytes")
+    dataReaderProtocolStatusSentAckBytes = Gauge.build()
+      .name("dds_data_reader_protocol_status_sent_ack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_sent_ack_bytes")
+      .help("dds_data_reader_protocol_status_sent_ack_bytes")
       .register();
 
-    datareaderProtocolStatusSentNackCount = Gauge.build()
-      .name("dds_datareader_protocol_status_sent_nack_count")
+    dataReaderProtocolStatusSentNackCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_sent_nack_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_sent_nack_count")
+      .help("dds_data_reader_protocol_status_sent_nack_count")
       .register();
 
-    datareaderProtocolStatusSentNackBytes = Gauge.build()
-      .name("dds_datareader_protocol_status_sent_nack_bytes")
+    dataReaderProtocolStatusSentNackBytes = Gauge.build()
+      .name("dds_data_reader_protocol_status_sent_nack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_sent_nack_bytes")
+      .help("dds_data_reader_protocol_status_sent_nack_bytes")
       .register();
 
-    datareaderProtocolStatusReceivedGapCount = Gauge.build()
-      .name("dds_datareader_protocol_status_received_gap_count")
+    dataReaderProtocolStatusReceivedGapCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_received_gap_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_received_gap_count")
+      .help("dds_data_reader_protocol_status_received_gap_count")
       .register();
 
-    datareaderProtocolStatusReceivedGapBytes = Gauge.build()
-      .name("dds_datareader_protocol_status_received_gap_bytes")
+    dataReaderProtocolStatusReceivedGapBytes = Gauge.build()
+      .name("dds_data_reader_protocol_status_received_gap_bytes")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_received_gap_bytes")
+      .help("dds_data_reader_protocol_status_received_gap_bytes")
       .register();
 
-    datareaderProtocolStatusRejectedSampleCount = Gauge.build()
-      .name("dds_datareader_protocol_status_rejected_sample_count")
+    dataReaderProtocolStatusRejectedSampleCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_rejected_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_rejected_sample_count")
+      .help("dds_data_reader_protocol_status_rejected_sample_count")
       .register();
 
-    datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh = Gauge.build()
-      .name("dds_datareader_protocol_status_first_available_sample_sequence_number_high")
+    dataReaderProtocolStatusFirstAvailableSampleSequenceNumberHigh = Gauge.build()
+      .name("dds_data_reader_protocol_status_first_available_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_first_available_sample_sequence_number_high")
+      .help("dds_data_reader_protocol_status_first_available_sample_sequence_number_high")
       .register();
 
-    datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow = Gauge.build()
-      .name("dds_datareader_protocol_status_first_available_sample_sequence_number_low")
+    dataReaderProtocolStatusFirstAvailableSampleSequenceNumberLow = Gauge.build()
+      .name("dds_data_reader_protocol_status_first_available_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_first_available_sample_sequence_number_low")
+      .help("dds_data_reader_protocol_status_first_available_sample_sequence_number_low")
       .register();
 
-    datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh = Gauge.build()
-      .name("dds_datareader_protocol_status_last_available_sample_sequence_number_high")
+    dataReaderProtocolStatusLastAvailableSampleSequenceNumberHigh = Gauge.build()
+      .name("dds_data_reader_protocol_status_last_available_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_last_available_sample_sequence_number_high")
+      .help("dds_data_reader_protocol_status_last_available_sample_sequence_number_high")
       .register();
 
-    datareaderProtocolStatusLastAvailableSampleSequenceNumberLow = Gauge.build()
-      .name("dds_datareader_protocol_status_last_available_sample_sequence_number_low")
+    dataReaderProtocolStatusLastAvailableSampleSequenceNumberLow = Gauge.build()
+      .name("dds_data_reader_protocol_status_last_available_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_last_available_sample_sequence_number_low")
+      .help("dds_data_reader_protocol_status_last_available_sample_sequence_number_low")
       .register();
 
-    datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh = Gauge.build()
-      .name("dds_datareader_protocol_status_last_committed_sample_sequence_number_high")
+    dataReaderProtocolStatusLastCommittedSampleSequenceNumberHigh = Gauge.build()
+      .name("dds_data_reader_protocol_status_last_committed_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_last_committed_sample_sequence_number_high")
+      .help("dds_data_reader_protocol_status_last_committed_sample_sequence_number_high")
       .register();
 
-    datareaderProtocolStatusLastCommittedSampleSequenceNumberLow = Gauge.build()
-      .name("dds_datareader_protocol_status_last_committed_sample_sequence_number_low")
+    dataReaderProtocolStatusLastCommittedSampleSequenceNumberLow = Gauge.build()
+      .name("dds_data_reader_protocol_status_last_committed_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_last_committed_sample_sequence_number_low")
+      .help("dds_data_reader_protocol_status_last_committed_sample_sequence_number_low")
       .register();
 
-    datareaderProtocolStatusUncommittedSampleCount = Gauge.build()
-      .name("dds_datareader_protocol_status_uncommitted_sample_count")
+    dataReaderProtocolStatusUncommittedSampleCount = Gauge.build()
+      .name("dds_data_reader_protocol_status_uncommitted_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_datareader_protocol_status_uncommitted_sample_count")
+      .help("dds_data_reader_protocol_status_uncommitted_sample_count")
       .register();
   }
 
@@ -417,76 +417,76 @@ public class DataReaderMetricsProcessor {
     subscriptionMatchedStatusCurrentCountPeak.labels(labelValues).set(
       sample.subscription_matched_status.status.current_count_peak);
 
-    datareaderCacheStatusSampleCount.labels(labelValues).set(
+    dataReaderCacheStatusSampleCount.labels(labelValues).set(
       sample.datareader_cache_status.status.sample_count);
 
-    datareaderCacheStatusSampleCountPeak.labels(labelValues).set(
+    dataReaderCacheStatusSampleCountPeak.labels(labelValues).set(
       sample.datareader_cache_status.status.sample_count_peak);
 
-    datareaderProtocolStatusReceivedSampleCount.labels(labelValues).set(
+    dataReaderProtocolStatusReceivedSampleCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.received_sample_count);
 
-    datareaderProtocolStatusReceivedSampleBytes.labels(labelValues).set(
+    dataReaderProtocolStatusReceivedSampleBytes.labels(labelValues).set(
       sample.datareader_protocol_status.status.received_sample_bytes);
 
-    datareaderProtocolStatusDuplicateSampleCount.labels(labelValues).set(
+    dataReaderProtocolStatusDuplicateSampleCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.duplicate_sample_count);
 
-    datareaderProtocolStatusDuplicateSampleBytes.labels(labelValues).set(
+    dataReaderProtocolStatusDuplicateSampleBytes.labels(labelValues).set(
       sample.datareader_protocol_status.status.duplicate_sample_bytes);
 
-    datareaderProtocolStatusFilteredSampleCount.labels(labelValues).set(
+    dataReaderProtocolStatusFilteredSampleCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.filtered_sample_count);
 
-    datareaderProtocolStatusFilteredSampleBytes.labels(labelValues).set(
+    dataReaderProtocolStatusFilteredSampleBytes.labels(labelValues).set(
       sample.datareader_protocol_status.status.filtered_sample_bytes);
 
-    datareaderProtocolStatusReceivedHeartbeatCount.labels(labelValues).set(
+    dataReaderProtocolStatusReceivedHeartbeatCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.received_heartbeat_count);
 
-    datareaderProtocolStatusReceivedHeartbeatBytes.labels(labelValues).set(
+    dataReaderProtocolStatusReceivedHeartbeatBytes.labels(labelValues).set(
       sample.datareader_protocol_status.status.received_heartbeat_bytes);
 
-    datareaderProtocolStatusSentAckCount.labels(labelValues).set(
+    dataReaderProtocolStatusSentAckCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.sent_ack_count);
 
-    datareaderProtocolStatusSentAckBytes.labels(labelValues).set(
+    dataReaderProtocolStatusSentAckBytes.labels(labelValues).set(
       sample.datareader_protocol_status.status.sent_ack_bytes);
 
-    datareaderProtocolStatusSentNackCount.labels(labelValues).set(
+    dataReaderProtocolStatusSentNackCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.sent_nack_count);
 
-    datareaderProtocolStatusSentNackBytes.labels(labelValues).set(
+    dataReaderProtocolStatusSentNackBytes.labels(labelValues).set(
       sample.datareader_protocol_status.status.sent_nack_bytes);
 
-    datareaderProtocolStatusReceivedGapCount.labels(labelValues).set(
+    dataReaderProtocolStatusReceivedGapCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.received_gap_count);
 
-    datareaderProtocolStatusReceivedGapBytes.labels(labelValues).set(
+    dataReaderProtocolStatusReceivedGapBytes.labels(labelValues).set(
       sample.datareader_protocol_status.status.received_gap_bytes);
 
-    datareaderProtocolStatusRejectedSampleCount.labels(labelValues).set(
+    dataReaderProtocolStatusRejectedSampleCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.rejected_sample_count);
 
-    datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh.labels(labelValues).set(
+    dataReaderProtocolStatusFirstAvailableSampleSequenceNumberHigh.labels(labelValues).set(
       sample.datareader_protocol_status.status.first_available_sample_sequence_number.high);
 
-    datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow.labels(labelValues).set(
+    dataReaderProtocolStatusFirstAvailableSampleSequenceNumberLow.labels(labelValues).set(
       sample.datareader_protocol_status.status.first_available_sample_sequence_number.low);
 
-    datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh.labels(labelValues).set(
+    dataReaderProtocolStatusLastAvailableSampleSequenceNumberHigh.labels(labelValues).set(
       sample.datareader_protocol_status.status.last_available_sample_sequence_number.high);
 
-    datareaderProtocolStatusLastAvailableSampleSequenceNumberLow.labels(labelValues).set(
+    dataReaderProtocolStatusLastAvailableSampleSequenceNumberLow.labels(labelValues).set(
       sample.datareader_protocol_status.status.last_available_sample_sequence_number.low);
 
-    datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh.labels(labelValues).set(
+    dataReaderProtocolStatusLastCommittedSampleSequenceNumberHigh.labels(labelValues).set(
       sample.datareader_protocol_status.status.last_committed_sample_sequence_number.high);
 
-    datareaderProtocolStatusLastCommittedSampleSequenceNumberLow.labels(labelValues).set(
+    dataReaderProtocolStatusLastCommittedSampleSequenceNumberLow.labels(labelValues).set(
       sample.datareader_protocol_status.status.last_committed_sample_sequence_number.low);
 
-    datareaderProtocolStatusUncommittedSampleCount.labels(labelValues).set(
+    dataReaderProtocolStatusUncommittedSampleCount.labels(labelValues).set(
       sample.datareader_protocol_status.status.uncommitted_sample_count);
   }
 
@@ -518,30 +518,30 @@ public class DataReaderMetricsProcessor {
     subscriptionMatchedStatusTotalCount.remove(labelValues);
     subscriptionMatchedStatusCurrentCount.remove(labelValues);
     subscriptionMatchedStatusCurrentCountPeak.remove(labelValues);
-    datareaderCacheStatusSampleCount.remove(labelValues);
-    datareaderCacheStatusSampleCountPeak.remove(labelValues);
-    datareaderProtocolStatusReceivedSampleCount.remove(labelValues);
-    datareaderProtocolStatusReceivedSampleBytes.remove(labelValues);
-    datareaderProtocolStatusDuplicateSampleCount.remove(labelValues);
-    datareaderProtocolStatusDuplicateSampleBytes.remove(labelValues);
-    datareaderProtocolStatusFilteredSampleCount.remove(labelValues);
-    datareaderProtocolStatusFilteredSampleBytes.remove(labelValues);
-    datareaderProtocolStatusReceivedHeartbeatCount.remove(labelValues);
-    datareaderProtocolStatusReceivedHeartbeatBytes.remove(labelValues);
-    datareaderProtocolStatusSentAckCount.remove(labelValues);
-    datareaderProtocolStatusSentAckBytes.remove(labelValues);
-    datareaderProtocolStatusSentNackCount.remove(labelValues);
-    datareaderProtocolStatusSentNackBytes.remove(labelValues);
-    datareaderProtocolStatusReceivedGapCount.remove(labelValues);
-    datareaderProtocolStatusReceivedGapBytes.remove(labelValues);
-    datareaderProtocolStatusRejectedSampleCount.remove(labelValues);
-    datareaderProtocolStatusFirstAvailableSampleSequenceNumberHigh.remove(labelValues);
-    datareaderProtocolStatusFirstAvailableSampleSequenceNumberLow.remove(labelValues);
-    datareaderProtocolStatusLastAvailableSampleSequenceNumberHigh.remove(labelValues);
-    datareaderProtocolStatusLastAvailableSampleSequenceNumberLow.remove(labelValues);
-    datareaderProtocolStatusLastCommittedSampleSequenceNumberHigh.remove(labelValues);
-    datareaderProtocolStatusLastCommittedSampleSequenceNumberLow.remove(labelValues);
-    datareaderProtocolStatusUncommittedSampleCount.remove(labelValues);
+    dataReaderCacheStatusSampleCount.remove(labelValues);
+    dataReaderCacheStatusSampleCountPeak.remove(labelValues);
+    dataReaderProtocolStatusReceivedSampleCount.remove(labelValues);
+    dataReaderProtocolStatusReceivedSampleBytes.remove(labelValues);
+    dataReaderProtocolStatusDuplicateSampleCount.remove(labelValues);
+    dataReaderProtocolStatusDuplicateSampleBytes.remove(labelValues);
+    dataReaderProtocolStatusFilteredSampleCount.remove(labelValues);
+    dataReaderProtocolStatusFilteredSampleBytes.remove(labelValues);
+    dataReaderProtocolStatusReceivedHeartbeatCount.remove(labelValues);
+    dataReaderProtocolStatusReceivedHeartbeatBytes.remove(labelValues);
+    dataReaderProtocolStatusSentAckCount.remove(labelValues);
+    dataReaderProtocolStatusSentAckBytes.remove(labelValues);
+    dataReaderProtocolStatusSentNackCount.remove(labelValues);
+    dataReaderProtocolStatusSentNackBytes.remove(labelValues);
+    dataReaderProtocolStatusReceivedGapCount.remove(labelValues);
+    dataReaderProtocolStatusReceivedGapBytes.remove(labelValues);
+    dataReaderProtocolStatusRejectedSampleCount.remove(labelValues);
+    dataReaderProtocolStatusFirstAvailableSampleSequenceNumberHigh.remove(labelValues);
+    dataReaderProtocolStatusFirstAvailableSampleSequenceNumberLow.remove(labelValues);
+    dataReaderProtocolStatusLastAvailableSampleSequenceNumberHigh.remove(labelValues);
+    dataReaderProtocolStatusLastAvailableSampleSequenceNumberLow.remove(labelValues);
+    dataReaderProtocolStatusLastCommittedSampleSequenceNumberHigh.remove(labelValues);
+    dataReaderProtocolStatusLastCommittedSampleSequenceNumberLow.remove(labelValues);
+    dataReaderProtocolStatusUncommittedSampleCount.remove(labelValues);
 
     // remove instance from hash map
     instanceHandleHashMap.remove(instanceHandle);
