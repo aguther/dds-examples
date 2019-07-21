@@ -50,32 +50,35 @@ class RouteProcessor {
     ddsRoutingServiceRouteState = Gauge.build()
       .name("dds_routing_service_route_state")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_route_state")
+      .help("State of the resource entity expressed as an enumeration of type EntityStateKind "
+        + "(0 = INVALID, 1 = ENABLED, 2 = DISABLED, 3 = STARTED, 4 = STOPPED, 5 = RUNNING, 6 = PAUSED)")
       .register();
     ddsRoutingServiceRouteInSamplesPerSecond = Gauge.build()
       .name("dds_routing_service_route_in_samples_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_route_in_samples_per_second")
+      .help("Statistic variable that provides information about the number of samples processed (received) per second.")
       .register();
     ddsRoutingServiceRouteInBytesPerSecond = Gauge.build()
       .name("dds_routing_service_route_in_bytes_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_route_in_bytes_per_second")
+      .help("Statistic variable that provides information about the number of bytes processed (received) per second.")
       .register();
     ddsRoutingServiceRouteOutSamplesPerSecond = Gauge.build()
       .name("dds_routing_service_route_out_samples_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_route_out_samples_per_second")
+      .help("Statistic variable that provides information about the number of samples processed (sent) per second.")
       .register();
     ddsRoutingServiceRouteOutBytesPerSecond = Gauge.build()
       .name("dds_routing_service_route_out_bytes_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_route_out_bytes_per_second")
+      .help("Statistic variable that provides information about the number of bytes processed (sent) per second.")
       .register();
     ddsRoutingServiceRouteLatencyMilliseconds = Gauge.build()
       .name("dds_routing_service_route_latency_milliseconds")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_route_latency_milliseconds")
+      .help("Statistic variable that provides information about the latency in milliseconds for the data processed. "
+        + "The latency in a refers to the total time elapsed during the associated processing of the data, which "
+        + "depends on the type of application.")
       .register();
   }
 

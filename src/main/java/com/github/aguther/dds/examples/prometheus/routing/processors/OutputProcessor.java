@@ -47,17 +47,18 @@ class OutputProcessor {
     ddsRoutingServiceOutputState = Gauge.build()
       .name("dds_routing_service_output_state")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_output_state")
+      .help("State of the resource entity expressed as an enumeration of type EntityStateKind "
+        + "(0 = INVALID, 1 = ENABLED, 2 = DISABLED, 3 = STARTED, 4 = STOPPED, 5 = RUNNING, 6 = PAUSED)")
       .register();
     ddsRoutingServiceOutputSamplesPerSecond = Gauge.build()
       .name("dds_routing_service_output_samples_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_output_samples_per_second")
+      .help("Statistic variable that provides information about the number of samples processed (sent) per second.")
       .register();
     ddsRoutingServiceOutputBytesPerSecond = Gauge.build()
       .name("dds_routing_service_output_bytes_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_output_bytes_per_second")
+      .help("Statistic variable that provides information about the number of bytes processed (sent) per second.")
       .register();
   }
 

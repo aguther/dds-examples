@@ -55,57 +55,63 @@ class RoutingServiceProcessor {
     ddsRoutingServiceState = Gauge.build()
       .name("dds_routing_service_state")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_state")
+      .help("State of the resource entity expressed as an enumeration of type EntityStateKind "
+        + "(0 = INVALID, 1 = ENABLED, 2 = DISABLED, 3 = STARTED, 4 = STOPPED, 5 = RUNNING, 6 = PAUSED)")
       .register();
     ddsRoutingServiceHostTotalMemoryKb = Gauge.build()
       .name("dds_routing_service_host_total_memory_kilobytes")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_host_total_memory_kilobytes")
+      .help("Total memory in KiloBytes of the host where the service is running.")
       .register();
     ddsRoutingServiceHostTotalSwapMemoryKb = Gauge.build()
       .name("dds_routing_service_host_total_swap_memory_kilobytes")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_host_total_swap_memory_kilobytes")
+      .help("Total swap memory in KiloBytes of the host where the service is running.")
       .register();
     ddsRoutingServiceHostCpuUsagePercentage = Gauge.build()
       .name("dds_routing_service_host_cpu_usage_percentage")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_host_cpu_usage_percentage")
+      .help(
+        "Statistic variable that provides the global percentage of CPU usage on the host where the service is running.")
       .register();
     ddsRoutingServiceHostUptime = Gauge.build()
       .name("dds_routing_service_host_uptime_seconds")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_host_uptime_seconds")
+      .help("Time in seconds elapsed since the host on which the running service started.")
       .register();
     ddsRoutingServiceHostFreeMemoryKb = Gauge.build()
       .name("dds_routing_service_host_free_memory_kilobytes")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_host_free_memory_kilobytes")
+      .help(
+        "Statistic variable that provides the amount of free memory in KiloBytes of the host where the service is running.")
       .register();
     ddsRoutingServiceHostFreeSwapMemoryKb = Gauge.build()
       .name("dds_routing_service_host_free_swap_memory_kilobytes")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_host_free_swap_memory_kilobytes")
+      .help(
+        "Statistic variable that provides the amount of free swap memory in KiloBytes of the host where the service is running.")
       .register();
     ddsRoutingServiceProcessUptime = Gauge.build()
       .name("dds_routing_service_process_uptime_seconds")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_process_uptime_seconds")
+      .help("Time in seconds elapsed since the running service process started.")
       .register();
     ddsRoutingServiceProcessCpuUsagePercentage = Gauge.build()
       .name("dds_routing_service_process_cpu_usage_percentage")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_process_cpu_usage_percentage")
+      .help("Statistic variable that provides the percentage of CPU usage of the process where the service is running.")
       .register();
     ddsRoutingServiceProcessPhysicalMemoryKb = Gauge.build()
       .name("dds_routing_service_process_physical_memory_kilobytes")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_process_physical_memory_kilobytes")
+      .help(
+        "Statistic variable that provides the physical memory utilization in KiloBytes of the process where the service is running.")
       .register();
     ddsRoutingServiceProcessTotalMemoryKb = Gauge.build()
       .name("dds_routing_service_process_total_memory_kilobytes")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_process_total_memory_kilobytes")
+      .help(
+        "Statistic variable that provides the virtual memory utilization in KiloBytes of the process where the service is running.")
       .register();
   }
 

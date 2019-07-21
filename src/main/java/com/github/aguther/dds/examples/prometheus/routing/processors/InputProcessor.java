@@ -47,17 +47,18 @@ class InputProcessor {
     ddsRoutingServiceInputState = Gauge.build()
       .name("dds_routing_service_input_state")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_input_state")
+      .help("State of the resource entity expressed as an enumeration of type EntityStateKind "
+        + "(0 = INVALID, 1 = ENABLED, 2 = DISABLED, 3 = STARTED, 4 = STOPPED, 5 = RUNNING, 6 = PAUSED)")
       .register();
     ddsRoutingServiceInputSamplesPerSecond = Gauge.build()
       .name("dds_routing_service_input_samples_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_input_samples_per_second")
+      .help("Statistic variable that provides information about the number of samples processed (received) per second.")
       .register();
     ddsRoutingServiceInputBytesPerSecond = Gauge.build()
       .name("dds_routing_service_input_bytes_per_second")
       .labelNames(getLabelNames())
-      .help("dds_routing_service_input_bytes_per_second")
+      .help("Statistic variable that provides information about the number of bytes processed (received) per second.")
       .register();
   }
 
