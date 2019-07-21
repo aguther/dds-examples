@@ -117,217 +117,231 @@ public class DataReaderMetricsProcessor {
     sampleRejectedStatusTotalCount = Gauge.build()
       .name("dds_data_reader_sample_rejected_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_sample_rejected_status_total_count")
+      .help("Cumulative count of all the DDS samples that have been rejected by the DataReader.")
       .register();
 
     sampleRejectedStatusLastReason = Gauge.build()
       .name("dds_data_reader_sample_rejected_status_last_reason")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_sample_rejected_status_last_reason")
+      .help("Reason for rejecting the last DDS sample. See Table 7.13 DDS_SampleRejectedStatusKind.")
       .register();
 
     livelinessChangedStatusAliveCount = Gauge.build()
       .name("dds_data_reader_liveliness_changed_status_alive_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_liveliness_changed_status_alive_count")
+      .help("Number of matched DataWriters that are currently alive.")
       .register();
 
     livelinessChangedStatusNotAliveCount = Gauge.build()
       .name("dds_data_reader_liveliness_changed_status_not_alive_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_liveliness_changed_status_not_alive_count")
+      .help("Number of matched DataWriters that are not currently alive.")
       .register();
 
     requestedDeadlineMissedStatusTotalCount = Gauge.build()
       .name("dds_data_reader_requested_deadline_missed_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_requested_deadline_missed_status_total_count")
+      .help("Cumulative number of times that the deadline was violated for any instance read by the DataReader.")
       .register();
 
     requestedIncompatibleQosStatusTotalCount = Gauge.build()
       .name("dds_data_reader_requested_incompatible_qos_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_requested_incompatible_qos_status_total_count")
+      .help(
+        "Cumulative number of times the DataReader discovered a DataWriter for the same Topic with an offered QoS that is incompatible with that requested by the DataReader.")
       .register();
 
     requestedIncompatibleQosStatusLastPolicyId = Gauge.build()
       .name("dds_data_reader_requested_incompatible_qos_status_last_policy_id")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_requested_incompatible_qos_status_last_policy_id")
+      .help(
+        "The ID of the QosPolicy that was found to be incompatible the last time an incompatibility was detected. (Note: if there are multiple incompatible policies, only one of them is reported here.)")
       .register();
 
     sampleLostStatusTotalCount = Gauge.build()
       .name("dds_data_reader_sample_lost_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_sample_lost_status_total_count")
+      .help("Cumulative count of all the DDS samples that have been lost, across all instances of data written for the Topic.")
       .register();
 
     sampleLostStatusLastReason = Gauge.build()
       .name("dds_data_reader_sample_lost_status_last_reason")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_sample_lost_status_last_reason")
+      .help("The reason the last DDS sample was lost. See Table 7.11 DDS_SampleLostStatusKind.")
       .register();
 
     subscriptionMatchedStatusTotalCount = Gauge.build()
       .name("dds_data_reader_subscription_matched_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_subscription_matched_status_total_count")
+      .help("Cumulative number of times the DataReader discovered a \"match\" with a DataWriter.")
       .register();
 
     subscriptionMatchedStatusCurrentCount = Gauge.build()
       .name("dds_data_reader_subscription_matched_status_current_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_subscription_matched_status_current_count")
+      .help("The number of DataWriters currently matched to the concerned DataReader.")
       .register();
 
     subscriptionMatchedStatusCurrentCountPeak = Gauge.build()
       .name("dds_data_reader_subscription_matched_status_current_count_peak")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_subscription_matched_status_current_count_peak")
+      .help("The highest value that current_count has reached until now.")
       .register();
 
     dataReaderCacheStatusSampleCount = Gauge.build()
       .name("dds_data_reader_cache_status_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_cache_status_sample_count")
+      .help(
+        "Current number of DDS samples in the DataReader’s queue. Includes DDS samples that may not yet be available to be read or taken by the user due to DDS samples being received out of order or settings in the 6.4.6 PRESENTATION QosPolicy.")
       .register();
 
     dataReaderCacheStatusSampleCountPeak = Gauge.build()
       .name("dds_data_reader_cache_status_sample_count_peak")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_cache_status_sample_count_peak")
+      .help("Highest number of DDS samples in the DataReader’s queue over the lifetime of the DataReader.")
       .register();
 
     dataReaderProtocolStatusReceivedSampleCount = Gauge.build()
       .name("dds_data_reader_protocol_status_received_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_received_sample_count")
+      .help("The number of samples received by a DataReader.")
       .register();
 
     dataReaderProtocolStatusReceivedSampleBytes = Gauge.build()
       .name("dds_data_reader_protocol_status_received_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_received_sample_bytes")
+      .help("The number of bytes received by a DataReader.")
       .register();
 
     dataReaderProtocolStatusDuplicateSampleCount = Gauge.build()
       .name("dds_data_reader_protocol_status_duplicate_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_duplicate_sample_count")
+      .help(
+        "The number of DDS samples from a remote DataWriter received, not for the first time, by a local DataReader.")
       .register();
 
     dataReaderProtocolStatusDuplicateSampleBytes = Gauge.build()
       .name("dds_data_reader_protocol_status_duplicate_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_duplicate_sample_bytes")
+      .help(
+        "The number of bytes of DDS samples from a remote DataWriter received, not for the first time, by a local DataReader.")
       .register();
 
     dataReaderProtocolStatusFilteredSampleCount = Gauge.build()
       .name("dds_data_reader_protocol_status_filtered_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_filtered_sample_count")
+      .help(
+        "The number of DDS samples filtered by the local DataReader due to ContentFilteredTopics or Time-Based Filter.")
       .register();
 
     dataReaderProtocolStatusFilteredSampleBytes = Gauge.build()
       .name("dds_data_reader_protocol_status_filtered_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_filtered_sample_bytes")
+      .help(
+        "The number of bytes of DDS samples filtered by the local DataReader due to ContentFilteredTopics or Time-Based Filter.")
       .register();
 
     dataReaderProtocolStatusReceivedHeartbeatCount = Gauge.build()
       .name("dds_data_reader_protocol_status_received_heartbeat_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_received_heartbeat_count")
+      .help("The number of Heartbeats from a remote DataWriter received by a local DataReader.")
       .register();
 
     dataReaderProtocolStatusReceivedHeartbeatBytes = Gauge.build()
       .name("dds_data_reader_protocol_status_received_heartbeat_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_received_heartbeat_bytes")
+      .help("The number of bytes of Heartbeats from a remote DataWriter received by a local DataReader.")
       .register();
 
     dataReaderProtocolStatusSentAckCount = Gauge.build()
       .name("dds_data_reader_protocol_status_sent_ack_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_sent_ack_count")
+      .help("The number of ACKs sent from a local DataReader to a matching remote DataWriter.")
       .register();
 
     dataReaderProtocolStatusSentAckBytes = Gauge.build()
       .name("dds_data_reader_protocol_status_sent_ack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_sent_ack_bytes")
+      .help("The number of bytes of ACKs sent from a local DataReader to a matching remote DataWriter.")
       .register();
 
     dataReaderProtocolStatusSentNackCount = Gauge.build()
       .name("dds_data_reader_protocol_status_sent_nack_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_sent_nack_count")
+      .help("The number of NACKs sent from a local DataReader to a matching remote DataWriter.")
       .register();
 
     dataReaderProtocolStatusSentNackBytes = Gauge.build()
       .name("dds_data_reader_protocol_status_sent_nack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_sent_nack_bytes")
+      .help("The number of bytes of NACKs sent from a local DataReader to a matching remote DataWriter.")
       .register();
 
     dataReaderProtocolStatusReceivedGapCount = Gauge.build()
       .name("dds_data_reader_protocol_status_received_gap_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_received_gap_count")
+      .help("The number of GAPs received from remote DataWriter to this DataReader.")
       .register();
 
     dataReaderProtocolStatusReceivedGapBytes = Gauge.build()
       .name("dds_data_reader_protocol_status_received_gap_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_received_gap_bytes")
+      .help("The number of bytes of GAPs received from remote DataWriter to this DataReader.")
       .register();
 
     dataReaderProtocolStatusRejectedSampleCount = Gauge.build()
       .name("dds_data_reader_protocol_status_rejected_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_rejected_sample_count")
+      .help("The number of times a DDS sample is rejected for unanticipated reasons in the receive path.")
       .register();
 
     dataReaderProtocolStatusFirstAvailableSampleSequenceNumberHigh = Gauge.build()
       .name("dds_data_reader_protocol_status_first_available_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_first_available_sample_sequence_number_high")
+      .help(
+        "Sequence number of the first available DDS sample in a matched DataWriter's reliability queue. Applicable only when retrieving matched DataWriter statuses.")
       .register();
 
     dataReaderProtocolStatusFirstAvailableSampleSequenceNumberLow = Gauge.build()
       .name("dds_data_reader_protocol_status_first_available_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_first_available_sample_sequence_number_low")
+      .help(
+        "Sequence number of the first available DDS sample in a matched DataWriter's reliability queue. Applicable only when retrieving matched DataWriter statuses.")
       .register();
 
     dataReaderProtocolStatusLastAvailableSampleSequenceNumberHigh = Gauge.build()
       .name("dds_data_reader_protocol_status_last_available_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_last_available_sample_sequence_number_high")
+      .help(
+        "Sequence number of the last available DDS sample in a matched DataWriter's reliability queue. Applicable only when retrieving matched DataWriter statuses.")
       .register();
 
     dataReaderProtocolStatusLastAvailableSampleSequenceNumberLow = Gauge.build()
       .name("dds_data_reader_protocol_status_last_available_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_last_available_sample_sequence_number_low")
+      .help(
+        "Sequence number of the last available DDS sample in a matched DataWriter's reliability queue. Applicable only when retrieving matched DataWriter statuses.")
       .register();
 
     dataReaderProtocolStatusLastCommittedSampleSequenceNumberHigh = Gauge.build()
       .name("dds_data_reader_protocol_status_last_committed_sample_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_last_committed_sample_sequence_number_high")
+      .help(
+        "Sequence number of the last committed DDS sample (i.e. available to be read or taken) in a matched DataWriter's reliability queue. Applicable only when retrieving matched DataWriter statuses. For best-effort DataReaders, this is the sequence number of the latest DDS sample received. For reliable DataReaders, this is the sequence number of the latest DDS sample that is available to be read or taken from the DataReader's queue.")
       .register();
 
     dataReaderProtocolStatusLastCommittedSampleSequenceNumberLow = Gauge.build()
       .name("dds_data_reader_protocol_status_last_committed_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_last_committed_sample_sequence_number_low")
+      .help(
+        "Number of received DDS samples that are not yet available to be read or taken due to being received out of order. Applicable only when retrieving matched DataWriter statuses.")
       .register();
 
     dataReaderProtocolStatusUncommittedSampleCount = Gauge.build()
       .name("dds_data_reader_protocol_status_uncommitted_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_reader_protocol_status_uncommitted_sample_count")
+      .help(
+        "Number of received DDS samples that are not yet available to be read or taken due to being received out of order. Applicable only when retrieving matched DataWriter statuses.")
       .register();
   }
 

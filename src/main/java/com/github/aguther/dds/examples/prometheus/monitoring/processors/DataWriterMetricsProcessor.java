@@ -121,223 +121,231 @@ public class DataWriterMetricsProcessor {
     livelinessLostStatusTotalCount = Gauge.build()
       .name("dds_data_writer_liveliness_lost_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_liveliness_lost_status_total_count")
+      .help(
+        "Cumulative number of times the DataWriter failed to explicitly signal its liveliness within the liveliness period.")
       .register();
 
     offeredDeadlineMissedStatusTotalCount = Gauge.build()
       .name("dds_data_writer_offered_deadline_missed_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_offered_deadline_missed_status_total_count")
+      .help("Cumulative number of times the DataWriter failed to write within its offered deadline.")
       .register();
 
     offeredIncompatibleQosStatusTotalCount = Gauge.build()
       .name("dds_data_writer_offered_incompatible_qos_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_offered_incompatible_qos_status_total_count")
+      .help(
+        "Cumulative number of times the DataWriter discovered a DataReader for the same Topic with a requested QoS that is incompatible with that offered by the DataWriter.")
       .register();
 
     offeredIncompatibleQosStatusLastPolicyId = Gauge.build()
       .name("dds_data_writer_offered_incompatible_qos_status_last_policy_id")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_offered_incompatible_qos_status_last_policy_id")
+      .help(
+        "The ID of the QosPolicy that was found to be incompatible the last time an incompatibility was detected. (Note: if there are multiple incompatible policies, only one of them is reported here.)")
       .register();
 
     publicationMatchedStatusTotalCount = Gauge.build()
       .name("dds_data_writer_publication_matched_status_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_publication_matched_status_total_count")
+      .help("Cumulative number of times the DataWriter discovered a \"match\" with a DataReader.")
       .register();
 
     publicationMatchedStatusCurrentCount = Gauge.build()
       .name("dds_data_writer_publication_matched_status_current_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_publication_matched_status_current_count")
+      .help("The number of DataReaders currently matched to the DataWriter.")
       .register();
 
     publicationMatchedStatusCurrentCountPeak = Gauge.build()
       .name("dds_data_writer_publication_matched_status_current_count_peak")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_publication_matched_status_current_count_peak")
+      .help("The highest value that current_count has reached until now.")
       .register();
 
     reliableWriterCacheChangedStatusEmptyTotalCount = Gauge.build()
       .name("dds_data_writer_reliable_writer_cache_changed_status_empty_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_writer_cache_changed_status_empty_total_count")
+      .help("How many times the reliable DataWriter's cache of unacknowledged DDS samples has become empty.")
       .register();
 
     reliableWriterCacheChangedStatusFullTotalCount = Gauge.build()
       .name("dds_data_writer_reliable_writer_cache_changed_status_full_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_writer_cache_changed_status_full_total_count")
+      .help("How many times the reliable DataWriter's cache of unacknowledged DDS samples has become full.")
       .register();
 
     reliableWriterCacheChangedStatusLowWatermarkTotalCount = Gauge.build()
       .name("dds_data_writer_reliable_writer_cache_changed_status_low_watermark_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_writer_cache_changed_status_low_watermark_total_count")
+      .help(
+        "How many times the reliable DataWriter's cache of unacknowledged DDS samples has fallen to the low watermark.")
       .register();
 
     reliableWriterCacheChangedStatusHighWatermarkTotalCount = Gauge.build()
       .name("dds_data_writer_reliable_writer_cache_changed_status_high_watermark_total_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_writer_cache_changed_status_high_watermark_total_count")
+      .help(
+        "How many times the reliable DataWriter's cache of unacknowledged DDS samples has risen to the high watermark.")
       .register();
 
     reliableWriterCacheChangedStatusUnacknowledgedSampleCount = Gauge.build()
       .name("dds_data_writer_reliable_writer_cache_changed_status_unacknowledged_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_writer_cache_changed_status_unacknowledged_sample_count")
+      .help("The current number of unacknowledged DDS samples in the DataWriter's cache.")
       .register();
 
     reliableWriterCacheChangedStatusUnacknowledgedSampleCountPeak = Gauge.build()
       .name("dds_data_writer_reliable_writer_cache_changed_status_unacknowledged_sample_count_peak")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_writer_cache_changed_status_unacknowledged_sample_count_peak")
+      .help("The highest value that unacknowledged_sample_count has reached until now.")
       .register();
 
     reliableReaderActivityChangedStatusActiveCount = Gauge.build()
       .name("dds_data_writer_reliable_reader_activity_changed_status_active_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_reader_activity_changed_status_active_count")
+      .help("The current number of reliable readers currently matched with this reliable DataWriter.")
       .register();
 
     reliableReaderActivityChangedStatusInactiveCount = Gauge.build()
       .name("dds_data_writer_reliable_reader_activity_changed_status_inactive_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_reliable_reader_activity_changed_status_inactive_count")
+      .help(
+        "The number of reliable readers that have been dropped by this reliable DataWriter because they failed to send acknowledgments in a timely fashion.")
       .register();
 
     dataWriterCacheStatusSampleCount = Gauge.build()
       .name("dds_data_writer_cache_status_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_cache_status_sample_count")
+      .help("Current number of DDS samples in the DataWriter’s queue (including DDS unregister and dispose samples)")
       .register();
 
     dataWriterCacheStatusSampleCountPeak = Gauge.build()
       .name("dds_data_writer_cache_status_sample_count_peak")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_cache_status_sample_count_peak")
+      .help("Highest number of DDS samples in the DataWriter’s queue over the lifetime of the DataWriter.")
       .register();
 
     dataWriterProtocolStatusPushedSampleCount = Gauge.build()
       .name("dds_data_writer_protocol_status_pushed_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_pushed_sample_count")
+      .help("The number of user DDS samples pushed on write from a local DataWriter to a matching remote DataReader.")
       .register();
 
     dataWriterProtocolStatusPushedSampleBytes = Gauge.build()
       .name("dds_data_writer_protocol_status_pushed_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_pushed_sample_bytes")
+      .help(
+        "The number of bytes of user DDS samples pushed on write from a local DataWriter to a matching remote DataReader.")
       .register();
 
     dataWriterProtocolStatusFilteredSampleCount = Gauge.build()
       .name("dds_data_writer_protocol_status_filtered_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_filtered_sample_count")
+      .help("The number of user DDS samples filtered on write from a local DataWriter to a matching remote DataReader.")
       .register();
 
     dataWriterProtocolStatusFilteredSampleBytes = Gauge.build()
       .name("dds_data_writer_protocol_status_filtered_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_filtered_sample_bytes")
+      .help(
+        "The number of bytes of user DDS samples filtered on write from a local DataWriter to a matching remote DataReader.")
       .register();
 
     dataWriterProtocolStatusSentHeartbeatCount = Gauge.build()
       .name("dds_data_writer_protocol_status_sent_heartbeat_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_sent_heartbeat_count")
+      .help("The number of Heartbeats sent between a local DataWriter and matching remote DataReaders.")
       .register();
 
     dataWriterProtocolStatusSentHeartbeatBytes = Gauge.build()
       .name("dds_data_writer_protocol_status_sent_heartbeat_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_sent_heartbeat_bytes")
+      .help("The number of bytes of Heartbeats sent between a local DataWriter and matching remote DataReader.")
       .register();
 
     dataWriterProtocolStatusPulledSampleCount = Gauge.build()
       .name("dds_data_writer_protocol_status_pulled_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_pulled_sample_count")
+      .help("The number of user DDS samples pulled from local DataWriter by matching DataReaders.")
       .register();
 
     dataWriterProtocolStatusPulledSampleBytes = Gauge.build()
       .name("dds_data_writer_protocol_status_pulled_sample_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_pulled_sample_bytes")
+      .help("The number of bytes of user DDS samples pulled from local DataWriter by matching DataReaders.")
       .register();
 
     dataWriterProtocolStatusReceivedAckCount = Gauge.build()
       .name("dds_data_writer_protocol_status_received_ack_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_received_ack_count")
+      .help("The number of ACKs from a remote DataReader received by a local DataWriter.")
       .register();
 
     dataWriterProtocolStatusReceivedAckBytes = Gauge.build()
       .name("dds_data_writer_protocol_status_received_ack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_received_ack_bytes")
+      .help("The number of bytes of ACKs from a remote DataReader received by a local DataWriter.")
       .register();
 
     dataWriterProtocolStatusReceivedNackCount = Gauge.build()
       .name("dds_data_writer_protocol_status_received_nack_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_received_nack_count")
+      .help("The number of NACKs from a remote DataReader received by a local DataWriter.")
       .register();
 
     dataWriterProtocolStatusReceivedNackBytes = Gauge.build()
       .name("dds_data_writer_protocol_status_received_nack_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_received_nack_bytes")
+      .help("The number of bytes of NACKs from a remote DataReader received by a local DataWriter.")
       .register();
 
     dataWriterProtocolStatusSentGapCount = Gauge.build()
       .name("dds_data_writer_protocol_status_sent_gap_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_sent_gap_count")
+      .help("The number of GAPs sent from local DataWriter to matching remote DataReaders.")
       .register();
 
     dataWriterProtocolStatusSentGapBytes = Gauge.build()
       .name("dds_data_writer_protocol_status_sent_gap_bytes")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_sent_gap_bytes")
+      .help("The number of bytes of GAPs sent from local DataWriter to matching remote DataReaders.")
       .register();
 
     dataWriterProtocolStatusRejectedSampleCount = Gauge.build()
       .name("dds_data_writer_protocol_status_rejected_sample_count")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_rejected_sample_count")
+      .help("The number of times a DDS sample is rejected for unanticipated reasons in the send path.")
       .register();
 
     dataWriterProtocolStatusSendWindowSize = Gauge.build()
       .name("dds_data_writer_protocol_status_send_window_size")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_send_window_size")
+      .help("Current maximum number of outstanding DDS samples allowed in the DataWriter's queue.")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSequenceNumberHigh = Gauge.build()
       .name("dds_data_writer_protocol_status_first_available_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_first_available_sequence_number_high")
+      .help("Sequence number of the first available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSequenceNumberLow = Gauge.build()
       .name("dds_data_writer_protocol_status_first_available_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_first_available_sequence_number_low")
+      .help("Sequence number of the first available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusLastAvailableSequenceNumberHigh = Gauge.build()
       .name("dds_data_writer_protocol_status_last_available_sequence_number_high")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_last_available_sequence_number_high")
+      .help("Sequence number of the last available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusLastAvailableSequenceNumberLow = Gauge.build()
       .name("dds_data_writer_protocol_status_last_available_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_last_available_sequence_number_low")
+      .help("Sequence number of the last available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleSequenceNumberHigh = Gauge.build()
@@ -345,13 +353,13 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_first_unacknowledged_sample_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_first_unacknowledged_sample_sequence_number_high")
+        "Sequence number of the first unacknowledged DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleSequenceNumberLow = Gauge.build()
       .name("dds_data_writer_protocol_status_first_unacknowledged_sample_sequence_number_low")
       .labelNames(getLabelNames())
-      .help("dds_data_writer_protocol_status_first_unacknowledged_sample_sequence_number_low")
+      .help("Sequence number of the first unacknowledged DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSampleVirtualSequenceNumberHigh = Gauge.build()
@@ -359,7 +367,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_first_available_sample_virtual_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_first_available_sample_virtual_sequence_number_high")
+        "Virtual sequence number of the first available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstAvailableSampleVirtualSequenceNumberLow = Gauge.build()
@@ -367,7 +375,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_first_available_sample_virtual_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_first_available_sample_virtual_sequence_number_low")
+        "Virtual sequence number of the first available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusLastAvailableSampleVirtualSequenceNumberHigh = Gauge.build()
@@ -375,7 +383,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_last_available_sample_virtual_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_last_available_sample_virtual_sequence_number_high")
+        "Virtual sequence number of the last available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusLastAvailableSampleVirtualSequenceNumberLow = Gauge.build()
@@ -383,7 +391,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_last_available_sample_virtual_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_last_available_sample_virtual_sequence_number_low")
+        "Virtual sequence number of the last available DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleVirtualSequenceNumberHigh = Gauge.build()
@@ -391,7 +399,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_first_unacknowledged_sample_virtual_sequence_number_high")
+        "Virtual sequence number of the first unacknowledged DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstUnacknowledgedSampleVirtualSequenceNumberLow = Gauge.build()
@@ -399,7 +407,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_first_unacknowledged_sample_virtual_sequence_number_low")
+        "Virtual sequence number of the first unacknowledged DDS sample in the DataWriter's reliability queue.")
       .register();
 
     dataWriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberHigh = Gauge.build()
@@ -407,7 +415,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_high")
+        "Sequence number of the first DDS sample kept in the DataWriter's queue whose keep_duration (applied when disable_positive_acks is set) has not yet elapsed.")
       .register();
 
     dataWriterProtocolStatusFirstUnelapsedKeepDurationSampleSequenceNumberLow = Gauge.build()
@@ -415,7 +423,7 @@ public class DataWriterMetricsProcessor {
         "dds_data_writer_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
       .labelNames(getLabelNames())
       .help(
-        "dds_data_writer_protocol_status_first_unelapsed_keep_duration_sample_sequence_number_low")
+        "Sequence number of the first DDS sample kept in the DataWriter's queue whose keep_duration (applied when disable_positive_acks is set) has not yet elapsed.")
       .register();
   }
 
