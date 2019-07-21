@@ -106,7 +106,7 @@ class OutputProcessor {
       "domain_route",
       "session",
       "route",
-      "input",
+      "output",
     };
   }
 
