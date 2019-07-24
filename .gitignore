@@ -12,4 +12,5 @@ src/generated
 docker/rpms
 docker/**/*.rpm
 docker/**/*.jar
+docker/**/*.tar
 docker/**/*.tar.gz
