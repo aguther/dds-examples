@@ -41,7 +41,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test00() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, (String) null);
     String string0 = topicRoute0.getType();
     assertNull(string0);
@@ -49,7 +49,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test01() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, " ^W4rU[x-kU");
     String string0 = topicRoute0.getType();
     assertEquals(" ^W4rU[x-kU", string0);
@@ -57,7 +57,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test02() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.OUT;
+    Direction topicRoute_Direction0 = Direction.OUT;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, "<`z$}P-z~PuA4OI$&", "yktd|VS wHZz)mhB7");
     String string0 = topicRoute0.getTopic();
     assertEquals("<`z$}P-z~PuA4OI$&", string0);
@@ -66,7 +66,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test03() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.OUT;
+    Direction topicRoute_Direction0 = Direction.OUT;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, "", "");
     String string0 = topicRoute0.getTopic();
     assertEquals("", string0);
@@ -74,15 +74,15 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test04() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, " ^W4rU[x-kU");
-    TopicRoute.Direction topicRoute_Direction1 = topicRoute0.getDirection();
+    Direction topicRoute_Direction1 = topicRoute0.getDirection();
     assertSame(topicRoute_Direction1, topicRoute_Direction0);
   }
 
   @Test(timeout = 4000)
   public void test05() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, (String) null);
     TopicRoute topicRoute1 = new TopicRoute(topicRoute_Direction0, (String) null, (String) null);
     boolean boolean0 = topicRoute0.equals(topicRoute1);
@@ -91,7 +91,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test06() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.OUT;
+    Direction topicRoute_Direction0 = Direction.OUT;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, "<`z$}P-z~PuA4OI$&", "yktd|VS wHZz)mhB7");
     TopicRoute topicRoute1 = new TopicRoute(topicRoute_Direction0, "<`z$}P-z~PuA4OI$&", "<`z$}P-z~PuA4OI$&");
     boolean boolean0 = topicRoute0.equals(topicRoute1);
@@ -101,9 +101,9 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test07() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.OUT;
+    Direction topicRoute_Direction0 = Direction.OUT;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, "", "");
-    TopicRoute.Direction topicRoute_Direction1 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction1 = Direction.IN;
     TopicRoute topicRoute1 = new TopicRoute(topicRoute_Direction1, "E$=h0z.XQX>6D<zHO.", "");
     boolean boolean0 = topicRoute0.equals(topicRoute1);
     assertEquals("", topicRoute1.getType());
@@ -113,7 +113,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test08() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, " ^W4rU[x-kU");
     TopicRoute topicRoute1 = new TopicRoute(topicRoute_Direction0, "", "4L$w#r0T=D2P0cp");
     boolean boolean0 = topicRoute0.equals(topicRoute1);
@@ -124,7 +124,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test09() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, (String) null);
     boolean boolean0 = topicRoute0.equals((Object) null);
     assertFalse(boolean0);
@@ -132,7 +132,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test10() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.OUT;
+    Direction topicRoute_Direction0 = Direction.OUT;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, "", "");
     boolean boolean0 = topicRoute0.equals(topicRoute0);
     assertTrue(boolean0);
@@ -140,7 +140,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test11() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, " ^W4rU[x-kU");
     boolean boolean0 = topicRoute0.equals("");
     assertFalse(boolean0);
@@ -148,7 +148,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test12() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.IN;
+    Direction topicRoute_Direction0 = Direction.IN;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, (String) null, (String) null);
     String string0 = topicRoute0.getTopic();
     assertNull(string0);
@@ -156,7 +156,7 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test13() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.OUT;
+    Direction topicRoute_Direction0 = Direction.OUT;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, "", "");
     String string0 = topicRoute0.getType();
     assertEquals("", string0);
@@ -164,14 +164,14 @@ public class TopicRouteTest {
 
   @Test(timeout = 4000)
   public void test14() throws Throwable {
-    TopicRoute.Direction topicRoute_Direction0 = TopicRoute.Direction.OUT;
+    Direction topicRoute_Direction0 = Direction.OUT;
     TopicRoute topicRoute0 = new TopicRoute(topicRoute_Direction0, "", "");
     topicRoute0.hashCode();
   }
 
   @Test(timeout = 4000)
   public void test15() throws Throwable {
-    TopicRoute topicRoute0 = new TopicRoute((TopicRoute.Direction) null, "", "");
+    TopicRoute topicRoute0 = new TopicRoute((Direction) null, "", "");
     topicRoute0.getDirection();
   }
 }

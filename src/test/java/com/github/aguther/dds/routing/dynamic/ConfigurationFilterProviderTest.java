@@ -29,9 +29,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
+import com.github.aguther.dds.routing.dynamic.observer.Direction;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
-import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;

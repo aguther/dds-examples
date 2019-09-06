@@ -27,10 +27,10 @@ package com.github.aguther.dds.routing.dynamic;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
+import com.github.aguther.dds.routing.dynamic.observer.Direction;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
-import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;

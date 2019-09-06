@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 import com.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
-import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
+import com.github.aguther.dds.routing.dynamic.observer.Direction;
 import com.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import idl.RTI.Service.Admin.CommandActionKind;
 import idl.RTI.Service.Admin.CommandReply;

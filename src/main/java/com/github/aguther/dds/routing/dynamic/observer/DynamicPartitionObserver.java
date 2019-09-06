@@ -28,7 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.aguther.dds.discovery.observer.PublicationObserverListener;
 import com.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
-import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;

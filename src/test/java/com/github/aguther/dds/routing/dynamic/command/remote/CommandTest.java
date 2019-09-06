@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
-import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
+import com.github.aguther.dds.routing.dynamic.observer.Direction;
 import idl.RTI.Service.Admin.CommandRequest;
 import org.junit.Before;
 import org.junit.Test;
