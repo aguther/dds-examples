@@ -183,6 +183,14 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
         configurations.get(identifier).setQosOutput(
           propertyValueResolved);
         break;
+      case "partition.transformation.regex":
+        configurations.get(identifier).setPartitionTransformationRegex(
+          propertyValueResolved);
+        break;
+      case "partition.transformation.replacement":
+        configurations.get(identifier).setPartitionTransformationReplacement(
+          propertyValueResolved);
+        break;
       default:
         // unknown configuration
         break;
@@ -197,7 +205,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     if (LOGGER.isDebugEnabled()) {
       for (Entry<String, Configuration> entry : configurations.entrySet()) {
         LOGGER.debug(
-          "key='{}', allow_topic_name_filter='{}', deny_topic_name_filter='{}', allow_partition_name_filter='{}', deny_partition_name_filter='{}', qos.topic_route='{}', qos.input='{}', qos.output='{}'",
+          "key='{}', allow_topic_name_filter='{}', deny_topic_name_filter='{}', allow_partition_name_filter='{}', deny_partition_name_filter='{}', qos.topic_route='{}', qos.input='{}', qos.output='{}', partition.transformation.regex='{}', partition.transformation.replacement='{}'",
           entry.getKey(),
           entry.getValue().getAllowTopicNameFilter() != null ?
             entry.getValue().getAllowTopicNameFilter().pattern() : "",
@@ -209,7 +217,9 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
             entry.getValue().getDenyPartitionNameFilter().pattern() : "",
           entry.getValue().getQosTopicRoute(),
           entry.getValue().getQosInput(),
-          entry.getValue().getQosOutput()
+          entry.getValue().getQosOutput(),
+          entry.getValue().getPartitionTransformationRegex(),
+          entry.getValue().getPartitionTransformationReplacement()
         );
       }
     }
