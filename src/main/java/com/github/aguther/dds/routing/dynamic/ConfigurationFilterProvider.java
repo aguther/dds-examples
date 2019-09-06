@@ -381,9 +381,10 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
     final Session session
   ) {
     return String.format(
-      "%s(%s)",
+      "%s(%s)-%s",
       session.getTopic(),
-      session.getPartition()
+      session.getPartition(),
+      session.getDirection()
     );
   }
 

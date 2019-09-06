@@ -69,7 +69,7 @@ public class DynamicPartitionCommanderTest {
 
   @Before
   public void setUp() {
-    sessionSquareA = new Session("Square", "A");
+    sessionSquareA = new Session(Direction.OUT, "Square", "A");
 
     commandReplyOk = new CommandReply();
     commandReplyOk.retcode = CommandReplyRetcode.OK_RETCODE;

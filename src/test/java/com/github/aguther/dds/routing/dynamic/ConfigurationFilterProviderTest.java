@@ -240,46 +240,78 @@ public class ConfigurationFilterProviderTest {
   @Test
   public void testGetSessionParent() {
     assertEquals(
+      PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+      configurationFilterProvider.getSessionParent(new Session(Direction.OUT, "Square", "A"))
+    );
+  }
+
+  @Test
+  public void testGetSessionNameOut() {
+    assertEquals(
+      "Square()-OUT",
+      configurationFilterProvider.getSessionName(new Session(Direction.OUT, "Square", ""))
+    );
+    assertEquals(
+      "Square(A)-OUT",
+      configurationFilterProvider.getSessionName(new Session(Direction.OUT, "Square", "A"))
+    );
+  }
+
+  @Test
+  public void testGetSessionNameIn() {
+    assertEquals(
+      "Square()-IN",
+      configurationFilterProvider.getSessionName(new Session(Direction.IN, "Square", ""))
+    );
+    assertEquals(
+      "Square(A)-IN",
+      configurationFilterProvider.getSessionName(new Session(Direction.IN, "Square", "A"))
+    );
+  }
+
+  @Test
+  public void testGetSessionEntityNameOut() {
+    assertEquals(
+      String.format(
+        "%s::%s",
         PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-        configurationFilterProvider.getSessionParent(new Session("Square", "A"))
+        "Square()-OUT"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.OUT, "Square", ""))
+    );
+    assertEquals(
+      String.format(
+        "%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square(A)-OUT"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.OUT, "Square", "A"))
     );
   }
 
   @Test
-  public void testGetSessionName() {
+  public void testGetSessionEntityNameIn() {
     assertEquals(
-        "Square()",
-        configurationFilterProvider.getSessionName(new Session("Square", ""))
+      String.format(
+        "%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square()-IN"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.IN, "Square", ""))
     );
     assertEquals(
-        "Square(A)",
-        configurationFilterProvider.getSessionName(new Session("Square", "A"))
-    );
-  }
-
-  @Test
-  public void testGetSessionEntityName() {
-    assertEquals(
-        String.format(
-            "%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square()"
-        ),
-        configurationFilterProvider.getSessionEntityName(new Session("Square", ""))
-    );
-    assertEquals(
-        String.format(
-            "%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square(A)"
-        ),
-        configurationFilterProvider.getSessionEntityName(new Session("Square", "A"))
+      String.format(
+        "%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square(A)-IN"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.IN, "Square", "A"))
     );
   }
 
   @Test
   public void testGetSessionConfiguration() {
-    Session session = new Session("Square", "A");
+    Session session = new Session(Direction.OUT, "Square", "A");
     String configuration = configurationFilterProvider.getSessionConfiguration(session);
 
     assertTrue(configuration.contains("Square"));
@@ -289,52 +321,52 @@ public class ConfigurationFilterProviderTest {
   @Test
   public void testGetTopicRouteName() {
     assertEquals(
-        Direction.IN.toString(),
-        configurationFilterProvider.getTopicRouteName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.IN, "Square", "ShapeType")
-        )
+      Direction.IN.toString(),
+      configurationFilterProvider.getTopicRouteName(
+        new Session(Direction.IN, "Square", ""),
+        new TopicRoute(Direction.IN, "Square", "ShapeType")
+      )
     );
     assertEquals(
-        Direction.OUT.toString(),
-        configurationFilterProvider.getTopicRouteName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.OUT, "Square", "ShapeType")
-        )
+      Direction.OUT.toString(),
+      configurationFilterProvider.getTopicRouteName(
+        new Session(Direction.OUT, "Square", ""),
+        new TopicRoute(Direction.OUT, "Square", "ShapeType")
+      )
     );
   }
 
   @Test
   public void testGetTopicRouteEntityName() {
     assertEquals(
-        String.format(
-            "%s::%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square()",
-            Direction.IN.toString()
-        ),
-        configurationFilterProvider.getTopicRouteEntityName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.IN, "Square", "ShapeType")
-        )
+      String.format(
+        "%s::%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square()-IN",
+        Direction.IN.toString()
+      ),
+      configurationFilterProvider.getTopicRouteEntityName(
+        new Session(Direction.IN, "Square", ""),
+        new TopicRoute(Direction.IN, "Square", "ShapeType")
+      )
     );
     assertEquals(
-        String.format(
-            "%s::%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square()",
-            Direction.OUT.toString()
-        ),
-        configurationFilterProvider.getTopicRouteEntityName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.OUT, "Square", "ShapeType")
-        )
+      String.format(
+        "%s::%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square()-OUT",
+        Direction.OUT.toString()
+      ),
+      configurationFilterProvider.getTopicRouteEntityName(
+        new Session(Direction.OUT, "Square", ""),
+        new TopicRoute(Direction.OUT, "Square", "ShapeType")
+      )
     );
   }
 
   @Test
   public void testGetTopicRouteConfiguration() {
-    Session session = new Session("Square", "A");
+    Session session = new Session(Direction.OUT, "Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
     String configuration = configurationFilterProvider.getTopicRouteConfiguration(session, topicRoute);
 

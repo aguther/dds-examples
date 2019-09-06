@@ -40,28 +40,28 @@ public class SessionTest {
 
   @Test(timeout = 4000)
   public void test00() throws Throwable {
-    Session session0 = new Session((String) null);
+    Session session0 = new Session(Direction.OUT, (String) null);
     String string0 = session0.getTopic();
     assertNull(string0);
   }
 
   @Test(timeout = 4000)
   public void test01() throws Throwable {
-    Session session0 = new Session("t7;/", "t7;/");
+    Session session0 = new Session(Direction.OUT, "t7;/", "t7;/");
     String string0 = session0.getTopic();
     assertEquals("t7;/", string0);
   }
 
   @Test(timeout = 4000)
   public void test02() throws Throwable {
-    Session session0 = new Session("", (String) null);
+    Session session0 = new Session(Direction.OUT, "", (String) null);
     String string0 = session0.getPartition();
     assertNull(string0);
   }
 
   @Test(timeout = 4000)
   public void test03() throws Throwable {
-    Session session0 = new Session("", "oL4h~,j_01ZnqMEo9^");
+    Session session0 = new Session(Direction.OUT, "", "oL4h~,j_01ZnqMEo9^");
     String string0 = session0.getPartition();
     assertEquals("oL4h~,j_01ZnqMEo9^", string0);
     assertEquals("", session0.getTopic());
@@ -69,16 +69,16 @@ public class SessionTest {
 
   @Test(timeout = 4000)
   public void test04() throws Throwable {
-    Session session0 = new Session("", "");
-    Session session1 = new Session("", "");
+    Session session0 = new Session(Direction.OUT, "", "");
+    Session session1 = new Session(Direction.OUT, "", "");
     boolean boolean0 = session0.equals(session1);
     assertTrue(boolean0);
   }
 
   @Test(timeout = 4000)
   public void test05() throws Throwable {
-    Session session0 = new Session("");
-    Session session1 = new Session("", "Fo|j");
+    Session session0 = new Session(Direction.OUT, "");
+    Session session1 = new Session(Direction.OUT, "", "Fo|j");
     boolean boolean0 = session0.equals(session1);
     assertEquals("", session1.getTopic());
     assertFalse(boolean0);
@@ -86,49 +86,49 @@ public class SessionTest {
 
   @Test(timeout = 4000)
   public void test06() throws Throwable {
-    Session session0 = new Session("");
-    Session session1 = new Session((String) null, "");
+    Session session0 = new Session(Direction.OUT, "");
+    Session session1 = new Session(Direction.OUT, (String) null, "");
     boolean boolean0 = session0.equals(session1);
     assertFalse(boolean0);
   }
 
   @Test(timeout = 4000)
   public void test07() throws Throwable {
-    Session session0 = new Session("");
+    Session session0 = new Session(Direction.OUT, "");
     boolean boolean0 = session0.equals((Object) null);
     assertFalse(boolean0);
   }
 
   @Test(timeout = 4000)
   public void test08() throws Throwable {
-    Session session0 = new Session("");
+    Session session0 = new Session(Direction.OUT, "");
     boolean boolean0 = session0.equals(session0);
     assertTrue(boolean0);
   }
 
   @Test(timeout = 4000)
   public void test09() throws Throwable {
-    Session session0 = new Session("");
+    Session session0 = new Session(Direction.OUT, "");
     boolean boolean0 = session0.equals("");
     assertFalse(boolean0);
   }
 
   @Test(timeout = 4000)
   public void test10() throws Throwable {
-    Session session0 = new Session("");
+    Session session0 = new Session(Direction.OUT, "");
     String string0 = session0.getTopic();
     assertEquals("", string0);
   }
 
   @Test(timeout = 4000)
   public void test11() throws Throwable {
-    Session session0 = new Session("");
+    Session session0 = new Session(Direction.OUT, "");
     session0.hashCode();
   }
 
   @Test(timeout = 4000)
   public void test12() throws Throwable {
-    Session session0 = new Session("");
+    Session session0 = new Session(Direction.OUT, "");
     String string0 = session0.getPartition();
     assertEquals("", string0);
   }

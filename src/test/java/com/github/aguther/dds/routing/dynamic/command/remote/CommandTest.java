@@ -25,9 +25,9 @@ public class CommandTest {
 
   @Before
   public void setUp() {
-    sessionEmpty = new Session("", "");
-    sessionSquareA = new Session(TOPIC, "A");
-    sessionSquareB = new Session(TOPIC, "B");
+    sessionEmpty = new Session(Direction.OUT, "", "");
+    sessionSquareA = new Session(Direction.OUT, TOPIC, "A");
+    sessionSquareB = new Session(Direction.OUT, TOPIC, "B");
     topicRouteOutSquareShapeType = new TopicRoute(Direction.OUT, TOPIC, TYPE);
     topicRouteInSquareShapeType = new TopicRoute(Direction.IN, TOPIC, TYPE);
   }

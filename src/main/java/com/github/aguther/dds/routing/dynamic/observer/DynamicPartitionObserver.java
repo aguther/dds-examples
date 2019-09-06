@@ -288,7 +288,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         // add instance handle to map
         addInstanceHandleToMap(
           instanceHandle,
-          new Session(topicName, partition),
+          new Session(direction, topicName, partition),
           new TopicRoute(direction, topicName, typeName)
         );
       }
@@ -328,13 +328,13 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
       for (String partition : partitions) {
         // ignore partition?
         if (ignorePartition(topicName, partition)
-          || mappingReverse.containsEntry(instanceHandle, new Session(topicName, partition))) {
+          || mappingReverse.containsEntry(instanceHandle, new Session(direction, topicName, partition))) {
           continue;
         }
         // add instance handle to map
         addInstanceHandleToMap(
           instanceHandle,
-          new Session(topicName, partition),
+          new Session(direction, topicName, partition),
           new TopicRoute(direction, topicName, typeName)
         );
       }
@@ -367,7 +367,7 @@ public class DynamicPartitionObserver implements Closeable, PublicationObserverL
         // remove instance handle from map
         removeInstanceHandleFromMap(
           instanceHandle,
-          new Session(topicName, partition),
+          new Session(direction, topicName, partition),
           new TopicRoute(direction, topicName, typeName)
         );
       }
