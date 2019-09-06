@@ -39,6 +39,8 @@ public class Configuration {
   private String topicRouteQos = "";
   private String inputQos = "";
   private String outputQos = "";
+  private String partitionTransformationRegex = "";
+  private String partitionTransformationReplacement = "";
 
   public Pattern getAllowTopicNameFilter() {
     return allowTopicNameFilter;
@@ -110,12 +112,32 @@ public class Configuration {
     this.outputQos = outputQos;
   }
 
+  public String getPartitionTransformationRegex() {
+    return partitionTransformationRegex;
+  }
+
+  public void setPartitionTransformationRegex(
+    String partitionTransformationRegex
+  ) {
+    this.partitionTransformationRegex = partitionTransformationRegex;
+  }
+
+  public String getPartitionTransformationReplacement() {
+    return partitionTransformationReplacement;
+  }
+
+  public void setPartitionTransformationReplacement(
+    String partitionTransformationReplacement
+  ) {
+    this.partitionTransformationReplacement = partitionTransformationReplacement;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof Configuration)) {
       return false;
     }
     Configuration that = (Configuration) o;
@@ -125,15 +147,15 @@ public class Configuration {
       Objects.equals(denyPartitionNameFilter, that.denyPartitionNameFilter) &&
       Objects.equals(topicRouteQos, that.topicRouteQos) &&
       Objects.equals(inputQos, that.inputQos) &&
-      Objects.equals(outputQos, that.outputQos);
+      Objects.equals(outputQos, that.outputQos) &&
+      Objects.equals(partitionTransformationRegex, that.partitionTransformationRegex) &&
+      Objects.equals(partitionTransformationReplacement, that.partitionTransformationReplacement);
   }
 
   @Override
   public int hashCode() {
-
     return Objects
-      .hash(allowTopicNameFilter, denyTopicNameFilter, allowPartitionNameFilter, denyPartitionNameFilter,
-        topicRouteQos,
-        inputQos, outputQos);
+      .hash(allowTopicNameFilter, denyTopicNameFilter, allowPartitionNameFilter, denyPartitionNameFilter, topicRouteQos,
+        inputQos, outputQos, partitionTransformationRegex, partitionTransformationReplacement);
   }
 }
