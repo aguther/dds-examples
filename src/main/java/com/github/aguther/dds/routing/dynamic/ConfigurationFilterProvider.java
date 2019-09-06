@@ -31,6 +31,7 @@ import com.github.aguther.dds.routing.dynamic.observer.Direction;
 import com.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
+import com.google.common.base.Strings;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
@@ -403,10 +404,34 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
   public String getSessionConfiguration(
     final Session session
   ) {
+    // set default partition for publisher and subscriber
+    String publisherPartition = session.getPartition();
+    String subscriberPartition = session.getPartition();
+
+    // get matching configuration
+    Configuration configuration = getMatchingConfiguration(session.getTopic());
+    if (configuration != null
+      && !Strings.isNullOrEmpty(configuration.getPartitionTransformationRegex())
+      && !Strings.isNullOrEmpty(configuration.getPartitionTransformationReplacement())) {
+      // generate transformed partition
+      String transformedPartition = session.getPartition().replaceAll(
+        configuration.getPartitionTransformationRegex(),
+        configuration.getPartitionTransformationReplacement()
+      );
+
+      // depending on direction, replace partition
+      if (session.getDirection() == Direction.OUT) {
+        subscriberPartition = transformedPartition;
+      } else {
+        publisherPartition = transformedPartition;
+      }
+    }
+
     return String.format(
-      "<session name=\"%1$s\" enabled=\"true\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%2$s</element></name></partition></subscriber_qos></session>",
+      "<session name=\"%1$s\" enabled=\"true\"><publisher_qos><partition><name><element>%2$s</element></name></partition></publisher_qos><subscriber_qos><partition><name><element>%3$s</element></name></partition></subscriber_qos></session>",
       getSessionName(session),
-      session.getPartition()
+      publisherPartition,
+      subscriberPartition
     );
   }
 
