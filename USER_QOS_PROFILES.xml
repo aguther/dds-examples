@@ -122,7 +122,13 @@
   <!-- Domains -->
   <domain_library name="DomainLibrary">
     <!-- Shape -->
-    <domain name="Shape" domain_id="0">
+    <domain name="Shape-0" domain_id="0">
+      <register_type name="ShapeType"/>
+      <topic name="Square" register_type_ref="ShapeType"/>
+      <topic name="Circle" register_type_ref="ShapeType"/>
+      <topic name="Triangle" register_type_ref="ShapeType"/>
+    </domain>
+    <domain name="Shape-1" domain_id="1">
       <register_type name="ShapeType"/>
       <topic name="Square" register_type_ref="ShapeType"/>
       <topic name="Circle" register_type_ref="ShapeType"/>
@@ -217,12 +223,19 @@
   <!-- Participants -->
   <domain_participant_library name="DomainParticipantLibrary">
     <!-- Shape SQUARE -->
-    <domain_participant name="ShapePublisher-SQUARE" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapePublisher-SQUARE" domain_ref="DomainLibrary::Shape-0">
       <publisher name="Publisher">
         <data_writer name="SquareDataWriter" topic_ref="Square">
           <datawriter_qos base_name="QosLibrary::Base">
           </datawriter_qos>
         </data_writer>
+        <publisher_qos>
+          <partition>
+            <name>
+              <element>S9160*</element>
+            </name>
+          </partition>
+        </publisher_qos>
       </publisher>
       <participant_qos base_name="QosLibrary::Monitoring">
         <participant_name>
@@ -230,12 +243,39 @@
         </participant_name>
       </participant_qos>
     </domain_participant>
-    <domain_participant name="ShapeSubscriber-SQUARE" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapeSubscriber-SQUARE-0" domain_ref="DomainLibrary::Shape-0">
       <subscriber name="Subscriber">
         <data_reader name="SquareDataReader" topic_ref="Square">
           <datareader_qos base_name="QosLibrary::Base">
           </datareader_qos>
         </data_reader>
+        <subscriber_qos>
+          <partition>
+            <name>
+              <element>S9160*</element>
+            </name>
+          </partition>
+        </subscriber_qos>
+      </subscriber>
+      <participant_qos base_name="QosLibrary::Monitoring">
+        <participant_name>
+          <name>ShapeSubscriber-SQUARE</name>
+        </participant_name>
+      </participant_qos>
+    </domain_participant>
+    <domain_participant name="ShapeSubscriber-SQUARE-1" domain_ref="DomainLibrary::Shape-1">
+      <subscriber name="Subscriber">
+        <data_reader name="SquareDataReader" topic_ref="Square">
+          <datareader_qos base_name="QosLibrary::Base">
+          </datareader_qos>
+        </data_reader>
+        <subscriber_qos>
+          <partition>
+            <name>
+              <element>S9160*</element>
+            </name>
+          </partition>
+        </subscriber_qos>
       </subscriber>
       <participant_qos base_name="QosLibrary::Monitoring">
         <participant_name>
@@ -244,7 +284,7 @@
       </participant_qos>
     </domain_participant>
     <!-- Shape CIRCLE -->
-    <domain_participant name="ShapePublisher-CIRCLE" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapePublisher-CIRCLE" domain_ref="DomainLibrary::Shape-0">
       <publisher name="Publisher">
         <data_writer name="CircleDataWriter" topic_ref="Circle">
           <datawriter_qos base_name="QosLibrary::Base">
@@ -257,7 +297,7 @@
         </participant_name>
       </participant_qos>
     </domain_participant>
-    <domain_participant name="ShapeSubscriber-CIRCLE" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapeSubscriber-CIRCLE" domain_ref="DomainLibrary::Shape-0">
       <subscriber name="Subscriber">
         <data_reader name="CircleDataReader" topic_ref="Circle">
           <datareader_qos base_name="QosLibrary::Base">
@@ -271,7 +311,7 @@
       </participant_qos>
     </domain_participant>
     <!-- Shape TRIANGLE -->
-    <domain_participant name="ShapePublisher-TRIANGLE" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapePublisher-TRIANGLE" domain_ref="DomainLibrary::Shape-0">
       <publisher name="Publisher">
         <data_writer name="TriangleDataWriter" topic_ref="Triangle">
           <datawriter_qos base_name="QosLibrary::Base">
@@ -284,7 +324,7 @@
         </participant_name>
       </participant_qos>
     </domain_participant>
-    <domain_participant name="ShapeSubscriber-TRIANGLE" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapeSubscriber-TRIANGLE" domain_ref="DomainLibrary::Shape-0">
       <subscriber name="Subscriber">
         <data_reader name="TriangleDataReader" topic_ref="Triangle">
           <datareader_qos base_name="QosLibrary::Base">
@@ -343,7 +383,7 @@
     </domain_participant>
 
     <!-- Shape Support Example -->
-    <domain_participant name="ShapeSupportPublisher" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapeSupportPublisher" domain_ref="DomainLibrary::Shape-0">
       <publisher name="SquarePublisher">
         <data_writer name="SquareDataWriter" topic_ref="Square">
           <datawriter_qos base_name="QosLibrary::Base">
@@ -413,7 +453,7 @@
         </participant_name>
       </participant_qos>
     </domain_participant>
-    <domain_participant name="ShapeSupportSubscriber" domain_ref="DomainLibrary::Shape">
+    <domain_participant name="ShapeSupportSubscriber" domain_ref="DomainLibrary::Shape-0">
       <subscriber name="SquareSubscriber">
         <data_reader name="SquareDataReader" topic_ref="Square">
           <datareader_qos base_name="QosLibrary::Base">

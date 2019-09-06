@@ -53,6 +53,12 @@ public class ShapeSubscriber extends AbstractIdleService implements Callable<Sha
   )
   private ShapeKind shapeKind;
 
+  @Option(
+    names = {"--domain"},
+    defaultValue = "0"
+  )
+  private int domain;
+
   public static void main(
     final String[] args
   ) {
@@ -143,7 +149,7 @@ public class ShapeSubscriber extends AbstractIdleService implements Callable<Sha
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-      String.format("DomainParticipantLibrary::ShapeSubscriber-%s", shapeKind.toString().toUpperCase())
+      String.format("DomainParticipantLibrary::ShapeSubscriber-%s-%d", shapeKind.toString().toUpperCase(), domain)
     );
   }
 
