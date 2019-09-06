@@ -49,11 +49,11 @@ import org.slf4j.LoggerFactory;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    DynamicPartitionObserver.class,
-    LoggerFactory.class,
-    PartitionQosPolicy.class,
-    PublicationBuiltinTopicData.class,
-    SubscriptionBuiltinTopicData.class,
+  DynamicPartitionObserver.class,
+  LoggerFactory.class,
+  PartitionQosPolicy.class,
+  PublicationBuiltinTopicData.class,
+  SubscriptionBuiltinTopicData.class,
 })
 public class DynamicPartitionObserverTest {
 
