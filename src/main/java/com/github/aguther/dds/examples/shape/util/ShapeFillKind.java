@@ -7,7 +7,7 @@ public enum ShapeFillKind {
   VERTICAL_HATCH;
 
   public static idl.ShapeFillKind toShapeFillKind(
-      ShapeFillKind value
+    ShapeFillKind value
   ) {
     return idl.ShapeFillKind.valueOf(value.ordinal());
   }

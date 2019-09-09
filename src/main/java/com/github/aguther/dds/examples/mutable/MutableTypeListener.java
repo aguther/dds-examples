@@ -50,15 +50,15 @@ public class MutableTypeListener implements DataReaderListener {
   private final SampleInfo sampleInfo;
 
   MutableTypeListener(
-      DataReader dataReader
+    DataReader dataReader
   ) {
     checkNotNull(dataReader, "DataReader must not be null");
 
     // set this as listener
     this.dataReader = dataReader;
     dataReader.set_listener(
-        this,
-        StatusKind.STATUS_MASK_ALL
+      this,
+      StatusKind.STATUS_MASK_ALL
     );
 
     // store sample
@@ -68,15 +68,15 @@ public class MutableTypeListener implements DataReaderListener {
 
   void stop() {
     dataReader.set_listener(
-        null,
-        StatusKind.STATUS_MASK_NONE
+      null,
+      StatusKind.STATUS_MASK_NONE
     );
   }
 
   @Override
   public void on_requested_deadline_missed(
-      final DataReader dataReader,
-      final RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
+    final DataReader dataReader,
+    final RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", requestedDeadlineMissedStatus.toString());
@@ -85,8 +85,8 @@ public class MutableTypeListener implements DataReaderListener {
 
   @Override
   public void on_requested_incompatible_qos(
-      final DataReader dataReader,
-      final RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
+    final DataReader dataReader,
+    final RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", requestedIncompatibleQosStatus.toString());
@@ -95,8 +95,8 @@ public class MutableTypeListener implements DataReaderListener {
 
   @Override
   public void on_sample_rejected(
-      final DataReader dataReader,
-      final SampleRejectedStatus sampleRejectedStatus
+    final DataReader dataReader,
+    final SampleRejectedStatus sampleRejectedStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", sampleRejectedStatus.toString());
@@ -105,8 +105,8 @@ public class MutableTypeListener implements DataReaderListener {
 
   @Override
   public void on_liveliness_changed(
-      final DataReader dataReader,
-      final LivelinessChangedStatus livelinessChangedStatus
+    final DataReader dataReader,
+    final LivelinessChangedStatus livelinessChangedStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", livelinessChangedStatus.toString());
@@ -115,7 +115,7 @@ public class MutableTypeListener implements DataReaderListener {
 
   @Override
   public void on_data_available(
-      final DataReader dataReader
+    final DataReader dataReader
   ) {
     do {
       try {
@@ -125,10 +125,10 @@ public class MutableTypeListener implements DataReaderListener {
         // print info
         if (sampleInfo.valid_data) {
           LOGGER.info(
-              "Received sample: key='{}', union='{}', array[0].number='{}'",
-              sample.key,
-              sample.unionType._d,
-              sample.arrayType[0].number
+            "Received sample: key='{}', union='{}', array[0].number='{}'",
+            sample.key,
+            sample.unionType._d,
+            sample.arrayType[0].number
           );
         } else {
           LOGGER.warn("Invalid sample received.");
@@ -145,8 +145,8 @@ public class MutableTypeListener implements DataReaderListener {
 
   @Override
   public void on_sample_lost(
-      final DataReader dataReader,
-      final SampleLostStatus sampleLostStatus
+    final DataReader dataReader,
+    final SampleLostStatus sampleLostStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", sampleLostStatus.toString());
@@ -155,8 +155,8 @@ public class MutableTypeListener implements DataReaderListener {
 
   @Override
   public void on_subscription_matched(
-      final DataReader dataReader,
-      final SubscriptionMatchedStatus subscriptionMatchedStatus
+    final DataReader dataReader,
+    final SubscriptionMatchedStatus subscriptionMatchedStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", subscriptionMatchedStatus.toString());

@@ -35,8 +35,8 @@ public class SampleHelper {
   }
 
   public static <T> byte[] createCdrBufferForSample(
-      final TypeSupportImpl typeSupportImpl,
-      final T sample
+    final TypeSupportImpl typeSupportImpl,
+    final T sample
   ) {
     // calculate needed size
     int size = (int) typeSupportImpl.serialize_to_cdr_buffer(null, 0, sample);
@@ -46,17 +46,17 @@ public class SampleHelper {
   }
 
   public static <T> byte[] getCdrBufferFromSample(
-      final TypeSupportImpl typeSupport,
-      final T sample
+    final TypeSupportImpl typeSupport,
+    final T sample
   ) {
     // create buffer of correct size
     byte[] buffer = createCdrBufferForSample(typeSupport, sample);
 
     // serialize to buffer
     serializeSampleToCdrBuffer(
-        buffer,
-        typeSupport,
-        sample
+      buffer,
+      typeSupport,
+      sample
     );
 
     // return buffer
@@ -64,28 +64,28 @@ public class SampleHelper {
   }
 
   public static <T> void serializeSampleToCdrBuffer(
-      byte[] buffer,
-      final TypeSupportImpl typeSupport,
-      final T sample
+    byte[] buffer,
+    final TypeSupportImpl typeSupport,
+    final T sample
   ) {
     typeSupport.serialize_to_cdr_buffer(
-        buffer,
-        buffer.length,
-        sample
+      buffer,
+      buffer.length,
+      sample
     );
   }
 
   public static <T> T getSampleFromCdrBuffer(
-      final TypeSupportImpl typeSupport,
-      final T sample,
-      final byte[] buffer
+    final TypeSupportImpl typeSupport,
+    final T sample,
+    final byte[] buffer
   ) {
 
     // deserialize from buffer
     deserializeSampleFromCdrBuffer(
-        sample,
-        typeSupport,
-        buffer
+      sample,
+      typeSupport,
+      buffer
     );
 
     // return sample
@@ -94,9 +94,9 @@ public class SampleHelper {
 
   @SuppressWarnings("unchecked")
   public static <T> T getSampleFromCdrBuffer(
-      final TypeSupportImpl typeSupport,
-      final Class clazz,
-      final byte[] buffer
+    final TypeSupportImpl typeSupport,
+    final Class clazz,
+    final byte[] buffer
   ) throws IllegalAccessException, InstantiationException {
 
     // create sample of T
@@ -104,9 +104,9 @@ public class SampleHelper {
 
     // deserialize from buffer
     deserializeSampleFromCdrBuffer(
-        sample,
-        typeSupport,
-        buffer
+      sample,
+      typeSupport,
+      buffer
     );
 
     // return sample
@@ -114,44 +114,44 @@ public class SampleHelper {
   }
 
   public static <T> void deserializeSampleFromCdrBuffer(
-      T sample,
-      final TypeSupportImpl typeSupport,
-      final byte[] buffer
+    T sample,
+    final TypeSupportImpl typeSupport,
+    final byte[] buffer
   ) {
     typeSupport.deserialize_from_cdr_buffer(
-        sample,
-        buffer,
-        buffer.length
+      sample,
+      buffer,
+      buffer.length
     );
   }
 
   public static <T> DynamicData convertToDynamicData(
-      final TypeSupportImpl typeSupport,
-      final TypeCode typeCode,
-      final T sample
+    final TypeSupportImpl typeSupport,
+    final TypeCode typeCode,
+    final T sample
   ) {
     return convertToDynamicData(
-        typeSupport,
-        typeCode,
-        DynamicData.PROPERTY_DEFAULT,
-        sample
+      typeSupport,
+      typeCode,
+      DynamicData.PROPERTY_DEFAULT,
+      sample
     );
   }
 
   public static <T> DynamicData convertToDynamicData(
-      final TypeSupportImpl typeSupport,
-      final TypeCode typeCode,
-      final DynamicDataProperty_t dynamicDataProperty,
-      final T sample
+    final TypeSupportImpl typeSupport,
+    final TypeCode typeCode,
+    final DynamicDataProperty_t dynamicDataProperty,
+    final T sample
   ) {
     // create dynamic data
     DynamicData dynamicData = new DynamicData(typeCode, dynamicDataProperty);
 
     // convert sample
     convertToDynamicData(
-        dynamicData,
-        typeSupport,
-        sample
+      dynamicData,
+      typeSupport,
+      sample
     );
 
     // return the result
@@ -159,9 +159,9 @@ public class SampleHelper {
   }
 
   public static <T> void convertToDynamicData(
-      DynamicData dynamicData,
-      final TypeSupportImpl typeSupport,
-      final T sample
+    DynamicData dynamicData,
+    final TypeSupportImpl typeSupport,
+    final T sample
   ) {
     // get cdr buffer from sample
     byte[] cdrBuffer = getCdrBufferFromSample(typeSupport, sample);
@@ -171,9 +171,9 @@ public class SampleHelper {
   }
 
   public static <T> void convertFromDynamicData(
-      T sample,
-      final TypeSupportImpl typeSupport,
-      final DynamicData dynamicData
+    T sample,
+    final TypeSupportImpl typeSupport,
+    final DynamicData dynamicData
   ) {
     // create buffer
     byte[] cdrBuffer = new byte[dynamicData.get_serialized_size()];

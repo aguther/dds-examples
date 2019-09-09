@@ -63,31 +63,31 @@ import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    BuiltinTopicObserver.class,
-    DomainParticipant.class,
-    LoanableSequence.class,
-    PublicationBuiltinTopicData.class,
-    PublicationBuiltinTopicDataSeq.class,
-    PublicationBuiltinTopicDataTypeSupport.class,
-    PublicationObserver.class,
-    SampleInfo.class,
-    SampleInfoSeq.class,
+  BuiltinTopicObserver.class,
+  DomainParticipant.class,
+  LoanableSequence.class,
+  PublicationBuiltinTopicData.class,
+  PublicationBuiltinTopicDataSeq.class,
+  PublicationBuiltinTopicDataTypeSupport.class,
+  PublicationObserver.class,
+  SampleInfo.class,
+  SampleInfoSeq.class,
 })
 @SuppressStaticInitializationFor({
-    "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
-    "com.rti.dds.domain.DomainParticipant",
-    "com.rti.dds.publication.builtin.PublicationBuiltinTopicData",
-    "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq",
-    "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
-    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData",
-    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport",
-    "com.rti.dds.subscription.SampleInfoSeq",
-    "com.rti.dds.topic.AbstractBuiltinTopicData",
-    "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
-    "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
-    "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
-    "com.rti.dds.topic.TypeSupportImpl",
-    "com.rti.dds.util.LoanableSequence",
+  "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
+  "com.rti.dds.domain.DomainParticipant",
+  "com.rti.dds.publication.builtin.PublicationBuiltinTopicData",
+  "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataSeq",
+  "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
+  "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData",
+  "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport",
+  "com.rti.dds.subscription.SampleInfoSeq",
+  "com.rti.dds.topic.AbstractBuiltinTopicData",
+  "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
+  "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
+  "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
+  "com.rti.dds.topic.TypeSupportImpl",
+  "com.rti.dds.util.LoanableSequence",
 })
 public class PublicationObserverTest {
 
@@ -108,20 +108,20 @@ public class PublicationObserverTest {
     dataReader = mock(DataReader.class);
 
     Whitebox.setInternalState(
-        PublicationBuiltinTopicDataTypeSupport.class,
-        "PUBLICATION_TOPIC_NAME",
-        "PublicationBuiltinTopicName"
+      PublicationBuiltinTopicDataTypeSupport.class,
+      "PUBLICATION_TOPIC_NAME",
+      "PublicationBuiltinTopicName"
     );
 
     publicationBuiltinTopicData = mock(PublicationBuiltinTopicData.class);
     publicationBuiltinTopicData.topic_name = "Square";
     publicationBuiltinTopicData.type_name = "ShapeType";
     PowerMockito.whenNew(PublicationBuiltinTopicData.class).withAnyArguments().thenReturn(
-        publicationBuiltinTopicData);
+      publicationBuiltinTopicData);
 
     publicationBuiltinTopicDataSeq = mock(PublicationBuiltinTopicDataSeq.class);
     PowerMockito.whenNew(PublicationBuiltinTopicDataSeq.class).withAnyArguments().thenReturn(
-        publicationBuiltinTopicDataSeq);
+      publicationBuiltinTopicDataSeq);
 
     sampleInfo = mock(SampleInfo.class);
     Whitebox.setInternalState(sampleInfo, "instance_handle", InstanceHandle_t.HANDLE_NIL);
@@ -132,7 +132,7 @@ public class PublicationObserverTest {
 
     when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
     when(subscriber.lookup_datareader(anyString()))
-        .thenReturn(dataReader);
+      .thenReturn(dataReader);
 
     publicationObserver = new PublicationObserver(domainParticipant);
 
@@ -188,30 +188,30 @@ public class PublicationObserverTest {
   private void testRun() {
     // prepare answers
     doAnswer(
-        invocation -> {
-          SampleInfo sampleInfo = invocation.getArgument(1);
-          sampleInfo.valid_data = true;
-          sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
-          return null;
-        }
+      invocation -> {
+        SampleInfo sampleInfo = invocation.getArgument(1);
+        sampleInfo.valid_data = true;
+        sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
+        return null;
+      }
     ).doAnswer(
-        invocation -> {
-          SampleInfo sampleInfo = invocation.getArgument(1);
-          sampleInfo.valid_data = true;
-          sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
-          return null;
-        }
+      invocation -> {
+        SampleInfo sampleInfo = invocation.getArgument(1);
+        sampleInfo.valid_data = true;
+        sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
+        return null;
+      }
     ).doAnswer(
-        invocation -> {
-          SampleInfo sampleInfo = invocation.getArgument(1);
-          sampleInfo.valid_data = false;
-          sampleInfo.instance_state = InstanceStateKind.NOT_ALIVE_INSTANCE_STATE;
-          return null;
-        }
+      invocation -> {
+        SampleInfo sampleInfo = invocation.getArgument(1);
+        sampleInfo.valid_data = false;
+        sampleInfo.instance_state = InstanceStateKind.NOT_ALIVE_INSTANCE_STATE;
+        return null;
+      }
     ).doThrow(new RETCODE_NO_DATA()
     ).when(dataReader).read_next_sample_untyped(
-        eq(publicationBuiltinTopicData),
-        eq(sampleInfo)
+      eq(publicationBuiltinTopicData),
+      eq(sampleInfo)
     );
 
     // execute tested method
@@ -219,19 +219,19 @@ public class PublicationObserverTest {
 
     // verify results
     verify(publicationObserverListener, times(1)).publicationDiscovered(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
 
     verify(publicationObserverListener, times(1)).publicationModified(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
 
     verify(publicationObserverListener, times(1)).publicationLost(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
   }
 
   @Test(timeout = 10000)
@@ -239,8 +239,8 @@ public class PublicationObserverTest {
     // prepare answers
     doThrow(new RETCODE_ERROR()
     ).when(dataReader).read_next_sample_untyped(
-        eq(publicationBuiltinTopicData),
-        eq(sampleInfo)
+      eq(publicationBuiltinTopicData),
+      eq(sampleInfo)
     );
 
     // execute tested method
@@ -248,14 +248,14 @@ public class PublicationObserverTest {
 
     // verify results
     verify(publicationObserverListener, times(0)).publicationDiscovered(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
 
     verify(publicationObserverListener, times(0)).publicationLost(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
   }
 
   @Test(timeout = 10000)
@@ -265,16 +265,16 @@ public class PublicationObserverTest {
 
     // prepare answers
     doAnswer(
-        invocation -> {
-          SampleInfo sampleInfo = invocation.getArgument(1);
-          sampleInfo.valid_data = true;
-          sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
-          return null;
-        }
+      invocation -> {
+        SampleInfo sampleInfo = invocation.getArgument(1);
+        sampleInfo.valid_data = true;
+        sampleInfo.instance_state = InstanceStateKind.ALIVE_INSTANCE_STATE;
+        return null;
+      }
     ).doThrow(new RETCODE_NO_DATA()
     ).when(dataReader).read_next_sample_untyped(
-        eq(publicationBuiltinTopicData),
-        eq(sampleInfo)
+      eq(publicationBuiltinTopicData),
+      eq(sampleInfo)
     );
 
     // execute run method so sample is stored in cache
@@ -285,20 +285,20 @@ public class PublicationObserverTest {
 
     // verify results
     verify(publicationObserverListener, times(1)).publicationDiscovered(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
     verify(publicationObserverListener, times(0)).publicationLost(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
     verify(listener, times(1)).publicationDiscovered(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
     verify(listener, times(0)).publicationLost(
-        any(DomainParticipant.class),
-        any(InstanceHandle_t.class),
-        any(PublicationBuiltinTopicData.class));
+      any(DomainParticipant.class),
+      any(InstanceHandle_t.class),
+      any(PublicationBuiltinTopicData.class));
   }
 }

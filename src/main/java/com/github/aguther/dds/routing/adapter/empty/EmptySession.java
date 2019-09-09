@@ -35,7 +35,7 @@ public class EmptySession implements Session {
 
   @Override
   public void update(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     // do nothing
   }

@@ -41,9 +41,9 @@ public interface PublicationObserverListener {
    * @param data publication data
    */
   void publicationDiscovered(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   );
 
   /**
@@ -54,9 +54,9 @@ public interface PublicationObserverListener {
    * @param data publication data
    */
   void publicationModified(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   );
 
   /**
@@ -67,8 +67,8 @@ public interface PublicationObserverListener {
    * @param data publication data
    */
   void publicationLost(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   );
 }

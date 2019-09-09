@@ -47,27 +47,27 @@ public class DynamicRoutingConnection extends EmptyConnection implements Closeab
   private DynamicRoutingManager dynamicRoutingManager;
 
   DynamicRoutingConnection(
-      final String routingServiceName,
-      final String routingServiceGroupName,
-      final Properties properties
+    final String routingServiceName,
+    final String routingServiceGroupName,
+    final Properties properties
   ) {
     LOGGER.info("Creating connection");
 
     if (LOGGER.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
         LOGGER.debug(
-            "key='{}', value='{}'",
-            key,
-            properties.getProperty(key)
+          "key='{}', value='{}'",
+          key,
+          properties.getProperty(key)
         );
       }
     }
 
     dynamicRoutingManager = new DynamicRoutingManager(
-        routingServiceName,
-        routingServiceGroupName,
-        "dynamic_routing_adapter.",
-        properties
+      routingServiceName,
+      routingServiceGroupName,
+      "dynamic_routing_adapter.",
+      properties
     );
 
     LOGGER.info("Connection created");
@@ -91,7 +91,7 @@ public class DynamicRoutingConnection extends EmptyConnection implements Closeab
 
   @Override
   public void update(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     dynamicRoutingManager.update(properties);
   }

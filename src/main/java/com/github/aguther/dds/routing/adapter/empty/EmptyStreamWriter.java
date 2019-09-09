@@ -36,15 +36,15 @@ public class EmptyStreamWriter implements StreamWriter {
 
   @Override
   public int write(
-      final List<Object> sampleList,
-      final List<Object> infoList
+    final List<Object> sampleList,
+    final List<Object> infoList
   ) throws AdapterException {
     return 0;
   }
 
   @Override
   public void update(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     // do nothing
   }

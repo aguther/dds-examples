@@ -49,8 +49,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
     private final TypeAdapter<?> typeAdapter;
 
     UnionMemberInfo(
-        final String fieldName,
-        final TypeAdapter<?> typeAdapter
+      final String fieldName,
+      final TypeAdapter<?> typeAdapter
     ) {
       this.fieldName = fieldName;
       this.typeAdapter = typeAdapter;
@@ -59,8 +59,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
   @Override
   public <T> TypeAdapter<T> create(
-      final Gson gson,
-      final TypeToken<T> typeToken
+    final Gson gson,
+    final TypeToken<T> typeToken
   ) {
 
     // get raw type
@@ -83,7 +83,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
       // detect any prefix package
       String packagePrefix = "";
       final Pattern packagePrefixPattern = Pattern.compile(
-          String.format("^(.*)%s$", unionTypeCode.name().replace("::", ".")));
+        String.format("^(.*)%s$", unionTypeCode.name().replace("::", ".")));
       final Matcher packagePrefixMatcher = packagePrefixPattern.matcher(rawType.getName());
       if (packagePrefixMatcher.matches()) {
         packagePrefix = packagePrefixMatcher.group(1);
@@ -91,7 +91,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
       // construct type name of discriminator
       String discriminatorTypeName = packagePrefix.concat(
-          discriminatorTypeCode.name().replace("::", "."));
+        discriminatorTypeCode.name().replace("::", "."));
       Class discriminatorClass = Class.forName(discriminatorTypeName);
 
       // create map with union information
@@ -112,7 +112,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
         // construct type name of field
         String memberTypeName = packagePrefix.concat(
-            memberTypeCode.name().replace("::", "."));
+          memberTypeCode.name().replace("::", "."));
 
         // get class of field
         Class memberClass = Class.forName(memberTypeName);
@@ -122,20 +122,20 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
         // create new union field info
         unionMemberInfoMap.put(
-            discriminatorString,
-            new UnionMemberInfo(
-                memberName,
-                memberTypeAdapter
-            )
+          discriminatorString,
+          new UnionMemberInfo(
+            memberName,
+            memberTypeAdapter
+          )
         );
       }
 
       // return new type adapter
       return (TypeAdapter<T>) new UnionTypeAdapter(
-          rawType,
-          gson.getAdapter(discriminatorClass),
-          FieldAccess.get(rawType),
-          unionMemberInfoMap
+        rawType,
+        gson.getAdapter(discriminatorClass),
+        FieldAccess.get(rawType),
+        unionMemberInfoMap
       );
 
     } catch (Exception e) {
@@ -155,10 +155,10 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
     private final Map<String, UnionMemberInfo> memberInfoMap;
 
     private UnionTypeAdapter(
-        final Class unionClass,
-        final TypeAdapter<?> discriminatorTypeAdapter,
-        final FieldAccess fieldAccess,
-        final Map<String, UnionMemberInfo> memberInfoMap
+      final Class unionClass,
+      final TypeAdapter<?> discriminatorTypeAdapter,
+      final FieldAccess fieldAccess,
+      final Map<String, UnionMemberInfo> memberInfoMap
     ) {
       this.unionClass = unionClass;
       this.discriminatorTypeAdapter = discriminatorTypeAdapter;
@@ -168,8 +168,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public void write(
-        final JsonWriter out,
-        final T value
+      final JsonWriter out,
+      final T value
     ) throws IOException {
 
       // support null objects
@@ -194,8 +194,8 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
       // write field
       out.name(unionMemberInfo.fieldName);
       ((TypeAdapter<Object>) unionMemberInfo.typeAdapter).write(
-          out,
-          fieldAccess.get(value, unionMemberInfo.fieldName)
+        out,
+        fieldAccess.get(value, unionMemberInfo.fieldName)
       );
 
       // assert end of object
@@ -204,7 +204,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public T read(
-        final JsonReader in
+      final JsonReader in
     ) throws IOException {
 
       // support null objects
@@ -235,7 +235,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
     }
 
     private T readUnion(
-        final JsonReader in
+      final JsonReader in
     ) throws IOException, InstantiationException, IllegalAccessException {
 
       // assert begin of object
@@ -275,7 +275,7 @@ public class UnionTypeAdapterFactory implements TypeAdapterFactory {
           // set discriminator on union
           fieldAccess.set(union, DISCRIMINATOR_FIELD_NAME, discriminatorObject);
         } else if (unionMemberInfo != null
-            && unionMemberInfo.fieldName.equals(name)) {
+          && unionMemberInfo.fieldName.equals(name)) {
 
           Object fieldObject = unionMemberInfo.typeAdapter.read(in);
           fieldAccess.set(union, unionMemberInfo.fieldName, fieldObject);

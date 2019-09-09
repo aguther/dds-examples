@@ -16,7 +16,7 @@ public class SampleTaker<T> implements DataReaderWatcherExecutor<T> {
 
   @SuppressWarnings("unchecked")
   public SampleTaker(
-      LoanableSequence sampleSeq
+    LoanableSequence sampleSeq
   ) {
     checkNotNull(sampleSeq);
 
@@ -25,32 +25,32 @@ public class SampleTaker<T> implements DataReaderWatcherExecutor<T> {
   }
 
   public void execute(
-      DataReader dataReader,
-      ReadCondition readCondition,
-      DataReaderWatcherListener<T> listener
+    DataReader dataReader,
+    ReadCondition readCondition,
+    DataReaderWatcherListener<T> listener
   ) {
     try {
       // take data
       dataReader.take_w_condition_untyped(
-          sampleSeq,
-          sampleInfoSeq,
-          ResourceLimitsQosPolicy.LENGTH_UNLIMITED,
-          readCondition
+        sampleSeq,
+        sampleInfoSeq,
+        ResourceLimitsQosPolicy.LENGTH_UNLIMITED,
+        readCondition
       );
 
       // iterate over data
       for (int i = 0; i < sampleSeq.size(); i++) {
         listener.onDataAvailable(
-            sampleSeq.get(i),
-            sampleInfoSeq.get(i)
+          sampleSeq.get(i),
+          sampleInfoSeq.get(i)
         );
       }
 
     } finally {
       // return data
       dataReader.return_loan_untyped(
-          sampleSeq,
-          sampleInfoSeq
+        sampleSeq,
+        sampleInfoSeq
       );
     }
   }

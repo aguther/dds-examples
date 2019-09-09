@@ -39,8 +39,8 @@ public class EnumTypeAdapterFactory implements TypeAdapterFactory {
 
   @Override
   public <T> TypeAdapter<T> create(
-      final Gson gson,
-      final TypeToken<T> type
+    final Gson gson,
+    final TypeToken<T> type
   ) {
 
     if (!Enum.class.isAssignableFrom(type.getRawType())) {
@@ -55,15 +55,15 @@ public class EnumTypeAdapterFactory implements TypeAdapterFactory {
     private Class clazz;
 
     private EnumTypeAdapter(
-        final Class clazz
+      final Class clazz
     ) {
       this.clazz = clazz;
     }
 
     @Override
     public void write(
-        final JsonWriter out,
-        final T value
+      final JsonWriter out,
+      final T value
     ) throws IOException {
 
       if (value == null) {
@@ -76,7 +76,7 @@ public class EnumTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public T read(
-        final JsonReader in
+      final JsonReader in
     ) throws IOException {
 
       if (in.peek() == JsonToken.NULL) {

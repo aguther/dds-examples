@@ -44,7 +44,7 @@ public class DomainParticipantHelper {
    * @return True if enabled, false if not enabled
    */
   public static boolean isEnabled(
-      final DomainParticipant domainParticipant
+    final DomainParticipant domainParticipant
   ) {
     try {
       // try to get discovered participants; this call will trigger

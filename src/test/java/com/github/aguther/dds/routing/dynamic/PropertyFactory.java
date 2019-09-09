@@ -64,60 +64,60 @@ public class PropertyFactory {
   }
 
   public static Properties create(
-      final String prefix
+    final String prefix
   ) {
     // create properties
     Properties properties = new Properties();
 
     // fill data
     properties.put(
-        String.format("%sadministration.domain_id", prefix),
-        Integer.toString(ADMINISTRATION_DOMAIN_ID)
+      String.format("%sadministration.domain_id", prefix),
+      Integer.toString(ADMINISTRATION_DOMAIN_ID)
     );
     properties.put(
-        String.format("%sadministration.discovery.wait_time", prefix),
-        Integer.toString(ADMINISTRATION_DISCOVERY_WAIT_TIME)
+      String.format("%sadministration.discovery.wait_time", prefix),
+      Integer.toString(ADMINISTRATION_DISCOVERY_WAIT_TIME)
     );
     properties.put(
-        String.format("%sadministration.request.timeout", prefix),
-        Integer.toString(ADMINISTRATION_REQUEST_TIMEOUT)
+      String.format("%sadministration.request.timeout", prefix),
+      Integer.toString(ADMINISTRATION_REQUEST_TIMEOUT)
     );
     properties.put(
-        String.format("%sadministration.request.retry_delay", prefix),
-        Integer.toString(ADMINISTRATION_REQUEST_RETRY_DELAY)
+      String.format("%sadministration.request.retry_delay", prefix),
+      Integer.toString(ADMINISTRATION_REQUEST_RETRY_DELAY)
     );
     properties.put(
-        String.format("%sdiscovery.domain_id", prefix),
-        Integer.toString(DISCOVERY_DOMAIN_ID)
+      String.format("%sdiscovery.domain_id", prefix),
+      Integer.toString(DISCOVERY_DOMAIN_ID)
     );
     properties.put(
-        String.format("%sconfiguration.domain_route_name", prefix),
-        CONFIGURATION_DOMAIN_ROUTE_NAME
+      String.format("%sconfiguration.domain_route_name", prefix),
+      CONFIGURATION_DOMAIN_ROUTE_NAME
     );
 
     addConfiguration(
-        properties,
-        prefix,
-        CONFIGURATION_SHAPE_NAME,
-        CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER,
-        CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER,
-        CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER,
-        CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER,
-        CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE,
-        CONFIGURATION_SHAPE_QOS_INPUT,
-        CONFIGURATION_SHAPE_QOS_OUTPUT
+      properties,
+      prefix,
+      CONFIGURATION_SHAPE_NAME,
+      CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER,
+      CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER,
+      CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER,
+      CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER,
+      CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE,
+      CONFIGURATION_SHAPE_QOS_INPUT,
+      CONFIGURATION_SHAPE_QOS_OUTPUT
     );
     addConfiguration(
-        properties,
-        prefix,
-        CONFIGURATION_SAMPLE_NAME,
-        CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER,
-        CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER,
-        CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER,
-        CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER,
-        CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE,
-        CONFIGURATION_SAMPLE_QOS_INPUT,
-        CONFIGURATION_SAMPLE_QOS_OUTPUT
+      properties,
+      prefix,
+      CONFIGURATION_SAMPLE_NAME,
+      CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER,
+      CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER,
+      CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER,
+      CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER,
+      CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE,
+      CONFIGURATION_SAMPLE_QOS_INPUT,
+      CONFIGURATION_SAMPLE_QOS_OUTPUT
     );
 
     // return result
@@ -125,48 +125,48 @@ public class PropertyFactory {
   }
 
   private static void addConfiguration(
-      final Properties properties,
-      final String prefix,
-      final String name,
-      final String allowTopicFilter,
-      final String denyTopicFilter,
-      final String allowPartitionFilter,
-      final String denyPartitionFilter,
-      final String qosTopicRoute,
-      final String qosInput,
-      final String qosOutput
+    final Properties properties,
+    final String prefix,
+    final String name,
+    final String allowTopicFilter,
+    final String denyTopicFilter,
+    final String allowPartitionFilter,
+    final String denyPartitionFilter,
+    final String qosTopicRoute,
+    final String qosInput,
+    final String qosOutput
   ) {
     properties.put(
-        String.format("%sconfiguration.%s.allow_topic_name_filter", prefix, name),
-        allowTopicFilter
+      String.format("%sconfiguration.%s.allow_topic_name_filter", prefix, name),
+      allowTopicFilter
     );
     properties.put(
-        String.format("%sconfiguration.%s.deny_topic_name_filter", prefix, name),
-        denyTopicFilter
+      String.format("%sconfiguration.%s.deny_topic_name_filter", prefix, name),
+      denyTopicFilter
     );
     properties.put(
-        String.format("%sconfiguration.%s.allow_partition_name_filter", prefix, name),
-        allowPartitionFilter
+      String.format("%sconfiguration.%s.allow_partition_name_filter", prefix, name),
+      allowPartitionFilter
     );
     properties.put(
-        String.format("%sconfiguration.%s.deny_partition_name_filter", prefix, name),
-        denyPartitionFilter
+      String.format("%sconfiguration.%s.deny_partition_name_filter", prefix, name),
+      denyPartitionFilter
     );
     properties.put(
-        String.format("%sconfiguration.%s.qos.topic_route", prefix, name),
-        qosTopicRoute
+      String.format("%sconfiguration.%s.qos.topic_route", prefix, name),
+      qosTopicRoute
     );
     properties.put(
-        String.format("%sconfiguration.%s.qos.input", prefix, name),
-        qosInput
+      String.format("%sconfiguration.%s.qos.input", prefix, name),
+      qosInput
     );
     properties.put(
-        String.format("%sconfiguration.%s.qos.output", prefix, name),
-        qosOutput
+      String.format("%sconfiguration.%s.qos.output", prefix, name),
+      qosOutput
     );
     properties.put(
-        String.format("%sconfiguration.%s.unknown", prefix, name),
-        "Unknown Value for Testing"
+      String.format("%sconfiguration.%s.unknown", prefix, name),
+      "Unknown Value for Testing"
     );
   }
 

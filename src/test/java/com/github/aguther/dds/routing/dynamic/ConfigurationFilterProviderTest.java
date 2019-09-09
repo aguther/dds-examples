@@ -29,9 +29,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
+import com.github.aguther.dds.routing.dynamic.observer.Direction;
 import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
-import com.github.aguther.dds.routing.dynamic.observer.TopicRoute.Direction;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
@@ -46,13 +46,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    PublicationBuiltinTopicData.class,
-    SubscriptionBuiltinTopicData.class,
+  PublicationBuiltinTopicData.class,
+  SubscriptionBuiltinTopicData.class,
 })
 @SuppressStaticInitializationFor({
-    "com.rti.dds.publication.builtin.PublicationBuiltinTopicData",
-    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData",
-    "com.rti.dds.topic.AbstractBuiltinTopicData",
+  "com.rti.dds.publication.builtin.PublicationBuiltinTopicData",
+  "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData",
+  "com.rti.dds.topic.AbstractBuiltinTopicData",
 })
 public class ConfigurationFilterProviderTest {
 
@@ -62,8 +62,8 @@ public class ConfigurationFilterProviderTest {
   public void setUp() {
     // create configuration filter
     configurationFilterProvider = new ConfigurationFilterProvider(
-        PropertyFactory.PREFIX,
-        PropertyFactory.create()
+      PropertyFactory.PREFIX,
+      PropertyFactory.create()
     );
   }
 
@@ -75,7 +75,7 @@ public class ConfigurationFilterProviderTest {
   @Test
   public void testDefaultPrefix() {
     ConfigurationFilterProvider filterProvider = new ConfigurationFilterProvider(
-        PropertyFactory.create("")
+      PropertyFactory.create("")
     );
     checkConfiguration(filterProvider);
   }
@@ -86,73 +86,73 @@ public class ConfigurationFilterProviderTest {
   }
 
   private void checkConfiguration(
-      final ConfigurationFilterProvider configurationFilterProvider
+    final ConfigurationFilterProvider configurationFilterProvider
   ) {
     assertEquals(
-        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-        configurationFilterProvider.getDomainRouteName()
+      PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+      configurationFilterProvider.getDomainRouteName()
     );
 
     Map<String, Configuration> configurations = configurationFilterProvider.getConfigurations();
 
     Configuration shapeConfiguration = configurations.get(PropertyFactory.CONFIGURATION_SHAPE_NAME);
     assertEquals(
-        PropertyFactory.CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER,
-        shapeConfiguration.getAllowTopicNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SHAPE_ALLOW_TOPIC_NAME_FILTER,
+      shapeConfiguration.getAllowTopicNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER,
-        shapeConfiguration.getDenyTopicNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SHAPE_DENY_TOPIC_NAME_FILTER,
+      shapeConfiguration.getDenyTopicNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER,
-        shapeConfiguration.getAllowPartitionNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SHAPE_ALLOW_PARTITION_NAME_FILTER,
+      shapeConfiguration.getAllowPartitionNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER,
-        shapeConfiguration.getDenyPartitionNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SHAPE_DENY_PARTITION_NAME_FILTER,
+      shapeConfiguration.getDenyPartitionNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE,
-        shapeConfiguration.getQosTopicRoute()
+      PropertyFactory.CONFIGURATION_SHAPE_QOS_TOPIC_ROUTE,
+      shapeConfiguration.getQosTopicRoute()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SHAPE_QOS_INPUT,
-        shapeConfiguration.getQosInput()
+      PropertyFactory.CONFIGURATION_SHAPE_QOS_INPUT,
+      shapeConfiguration.getQosInput()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SHAPE_QOS_OUTPUT,
-        shapeConfiguration.getQosOutput()
+      PropertyFactory.CONFIGURATION_SHAPE_QOS_OUTPUT,
+      shapeConfiguration.getQosOutput()
     );
 
     Configuration testConfiguration = configurations.get(PropertyFactory.CONFIGURATION_SAMPLE_NAME);
     assertEquals(
-        PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER,
-        testConfiguration.getAllowTopicNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_TOPIC_NAME_FILTER,
+      testConfiguration.getAllowTopicNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER,
-        testConfiguration.getDenyTopicNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SAMPLE_DENY_TOPIC_NAME_FILTER,
+      testConfiguration.getDenyTopicNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER,
-        testConfiguration.getAllowPartitionNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SAMPLE_ALLOW_PARTITION_NAME_FILTER,
+      testConfiguration.getAllowPartitionNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER,
-        testConfiguration.getDenyPartitionNameFilter().pattern()
+      PropertyFactory.CONFIGURATION_SAMPLE_DENY_PARTITION_NAME_FILTER,
+      testConfiguration.getDenyPartitionNameFilter().pattern()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE,
-        testConfiguration.getQosTopicRoute()
+      PropertyFactory.CONFIGURATION_SAMPLE_QOS_TOPIC_ROUTE,
+      testConfiguration.getQosTopicRoute()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SAMPLE_QOS_INPUT,
-        testConfiguration.getQosInput()
+      PropertyFactory.CONFIGURATION_SAMPLE_QOS_INPUT,
+      testConfiguration.getQosInput()
     );
     assertEquals(
-        PropertyFactory.CONFIGURATION_SAMPLE_QOS_OUTPUT,
-        testConfiguration.getQosOutput()
+      PropertyFactory.CONFIGURATION_SAMPLE_QOS_OUTPUT,
+      testConfiguration.getQosOutput()
     );
   }
 
@@ -162,28 +162,28 @@ public class ConfigurationFilterProviderTest {
 
     publicationBuiltinTopicData.topic_name = "Square";
     assertFalse(configurationFilterProvider.ignorePublication(
-        null,
-        InstanceHandle_t.HANDLE_NIL,
-        publicationBuiltinTopicData
+      null,
+      InstanceHandle_t.HANDLE_NIL,
+      publicationBuiltinTopicData
     ));
     publicationBuiltinTopicData.topic_name = "Triangle";
     assertFalse(configurationFilterProvider.ignorePublication(
-        null,
-        InstanceHandle_t.HANDLE_NIL,
-        publicationBuiltinTopicData
+      null,
+      InstanceHandle_t.HANDLE_NIL,
+      publicationBuiltinTopicData
     ));
 
     publicationBuiltinTopicData.topic_name = "Circle";
     assertTrue(configurationFilterProvider.ignorePublication(
-        null,
-        InstanceHandle_t.HANDLE_NIL,
-        publicationBuiltinTopicData
+      null,
+      InstanceHandle_t.HANDLE_NIL,
+      publicationBuiltinTopicData
     ));
     publicationBuiltinTopicData.topic_name = "OtherTopic";
     assertTrue(configurationFilterProvider.ignorePublication(
-        null,
-        InstanceHandle_t.HANDLE_NIL,
-        publicationBuiltinTopicData
+      null,
+      InstanceHandle_t.HANDLE_NIL,
+      publicationBuiltinTopicData
     ));
   }
 
@@ -193,22 +193,22 @@ public class ConfigurationFilterProviderTest {
 
     subscriptionBuiltinTopicData.topic_name = "Square";
     assertFalse(configurationFilterProvider.ignoreSubscription(
-        null,
-        InstanceHandle_t.HANDLE_NIL,
-        subscriptionBuiltinTopicData
+      null,
+      InstanceHandle_t.HANDLE_NIL,
+      subscriptionBuiltinTopicData
     ));
     subscriptionBuiltinTopicData.topic_name = "Triangle";
     assertFalse(configurationFilterProvider.ignoreSubscription(
-        null,
-        InstanceHandle_t.HANDLE_NIL,
-        subscriptionBuiltinTopicData
+      null,
+      InstanceHandle_t.HANDLE_NIL,
+      subscriptionBuiltinTopicData
     ));
 
     subscriptionBuiltinTopicData.topic_name = "Circle";
     assertTrue(configurationFilterProvider.ignoreSubscription(
-        null,
-        InstanceHandle_t.HANDLE_NIL,
-        subscriptionBuiltinTopicData
+      null,
+      InstanceHandle_t.HANDLE_NIL,
+      subscriptionBuiltinTopicData
     ));
   }
 
@@ -240,46 +240,78 @@ public class ConfigurationFilterProviderTest {
   @Test
   public void testGetSessionParent() {
     assertEquals(
+      PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+      configurationFilterProvider.getSessionParent(new Session(Direction.OUT, "Square", "A"))
+    );
+  }
+
+  @Test
+  public void testGetSessionNameOut() {
+    assertEquals(
+      "Square()-OUT",
+      configurationFilterProvider.getSessionName(new Session(Direction.OUT, "Square", ""))
+    );
+    assertEquals(
+      "Square(A)-OUT",
+      configurationFilterProvider.getSessionName(new Session(Direction.OUT, "Square", "A"))
+    );
+  }
+
+  @Test
+  public void testGetSessionNameIn() {
+    assertEquals(
+      "Square()-IN",
+      configurationFilterProvider.getSessionName(new Session(Direction.IN, "Square", ""))
+    );
+    assertEquals(
+      "Square(A)-IN",
+      configurationFilterProvider.getSessionName(new Session(Direction.IN, "Square", "A"))
+    );
+  }
+
+  @Test
+  public void testGetSessionEntityNameOut() {
+    assertEquals(
+      String.format(
+        "%s::%s",
         PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-        configurationFilterProvider.getSessionParent(new Session("Square", "A"))
+        "Square()-OUT"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.OUT, "Square", ""))
+    );
+    assertEquals(
+      String.format(
+        "%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square(A)-OUT"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.OUT, "Square", "A"))
     );
   }
 
   @Test
-  public void testGetSessionName() {
+  public void testGetSessionEntityNameIn() {
     assertEquals(
-        "Square()",
-        configurationFilterProvider.getSessionName(new Session("Square", ""))
+      String.format(
+        "%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square()-IN"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.IN, "Square", ""))
     );
     assertEquals(
-        "Square(A)",
-        configurationFilterProvider.getSessionName(new Session("Square", "A"))
-    );
-  }
-
-  @Test
-  public void testGetSessionEntityName() {
-    assertEquals(
-        String.format(
-            "%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square()"
-        ),
-        configurationFilterProvider.getSessionEntityName(new Session("Square", ""))
-    );
-    assertEquals(
-        String.format(
-            "%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square(A)"
-        ),
-        configurationFilterProvider.getSessionEntityName(new Session("Square", "A"))
+      String.format(
+        "%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square(A)-IN"
+      ),
+      configurationFilterProvider.getSessionEntityName(new Session(Direction.IN, "Square", "A"))
     );
   }
 
   @Test
   public void testGetSessionConfiguration() {
-    Session session = new Session("Square", "A");
+    Session session = new Session(Direction.OUT, "Square", "A");
     String configuration = configurationFilterProvider.getSessionConfiguration(session);
 
     assertTrue(configuration.contains("Square"));
@@ -289,52 +321,52 @@ public class ConfigurationFilterProviderTest {
   @Test
   public void testGetTopicRouteName() {
     assertEquals(
-        Direction.IN.toString(),
-        configurationFilterProvider.getTopicRouteName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.IN, "Square", "ShapeType")
-        )
+      Direction.IN.toString(),
+      configurationFilterProvider.getTopicRouteName(
+        new Session(Direction.IN, "Square", ""),
+        new TopicRoute(Direction.IN, "Square", "ShapeType")
+      )
     );
     assertEquals(
-        Direction.OUT.toString(),
-        configurationFilterProvider.getTopicRouteName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.OUT, "Square", "ShapeType")
-        )
+      Direction.OUT.toString(),
+      configurationFilterProvider.getTopicRouteName(
+        new Session(Direction.OUT, "Square", ""),
+        new TopicRoute(Direction.OUT, "Square", "ShapeType")
+      )
     );
   }
 
   @Test
   public void testGetTopicRouteEntityName() {
     assertEquals(
-        String.format(
-            "%s::%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square()",
-            Direction.IN.toString()
-        ),
-        configurationFilterProvider.getTopicRouteEntityName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.IN, "Square", "ShapeType")
-        )
+      String.format(
+        "%s::%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square()-IN",
+        Direction.IN.toString()
+      ),
+      configurationFilterProvider.getTopicRouteEntityName(
+        new Session(Direction.IN, "Square", ""),
+        new TopicRoute(Direction.IN, "Square", "ShapeType")
+      )
     );
     assertEquals(
-        String.format(
-            "%s::%s::%s",
-            PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
-            "Square()",
-            Direction.OUT.toString()
-        ),
-        configurationFilterProvider.getTopicRouteEntityName(
-            new Session("Square", ""),
-            new TopicRoute(Direction.OUT, "Square", "ShapeType")
-        )
+      String.format(
+        "%s::%s::%s",
+        PropertyFactory.CONFIGURATION_DOMAIN_ROUTE_NAME,
+        "Square()-OUT",
+        Direction.OUT.toString()
+      ),
+      configurationFilterProvider.getTopicRouteEntityName(
+        new Session(Direction.OUT, "Square", ""),
+        new TopicRoute(Direction.OUT, "Square", "ShapeType")
+      )
     );
   }
 
   @Test
   public void testGetTopicRouteConfiguration() {
-    Session session = new Session("Square", "A");
+    Session session = new Session(Direction.OUT, "Square", "A");
     TopicRoute topicRoute = new TopicRoute(Direction.OUT, session.getTopic(), "ShapeType");
     String configuration = configurationFilterProvider.getTopicRouteConfiguration(session, topicRoute);
 

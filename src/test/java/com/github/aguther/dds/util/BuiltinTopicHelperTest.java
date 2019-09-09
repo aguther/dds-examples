@@ -50,14 +50,14 @@ import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    BuiltinTopicHelper.class,
-    InstanceHandleSeq.class,
-    ParticipantBuiltinTopicData.class,
-    PublicationBuiltinTopicData.class,
-    SubscriptionBuiltinTopicData.class,
+  BuiltinTopicHelper.class,
+  InstanceHandleSeq.class,
+  ParticipantBuiltinTopicData.class,
+  PublicationBuiltinTopicData.class,
+  SubscriptionBuiltinTopicData.class,
 })
 @SuppressStaticInitializationFor({
-    "com.rti.dds.topic.AbstractBuiltinTopicData",
+  "com.rti.dds.topic.AbstractBuiltinTopicData",
 })
 public class BuiltinTopicHelperTest {
 
@@ -101,8 +101,8 @@ public class BuiltinTopicHelperTest {
       data.participant_name.name = "A";
       return null;
     }).when(domainParticipant).get_discovered_participant_data(
-        any(ParticipantBuiltinTopicData.class),
-        eq(instanceHandleA)
+      any(ParticipantBuiltinTopicData.class),
+      eq(instanceHandleA)
     );
 
     doAnswer(invocation -> {
@@ -111,8 +111,8 @@ public class BuiltinTopicHelperTest {
       data.participant_name.name = "B";
       return null;
     }).when(domainParticipant).get_discovered_participant_data(
-        any(ParticipantBuiltinTopicData.class),
-        eq(instanceHandleB)
+      any(ParticipantBuiltinTopicData.class),
+      eq(instanceHandleB)
     );
   }
 
@@ -126,7 +126,7 @@ public class BuiltinTopicHelperTest {
     Whitebox.setInternalState(publicationBuiltinTopicData, "participant_key", builtinTopicKeyA);
 
     ParticipantBuiltinTopicData result = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant, publicationBuiltinTopicData);
+      domainParticipant, publicationBuiltinTopicData);
 
     assertTrue(("A").equals(result.participant_name.name));
   }
@@ -137,7 +137,7 @@ public class BuiltinTopicHelperTest {
     Whitebox.setInternalState(publicationBuiltinTopicData, "participant_key", builtinTopicKeyB);
 
     ParticipantBuiltinTopicData result = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant, publicationBuiltinTopicData);
+      domainParticipant, publicationBuiltinTopicData);
 
     assertTrue(("B").equals(result.participant_name.name));
   }
@@ -148,7 +148,7 @@ public class BuiltinTopicHelperTest {
     Whitebox.setInternalState(publicationBuiltinTopicData, "participant_key", builtinTopicKeyC);
 
     ParticipantBuiltinTopicData result = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant, publicationBuiltinTopicData);
+      domainParticipant, publicationBuiltinTopicData);
 
     assertNull(result);
   }
@@ -159,7 +159,7 @@ public class BuiltinTopicHelperTest {
     Whitebox.setInternalState(subscriptionBuiltinTopicData, "participant_key", builtinTopicKeyA);
 
     ParticipantBuiltinTopicData result = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant, subscriptionBuiltinTopicData);
+      domainParticipant, subscriptionBuiltinTopicData);
 
     assertTrue(("A").equals(result.participant_name.name));
   }
@@ -170,7 +170,7 @@ public class BuiltinTopicHelperTest {
     Whitebox.setInternalState(subscriptionBuiltinTopicData, "participant_key", builtinTopicKeyB);
 
     ParticipantBuiltinTopicData result = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant, subscriptionBuiltinTopicData);
+      domainParticipant, subscriptionBuiltinTopicData);
 
     assertTrue(("B").equals(result.participant_name.name));
   }
@@ -181,7 +181,7 @@ public class BuiltinTopicHelperTest {
     Whitebox.setInternalState(subscriptionBuiltinTopicData, "participant_key", builtinTopicKeyC);
 
     ParticipantBuiltinTopicData result = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant, subscriptionBuiltinTopicData);
+      domainParticipant, subscriptionBuiltinTopicData);
 
     assertNull(result);
   }

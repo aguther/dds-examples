@@ -37,14 +37,14 @@ public class Json {
   private static final Logger LOGGER = LoggerFactory.getLogger(Json.class);
 
   private static final Gson gson = new GsonBuilder()
-      .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
-      .registerTypeAdapterFactory(new SequenceTypeAdapterFactory())
-      .registerTypeAdapterFactory(new UnionTypeAdapterFactory())
-      .setPrettyPrinting()
-      .create();
+    .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
+    .registerTypeAdapterFactory(new SequenceTypeAdapterFactory())
+    .registerTypeAdapterFactory(new UnionTypeAdapterFactory())
+    .setPrettyPrinting()
+    .create();
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
 
     // convert v1 type to JSON and back
@@ -52,9 +52,9 @@ public class Json {
       LOGGER.info("Converting v1 to json and back to v1");
     }
     convertToJsonAndBack(
-        getMutableTypeV1(),
-        idl.v1.MutableType.class,
-        true
+      getMutableTypeV1(),
+      idl.v1.MutableType.class,
+      true
     );
 
     // convert v2 type to JSON and back
@@ -62,9 +62,9 @@ public class Json {
       LOGGER.info("Converting v2 to json and back to v2");
     }
     convertToJsonAndBack(
-        getMutableTypeV2(),
-        idl.v2.MutableType.class,
-        true
+      getMutableTypeV2(),
+      idl.v2.MutableType.class,
+      true
     );
 
     // convert v1 to v2 via JSON
@@ -72,9 +72,9 @@ public class Json {
       LOGGER.info("Converting v1 to json and back to v2");
     }
     convertToJsonAndBack(
-        getMutableTypeV1(),
-        idl.v2.MutableType.class,
-        false
+      getMutableTypeV1(),
+      idl.v2.MutableType.class,
+      false
     );
 
     // convert v2 to v1 via JSON
@@ -82,17 +82,17 @@ public class Json {
       LOGGER.info("Converting v2 to json and back to v1");
     }
     convertToJsonAndBack(
-        getMutableTypeV2(),
-        idl.v1.MutableType.class,
-        false
+      getMutableTypeV2(),
+      idl.v1.MutableType.class,
+      false
     );
   }
 
   @SuppressWarnings("unchecked")
   private static <I, O> void convertToJsonAndBack(
-      final I input,
-      final Class outputClass,
-      final boolean doComparison
+    final I input,
+    final Class outputClass,
+    final boolean doComparison
   ) {
 
     // print sample

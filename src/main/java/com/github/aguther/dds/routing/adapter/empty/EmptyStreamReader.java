@@ -36,16 +36,16 @@ public class EmptyStreamReader implements StreamReader {
 
   @Override
   public void read(
-      final List<Object> sampleList,
-      final List<Object> infoList
+    final List<Object> sampleList,
+    final List<Object> infoList
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public void returnLoan(
-      final List<Object> sampleList,
-      final List<Object> infoList
+    final List<Object> sampleList,
+    final List<Object> infoList
   ) throws AdapterException {
     // do nothing
 
@@ -53,7 +53,7 @@ public class EmptyStreamReader implements StreamReader {
 
   @Override
   public void update(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     // do nothing
   }

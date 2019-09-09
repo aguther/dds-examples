@@ -58,7 +58,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param domainParticipant the domain participant (that is not yet enabled)
    */
   public SubscriptionObserver(
-      final DomainParticipant domainParticipant
+    final DomainParticipant domainParticipant
   ) {
     // create the parent observer with the built-in subscription topic
     super(domainParticipant, SubscriptionBuiltinTopicDataTypeSupport.SUBSCRIPTION_TOPIC_NAME);
@@ -82,7 +82,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param listener the listener
    */
   public void addListener(
-      final SubscriptionObserverListener listener
+    final SubscriptionObserverListener listener
   ) {
     addListener(listener, true);
   }
@@ -94,8 +94,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param deliverReadSamples true to deliver already read samples
    */
   public void addListener(
-      final SubscriptionObserverListener listener,
-      final boolean deliverReadSamples
+    final SubscriptionObserverListener listener,
+    final boolean deliverReadSamples
   ) {
     checkNotNull(listener, "Listener must not be null");
 
@@ -105,9 +105,9 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       if (deliverReadSamples) {
         for (Entry<InstanceHandle_t, SubscriptionBuiltinTopicData> entry : sampleCache.entrySet()) {
           listener.subscriptionDiscovered(
-              domainParticipant,
-              entry.getKey(),
-              entry.getValue()
+            domainParticipant,
+            entry.getKey(),
+            entry.getValue()
           );
         }
       }
@@ -120,7 +120,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param listener the listener
    */
   public void removeListener(
-      final SubscriptionObserverListener listener
+    final SubscriptionObserverListener listener
   ) {
     checkNotNull(listener, "Listener must not be null");
     synchronized (listeners) {
@@ -178,8 +178,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param sampleInfo subscription info
    */
   private void invokeSubscriptionDiscovered(
-      SubscriptionBuiltinTopicData sample,
-      SampleInfo sampleInfo
+    SubscriptionBuiltinTopicData sample,
+    SampleInfo sampleInfo
   ) {
     synchronized (listeners) {
       // log information
@@ -188,9 +188,9 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       // iterate over listeners and invoke them
       for (SubscriptionObserverListener listener : listeners) {
         listener.subscriptionDiscovered(
-            domainParticipant,
-            sampleInfo.instance_handle,
-            sample
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
         );
       }
     }
@@ -203,8 +203,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param sampleInfo subscription info
    */
   private void invokeSubscriptionModified(
-      SubscriptionBuiltinTopicData sample,
-      SampleInfo sampleInfo
+    SubscriptionBuiltinTopicData sample,
+    SampleInfo sampleInfo
   ) {
     synchronized (listeners) {
       // log information
@@ -213,9 +213,9 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       // iterate over listeners and invoke them
       for (SubscriptionObserverListener listener : listeners) {
         listener.subscriptionModified(
-            domainParticipant,
-            sampleInfo.instance_handle,
-            sample
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
         );
       }
     }
@@ -228,8 +228,8 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
    * @param sampleInfo subscription info
    */
   private void invokeSubscriptionLost(
-      SubscriptionBuiltinTopicData sample,
-      SampleInfo sampleInfo
+    SubscriptionBuiltinTopicData sample,
+    SampleInfo sampleInfo
   ) {
     synchronized (listeners) {
       // log information
@@ -238,36 +238,36 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
       // iterate over listeners and invoke them
       for (SubscriptionObserverListener listener : listeners) {
         listener.subscriptionLost(
-            domainParticipant,
-            sampleInfo.instance_handle,
-            sample
+          domainParticipant,
+          sampleInfo.instance_handle,
+          sample
         );
       }
     }
   }
 
   private void logListenerInvocation(
-      String name,
-      SampleInfo sampleInfo,
-      SubscriptionBuiltinTopicData sample
+    String name,
+    SampleInfo sampleInfo,
+    SubscriptionBuiltinTopicData sample
   ) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace(
-          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
-          name,
-          sampleInfo.instance_handle,
-          sample.topic_name,
-          sample.type_name,
-          sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
-          sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
+        "Calling '{}' on listeners with instance='{}', topic='{}', type='{}', sampleInfo='{}', sample='{}'",
+        name,
+        sampleInfo.instance_handle,
+        sample.topic_name,
+        sample.type_name,
+        sampleInfo.toString().replace("\n", "").replaceAll("[ ]{2,}", " "),
+        sample.toString().replace("\n", "").replaceAll("[ ]{2,}", " ")
       );
     } else if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
-          name,
-          sampleInfo.instance_handle,
-          sample.topic_name,
-          sample.type_name
+        "Calling '{}' on listeners with instance='{}', topic='{}', type='{}'",
+        name,
+        sampleInfo.instance_handle,
+        sample.topic_name,
+        sample.type_name
       );
     }
   }

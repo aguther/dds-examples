@@ -60,10 +60,10 @@ public class DurationFactoryTest {
   }
 
   private void checkDuration(
-      long time,
-      TimeUnit unit,
-      int expectedSec,
-      int expectedNanoSeconds
+    long time,
+    TimeUnit unit,
+    int expectedSec,
+    int expectedNanoSeconds
   ) {
     Duration_t duration = DurationFactory.from(time, unit);
 

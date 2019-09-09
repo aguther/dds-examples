@@ -34,7 +34,7 @@ public class MutableBuffer {
   private static final Logger LOGGER = LoggerFactory.getLogger(MutableBuffer.class);
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
 
     // create first type
@@ -60,10 +60,10 @@ public class MutableBuffer {
       sample1.sequenceType.add(structTwo);
     }
     execute(
-        idl.v1.MutableTypeTypeSupport.get_instance(),
-        sample1,
-        idl.v2.MutableTypeTypeSupport.get_instance(),
-        new idl.v2.MutableType()
+      idl.v1.MutableTypeTypeSupport.get_instance(),
+      sample1,
+      idl.v2.MutableTypeTypeSupport.get_instance(),
+      new idl.v2.MutableType()
     );
 
     // create second type
@@ -76,18 +76,18 @@ public class MutableBuffer {
     sample2.unionType.two.number = 2;
     sample2.unionType.two.text = "TWO";
     execute(
-        idl.v1.MutableTypeTypeSupport.get_instance(),
-        sample2,
-        idl.v2.MutableTypeTypeSupport.get_instance(),
-        new idl.v2.MutableType()
+      idl.v1.MutableTypeTypeSupport.get_instance(),
+      sample2,
+      idl.v2.MutableTypeTypeSupport.get_instance(),
+      new idl.v2.MutableType()
     );
   }
 
   private static <I, O> void execute(
-      final TypeSupportImpl inputTypeSupport,
-      final I inputSample,
-      final TypeSupportImpl outputTypeSupport,
-      final O outputSample
+    final TypeSupportImpl inputTypeSupport,
+    final I inputSample,
+    final TypeSupportImpl outputTypeSupport,
+    final O outputSample
   ) {
 
     // print sample
@@ -97,15 +97,15 @@ public class MutableBuffer {
 
     // serialize input to cdr buffer
     byte[] cdrBuffer = SampleHelper.getCdrBufferFromSample(
-        inputTypeSupport,
-        inputSample
+      inputTypeSupport,
+      inputSample
     );
 
     // deserialize output from cdr buffer
     SampleHelper.deserializeSampleFromCdrBuffer(
-        outputSample,
-        outputTypeSupport,
-        cdrBuffer
+      outputSample,
+      outputTypeSupport,
+      cdrBuffer
     );
 
     // print output

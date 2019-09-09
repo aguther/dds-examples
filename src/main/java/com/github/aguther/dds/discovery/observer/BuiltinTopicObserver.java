@@ -61,8 +61,8 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
    * @param topicName the topic name
    */
   BuiltinTopicObserver(
-      final DomainParticipant domainParticipant,
-      final String topicName
+    final DomainParticipant domainParticipant,
+    final String topicName
   ) {
     // check arguments (we do not check if domain participant is enabled because it triggers an error log
     checkNotNull(domainParticipant, "DomainParticipant must not be null");
@@ -80,11 +80,11 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
 
     // create executor as single thread
     executorService = new ThreadPoolExecutor(
-        1,
-        1,
-        0L,
-        TimeUnit.MILLISECONDS,
-        new ArrayBlockingQueue<>(2)
+      1,
+      1,
+      0L,
+      TimeUnit.MILLISECONDS,
+      new ArrayBlockingQueue<>(2)
     );
   }
 
@@ -107,7 +107,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
    */
   @Override
   public void on_data_available(
-      final DataReader dataReader
+    final DataReader dataReader
   ) {
     // here we get the information that data is available
     // now we need to inform our listeners that something new has been discovered

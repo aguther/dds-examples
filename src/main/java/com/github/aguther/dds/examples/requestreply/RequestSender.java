@@ -49,9 +49,9 @@ public class RequestSender implements Runnable {
   private int count;
 
   RequestSender(
-      final Requester<RequestType, ReplyType> requester,
-      final int replyWaitTime,
-      final int sleepTime
+    final Requester<RequestType, ReplyType> requester,
+    final int replyWaitTime,
+    final int sleepTime
   ) {
     checkNotNull(requester, "Requester must not be null");
     checkArgument(replyWaitTime >= 0, "Time to wait for reply must be 0 or greater");
@@ -79,9 +79,9 @@ public class RequestSender implements Runnable {
 
         // log request
         LOGGER.info(
-            "Writing request (id='{}', request='{}')",
-            request.id,
-            request.request
+          "Writing request (id='{}', request='{}')",
+          request.id,
+          request.request
         );
 
         // write request
@@ -95,8 +95,8 @@ public class RequestSender implements Runnable {
 
         // receive reply
         boolean received = requester.receiveReply(
-            sampleReply,
-            Duration_t.from_millis(replyWaitTime)
+          sampleReply,
+          Duration_t.from_millis(replyWaitTime)
         );
 
         // check reply
@@ -106,9 +106,9 @@ public class RequestSender implements Runnable {
             ReplyType reply = sampleReply.getData();
             // log info
             LOGGER.info(
-                "Received reply (result='{}', description='{}')",
-                reply.result,
-                reply.description
+              "Received reply (result='{}', description='{}')",
+              reply.result,
+              reply.description
             );
           } else {
             LOGGER.warn("Invalid reply received.");

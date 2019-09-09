@@ -61,15 +61,15 @@ public class DynamicRoutingAdapterTest {
   public void setUp() throws Exception {
     properties = PropertyFactory.create();
     dynamicRoutingAdapter = new DynamicRoutingAdapter(
-        properties
+      properties
     );
 
     dynamicRoutingConnection = mock(DynamicRoutingConnection.class);
     PowerMockito.whenNew(DynamicRoutingConnection.class).withAnyArguments().thenReturn(null);
     PowerMockito.whenNew(DynamicRoutingConnection.class).withArguments(
-        ROUTING_SERVICE_NAME,
-        ROUTING_SERVICE_GROUP_NAME,
-        properties
+      ROUTING_SERVICE_NAME,
+      ROUTING_SERVICE_GROUP_NAME,
+      properties
     ).thenReturn(dynamicRoutingConnection);
   }
 
@@ -84,11 +84,11 @@ public class DynamicRoutingAdapterTest {
   public void testCreateConnection() throws AdapterException {
     // create connection
     DynamicRoutingConnection connection = (DynamicRoutingConnection) dynamicRoutingAdapter.createConnection(
-        ROUTING_SERVICE_NAME,
-        ROUTING_SERVICE_GROUP_NAME,
-        null,
-        null,
-        properties
+      ROUTING_SERVICE_NAME,
+      ROUTING_SERVICE_GROUP_NAME,
+      null,
+      null,
+      properties
     );
 
     // ensure we got the mock (-> parameters have been correctly forwarded, otherwise we will get null)
@@ -108,11 +108,11 @@ public class DynamicRoutingAdapterTest {
 
     // create connection
     DynamicRoutingConnection connection = (DynamicRoutingConnection) dynamicRoutingAdapter.createConnection(
-        ROUTING_SERVICE_NAME,
-        ROUTING_SERVICE_GROUP_NAME,
-        null,
-        null,
-        properties
+      ROUTING_SERVICE_NAME,
+      ROUTING_SERVICE_GROUP_NAME,
+      null,
+      null,
+      properties
     );
   }
 

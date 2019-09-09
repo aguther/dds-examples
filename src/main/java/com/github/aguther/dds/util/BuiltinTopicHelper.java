@@ -50,12 +50,12 @@ public class BuiltinTopicHelper {
    * @return the participant builtin topic data from publication
    */
   public static ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      final DomainParticipant domainParticipant,
-      final PublicationBuiltinTopicData publicationBuiltinTopicData
+    final DomainParticipant domainParticipant,
+    final PublicationBuiltinTopicData publicationBuiltinTopicData
   ) {
     return getParticipantBuiltinTopicData(
-        domainParticipant,
-        publicationBuiltinTopicData.participant_key
+      domainParticipant,
+      publicationBuiltinTopicData.participant_key
     );
   }
 
@@ -67,12 +67,12 @@ public class BuiltinTopicHelper {
    * @return the participant builtin topic data from subscription
    */
   public static ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      final DomainParticipant domainParticipant,
-      final SubscriptionBuiltinTopicData subscriptionBuiltinTopicData
+    final DomainParticipant domainParticipant,
+    final SubscriptionBuiltinTopicData subscriptionBuiltinTopicData
   ) {
     return getParticipantBuiltinTopicData(
-        domainParticipant,
-        subscriptionBuiltinTopicData.participant_key);
+      domainParticipant,
+      subscriptionBuiltinTopicData.participant_key);
   }
 
   /**
@@ -83,8 +83,8 @@ public class BuiltinTopicHelper {
    * @return the participant builtin topic data from participant key
    */
   public static synchronized ParticipantBuiltinTopicData getParticipantBuiltinTopicData(
-      final DomainParticipant domainParticipant,
-      final BuiltinTopicKey_t participantKey
+    final DomainParticipant domainParticipant,
+    final BuiltinTopicKey_t participantKey
   ) {
     // get discovered participants
     InstanceHandleSeq participantHandles = new InstanceHandleSeq();
@@ -95,14 +95,14 @@ public class BuiltinTopicHelper {
     for (Object participantHandle : participantHandles) {
       try {
         domainParticipant.get_discovered_participant_data(
-            participantData,
-            (InstanceHandle_t) participantHandle
+          participantData,
+          (InstanceHandle_t) participantHandle
         );
       } catch (RETCODE_PRECONDITION_NOT_MET ex) {
         if (LOGGER.isInfoEnabled()) {
           LOGGER.info(
-              "Ignoring participant ({}) that got lost between call get_discovered_participants() and get_discovered_participant_data()",
-              participantHandle == null ? "null" : participantHandle
+            "Ignoring participant ({}) that got lost between call get_discovered_participants() and get_discovered_participant_data()",
+            participantHandle == null ? "null" : participantHandle
           );
         }
         // when during call to get_discovered_participants and this loop a participant is lost,

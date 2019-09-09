@@ -56,15 +56,15 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
   private final ExecutorService executorService;
 
   ShapeTypeExtendedListener(
-      final DataReader dataReader
+    final DataReader dataReader
   ) {
     checkNotNull(dataReader, "DataReader must not be null");
 
     // set this as listener
     this.dataReader = dataReader;
     dataReader.set_listener(
-        this,
-        StatusKind.STATUS_MASK_ALL
+      this,
+      StatusKind.STATUS_MASK_ALL
     );
 
     // store sample
@@ -73,18 +73,18 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
     // executor service
     executorService = new ThreadPoolExecutor(
-        1,
-        1,
-        0L,
-        TimeUnit.MILLISECONDS,
-        new ArrayBlockingQueue<>(2)
+      1,
+      1,
+      0L,
+      TimeUnit.MILLISECONDS,
+      new ArrayBlockingQueue<>(2)
     );
   }
 
   void stop() {
     dataReader.set_listener(
-        null,
-        StatusKind.STATUS_MASK_NONE
+      null,
+      StatusKind.STATUS_MASK_NONE
     );
   }
 
@@ -98,13 +98,13 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
         // print info
         if (sampleInfo.valid_data) {
           LOGGER.info(
-              "Received sample (x='{}', y='{}', color='{}', size='{}', fill='{}', angle='{}')",
-              sample.x,
-              sample.y,
-              sample.color,
-              sample.shapesize,
-              sample.fillKind,
-              sample.angle
+            "Received sample (x='{}', y='{}', color='{}', size='{}', fill='{}', angle='{}')",
+            sample.x,
+            sample.y,
+            sample.color,
+            sample.shapesize,
+            sample.fillKind,
+            sample.angle
           );
         } else {
           LOGGER.warn("Invalid sample received.");
@@ -118,8 +118,8 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   @Override
   public void on_requested_deadline_missed(
-      final DataReader dataReader,
-      final RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
+    final DataReader dataReader,
+    final RequestedDeadlineMissedStatus requestedDeadlineMissedStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", requestedDeadlineMissedStatus.toString());
@@ -128,8 +128,8 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   @Override
   public void on_requested_incompatible_qos(
-      final DataReader dataReader,
-      final RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
+    final DataReader dataReader,
+    final RequestedIncompatibleQosStatus requestedIncompatibleQosStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", requestedIncompatibleQosStatus.toString());
@@ -138,8 +138,8 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   @Override
   public void on_sample_rejected(
-      final DataReader dataReader,
-      final SampleRejectedStatus sampleRejectedStatus
+    final DataReader dataReader,
+    final SampleRejectedStatus sampleRejectedStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", sampleRejectedStatus.toString());
@@ -148,8 +148,8 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   @Override
   public void on_liveliness_changed(
-      final DataReader dataReader,
-      final LivelinessChangedStatus livelinessChangedStatus
+    final DataReader dataReader,
+    final LivelinessChangedStatus livelinessChangedStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", livelinessChangedStatus.toString());
@@ -158,7 +158,7 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   @Override
   public void on_data_available(
-      final DataReader dataReader
+    final DataReader dataReader
   ) {
     try {
       executorService.submit(this);
@@ -169,8 +169,8 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   @Override
   public void on_sample_lost(
-      final DataReader dataReader,
-      final SampleLostStatus sampleLostStatus
+    final DataReader dataReader,
+    final SampleLostStatus sampleLostStatus
   ) {
     if (LOGGER.isWarnEnabled()) {
       LOGGER.warn("{}", sampleLostStatus.toString());
@@ -179,8 +179,8 @@ public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
   @Override
   public void on_subscription_matched(
-      final DataReader dataReader,
-      final SubscriptionMatchedStatus subscriptionMatchedStatus
+    final DataReader dataReader,
+    final SubscriptionMatchedStatus subscriptionMatchedStatus
   ) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{}", subscriptionMatchedStatus.toString());

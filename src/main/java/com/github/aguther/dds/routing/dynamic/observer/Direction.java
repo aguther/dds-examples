@@ -24,64 +24,6 @@
 
 package com.github.aguther.dds.routing.dynamic.observer;
 
-import java.util.Objects;
-
-public class TopicRoute {
-
-  private final Direction direction;
-  private final String topic;
-  private final String type;
-
-  public TopicRoute(
-    final Direction direction,
-    final String topic,
-    final String type
-  ) {
-    this.direction = direction;
-    this.topic = topic;
-    this.type = type;
-  }
-
-  public Direction getDirection() {
-    return direction;
-  }
-
-  public String getTopic() {
-    return topic;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  @Override
-  public boolean equals(
-    Object o
-  ) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    TopicRoute that = (TopicRoute) o;
-    return direction == that.direction &&
-      Objects.equals(topic, that.topic) &&
-      Objects.equals(type, that.type);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(direction, topic, type);
-  }
-
-  @Override
-  public String toString() {
-    return String.format(
-      "TopicRoute { topic='%s', type='%s', direction='%s' }",
-      topic,
-      type,
-      direction.toString()
-    );
-  }
+public enum Direction {
+  OUT, IN
 }

@@ -54,29 +54,29 @@ import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    RoutingServiceGroupEntitiesFilter.class,
-    DomainParticipant.class,
-    ServiceQosPolicy.class,
-    PropertyQosPolicy.class,
-    ParticipantBuiltinTopicData.class,
-    PublicationBuiltinTopicData.class,
-    SubscriptionBuiltinTopicData.class,
-    InstanceHandle_t.class,
-    BuiltinTopicKey_t.class,
-    BuiltinTopicHelper.class,
-    PropertyQosPolicyHelper.class
+  RoutingServiceGroupEntitiesFilter.class,
+  DomainParticipant.class,
+  ServiceQosPolicy.class,
+  PropertyQosPolicy.class,
+  ParticipantBuiltinTopicData.class,
+  PublicationBuiltinTopicData.class,
+  SubscriptionBuiltinTopicData.class,
+  InstanceHandle_t.class,
+  BuiltinTopicKey_t.class,
+  BuiltinTopicHelper.class,
+  PropertyQosPolicyHelper.class
 })
 @SuppressStaticInitializationFor({
-    "com.rti.dds.domain.DomainParticipant",
-    "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
-    "com.rti.dds.topic.BuiltinTopicKey_t",
-    "com.rti.dds.topic.TypeSupportImpl",
-    "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
-    "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
-    "com.rti.dds.infrastructure.InstanceHandle_t",
-    "com.rti.dds.infrastructure.PropertyQosPolicy",
-    "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
-    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport"
+  "com.rti.dds.domain.DomainParticipant",
+  "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
+  "com.rti.dds.topic.BuiltinTopicKey_t",
+  "com.rti.dds.topic.TypeSupportImpl",
+  "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
+  "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
+  "com.rti.dds.infrastructure.InstanceHandle_t",
+  "com.rti.dds.infrastructure.PropertyQosPolicy",
+  "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
+  "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport"
 })
 public class RoutingServiceGroupEntitiesFilterTest {
 
@@ -103,13 +103,13 @@ public class RoutingServiceGroupEntitiesFilterTest {
 
     PowerMockito.mockStatic(PropertyQosPolicyHelper.class);
     when(PropertyQosPolicyHelper.lookup_property(
-        any(), anyString())//eq("rti.routing_service.group_name"))
+      any(), anyString())//eq("rti.routing_service.group_name"))
     ).thenReturn(new Property_t("rti.routing_service.group_name", "TEST", false));
 
     // setup mock for topic helper
     PowerMockito.mockStatic(BuiltinTopicHelper.class);
     when(BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
+      any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
     ).thenReturn(participantBuiltinTopicData);
 
     // setup mock for publication topic data
@@ -132,13 +132,13 @@ public class RoutingServiceGroupEntitiesFilterTest {
 
     PowerMockito.mockStatic(PropertyQosPolicyHelper.class);
     when(PropertyQosPolicyHelper.lookup_property(
-        any(), anyString())//eq("rti.routing_service.group_name"))
+      any(), anyString())//eq("rti.routing_service.group_name"))
     ).thenReturn(new Property_t("rti.routing_service.group_name", "", false));
 
     // setup mock for topic helper
     PowerMockito.mockStatic(BuiltinTopicHelper.class);
     when(BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
+      any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
     ).thenReturn(participantBuiltinTopicData);
 
     // setup mock for publication topic data
@@ -161,13 +161,13 @@ public class RoutingServiceGroupEntitiesFilterTest {
 
     PowerMockito.mockStatic(PropertyQosPolicyHelper.class);
     when(PropertyQosPolicyHelper.lookup_property(
-        any(), anyString())//eq("rti.routing_service.group_name"))
+      any(), anyString())//eq("rti.routing_service.group_name"))
     ).thenReturn(null);
 
     // setup mock for topic helper
     PowerMockito.mockStatic(BuiltinTopicHelper.class);
     when(BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
+      any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
     ).thenReturn(participantBuiltinTopicData);
 
     // setup mock for publication topic data
@@ -187,7 +187,7 @@ public class RoutingServiceGroupEntitiesFilterTest {
     // setup mock for topic helper
     PowerMockito.mockStatic(BuiltinTopicHelper.class);
     when(BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
+      any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
     ).thenReturn(null);
 
     // setup mock for publication topic data
@@ -210,13 +210,13 @@ public class RoutingServiceGroupEntitiesFilterTest {
 
     PowerMockito.mockStatic(PropertyQosPolicyHelper.class);
     when(PropertyQosPolicyHelper.lookup_property(
-        any(), anyString())//eq("rti.routing_service.group_name"))
+      any(), anyString())//eq("rti.routing_service.group_name"))
     ).thenReturn(new Property_t("rti.routing_service.group_name", "TEST", false));
 
     // setup mock for topic helper
     PowerMockito.mockStatic(BuiltinTopicHelper.class);
     when(BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
+      any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
     ).thenReturn(participantBuiltinTopicData);
 
     // setup mock for subscription topic data
@@ -239,13 +239,13 @@ public class RoutingServiceGroupEntitiesFilterTest {
 
     PowerMockito.mockStatic(PropertyQosPolicyHelper.class);
     when(PropertyQosPolicyHelper.lookup_property(
-        any(), anyString())//eq("rti.routing_service.group_name"))
+      any(), anyString())//eq("rti.routing_service.group_name"))
     ).thenReturn(new Property_t("rti.routing_service.group_name", "", false));
 
     // setup mock for topic helper
     PowerMockito.mockStatic(BuiltinTopicHelper.class);
     when(BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
+      any(DomainParticipant.class), any(BuiltinTopicKey_t.class))
     ).thenReturn(participantBuiltinTopicData);
 
     // setup mock for subscription topic data

@@ -43,7 +43,7 @@ public class MutablePublisher extends AbstractExecutionThreadService {
   private MutableTypePublisher mutableTypePublisher;
 
   public static void main(
-      String[] args
+    String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -63,15 +63,15 @@ public class MutablePublisher extends AbstractExecutionThreadService {
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", MutablePublisher.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", MutablePublisher.class.getName())
     ));
   }
 
@@ -124,22 +124,22 @@ public class MutablePublisher extends AbstractExecutionThreadService {
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        MutableTypeTypeSupport.get_instance(),
-        MutableTypeTypeSupport.get_type_name()
+      MutableTypeTypeSupport.get_instance(),
+      MutableTypeTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::MutablePublisher"
+      "DomainParticipantLibrary::MutablePublisher"
     );
   }
 
   private void startPublish() {
     // create shape publisher
     mutableTypePublisher = new MutableTypePublisher(
-        domainParticipant,
-        "Publisher::MutableTypeDataWriter",
-        1000
+      domainParticipant,
+      "Publisher::MutableTypeDataWriter",
+      1000
     );
   }
 

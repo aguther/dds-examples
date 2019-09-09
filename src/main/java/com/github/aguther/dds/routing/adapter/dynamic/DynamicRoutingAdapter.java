@@ -42,15 +42,15 @@ public class DynamicRoutingAdapter implements Adapter {
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
 
   public DynamicRoutingAdapter(
-      final Properties properties
+    final Properties properties
   ) {
     // do nothing but logging of received properties
     if (LOGGER.isDebugEnabled()) {
       for (String key : properties.stringPropertyNames()) {
         LOGGER.debug(
-            "Property key='{}', value='{}'",
-            key,
-            properties.getProperty(key)
+          "Property key='{}', value='{}'",
+          key,
+          properties.getProperty(key)
         );
       }
     }
@@ -58,17 +58,17 @@ public class DynamicRoutingAdapter implements Adapter {
 
   @Override
   public Connection createConnection(
-      final String routingServiceName,
-      final String routingServiceGroupName,
-      final StreamReaderListener inputStreamDiscoveryListener,
-      final StreamReaderListener outputStreamDiscoveryListener,
-      final Properties properties
+    final String routingServiceName,
+    final String routingServiceGroupName,
+    final StreamReaderListener inputStreamDiscoveryListener,
+    final StreamReaderListener outputStreamDiscoveryListener,
+    final Properties properties
   ) throws AdapterException {
     try {
       return new DynamicRoutingConnection(
-          routingServiceName,
-          routingServiceGroupName,
-          properties
+        routingServiceName,
+        routingServiceGroupName,
+        properties
       );
     } catch (Exception ex) {
       throw new AdapterException(0, "Failed to initialize adapter", ex);
@@ -77,7 +77,7 @@ public class DynamicRoutingAdapter implements Adapter {
 
   @Override
   public void deleteConnection(
-      final Connection connection
+    final Connection connection
   ) throws AdapterException {
     try {
       if (connection instanceof DynamicRoutingConnection) {

@@ -47,61 +47,61 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
   private final String groupName;
 
   public RoutingServiceGroupEntitiesFilter(
-      final String groupName
+    final String groupName
   ) {
     this.groupName = groupName;
   }
 
   @Override
   public boolean ignorePublication(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final PublicationBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final PublicationBuiltinTopicData data
   ) {
     return isRoutingServiceGroupEntity(
-        domainParticipant,
-        instanceHandle,
-        data.participant_key
+      domainParticipant,
+      instanceHandle,
+      data.participant_key
     );
   }
 
   @Override
   public boolean ignoreSubscription(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   ) {
     return isRoutingServiceGroupEntity(
-        domainParticipant,
-        instanceHandle,
-        data.participant_key
+      domainParticipant,
+      instanceHandle,
+      data.participant_key
     );
   }
 
   @Override
   public boolean ignorePartition(
-      final String topicName,
-      final String partition
+    final String topicName,
+    final String partition
   ) {
     return false;
   }
 
   private boolean isRoutingServiceGroupEntity(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final BuiltinTopicKey_t participantKey
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final BuiltinTopicKey_t participantKey
   ) {
     // get data of parent domain participant
     ParticipantBuiltinTopicData participantData = BuiltinTopicHelper.getParticipantBuiltinTopicData(
-        domainParticipant,
-        participantKey
+      domainParticipant,
+      participantKey
     );
 
     if (participantData != null) {
       // get group name of routing service
       Property_t property = PropertyQosPolicyHelper.lookup_property(
-          participantData.property,
-          "rti.routing_service.group_name"
+        participantData.property,
+        "rti.routing_service.group_name"
       );
 
       // when participant is part of routing service group ignore it
@@ -110,11 +110,11 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
       // log decision
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(
-            "instance='{}', ignore='{}' (filter='{}', group_name='{}')",
-            instanceHandle,
-            result,
-            groupName,
-            property != null ? property.value : "none"
+          "instance='{}', ignore='{}' (filter='{}', group_name='{}')",
+          instanceHandle,
+          result,
+          groupName,
+          property != null ? property.value : "none"
         );
       }
 
@@ -124,9 +124,9 @@ public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserv
 
     // log decision
     LOGGER.trace(
-        "instance='{}', ignore='{}' (participant data not found)",
-        instanceHandle,
-        "false"
+      "instance='{}', ignore='{}' (participant data not found)",
+      instanceHandle,
+      "false"
     );
 
     // do not ignore

@@ -63,17 +63,17 @@ import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    DynamicRoutingManager.class,
-    DomainParticipantQos.class,
-    ServiceQosPolicy.class,
-    EntityNameQosPolicy.class
+  DynamicRoutingManager.class,
+  DomainParticipantQos.class,
+  ServiceQosPolicy.class,
+  EntityNameQosPolicy.class
 })
 @SuppressStaticInitializationFor({
-    "com.rti.dds.domain.DomainParticipantFactory",
-    "com.rti.dds.domain.DomainParticipantQos",
-    "com.rti.dds.infrastructure.ServiceQosPolicy",
-    "com.rti.dds.infrastructure.EntityNameQosPolicy",
-    "com.rti.routingservice.RoutingService"
+  "com.rti.dds.domain.DomainParticipantFactory",
+  "com.rti.dds.domain.DomainParticipantQos",
+  "com.rti.dds.infrastructure.ServiceQosPolicy",
+  "com.rti.dds.infrastructure.EntityNameQosPolicy",
+  "com.rti.routingservice.RoutingService"
 })
 public class DynamicRoutingManagerTest {
 
@@ -104,8 +104,8 @@ public class DynamicRoutingManagerTest {
 
     // return mocked domain participants when factory is called
     PowerMockito.when(domainParticipantFactory.create_participant(anyInt(), any(), any(), anyInt()))
-        .thenReturn(domainParticipantAdministration)
-        .thenReturn(domainParticipantDiscovery);
+      .thenReturn(domainParticipantAdministration)
+      .thenReturn(domainParticipantDiscovery);
 
     publicationObserver = mock(PublicationObserver.class);
     PowerMockito.whenNew(PublicationObserver.class).withAnyArguments().thenReturn(publicationObserver);
@@ -122,11 +122,11 @@ public class DynamicRoutingManagerTest {
     routingServiceCommandInterface = mock(RoutingServiceCommandInterface.class);
     {
       when(routingServiceCommandInterface.waitForDiscovery(
-          anyString(), anyLong(), any(TimeUnit.class))
+        anyString(), anyLong(), any(TimeUnit.class))
       ).thenReturn(true);
     }
     PowerMockito.whenNew(RoutingServiceCommandInterface.class).withAnyArguments().thenReturn(
-        routingServiceCommandInterface);
+      routingServiceCommandInterface);
 
     DomainParticipantQos domainParticipantQos = PowerMockito.mock(DomainParticipantQos.class);
     {
@@ -161,20 +161,20 @@ public class DynamicRoutingManagerTest {
     RoutingService routingService = mock(RoutingService.class);
 
     com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander dynamicPartitionCommanderLocal
-        = mock(com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander.class);
+      = mock(com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander.class);
     PowerMockito.whenNew(com.github.aguther.dds.routing.dynamic.command.local.DynamicPartitionCommander.class)
-        .withAnyArguments().thenReturn(dynamicPartitionCommanderLocal);
+      .withAnyArguments().thenReturn(dynamicPartitionCommanderLocal);
 
     // set local administration in properties
     properties.put("test.administration.local", "true");
 
     // create dynamic routing
     DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
-        routingService,
-        "NAME",
-        "GROUP",
-        PropertyFactory.PREFIX,
-        properties
+      routingService,
+      "NAME",
+      "GROUP",
+      PropertyFactory.PREFIX,
+      properties
     );
 
     // assert dynamic routing created
@@ -182,29 +182,29 @@ public class DynamicRoutingManagerTest {
 
     // verify all close methods have been called
     verify(routingServiceCommandInterface, times(0)).waitForDiscovery(
-        anyString(),
-        anyLong(),
-        any(TimeUnit.class)
+      anyString(),
+      anyLong(),
+      any(TimeUnit.class)
     );
     verify(domainParticipantFactory, times(1)).create_participant(
-        anyInt(),
-        any(),
-        any(),
-        anyInt()
+      anyInt(),
+      any(),
+      any(),
+      anyInt()
     );
     verify(dynamicPartitionObserver, times(3)).addFilter(
-        any(DynamicPartitionObserverFilter.class)
+      any(DynamicPartitionObserverFilter.class)
     );
     verify(dynamicPartitionObserver, times(1)).addListener(
-        dynamicPartitionCommanderLocal
+      dynamicPartitionCommanderLocal
     );
     verify(publicationObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
+      dynamicPartitionObserver,
+      false
     );
     verify(subscriptionObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
+      dynamicPartitionObserver,
+      false
     );
 
     // we need to take the administration participant mock, because this is first returned
@@ -216,10 +216,10 @@ public class DynamicRoutingManagerTest {
   public void testCreateRemoteAdministration() {
     // create dynamic routing
     DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
-        "NAME",
-        "GROUP",
-        PropertyFactory.PREFIX,
-        properties
+      "NAME",
+      "GROUP",
+      PropertyFactory.PREFIX,
+      properties
     );
 
     // assert dynamic routing created
@@ -227,29 +227,29 @@ public class DynamicRoutingManagerTest {
 
     // verify all close methods have been called
     verify(routingServiceCommandInterface, times(1)).waitForDiscovery(
-        anyString(),
-        anyLong(),
-        any(TimeUnit.class)
+      anyString(),
+      anyLong(),
+      any(TimeUnit.class)
     );
     verify(domainParticipantFactory, times(2)).create_participant(
-        anyInt(),
-        any(),
-        any(),
-        anyInt()
+      anyInt(),
+      any(),
+      any(),
+      anyInt()
     );
     verify(dynamicPartitionObserver, times(3)).addFilter(
-        any(DynamicPartitionObserverFilter.class)
+      any(DynamicPartitionObserverFilter.class)
     );
     verify(dynamicPartitionObserver, times(1)).addListener(
-        dynamicPartitionCommander
+      dynamicPartitionCommander
     );
     verify(publicationObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
+      dynamicPartitionObserver,
+      false
     );
     verify(subscriptionObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
+      dynamicPartitionObserver,
+      false
     );
     verify(domainParticipantDiscovery, times(1)).enable();
   }
@@ -258,15 +258,15 @@ public class DynamicRoutingManagerTest {
   public void testCreateDiscoveryTimeout() {
     // prepare mock to timeout discovery
     when(routingServiceCommandInterface.waitForDiscovery(
-        anyString(), anyLong(), any(TimeUnit.class))
+      anyString(), anyLong(), any(TimeUnit.class))
     ).thenReturn(false);
 
     // create dynamic routing
     DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
-        "NAME",
-        "GROUP",
-        PropertyFactory.PREFIX,
-        properties
+      "NAME",
+      "GROUP",
+      PropertyFactory.PREFIX,
+      properties
     );
 
     // assert dynamic routing created
@@ -274,29 +274,29 @@ public class DynamicRoutingManagerTest {
 
     // verify all close methods have been called
     verify(routingServiceCommandInterface, times(1)).waitForDiscovery(
-        anyString(),
-        anyLong(),
-        any(TimeUnit.class)
+      anyString(),
+      anyLong(),
+      any(TimeUnit.class)
     );
     verify(domainParticipantFactory, times(2)).create_participant(
-        anyInt(),
-        any(),
-        any(),
-        anyInt()
+      anyInt(),
+      any(),
+      any(),
+      anyInt()
     );
     verify(dynamicPartitionObserver, times(3)).addFilter(
-        any(DynamicPartitionObserverFilter.class)
+      any(DynamicPartitionObserverFilter.class)
     );
     verify(dynamicPartitionObserver, times(1)).addListener(
-        dynamicPartitionCommander
+      dynamicPartitionCommander
     );
     verify(publicationObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
+      dynamicPartitionObserver,
+      false
     );
     verify(subscriptionObserver, times(1)).addListener(
-        dynamicPartitionObserver,
-        false
+      dynamicPartitionObserver,
+      false
     );
     verify(domainParticipantDiscovery, times(1)).enable();
   }
@@ -305,10 +305,10 @@ public class DynamicRoutingManagerTest {
   public void testClose() {
     // create dynamic routing
     DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
-        "NAME",
-        "GROUP",
-        PropertyFactory.PREFIX,
-        properties
+      "NAME",
+      "GROUP",
+      PropertyFactory.PREFIX,
+      properties
     );
 
     // close connection
@@ -329,10 +329,10 @@ public class DynamicRoutingManagerTest {
   public void testGetProperties() {
     // create dynamic routing
     DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
-        "NAME",
-        "GROUP",
-        PropertyFactory.PREFIX,
-        properties
+      "NAME",
+      "GROUP",
+      PropertyFactory.PREFIX,
+      properties
     );
 
     // invoke get properties
@@ -346,10 +346,10 @@ public class DynamicRoutingManagerTest {
   public void testUpdate() {
     // create dynamic routing
     DynamicRoutingManager dynamicRoutingManager = new DynamicRoutingManager(
-        "NAME",
-        "GROUP",
-        PropertyFactory.PREFIX,
-        properties
+      "NAME",
+      "GROUP",
+      PropertyFactory.PREFIX,
+      properties
     );
 
     // extend properties

@@ -41,9 +41,9 @@ public interface SubscriptionObserverListener {
    * @param data subscription data
    */
   void subscriptionDiscovered(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   );
 
   /**
@@ -54,9 +54,9 @@ public interface SubscriptionObserverListener {
    * @param data publication data
    */
   void subscriptionModified(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   );
 
   /**
@@ -67,8 +67,8 @@ public interface SubscriptionObserverListener {
    * @param data subscription data
    */
   void subscriptionLost(
-      final DomainParticipant domainParticipant,
-      final InstanceHandle_t instanceHandle,
-      final SubscriptionBuiltinTopicData data
+    final DomainParticipant domainParticipant,
+    final InstanceHandle_t instanceHandle,
+    final SubscriptionBuiltinTopicData data
   );
 }

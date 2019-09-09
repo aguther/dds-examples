@@ -53,32 +53,32 @@ public class EmptyTest {
     Properties properties = new Properties();
 
     EmptyAdapter adapter = new EmptyAdapter(
-        properties
+      properties
     );
     assertNotNull(adapter);
     assertNotNull(adapter.getVersion());
 
     Connection connection = adapter.createConnection(
-        "Name",
-        "Group",
-        null,
-        null,
-        properties
+      "Name",
+      "Group",
+      null,
+      null,
+      properties
     );
     assertTrue(connection instanceof EmptyConnection);
     EmptyConnection emptyConnection = (EmptyConnection) connection;
 
     Session session = emptyConnection.createSession(
-        properties
+      properties
     );
     assertTrue(session instanceof EmptySession);
     session.update(properties);
 
     StreamReader streamReader = emptyConnection.createStreamReader(
-        session,
-        null,
-        properties,
-        null
+      session,
+      null,
+      properties,
+      null
     );
     assertTrue(streamReader instanceof EmptyStreamReader);
     streamReader.update(properties);
@@ -86,9 +86,9 @@ public class EmptyTest {
     streamReader.returnLoan(null, null);
 
     StreamWriter streamWriter = emptyConnection.createStreamWriter(
-        session,
-        null,
-        properties
+      session,
+      null,
+      properties
     );
     assertTrue(streamWriter instanceof EmptyStreamWriter);
     streamWriter.update(properties);

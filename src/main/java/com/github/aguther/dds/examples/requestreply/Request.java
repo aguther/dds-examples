@@ -48,7 +48,7 @@ public class Request extends AbstractExecutionThreadService {
   private RequestSender requestSender;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -68,15 +68,15 @@ public class Request extends AbstractExecutionThreadService {
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", Request.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", Request.class.getName())
     ));
   }
 
@@ -129,34 +129,34 @@ public class Request extends AbstractExecutionThreadService {
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        RequestTypeTypeSupport.get_instance(),
-        RequestTypeTypeSupport.get_type_name()
+      RequestTypeTypeSupport.get_instance(),
+      RequestTypeTypeSupport.get_type_name()
     );
     DomainParticipantFactory.get_instance().register_type_support(
-        ReplyTypeTypeSupport.get_instance(),
-        ReplyTypeTypeSupport.get_type_name()
+      ReplyTypeTypeSupport.get_instance(),
+      ReplyTypeTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::RequestReplyRequester"
+      "DomainParticipantLibrary::RequestReplyRequester"
     );
   }
 
   private void startPublish() {
     // create requester (currently not possible to use xml for the creation)
     requester = new Requester<>(
-        domainParticipant,
-        "RequestReply",
-        RequestTypeTypeSupport.get_instance(),
-        ReplyTypeTypeSupport.get_instance()
+      domainParticipant,
+      "RequestReply",
+      RequestTypeTypeSupport.get_instance(),
+      ReplyTypeTypeSupport.get_instance()
     );
 
     // create sender
     requestSender = new RequestSender(
-        requester,
-        1000,
-        1000
+      requester,
+      1000,
+      1000
     );
   }
 

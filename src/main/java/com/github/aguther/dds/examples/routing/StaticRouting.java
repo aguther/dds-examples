@@ -43,7 +43,7 @@ public class StaticRouting extends AbstractIdleService {
   private RoutingService routingService;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -63,15 +63,15 @@ public class StaticRouting extends AbstractIdleService {
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", StaticRouting.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", StaticRouting.class.getName())
     ));
   }
 
@@ -119,9 +119,6 @@ public class StaticRouting extends AbstractIdleService {
 
     // create routing service instance
     routingService = new RoutingService(routingServiceProperty);
-
-    // start routing service
-    routingService.start();
   }
 
   private void startUpStartRoutingService() {

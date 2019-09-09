@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public class DynamicPartitionCommander implements DynamicPartitionObserverListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(
-      DynamicPartitionCommander.class);
+    DynamicPartitionCommander.class);
 
   private final RoutingService routingService;
   private final DynamicPartitionCommandProvider dynamicPartitionCommandProvider;
@@ -55,8 +55,8 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
    * @param routingService the routing service instance to command
    */
   public DynamicPartitionCommander(
-      final RoutingService routingService,
-      final DynamicPartitionCommandProvider dynamicPartitionCommandProvider
+    final RoutingService routingService,
+    final DynamicPartitionCommandProvider dynamicPartitionCommandProvider
   ) {
     checkNotNull(routingService, "Routing Service must not be null.");
     checkNotNull(dynamicPartitionCommandProvider, "DynamicPartitionCommandProvider must not be null.");
@@ -67,112 +67,112 @@ public class DynamicPartitionCommander implements DynamicPartitionObserverListen
 
   @Override
   public void createSession(
-      final Session session
+    final Session session
   ) {
     LOGGER.info(
-        "Create session: topic='{}', partition='{}'",
-        session.getTopic(),
-        session.getPartition()
+      "Create session: topic='{}', partition='{}'",
+      session.getTopic(),
+      session.getPartition()
     );
 
     // creation of session
     try {
       routingService.createEntity(
-          dynamicPartitionCommandProvider.getSessionParent(session),
-          dynamicPartitionCommandProvider.getSessionConfiguration(session)
+        dynamicPartitionCommandProvider.getSessionParent(session),
+        dynamicPartitionCommandProvider.getSessionConfiguration(session)
       );
     } catch (RoutingServiceException ex) {
       LOGGER.error(
-          "Failed to create session: topic='{}', partition='{}', message='{}'",
-          session.getTopic(),
-          session.getPartition(),
-          ex.getMessage()
+        "Failed to create session: topic='{}', partition='{}', message='{}'",
+        session.getTopic(),
+        session.getPartition(),
+        ex.getMessage()
       );
     }
   }
 
   @Override
   public void deleteSession(
-      final Session session
+    final Session session
   ) {
     LOGGER.info(
-        "Delete session: topic='{}', partition='{}'",
-        session.getTopic(),
-        session.getPartition()
+      "Delete session: topic='{}', partition='{}'",
+      session.getTopic(),
+      session.getPartition()
     );
 
     // deletion of session
     try {
       routingService.deleteEntity(
-          dynamicPartitionCommandProvider.getSessionEntityName(session)
+        dynamicPartitionCommandProvider.getSessionEntityName(session)
       );
     } catch (RoutingServiceException ex) {
       LOGGER.error(
-          "Failed to delete session: topic='{}', partition='{}', message='{}'",
-          session.getTopic(),
-          session.getPartition(),
-          ex.getMessage()
+        "Failed to delete session: topic='{}', partition='{}', message='{}'",
+        session.getTopic(),
+        session.getPartition(),
+        ex.getMessage()
       );
     }
   }
 
   @Override
   public void createTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     LOGGER.info(
-        "Create route: topic='{}', type='{}', partition='{}', direction='{}'",
-        session.getTopic(),
-        topicRoute.getType(),
-        session.getPartition(),
-        topicRoute.getDirection()
+      "Create route: topic='{}', type='{}', partition='{}', direction='{}'",
+      session.getTopic(),
+      topicRoute.getType(),
+      session.getPartition(),
+      topicRoute.getDirection()
     );
 
     // creation of topic route
     try {
       routingService.createEntity(
-          dynamicPartitionCommandProvider.getSessionEntityName(session),
-          dynamicPartitionCommandProvider.getTopicRouteConfiguration(session, topicRoute)
+        dynamicPartitionCommandProvider.getSessionEntityName(session),
+        dynamicPartitionCommandProvider.getTopicRouteConfiguration(session, topicRoute)
       );
     } catch (RoutingServiceException ex) {
       LOGGER.error(
-          "Failed to create route: topic='{}', type='{}', partition='{}', direction='{}', message='{}'",
-          session.getTopic(),
-          topicRoute.getType(),
-          session.getPartition(),
-          topicRoute.getDirection(),
-          ex.getMessage()
+        "Failed to create route: topic='{}', type='{}', partition='{}', direction='{}', message='{}'",
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition(),
+        topicRoute.getDirection(),
+        ex.getMessage()
       );
     }
   }
 
   @Override
   public void deleteTopicRoute(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   ) {
     LOGGER.info(
-        "Delete route: topic='{}', type='{}', partition='{}', direction='{}'",
-        session.getTopic(),
-        topicRoute.getType(),
-        session.getPartition(),
-        topicRoute.getDirection()
+      "Delete route: topic='{}', type='{}', partition='{}', direction='{}'",
+      session.getTopic(),
+      topicRoute.getType(),
+      session.getPartition(),
+      topicRoute.getDirection()
     );
 
     // deletion of topic route
     try {
       routingService.deleteEntity(
-          dynamicPartitionCommandProvider.getTopicRouteEntityName(session, topicRoute)
+        dynamicPartitionCommandProvider.getTopicRouteEntityName(session, topicRoute)
       );
     } catch (RoutingServiceException ex) {
       LOGGER.error(
-          "Failed to create route: topic='{}', type='{}', partition='{}', direction='{}', message='{}'",
-          session.getTopic(),
-          topicRoute.getType(),
-          session.getPartition(),
-          topicRoute.getDirection(),
-          ex.getMessage()
+        "Failed to create route: topic='{}', type='{}', partition='{}', direction='{}', message='{}'",
+        session.getTopic(),
+        topicRoute.getType(),
+        session.getPartition(),
+        topicRoute.getDirection(),
+        ex.getMessage()
       );
     }
   }

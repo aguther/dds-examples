@@ -63,10 +63,10 @@ public class BuiltinTopicObserverTest {
     dataReader = mock(DataReader.class);
 
     doThrow(new RETCODE_NOT_ENABLED()).when(domainParticipant)
-        .get_discovered_participants(new InstanceHandleSeq());
+      .get_discovered_participants(new InstanceHandleSeq());
     when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
     when(subscriber.lookup_datareader(BUILTIN_TOPIC_NAME))
-        .thenReturn(dataReader);
+      .thenReturn(dataReader);
 
     mockStatic(Executors.class);
 
@@ -74,8 +74,8 @@ public class BuiltinTopicObserverTest {
     whenNew(ThreadPoolExecutor.class).withAnyArguments().thenReturn(executorService);
 
     builtinTopicObserver = new BuiltinTopicObserver(
-        domainParticipant,
-        BUILTIN_TOPIC_NAME
+      domainParticipant,
+      BUILTIN_TOPIC_NAME
     );
   }
 

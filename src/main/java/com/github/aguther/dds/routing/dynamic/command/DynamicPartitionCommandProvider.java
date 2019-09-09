@@ -39,7 +39,7 @@ public interface DynamicPartitionCommandProvider {
    * @apiNote "ExampleDomainRoute"
    */
   String getSessionParent(
-      final Session session
+    final Session session
   );
 
   /**
@@ -49,7 +49,7 @@ public interface DynamicPartitionCommandProvider {
    * @apiNote "ExampleSession(Partition)"
    */
   String getSessionName(
-      final Session session
+    final Session session
   );
 
   /**
@@ -60,7 +60,7 @@ public interface DynamicPartitionCommandProvider {
    * @apiNote "ExampleDomainRoute::ExampleSession(Partition)"
    */
   String getSessionEntityName(
-      final Session session
+    final Session session
   );
 
   /**
@@ -70,7 +70,7 @@ public interface DynamicPartitionCommandProvider {
    * @apiNote "str://"<session name=\"ExampleSession(Partition)\">[...]</session>"
    */
   String getSessionConfiguration(
-      final Session session
+    final Session session
   );
 
   /**
@@ -81,8 +81,8 @@ public interface DynamicPartitionCommandProvider {
    * @apiNote "ExampleTopicRoute"
    */
   String getTopicRouteName(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   );
 
   /**
@@ -94,8 +94,8 @@ public interface DynamicPartitionCommandProvider {
    * @apiNote "ExampleDomainRoute::ExampleSession(Partition)::ExampleTopicRoute"
    */
   String getTopicRouteEntityName(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   );
 
   /**
@@ -106,7 +106,7 @@ public interface DynamicPartitionCommandProvider {
    * @apiNote "str://\"<auto_topic_route name=\"ExampleTopicRoute\">[...]</auto_topic_route>\""
    */
   String getTopicRouteConfiguration(
-      final Session session,
-      final TopicRoute topicRoute
+    final Session session,
+    final TopicRoute topicRoute
   );
 }

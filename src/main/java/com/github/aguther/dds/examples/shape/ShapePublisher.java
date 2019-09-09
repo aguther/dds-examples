@@ -51,55 +51,55 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
   private ShapeTypeExtendedPublisher shapeTypeExtendedPublisher;
 
   @Option(
-      names = {"--shape"},
-      defaultValue = "SQUARE"
+    names = {"--shape"},
+    defaultValue = "SQUARE"
   )
   private ShapeKind shapeKind;
 
   @Option(
-      names = {"--color"},
-      defaultValue = "BLUE"
+    names = {"--color"},
+    defaultValue = "BLUE"
   )
   private ShapeColor shapeColor;
 
   @Option(
-      names = {"--size"},
-      defaultValue = "30"
+    names = {"--size"},
+    defaultValue = "30"
   )
   private int shapeSize;
 
   @Option(
-      names = {"--fillKind"},
-      defaultValue = "SOLID"
+    names = {"--fillKind"},
+    defaultValue = "SOLID"
   )
   private ShapeFillKind shapeFillKind;
 
   @Option(
-      names = {"--angle"},
-      defaultValue = "0"
+    names = {"--angle"},
+    defaultValue = "0"
   )
   private float shapeAngle;
 
   @Option(
-      names = {"--speed-x"},
-      defaultValue = "1"
+    names = {"--speed-x"},
+    defaultValue = "1"
   )
   private int speedX;
 
   @Option(
-      names = {"--speed-y"},
-      defaultValue = "2"
+    names = {"--speed-y"},
+    defaultValue = "2"
   )
   private int speedY;
 
   @Option(
-      names = {"--sleep"},
-      defaultValue = "50"
+    names = {"--sleep"},
+    defaultValue = "50"
   )
   private int sleepTime;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // create service
     serviceInstance = CommandLine.call(new ShapePublisher(), args);
@@ -129,15 +129,15 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", ShapePublisher.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", ShapePublisher.class.getName())
     ));
   }
 
@@ -190,33 +190,33 @@ public class ShapePublisher extends AbstractExecutionThreadService implements Ca
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        ShapeTypeExtendedTypeSupport.get_instance(),
-        ShapeTypeTypeSupport.get_type_name()
+      ShapeTypeExtendedTypeSupport.get_instance(),
+      ShapeTypeTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::ShapePublisher"
+      String.format("DomainParticipantLibrary::ShapePublisher-%s", shapeKind.toString().toUpperCase())
     );
   }
 
   private void startPublish() {
     // create initial attributes of shape
     ShapeAttributes shapeAttributes = new ShapeAttributes(
-        shapeColor.toString(),
-        shapeSize,
-        ShapeFillKind.toShapeFillKind(shapeFillKind),
-        shapeAngle
+      shapeColor.toString(),
+      shapeSize,
+      ShapeFillKind.toShapeFillKind(shapeFillKind),
+      shapeAngle
     );
 
     // create shape publisher
     shapeTypeExtendedPublisher = new ShapeTypeExtendedPublisher(
-        shapeAttributes,
-        domainParticipant,
-        String.format("Publisher::%sDataWriter", shapeKind),
-        sleepTime,
-        speedX,
-        speedY
+      shapeAttributes,
+      domainParticipant,
+      String.format("Publisher::%sDataWriter", shapeKind),
+      sleepTime,
+      speedX,
+      speedY
     );
   }
 

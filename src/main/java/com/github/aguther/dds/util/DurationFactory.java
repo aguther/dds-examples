@@ -33,17 +33,17 @@ public class DurationFactory {
   }
 
   public static Duration_t from(
-      final long duration,
-      final TimeUnit durationTimeUnit
+    final long duration,
+    final TimeUnit durationTimeUnit
   ) {
     return Duration_t.from_nanos(durationTimeUnit.toNanos(duration));
   }
 
   public static long to(
-      final TimeUnit targetTimeUnit,
-      final Duration_t duration
+    final TimeUnit targetTimeUnit,
+    final Duration_t duration
   ) {
     return (targetTimeUnit.convert(duration.sec, TimeUnit.SECONDS)
-        + targetTimeUnit.convert(duration.nanosec, TimeUnit.NANOSECONDS));
+      + targetTimeUnit.convert(duration.nanosec, TimeUnit.NANOSECONDS));
   }
 }

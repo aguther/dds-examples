@@ -68,29 +68,29 @@ import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    RoutingServiceCommandInterface.class,
-    DomainParticipant.class,
-    DomainParticipantQos.class,
-    EntityNameQosPolicy.class,
-    ServiceQosPolicy.class,
-    WireProtocolQosPolicy.class,
-    ParticipantBuiltinTopicData.class,
-    CommandRequestTypeSupport.class,
-    CommandResponseTypeSupport.class,
-    Requester.class
+  RoutingServiceCommandInterface.class,
+  DomainParticipant.class,
+  DomainParticipantQos.class,
+  EntityNameQosPolicy.class,
+  ServiceQosPolicy.class,
+  WireProtocolQosPolicy.class,
+  ParticipantBuiltinTopicData.class,
+  CommandRequestTypeSupport.class,
+  CommandResponseTypeSupport.class,
+  Requester.class
 })
 @SuppressStaticInitializationFor({
-    "com.rti.dds.domain.DomainParticipantFactory",
-    "com.rti.dds.domain.DomainParticipant",
-    "com.rti.dds.domain.DomainParticipantQos",
-    "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
-    "com.rti.dds.topic.TypeSupportImpl",
-    "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
-    "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
-    "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
-    "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport",
-    "idl.RTI.RoutingService.Administration.CommandRequestTypeSupport",
-    "idl.RTI.RoutingService.Administration.CommandResponseTypeSupport"
+  "com.rti.dds.domain.DomainParticipantFactory",
+  "com.rti.dds.domain.DomainParticipant",
+  "com.rti.dds.domain.DomainParticipantQos",
+  "com.rti.dds.domain.builtin.ParticipantBuiltinTopicDataTypeSupport",
+  "com.rti.dds.topic.TypeSupportImpl",
+  "com.rti.dds.topic.builtin.ServiceRequestTypeSupport",
+  "com.rti.dds.topic.builtin.TopicBuiltinTopicDataTypeSupport",
+  "com.rti.dds.publication.builtin.PublicationBuiltinTopicDataTypeSupport",
+  "com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicDataTypeSupport",
+  "idl.RTI.RoutingService.Administration.CommandRequestTypeSupport",
+  "idl.RTI.RoutingService.Administration.CommandResponseTypeSupport"
 })
 public class RoutingServiceCommandInterfaceTest {
 
@@ -165,11 +165,11 @@ public class RoutingServiceCommandInterfaceTest {
 
     // prepare answer to get subscription data
     doAnswer(
-        invocation -> {
-          InstanceHandleSeq seq = invocation.getArgument(0);
-          seq.add(instanceHandle);
-          return null;
-        }
+      invocation -> {
+        InstanceHandleSeq seq = invocation.getArgument(0);
+        seq.add(instanceHandle);
+        return null;
+      }
     ).when(dataWriter).get_matched_subscriptions(any(InstanceHandleSeq.class));
 
     // assert that target router is found
@@ -203,11 +203,11 @@ public class RoutingServiceCommandInterfaceTest {
 
     // prepare answer to get subscription data
     doAnswer(
-        invocation -> {
-          InstanceHandleSeq seq = invocation.getArgument(0);
-          seq.add(instanceHandle);
-          return null;
-        }
+      invocation -> {
+        InstanceHandleSeq seq = invocation.getArgument(0);
+        seq.add(instanceHandle);
+        return null;
+      }
     ).when(dataWriter).get_matched_subscriptions(any(InstanceHandleSeq.class));
 
     // assert that target router is found
@@ -236,11 +236,11 @@ public class RoutingServiceCommandInterfaceTest {
 
     // wait for discovery and interrupt thread
     commandInterface.waitForDiscovery(
-        targetRouter,
-        100,
-        TimeUnit.MILLISECONDS,
-        100,
-        timeUnit
+      targetRouter,
+      100,
+      TimeUnit.MILLISECONDS,
+      100,
+      timeUnit
     );
 
     // assert that thread was interrupted

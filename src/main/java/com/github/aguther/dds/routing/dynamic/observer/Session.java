@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Andreas Guther
+ * Copyright (c) 2019 Andreas Guther
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,21 +28,29 @@ import java.util.Objects;
 
 public class Session {
 
+  private final Direction direction;
   private final String topic;
   private final String partition;
 
   public Session(
-      final String topic
+    final Direction direction,
+    final String topic
   ) {
-    this(topic, "");
+    this(direction, topic, "");
   }
 
   public Session(
-      final String topic,
-      final String partition
+    final Direction direction,
+    final String topic,
+    final String partition
   ) {
+    this.direction = direction;
     this.topic = topic;
     this.partition = partition;
+  }
+
+  public Direction getDirection() {
+    return direction;
   }
 
   public String getTopic() {
@@ -54,32 +62,31 @@ public class Session {
   }
 
   @Override
-  public boolean equals(
-      Object o
-  ) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof Session)) {
       return false;
     }
     Session session = (Session) o;
-    return Objects.equals(topic, session.topic) &&
-        Objects.equals(partition, session.partition);
+    return direction == session.direction &&
+      Objects.equals(topic, session.topic) &&
+      Objects.equals(partition, session.partition);
   }
 
   @Override
   public int hashCode() {
-
-    return Objects.hash(topic, partition);
+    return Objects.hash(direction, topic, partition);
   }
 
   @Override
   public String toString() {
     return String.format(
-        "Session { topic='%s', partition='%s' }",
-        topic,
-        partition
+      "Session { direction='%s', topic='%s', partition='%s' }",
+      direction,
+      topic,
+      partition
     );
   }
 }

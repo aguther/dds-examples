@@ -48,7 +48,7 @@ public class Reply extends AbstractIdleService {
   private ReplySender replySender;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -68,15 +68,15 @@ public class Reply extends AbstractIdleService {
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", Reply.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", Reply.class.getName())
     ));
   }
 
@@ -121,17 +121,17 @@ public class Reply extends AbstractIdleService {
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        RequestTypeTypeSupport.get_instance(),
-        RequestTypeTypeSupport.get_type_name()
+      RequestTypeTypeSupport.get_instance(),
+      RequestTypeTypeSupport.get_type_name()
     );
     DomainParticipantFactory.get_instance().register_type_support(
-        ReplyTypeTypeSupport.get_instance(),
-        ReplyTypeTypeSupport.get_type_name()
+      ReplyTypeTypeSupport.get_instance(),
+      ReplyTypeTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::RequestReplyRequester"
+      "DomainParticipantLibrary::RequestReplyRequester"
     );
   }
 
@@ -141,11 +141,11 @@ public class Reply extends AbstractIdleService {
 
     // create replier (currently not possible to use xml for the creation)
     replier = new SimpleReplier<>(
-        domainParticipant,
-        "RequestReply",
-        replySender,
-        RequestTypeTypeSupport.get_instance(),
-        ReplyTypeTypeSupport.get_instance()
+      domainParticipant,
+      "RequestReply",
+      replySender,
+      RequestTypeTypeSupport.get_instance(),
+      ReplyTypeTypeSupport.get_instance()
     );
   }
 

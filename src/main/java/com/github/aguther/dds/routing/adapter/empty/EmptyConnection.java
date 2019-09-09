@@ -40,47 +40,47 @@ public class EmptyConnection implements DiscoveryConnection {
 
   @Override
   public Session createSession(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     return new EmptySession();
   }
 
   @Override
   public void deleteSession(
-      final Session session
+    final Session session
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public StreamReader createStreamReader(
-      final Session session,
-      final StreamInfo streamInfo,
-      final Properties properties,
-      final StreamReaderListener streamReaderListener
+    final Session session,
+    final StreamInfo streamInfo,
+    final Properties properties,
+    final StreamReaderListener streamReaderListener
   ) throws AdapterException {
     return new EmptyStreamReader();
   }
 
   @Override
   public void deleteStreamReader(
-      final StreamReader streamReader
+    final StreamReader streamReader
   ) throws AdapterException {
     // do nothing
   }
 
   @Override
   public StreamWriter createStreamWriter(
-      final Session session,
-      final StreamInfo streamInfo,
-      final Properties properties
+    final Session session,
+    final StreamInfo streamInfo,
+    final Properties properties
   ) throws AdapterException {
     return new EmptyStreamWriter();
   }
 
   @Override
   public void deleteStreamWriter(
-      final StreamWriter streamWriter
+    final StreamWriter streamWriter
   ) throws AdapterException {
     // do nothing
   }
@@ -92,7 +92,7 @@ public class EmptyConnection implements DiscoveryConnection {
 
   @Override
   public void update(
-      final Properties properties
+    final Properties properties
   ) throws AdapterException {
     // do nothing
   }
@@ -109,14 +109,14 @@ public class EmptyConnection implements DiscoveryConnection {
 
   @Override
   public Object copyTypeRepresentation(
-      final Object o
+    final Object o
   ) throws AdapterException {
     throw new AdapterException(0, "Operation not supported");
   }
 
   @Override
   public void deleteTypeRepresentation(
-      final Object o
+    final Object o
   ) throws AdapterException {
     // do nothing
   }

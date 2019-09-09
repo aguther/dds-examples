@@ -75,9 +75,9 @@ public class DynamicRoutingConnectionTest {
 
     // create connection
     dynamicRoutingConnection = new DynamicRoutingConnection(
-        "NAME",
-        "GROUP",
-        properties
+      "NAME",
+      "GROUP",
+      properties
     );
   }
 
@@ -135,7 +135,7 @@ public class DynamicRoutingConnectionTest {
   @Test
   public void testCreateStreamReader() throws AdapterException {
     assertTrue(dynamicRoutingConnection.createStreamReader(
-        null, null, properties, null) instanceof EmptyStreamReader);
+      null, null, properties, null) instanceof EmptyStreamReader);
     verifyZeroInteractions(dynamicRoutingManager);
   }
 
@@ -148,7 +148,7 @@ public class DynamicRoutingConnectionTest {
   @Test
   public void testCreateStreamWriter() throws AdapterException {
     assertTrue(dynamicRoutingConnection.createStreamWriter(
-        null, null, properties) instanceof EmptyStreamWriter);
+      null, null, properties) instanceof EmptyStreamWriter);
     verifyZeroInteractions(dynamicRoutingManager);
   }
 

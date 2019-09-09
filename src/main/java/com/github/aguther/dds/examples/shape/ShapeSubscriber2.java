@@ -56,7 +56,7 @@ public class ShapeSubscriber2 extends AbstractIdleService implements DataReaderW
   private DataReaderWatcher dataReaderWatcher;
 
   public static void main(
-      final String[] args
+    final String[] args
   ) {
     // register shutdown hook
     registerShutdownHook();
@@ -76,15 +76,15 @@ public class ShapeSubscriber2 extends AbstractIdleService implements DataReaderW
 
   private static void registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(new Thread(
-        () -> {
-          LOGGER.info("Shutdown signal received");
-          if (serviceInstance != null) {
-            serviceInstance.stopAsync();
-            serviceInstance.awaitTerminated();
-          }
-          LOGGER.info("Shutdown signal finished");
-        },
-        String.format("ShutdownHook-%s", ShapeSubscriber2.class.getName())
+      () -> {
+        LOGGER.info("Shutdown signal received");
+        if (serviceInstance != null) {
+          serviceInstance.stopAsync();
+          serviceInstance.awaitTerminated();
+        }
+        LOGGER.info("Shutdown signal finished");
+      },
+      String.format("ShutdownHook-%s", ShapeSubscriber2.class.getName())
     ));
   }
 
@@ -129,13 +129,13 @@ public class ShapeSubscriber2 extends AbstractIdleService implements DataReaderW
 
     // register all types needed (this must be done before creation of the domain participant)
     DomainParticipantFactory.get_instance().register_type_support(
-        ShapeTypeExtendedTypeSupport.get_instance(),
-        ShapeTypeTypeSupport.get_type_name()
+      ShapeTypeExtendedTypeSupport.get_instance(),
+      ShapeTypeTypeSupport.get_type_name()
     );
 
     // create participant from config
     domainParticipant = DomainParticipantFactory.get_instance().create_participant_from_config(
-        "DomainParticipantLibrary::ShapeSubscriber"
+      "DomainParticipantLibrary::ShapeSubscriber"
     );
   }
 
@@ -148,17 +148,17 @@ public class ShapeSubscriber2 extends AbstractIdleService implements DataReaderW
     readConditionParams.sample_states = SampleStateKind.NOT_READ_SAMPLE_STATE;
 
     dataReaderWatcher = new DataReaderWatcher<>(
-        domainParticipant.lookup_datareader_by_name("Subscriber::ShapeTypeExtendedDataReader"),
-        readConditionParams,
-        new SampleTaker<>(new ShapeTypeExtendedSeq()),
-        this
+      domainParticipant.lookup_datareader_by_name("Subscriber::ShapeTypeExtendedDataReader"),
+      readConditionParams,
+      new SampleTaker<>(new ShapeTypeExtendedSeq()),
+      this
     );
   }
 
   @Override
   public void onDataAvailable(
-      ShapeTypeExtended sample,
-      SampleInfo info
+    ShapeTypeExtended sample,
+    SampleInfo info
   ) {
     LOGGER.info(sample.toString());
   }
