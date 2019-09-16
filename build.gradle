@@ -56,7 +56,7 @@ dependencies {
     compile 'com.google.guava:guava:28.1-jre'
     compile 'com.esotericsoftware:reflectasm:1.11.9'
     compile 'net.jodah:failsafe:1.1.1'
-    compile 'info.picocli:picocli:3.9.5'
+    compile 'info.picocli:picocli:4.0.4'
 
     // test
     testCompile "junit:junit:4.12"
