@@ -48,9 +48,9 @@ dependencies {
   compile files('/usr/lib/java/rticonnextmsg.jar')
   compile files('/usr/lib/java/rtiroutingservice.jar')
   compile files('/usr/lib/java/rtirsadapter.jar')
-  compile 'org.apache.logging.log4j:log4j-api:2.12.0'
-  compile 'org.apache.logging.log4j:log4j-core:2.12.0'
-  compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.12.0'
+  compile 'org.apache.logging.log4j:log4j-api:2.12.1'
+  compile 'org.apache.logging.log4j:log4j-core:2.12.1'
+  compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.12.1'
   compile 'org.apache.commons:commons-text:1.7'
   compile 'com.google.code.gson:gson:2.8.5'
   compile 'com.google.guava:guava:28.0-jre'
