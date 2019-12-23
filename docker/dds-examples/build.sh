@@ -11,10 +11,10 @@ popd
 
 # copy needed files
 cp -f ./../../build/libs/*all.jar .
-cp -f ./../rpms/rti-connext-dds-60-runtime-pro-x64Linux3gcc4.8.2-6.0.0.0-1.x86_64.rpm .
+cp -f ./../rpms/rti-connext-dds-60-runtime-pro-x64Linux3gcc4.8.2-6.0.1.0-1.x86_64.rpm .
 
 # set version
-VERSION=6.0.0-$(git describe --always --dirty)
+VERSION=6.0.1-$(git describe --always --dirty)
 
 # start build of docker file
 docker build -t dds-examples:"${VERSION}" .

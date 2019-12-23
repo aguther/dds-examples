@@ -4,7 +4,7 @@
 cp -r /opt/rti/connext-dds/sdk/resource/template/rti_workspace/examples/web_integration_service shapes-demo
 
 # set version
-VERSION=6.0.0-$(git describe --always --dirty)
+VERSION=6.0.1-$(git describe --always --dirty)
 
 # start build of docker file
 docker build -t rti-web-integration-service-shapes-demo:"${VERSION}" .

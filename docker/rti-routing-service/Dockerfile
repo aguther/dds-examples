@@ -4,7 +4,7 @@ FROM guther/centos-java:latest
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>" \
       application="rti-routing-service" \
-      version="6.0.0"
+      version="6.0.1"
 
 # add RTI Connext DDS runtime
 ADD rti-connext-dds-60-runtime-pro-*.rpm /tmp
