@@ -10,7 +10,7 @@ buildscript {
   }
   dependencies {
     classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8"
-    classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
+    classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
     classpath "gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.5"
   }
 }
