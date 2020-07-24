@@ -28,7 +28,6 @@ import com.github.aguther.dds.examples.prometheus.routing.processors.ConfigEvent
 import com.github.aguther.dds.examples.prometheus.routing.processors.PeriodicProcessor;
 import com.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.github.aguther.dds.support.subscription.DataReaderWatcher;
-import com.github.aguther.dds.support.subscription.OnDataAvailableListener;
 import com.github.aguther.dds.support.subscription.SampleTaker;
 import com.github.aguther.dds.support.subscription.SampleWithInfoCopier;
 import com.google.common.util.concurrent.AbstractIdleService;
@@ -64,9 +63,9 @@ public class Collector extends AbstractIdleService {
 
   private HTTPServer httpServer;
 
-  private DataReaderWatcher dataReaderWatcherConfig;
-  private DataReaderWatcher dataReaderWatcherEvent;
-  private DataReaderWatcher dataReaderWatcherPeriodic;
+  private DataReaderWatcher<Config> dataReaderWatcherConfig;
+  private DataReaderWatcher<Event> dataReaderWatcherEvent;
+  private DataReaderWatcher<Periodic> dataReaderWatcherPeriodic;
 
   private ConfigEventProcessorCache configEventProcessorCache;
   private PeriodicProcessor periodicProcessor;
@@ -185,7 +184,7 @@ public class Collector extends AbstractIdleService {
       readConditionParams,
       new SampleTaker<>(new ConfigSeq()),
       new SampleWithInfoCopier<>(Config.class,
-        (OnDataAvailableListener<Config>) (dataReader, sample, info) ->
+        (dataReader, sample, info) ->
           configEventProcessorCache.process(sample, info)
       )
     );
@@ -194,7 +193,7 @@ public class Collector extends AbstractIdleService {
       readConditionParams,
       new SampleTaker<>(new EventSeq()),
       new SampleWithInfoCopier<>(Event.class,
-        (OnDataAvailableListener<Event>) (dataReader, sample, info) ->
+        (dataReader, sample, info) ->
           configEventProcessorCache.process(sample, info)
       )
     );
@@ -203,7 +202,7 @@ public class Collector extends AbstractIdleService {
       readConditionParams,
       new SampleTaker<>(new PeriodicSeq()),
       new SampleWithInfoCopier<>(Periodic.class,
-        (OnDataAvailableListener<Periodic>) (dataReader, sample, info) ->
+        (dataReader, sample, info) ->
           periodicProcessor.process(sample, info)
       )
     );
