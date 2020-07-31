@@ -48,7 +48,6 @@ public class EmptyStreamReader implements StreamReader {
     final List<Object> infoList
   ) throws AdapterException {
     // do nothing
-
   }
 
   @Override
