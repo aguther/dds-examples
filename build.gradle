@@ -3,20 +3,20 @@ version '1.0-SNAPSHOT'
 
 buildscript {
   repositories {
-    jcenter()
+    mavenCentral()
     maven {
       url "https://plugins.gradle.org/m2/"
     }
   }
   dependencies {
-    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
-    classpath "com.github.jengelman.gradle.plugins:shadow:6.0.0"
-    classpath "gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.7"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.2.0"
+    classpath "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0"
+    classpath "gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:1.0"
   }
 }
 
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
 apply plugin: "java"
@@ -25,8 +25,8 @@ apply plugin: "org.sonarqube"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "org.jetbrains.gradle.plugin.idea-ext"
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 sonarqube {
   properties {
@@ -40,32 +40,32 @@ sourceSets {
 
 dependencies {
   // generated
-  generatedCompile files('/usr/lib/java/nddsjava.jar')
+  generatedImplementation files("${System.env.NDDSHOME}/lib/java/nddsjava.jar")
 
   // main
-  compile sourceSets.generated.output
-  compile files('/usr/lib/java/nddsjava.jar')
-  compile files('/usr/lib/java/rticonnextmsg.jar')
-  compile files('/usr/lib/java/rtiroutingservice.jar')
-  compile files('/usr/lib/java/rtirsadapter.jar')
-  compile 'org.apache.logging.log4j:log4j-api:2.13.3'
-  compile 'org.apache.logging.log4j:log4j-core:2.13.3'
-  compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
-  compile 'org.apache.commons:commons-text:1.8'
-  compile 'com.google.code.gson:gson:2.8.6'
-  compile 'com.google.guava:guava:29.0-jre'
-  compile 'com.esotericsoftware:reflectasm:1.11.9'
-  compile 'net.jodah:failsafe:1.1.1'
-  compile 'info.picocli:picocli:4.4.0'
-  compile 'io.prometheus:simpleclient:0.9.0'
-  compile 'io.prometheus:simpleclient_hotspot:0.9.0'
-  compile 'io.prometheus:simpleclient_httpserver:0.9.0'
+  implementation sourceSets.generated.output
+  implementation files("${System.env.NDDSHOME}/lib/java/nddsjava.jar")
+  implementation files("${System.env.NDDSHOME}/lib/java/rticonnextmsg.jar")
+  implementation files("${System.env.NDDSHOME}/lib/java/rtiroutingservice.jar")
+  implementation files("${System.env.NDDSHOME}/lib/java/rtirsadapter.jar")
+  implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+  implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+  implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.1'
+  implementation 'org.apache.commons:commons-text:1.9'
+  implementation 'com.google.code.gson:gson:2.8.6'
+  implementation 'com.google.guava:guava:30.1.1-jre'
+  implementation 'com.esotericsoftware:reflectasm:1.11.9'
+  implementation 'net.jodah:failsafe:1.1.1'
+  implementation 'info.picocli:picocli:4.6.1'
+  implementation 'io.prometheus:simpleclient:0.10.0'
+  implementation 'io.prometheus:simpleclient_hotspot:0.10.0'
+  implementation 'io.prometheus:simpleclient_httpserver:0.10.0'
 
   // test
-  testCompile "org.junit.jupiter:junit-jupiter-api:5.6.2"
-  testCompile "org.mockito:mockito-core:3.4.4"
-  testCompile "org.powermock:powermock-module-junit4:2.0.7"
-  testCompile "org.powermock:powermock-api-mockito2:2.0.7"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.0-M1"
+  testImplementation "org.mockito:mockito-core:3.10.0"
+  testImplementation "org.powermock:powermock-module-junit4:2.0.9"
+  testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
 }
 
 jar {
@@ -91,7 +91,7 @@ task compileIdl {
     task "$taskName"(type: Exec) {
       inputs.files file
       outputs.dir sourceSets.generated.java.srcDirs[0]
-      executable = 'rtiddsgen'
+      executable = "${System.env.NDDSHOME}/bin/rtiddsgen"
       args = [
         '-unboundedSupport',
         '-replace',
@@ -167,7 +167,7 @@ idea.project.settings {
 
 task copyRuntimeLibraries(type: Copy) {
   into "$buildDir/libs-runtime"
-  from configurations.runtime
+  from configurations.runtimeOnly
   exclude('idl')
 }
 

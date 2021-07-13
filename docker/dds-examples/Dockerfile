@@ -1,22 +1,14 @@
 # define parent
-FROM guther/centos-java:latest
+FROM rti-connext-dds-runtime:6.1.0
 
 # define maintainer
-LABEL maintainer="Andreas Guther <andreas@guther.net>" \
-      application="dds-examples"
-
-# add RTI Connext DDS runtime
-ADD rti-connext-dds-60-runtime-pro-*.rpm /tmp
-
-# install java
-RUN yum -y install /tmp/*.rpm \
-    && rm -f /tmp/*.rpm
+LABEL maintainer="Andreas Guther <andreas@guther.net>"
+LABEL org.label-schema.name="dds-examples"
+#LABEL org.label-schema.version="6.1.0"
 
 # add application files
 ADD dds-examples*all.jar /app/application.jar
-
-# switch user to non-root
-USER app
+ADD USER_QOS_PROFILES.xml /app/USER_QOS_PROFILES.xml
 
 # define work directory and entrypoint
 ENTRYPOINT ["/usr/bin/java", "-cp", "/app/application.jar"]

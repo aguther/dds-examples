@@ -254,6 +254,11 @@ public class DataWriterDecorator implements DataWriter {
   }
 
   @Override
+  public boolean is_matched_subscription_active(InstanceHandle_t instanceHandle_t) {
+    return dataWriter.is_matched_subscription_active(instanceHandle_t);
+  }
+
+  @Override
   public void get_matched_subscription_data(
     SubscriptionBuiltinTopicData subscriptionBuiltinTopicData,
     InstanceHandle_t instanceHandle

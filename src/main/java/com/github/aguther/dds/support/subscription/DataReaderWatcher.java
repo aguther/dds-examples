@@ -116,10 +116,12 @@ public class DataReaderWatcher<T> implements Closeable, Runnable {
 
   @Override
   public void run() {
+    // only allocate native sequence once
+    var conditionSeq = new ConditionSeq();
+    conditionSeq.setMaximum(2);
+
     do {
       // wait until condition is triggered
-      ConditionSeq conditionSeq = new ConditionSeq();
-      waitSet.get_conditions(conditionSeq);
       waitSet.wait(conditionSeq, Duration_t.DURATION_INFINITE);
 
       // check if we shutdown was triggered -> early exit

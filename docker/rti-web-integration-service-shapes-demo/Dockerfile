@@ -1,16 +1,13 @@
 # define parent
-FROM rti-web-integration-service:6.0.1
+FROM rti-web-integration-service:6.1.0
 
 # define maintainer
-LABEL maintainer="Andreas Guther <andreas@guther.net>" \
-      application="rti-web-integration-service-shapes-demo" \
-      version="6.0.1"
+LABEL maintainer="Andreas Guther <andreas@guther.net>"
+LABEL org.label-schema.name="rti-web-integration-service-shapes-demo"
+LABEL org.label-schema.version="6.1.0"
 
 # add shapes demo
 ADD shapes-demo /app
 
-# switch user to non-root
-USER app
-
 # define work directory and entrypoint
-ENTRYPOINT ["/usr/bin/stdbuf", "-oL", "-eL", "/usr/bin/rtiwebintegrationservice"]
+ENTRYPOINT ["/usr/bin/stdbuf", "-oL", "-eL", "/opt/rti/connext-dds/bin/rtiwebintegrationservice", "-cfgName", "shapesDemoTutorial"]

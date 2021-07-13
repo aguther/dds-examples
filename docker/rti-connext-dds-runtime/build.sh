@@ -8,13 +8,13 @@ cp -r ${NDDSHOME}/* sdk/
 VERSION=6.1.0
 
 # start build of docker file
-docker build -t rti-routing-service:"${VERSION}" .
+docker build -t rti-connext-dds-runtime:"${VERSION}" .
 
 # clean up files
 rm -rf sdk
 
 # save docker image
-docker save -o rti-routing-service--"${VERSION}".tar rti-routing-service:"${VERSION}"
+docker save -o rti-connext-dds-runtime--"${VERSION}".tar rti-connext-dds-runtime:"${VERSION}"
 
 # gzip archive
-gzip -f rti-routing-service--"${VERSION}".tar
+gzip -f rti-connext-dds-runtime--"${VERSION}".tar

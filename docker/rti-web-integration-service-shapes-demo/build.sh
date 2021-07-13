@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 # copy shapes-demo
-cp -r /opt/rti/connext-dds/sdk/resource/template/rti_workspace/examples/web_integration_service shapes-demo
+cp -r ${NDDSHOME}/resource/template/rti_workspace/examples/web_integration_service shapes-demo
 
 # set version
-VERSION=6.0.1-$(git describe --always --dirty)
+VERSION=6.1.0-$(git describe --always --dirty)
 
 # start build of docker file
 docker build -t rti-web-integration-service-shapes-demo:"${VERSION}" .
 
-# clean up
+# clean up files
 rm -rf shapes-demo
 
 # save docker image
