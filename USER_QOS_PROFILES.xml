@@ -43,6 +43,9 @@
       </participant_qos>
 
       <datawriter_qos>
+        <protocol>
+          <serialize_key_with_dispose>true</serialize_key_with_dispose>
+        </protocol>
         <writer_data_lifecycle>
           <autodispose_unregistered_instances>false</autodispose_unregistered_instances>
           <autopurge_disposed_instances_delay>
