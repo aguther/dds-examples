@@ -39,15 +39,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements an observer for publications.
  */
 public class PublicationObserver extends BuiltinTopicObserver {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PublicationObserver.class);
+  private static final Logger LOGGER = LogManager.getLogger(PublicationObserver.class);
 
   private final Map<InstanceHandle_t, PublicationBuiltinTopicData> sampleCache;
   private final Set<PublicationObserverListener> listeners;

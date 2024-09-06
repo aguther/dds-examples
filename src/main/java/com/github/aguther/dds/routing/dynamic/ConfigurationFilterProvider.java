@@ -44,8 +44,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringSubstitutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements a filter and provider to be used with DynamicPartitionObserver and DynamicPartitionCommander.
@@ -62,7 +62,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
 
   private static final String PROPERTY_DOMAIN_ROUTE_NAME = "configuration.domain_route_name";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFilterProvider.class);
+  private static final Logger LOGGER = LogManager.getLogger(ConfigurationFilterProvider.class);
 
   private final Map<String, Configuration> configurations;
   private final Pattern patternConfigurationItem;

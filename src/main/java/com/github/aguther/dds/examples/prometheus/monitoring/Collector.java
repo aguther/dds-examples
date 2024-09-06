@@ -86,12 +86,12 @@ import idl.rti.dds.monitoring.TopicEntityStatisticsSeq;
 import idl.rti.dds.monitoring.TopicEntityStatisticsTypeSupport;
 import io.prometheus.client.exporter.HTTPServer;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Collector extends AbstractIdleService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Collector.class);
+  private static final Logger LOGGER = LogManager.getLogger(Collector.class);
 
   private static Collector serviceInstance;
 

@@ -30,8 +30,8 @@ import com.rti.routingservice.adapter.StreamReaderListener;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import com.rti.routingservice.adapter.infrastructure.Version;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements an adapter to provide a function to dynamically route topics based on their partition
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicRoutingAdapter implements Adapter {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingAdapter.class);
+  private static final Logger LOGGER = LogManager.getLogger(DynamicRoutingAdapter.class);
 
   public DynamicRoutingAdapter(
     final Properties properties

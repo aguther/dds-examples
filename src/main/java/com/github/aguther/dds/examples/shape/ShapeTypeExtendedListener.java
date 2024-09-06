@@ -42,12 +42,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ShapeTypeExtendedListener implements Runnable, DataReaderListener {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ShapeTypeExtendedListener.class);
+  private static final Logger LOGGER = LogManager.getLogger(ShapeTypeExtendedListener.class);
 
   private final DataReader dataReader;
   private final ShapeTypeExtended sample;

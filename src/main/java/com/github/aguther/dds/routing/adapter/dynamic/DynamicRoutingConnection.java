@@ -29,8 +29,8 @@ import com.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.io.Closeable;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements a connection to provide a function to dynamically route topics based on their partition
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicRoutingConnection extends EmptyConnection implements Closeable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingConnection.class);
+  private static final Logger LOGGER = LogManager.getLogger(DynamicRoutingConnection.class);
 
   private DynamicRoutingManager dynamicRoutingManager;
 

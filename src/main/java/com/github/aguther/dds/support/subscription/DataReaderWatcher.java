@@ -37,12 +37,12 @@ import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DataReaderWatcher<T> implements Closeable, Runnable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataReaderWatcher.class);
+  private static final Logger LOGGER = LogManager.getLogger(DataReaderWatcher.class);
 
   private DataReader dataReader;
   private GuardCondition guardCondition;

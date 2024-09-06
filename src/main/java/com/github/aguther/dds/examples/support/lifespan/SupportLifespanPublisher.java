@@ -38,15 +38,15 @@ import idl.ShapeTypeExtendedTypeSupport;
 import idl.ShapeTypeTypeSupport;
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 public class SupportLifespanPublisher extends AbstractExecutionThreadService implements
   Callable<SupportLifespanPublisher> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SupportLifespanPublisher.class);
+  private static final Logger LOGGER = LogManager.getLogger(SupportLifespanPublisher.class);
 
   private static SupportLifespanPublisher serviceInstance;
 

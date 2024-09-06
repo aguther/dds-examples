@@ -33,15 +33,15 @@ import com.rti.dds.infrastructure.ServiceQosPolicyKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Filter to ignore entities that belong to any routing service.
  */
 public class RoutingServiceEntitiesFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingServiceEntitiesFilter.class);
+  private static final Logger LOGGER = LogManager.getLogger(RoutingServiceEntitiesFilter.class);
 
   @Override
   public boolean ignorePublication(

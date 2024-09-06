@@ -29,12 +29,12 @@ import com.github.aguther.dds.gson.SequenceTypeAdapterFactory;
 import com.github.aguther.dds.gson.UnionTypeAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Json {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Json.class);
+  private static final Logger LOGGER = LogManager.getLogger(Json.class);
 
   private static final Gson gson = new GsonBuilder()
     .registerTypeAdapterFactory(new EnumTypeAdapterFactory())

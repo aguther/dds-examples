@@ -26,12 +26,12 @@ package com.github.aguther.dds.examples.mutable;
 
 import com.github.aguther.dds.util.SampleHelper;
 import com.rti.dds.topic.TypeSupportImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MutableBuffer {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MutableBuffer.class);
+  private static final Logger LOGGER = LogManager.getLogger(MutableBuffer.class);
 
   public static void main(
     final String[] args

@@ -35,8 +35,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DynamicRouting extends AbstractIdleService {
 
@@ -44,7 +44,7 @@ public class DynamicRouting extends AbstractIdleService {
   private static final String ROUTING_SERVICE_CONFIG_FILE_XML = "configuration/routing-dynamic.xml";
   private static final String ROUTING_SERVICE_CONFIG_FILE_PROPERTIES = "configuration/routing-dynamic.properties";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRouting.class);
+  private static final Logger LOGGER = LogManager.getLogger(DynamicRouting.class);
 
   private static DynamicRouting serviceInstance;
 

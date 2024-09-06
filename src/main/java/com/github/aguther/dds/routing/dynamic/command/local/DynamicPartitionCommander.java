@@ -32,8 +32,8 @@ import com.github.aguther.dds.routing.dynamic.observer.Session;
 import com.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.infrastructure.RoutingServiceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class commands a routing service (running as library) to create or delete sessions and topic routes.
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicPartitionCommander implements DynamicPartitionObserverListener {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(
+  private static final Logger LOGGER = LogManager.getLogger(
     DynamicPartitionCommander.class);
 
   private final RoutingService routingService;

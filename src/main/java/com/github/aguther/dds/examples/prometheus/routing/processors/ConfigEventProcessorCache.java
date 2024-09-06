@@ -30,12 +30,12 @@ import idl.RTI.Service.Monitoring.Config;
 import idl.RTI.Service.Monitoring.Event;
 import idl.RTI.Service.Monitoring.ResourceGuid;
 import java.util.HashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConfigEventProcessorCache {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ConfigEventProcessorCache.class);
+  private static final Logger LOGGER = LogManager.getLogger(ConfigEventProcessorCache.class);
 
   private HashMap<ResourceGuid, Config> configStore;
   private HashMap<ResourceGuid, Event> eventStore;

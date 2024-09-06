@@ -34,12 +34,12 @@ import com.rti.dds.infrastructure.RETCODE_ERROR;
 import idl.ReplyType;
 import idl.RequestKind;
 import idl.RequestType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RequestSender implements Runnable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RequestSender.class);
+  private static final Logger LOGGER = LogManager.getLogger(RequestSender.class);
 
   private final Requester<RequestType, ReplyType> requester;
   private final int replyWaitTime;

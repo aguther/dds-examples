@@ -38,8 +38,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class allows the observation of a built-in topic.
@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runnable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(BuiltinTopicObserver.class);
+  private static final Logger LOGGER = LogManager.getLogger(BuiltinTopicObserver.class);
 
   private final ExecutorService executorService;
 

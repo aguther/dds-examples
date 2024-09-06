@@ -29,12 +29,12 @@ import com.rti.connext.requestreply.SimpleReplierListener;
 import idl.ReplyResult;
 import idl.ReplyType;
 import idl.RequestType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ReplySender implements SimpleReplierListener<RequestType, ReplyType> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReplySender.class);
+  private static final Logger LOGGER = LogManager.getLogger(ReplySender.class);
 
   ReplySender() {
   }

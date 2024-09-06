@@ -30,12 +30,12 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import idl.v1.MutableTypeTypeSupport;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MutablePublisher extends AbstractExecutionThreadService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MutablePublisher.class);
+  private static final Logger LOGGER = LogManager.getLogger(MutablePublisher.class);
 
   private static MutablePublisher serviceInstance;
 

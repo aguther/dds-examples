@@ -36,14 +36,14 @@ import idl.ShapeTypeExtendedTypeSupport;
 import idl.ShapeTypeTypeSupport;
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 public class ShapePublisher extends AbstractExecutionThreadService implements Callable<ShapePublisher> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ShapePublisher.class);
+  private static final Logger LOGGER = LogManager.getLogger(ShapePublisher.class);
 
   private static ShapePublisher serviceInstance;
 

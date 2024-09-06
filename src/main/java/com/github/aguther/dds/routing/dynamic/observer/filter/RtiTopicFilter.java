@@ -29,15 +29,15 @@ import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Filter to ignore all RTI topics like routing service administration.
  */
 public class RtiTopicFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RtiTopicFilter.class);
+  private static final Logger LOGGER = LogManager.getLogger(RtiTopicFilter.class);
 
   @Override
   public boolean ignorePublication(

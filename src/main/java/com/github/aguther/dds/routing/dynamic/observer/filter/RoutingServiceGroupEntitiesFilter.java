@@ -34,15 +34,15 @@ import com.rti.dds.infrastructure.Property_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Filter to ignore entities that belong to routing services of a given group.
  */
 public class RoutingServiceGroupEntitiesFilter implements DynamicPartitionObserverFilter {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingServiceGroupEntitiesFilter.class);
+  private static final Logger LOGGER = LogManager.getLogger(RoutingServiceGroupEntitiesFilter.class);
 
   private final String groupName;
 

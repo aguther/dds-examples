@@ -35,12 +35,12 @@ import com.rti.ndds.config.LogMessage;
 import com.rti.ndds.config.LogPrintFormat;
 import com.rti.ndds.config.LogVerbosity;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Slf4jDdsLogger implements com.rti.ndds.config.LoggerDevice {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Slf4jDdsLogger.class);
+  private static final Logger LOGGER = LogManager.getLogger(Slf4jDdsLogger.class);
 
   public static Slf4jDdsLogger createRegisterLogger() throws IOException {
     // create logger

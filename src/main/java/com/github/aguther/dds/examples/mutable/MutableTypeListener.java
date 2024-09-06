@@ -38,12 +38,12 @@ import com.rti.dds.subscription.SampleLostStatus;
 import com.rti.dds.subscription.SampleRejectedStatus;
 import com.rti.dds.subscription.SubscriptionMatchedStatus;
 import idl.v2.MutableType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MutableTypeListener implements DataReaderListener {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MutableTypeListener.class);
+  private static final Logger LOGGER = LogManager.getLogger(MutableTypeListener.class);
 
   private final DataReader dataReader;
   private final MutableType sample;

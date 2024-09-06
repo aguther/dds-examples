@@ -44,15 +44,15 @@ import idl.RTI.Service.Admin.CommandRequest;
 import idl.RTI.Service.Admin.CommandRequestTypeSupport;
 import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class provides helpers to easily interact with a routing service using the topics defined by RTI.
  */
 public class RoutingServiceCommandInterface implements Closeable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingServiceCommandInterface.class);
+  private static final Logger LOGGER = LogManager.getLogger(RoutingServiceCommandInterface.class);
 
   private final Requester<CommandRequest, CommandReply> requester;
 

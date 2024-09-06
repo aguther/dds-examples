@@ -46,8 +46,8 @@ import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.text.StringSubstitutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements a connection to provide a function to dynamically route topics based on their partition
@@ -85,7 +85,7 @@ public class DynamicRoutingManager implements Closeable {
   private static final String PROPERTY_DISCOVERY_DOMAIN_ID
     = "discovery.domain_id";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRoutingManager.class);
+  private static final Logger LOGGER = LogManager.getLogger(DynamicRoutingManager.class);
 
   private final String propertiesPrefix;
   private final Properties properties;

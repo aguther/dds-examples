@@ -49,12 +49,12 @@ import idl.RTI.Service.Monitoring.PeriodicSeq;
 import idl.RTI.Service.Monitoring.PeriodicTypeSupport;
 import io.prometheus.client.exporter.HTTPServer;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Collector extends AbstractIdleService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(
+  private static final Logger LOGGER = LogManager.getLogger(
     Collector.class);
 
   private static Collector serviceInstance;

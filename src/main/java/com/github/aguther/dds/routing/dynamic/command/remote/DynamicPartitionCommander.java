@@ -47,8 +47,8 @@ import java.util.concurrent.TimeUnit;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.FailsafeFuture;
 import net.jodah.failsafe.RetryPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class commands a routing service to create or delete sessions and topic routes.
@@ -64,7 +64,7 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   private static final int DEFAULT_REQUEST_TIMEOUT_SECONDS = 10;
   private static final int DEFAULT_RETRY_DELAY_SECONDS = 10;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPartitionCommander.class);
+  private static final Logger LOGGER = LogManager.getLogger(DynamicPartitionCommander.class);
 
   private final RoutingServiceCommandInterface routingServiceCommandInterface;
 

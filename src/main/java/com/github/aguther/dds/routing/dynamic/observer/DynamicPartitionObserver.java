@@ -48,8 +48,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements a observer for publications and subscriptions.
@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicPartitionObserver implements Closeable, PublicationObserverListener, SubscriptionObserverListener {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPartitionObserver.class);
+  private static final Logger LOGGER = LogManager.getLogger(DynamicPartitionObserver.class);
 
   private static final String DEFAULT_PARTITION = "";
 
