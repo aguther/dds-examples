@@ -5,11 +5,11 @@
   <adapter_library name="dds-examples-routing-adapter-adapters">
 
     <java_adapter_plugin name="EmptyAdapter">
-      <class_name>com.github.aguther.dds.routing.adapter.empty.EmptyAdapter</class_name>
+      <class_name>io.github.aguther.dds.routing.adapter.empty.EmptyAdapter</class_name>
     </java_adapter_plugin>
 
     <java_adapter_plugin name="DynamicRoutingAdapter">
-      <class_name>com.github.aguther.dds.routing.adapter.dynamic.DynamicRoutingAdapter</class_name>
+      <class_name>io.github.aguther.dds.routing.adapter.dynamic.DynamicRoutingAdapter</class_name>
     </java_adapter_plugin>
 
   </adapter_library>

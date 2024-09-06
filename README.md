@@ -7,13 +7,24 @@ The files contained in this repository are published under MIT license with one 
 
 This file is part of the RTI Connext DDS SDK (see [www.rti.com](https://www.rti.com)) and is used by a simple application for demonstration.
 
-The original license did not allow the publication and so I want to express a special thank you to RTI for 
+The original license did not allow the publication and so I want to express a special thank you to RTI for
 the allowance to publish the file under a new license as found in this repository.
 
 ## Structure
 This example is using XML creation for the DDS. More information can be found on community.rti.com.
 
+## Preparation
+
+For the preparation of the dependencies, which are not available in maven central, the following needs to be executed:
+```
+mvn install:install-file -Dfile=$NDDSHOME/lib/java/nddsjava.jar -DgroupId=com.rti -DartifactId=nddsjava -Dversion=<version> -Dpackaging=jar
+mvn install:install-file -Dfile=$NDDSHOME/lib/java/rticonnextmsg.jar -DgroupId=com.rti -DartifactId=rticonnextmsg -Dversion=<version> -Dpackaging=jar
+mvn install:install-file -Dfile=$NDDSHOME/lib/java/rtiroutingservice.jar -DgroupId=com.rti -DartifactId=rtiroutingservice -Dversion=<version> -Dpackaging=jar
+mvn install:install-file -Dfile=$NDDSHOME/lib/java/rtirsadapter.jar -DgroupId=com.rti -DartifactId=rtirsadapter -Dversion=<version> -Dpackaging=jar
+```
+
 ## Building
+
 The application can be built with:
 `./gradlew build`
 
