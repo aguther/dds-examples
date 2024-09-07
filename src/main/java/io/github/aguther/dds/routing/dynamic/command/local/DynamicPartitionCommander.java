@@ -26,20 +26,20 @@ package io.github.aguther.dds.routing.dynamic.command.local;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.rti.routingservice.RoutingService;
+import com.rti.routingservice.infrastructure.RoutingServiceException;
 import io.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
 import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverListener;
 import io.github.aguther.dds.routing.dynamic.observer.Session;
 import io.github.aguther.dds.routing.dynamic.observer.TopicRoute;
-import com.rti.routingservice.RoutingService;
-import com.rti.routingservice.infrastructure.RoutingServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * This class commands a routing service (running as library) to create or delete sessions and topic routes.
- *
- * It listens to a dynamic partition observer and when a session or topic route should be created or deleted it
- * creates, queues and invokes appropriate functions on the routing service library.
+ * <p>
+ * It listens to a dynamic partition observer and when a session or topic route should be created or deleted it creates,
+ * queues and invokes appropriate functions on the routing service library.
  */
 public class DynamicPartitionCommander implements DynamicPartitionObserverListener {
 

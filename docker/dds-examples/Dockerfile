@@ -4,7 +4,7 @@ FROM rti-connext-dds-runtime:6.1.0
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>"
 LABEL org.label-schema.name="dds-examples"
-#LABEL org.label-schema.version="6.1.0"
+#LABEL org.label-schema.version="6.1.2"
 
 # add application files
 ADD dds-examples*all.jar /app/application.jar

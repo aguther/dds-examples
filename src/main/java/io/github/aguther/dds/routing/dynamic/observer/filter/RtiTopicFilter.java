@@ -24,11 +24,11 @@
 
 package io.github.aguther.dds.routing.dynamic.observer.filter;
 
-import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

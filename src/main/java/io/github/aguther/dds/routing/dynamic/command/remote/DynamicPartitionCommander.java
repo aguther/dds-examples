@@ -27,15 +27,15 @@ package io.github.aguther.dds.routing.dynamic.command.remote;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Strings;
+import idl.RTI.Service.Admin.CommandReply;
+import idl.RTI.Service.Admin.CommandReplyRetcode;
+import idl.RTI.Service.Admin.CommandRequest;
 import io.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
 import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverListener;
 import io.github.aguther.dds.routing.dynamic.observer.Session;
 import io.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import io.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
-import com.google.common.base.Strings;
-import idl.RTI.Service.Admin.CommandReply;
-import idl.RTI.Service.Admin.CommandReplyRetcode;
-import idl.RTI.Service.Admin.CommandRequest;
 import java.io.Closeable;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
@@ -52,12 +52,12 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * This class commands a routing service to create or delete sessions and topic routes.
- *
- * It listens to a dynamic partition observer and when a session or topic route should be created or deleted it
- * creates, queues and sends the corresponding command to the target routing service.
- *
- * When a command is not successful, it retries the command after the retry delay until it worked or a converse
- * request (e.g. session creation vs. session deletion).
+ * <p>
+ * It listens to a dynamic partition observer and when a session or topic route should be created or deleted it creates,
+ * queues and sends the corresponding command to the target routing service.
+ * <p>
+ * When a command is not successful, it retries the command after the retry delay until it worked or a converse request
+ * (e.g. session creation vs. session deletion).
  */
 public class DynamicPartitionCommander implements Closeable, DynamicPartitionObserverListener {
 
@@ -84,9 +84,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Instantiates a new Dynamic partition commander.
    *
-   * @param routingServiceCommandInterface the routing service command helper
+   * @param routingServiceCommandInterface  the routing service command helper
    * @param dynamicPartitionCommandProvider the dynamic partition commander provider
-   * @param targetRoutingService the target routing service
+   * @param targetRoutingService            the target routing service
    */
   public DynamicPartitionCommander(
     final RoutingServiceCommandInterface routingServiceCommandInterface,
@@ -107,11 +107,11 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Instantiates a new Dynamic partition commander.
    *
-   * @param routingServiceCommandInterface the routing service command helper
+   * @param routingServiceCommandInterface  the routing service command helper
    * @param dynamicPartitionCommandProvider the dynamic partition commander provider
-   * @param targetRoutingService the target routing service
-   * @param retryDelay the retry delay
-   * @param retryDelayTimeUnit the retry delay time unit
+   * @param targetRoutingService            the target routing service
+   * @param retryDelay                      the retry delay
+   * @param retryDelayTimeUnit              the retry delay time unit
    */
   public DynamicPartitionCommander(
     final RoutingServiceCommandInterface routingServiceCommandInterface,
@@ -134,13 +134,13 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Instantiates a new Dynamic partition commander.
    *
-   * @param routingServiceCommandInterface the routing service command helper
+   * @param routingServiceCommandInterface  the routing service command helper
    * @param dynamicPartitionCommandProvider the dynamic partition commander provider
-   * @param targetRoutingService the target routing service
-   * @param retryDelay the retry delay
-   * @param retryDelayTimeUnit the retry delay time unit
-   * @param requestTimeout the request timeout
-   * @param requestTimeoutTimeUnit the request timeout time unit
+   * @param targetRoutingService            the target routing service
+   * @param retryDelay                      the retry delay
+   * @param retryDelayTimeUnit              the retry delay time unit
+   * @param requestTimeout                  the request timeout
+   * @param requestTimeoutTimeUnit          the request timeout time unit
    */
   public DynamicPartitionCommander(
     final RoutingServiceCommandInterface routingServiceCommandInterface,
@@ -332,9 +332,9 @@ public class DynamicPartitionCommander implements Closeable, DynamicPartitionObs
   /**
    * Checks if a response was successful.
    *
-   * @param commandRequest request that was sent
+   * @param commandRequest  request that was sent
    * @param commandResponse response that was received
-   * @param loggingFormat format string for logging
+   * @param loggingFormat   format string for logging
    * @return true if request was successful, false if not
    */
   private boolean checkResponse(

@@ -4,7 +4,7 @@ FROM debian:buster-slim
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>"
 LABEL org.label-schema.name="rti-connext-dds-runtime-slim"
-#LABEL org.label-schema.version="6.1.0"
+#LABEL org.label-schema.version="6.1.2"
 
 # add RTI Connext DDS runtime
 ADD sdk/lib/x64Linux4gcc7.3.0/*.so* /opt/rti/connext-dds/lib/x64Linux4gcc7.3.0/

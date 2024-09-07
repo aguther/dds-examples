@@ -24,8 +24,6 @@
 
 package io.github.aguther.dds.routing.dynamic.observer.filter;
 
-import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
-import io.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.builtin.ParticipantBuiltinTopicData;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -34,6 +32,8 @@ import com.rti.dds.infrastructure.Property_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 import com.rti.dds.topic.BuiltinTopicKey_t;
+import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
+import io.github.aguther.dds.util.BuiltinTopicHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

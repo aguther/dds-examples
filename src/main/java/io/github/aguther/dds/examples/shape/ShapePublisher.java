@@ -24,16 +24,16 @@
 
 package io.github.aguther.dds.examples.shape;
 
-import io.github.aguther.dds.examples.shape.util.ShapeAttributes;
-import io.github.aguther.dds.examples.shape.util.ShapeColor;
-import io.github.aguther.dds.examples.shape.util.ShapeFillKind;
-import io.github.aguther.dds.examples.shape.util.ShapeKind;
-import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import idl.ShapeTypeExtendedTypeSupport;
 import idl.ShapeTypeTypeSupport;
+import io.github.aguther.dds.examples.shape.util.ShapeAttributes;
+import io.github.aguther.dds.examples.shape.util.ShapeColor;
+import io.github.aguther.dds.examples.shape.util.ShapeFillKind;
+import io.github.aguther.dds.examples.shape.util.ShapeKind;
+import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;

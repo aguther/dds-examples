@@ -24,10 +24,10 @@
 
 package io.github.aguther.dds.examples.routing;
 
-import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
+import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

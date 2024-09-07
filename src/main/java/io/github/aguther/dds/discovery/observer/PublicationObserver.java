@@ -90,7 +90,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
   /**
    * Add listener.
    *
-   * @param listener the listener
+   * @param listener           the listener
    * @param deliverReadSamples true to deliver already read samples
    */
   public void addListener(
@@ -174,7 +174,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
   /**
    * Informs the listeners about the discovery of a publication.
    *
-   * @param sample publication data
+   * @param sample     publication data
    * @param sampleInfo publication info
    */
   private void invokePublicationDiscovered(
@@ -199,7 +199,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
   /**
    * Informs the listeners about the modification of a publication.
    *
-   * @param sample publication data
+   * @param sample     publication data
    * @param sampleInfo publication info
    */
   private void invokePublicationModified(
@@ -224,7 +224,7 @@ public class PublicationObserver extends BuiltinTopicObserver {
   /**
    * Informs the listeners about the loss of a publication.
    *
-   * @param sample publication data
+   * @param sample     publication data
    * @param sampleInfo publication info
    */
   private void invokePublicationLost(

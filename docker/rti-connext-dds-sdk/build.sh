@@ -9,13 +9,13 @@ rm -rf sdk/rti_license.dat
 VERSION=6.1.2
 
 # start build of docker file
-docker build -t rti-connext-dds-runtime:"${VERSION}" .
+docker build -t rti-connext-dds-sdk:"${VERSION}" .
 
 # clean up files
 rm -rf sdk
 
 # save docker image
-docker save -o rti-connext-dds-runtime--"${VERSION}".tar rti-connext-dds-runtime:"${VERSION}"
+docker save -o rti-connext-dds-sdk--"${VERSION}".tar rti-connext-dds-sdk:"${VERSION}"
 
 # gzip archive
-gzip -f rti-connext-dds-runtime--"${VERSION}".tar
+gzip -f rti-connext-dds-sdk--"${VERSION}".tar

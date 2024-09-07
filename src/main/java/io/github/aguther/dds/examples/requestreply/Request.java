@@ -24,7 +24,6 @@
 
 package io.github.aguther.dds.examples.requestreply;
 
-import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.connext.requestreply.Requester;
 import com.rti.dds.domain.DomainParticipant;
@@ -33,6 +32,7 @@ import idl.ReplyType;
 import idl.ReplyTypeTypeSupport;
 import idl.RequestType;
 import idl.RequestTypeTypeSupport;
+import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

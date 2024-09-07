@@ -24,11 +24,11 @@
 
 package io.github.aguther.dds.examples.mutable;
 
-import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import idl.v1.MutableTypeTypeSupport;
+import io.github.aguther.dds.logging.Slf4jDdsLogger;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

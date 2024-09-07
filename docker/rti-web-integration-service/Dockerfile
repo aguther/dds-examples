@@ -4,7 +4,7 @@ FROM debian:buster-slim
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>"
 LABEL org.label-schema.name="rti-web-integration-service"
-LABEL org.label-schema.version="6.1.0"
+LABEL org.label-schema.version="6.1.2"
 
 # add routing service
 ADD sdk/bin/rtiwebintegrationservice /opt/rti/connext-dds/bin/

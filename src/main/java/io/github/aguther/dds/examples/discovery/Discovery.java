@@ -24,11 +24,6 @@
 
 package io.github.aguther.dds.examples.discovery;
 
-import io.github.aguther.dds.discovery.observer.PublicationObserver;
-import io.github.aguther.dds.discovery.observer.PublicationObserverListener;
-import io.github.aguther.dds.discovery.observer.SubscriptionObserver;
-import io.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
-import io.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -37,6 +32,11 @@ import com.rti.dds.infrastructure.PartitionQosPolicy;
 import com.rti.dds.infrastructure.StatusKind;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import io.github.aguther.dds.discovery.observer.PublicationObserver;
+import io.github.aguther.dds.discovery.observer.PublicationObserverListener;
+import io.github.aguther.dds.discovery.observer.SubscriptionObserver;
+import io.github.aguther.dds.discovery.observer.SubscriptionObserverListener;
+import io.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

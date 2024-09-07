@@ -50,7 +50,7 @@ public interface DynamicPartitionObserverListener {
   /**
    * Invoked when a topic route should be created.
    *
-   * @param session session of topic route
+   * @param session    session of topic route
    * @param topicRoute topic route to create
    */
   void createTopicRoute(
@@ -61,7 +61,7 @@ public interface DynamicPartitionObserverListener {
   /**
    * Invoked when a topic route should be deleted.
    *
-   * @param session session of topic route
+   * @param session    session of topic route
    * @param topicRoute topic route to delete
    */
   void deleteTopicRoute(

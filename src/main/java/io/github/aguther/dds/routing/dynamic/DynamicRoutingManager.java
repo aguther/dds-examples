@@ -27,6 +27,13 @@ package io.github.aguther.dds.routing.dynamic;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Strings;
+import com.rti.dds.domain.DomainParticipant;
+import com.rti.dds.domain.DomainParticipantFactory;
+import com.rti.dds.domain.DomainParticipantQos;
+import com.rti.dds.infrastructure.ServiceQosPolicyKind;
+import com.rti.dds.infrastructure.StatusKind;
+import com.rti.routingservice.RoutingService;
 import io.github.aguther.dds.discovery.observer.PublicationObserver;
 import io.github.aguther.dds.discovery.observer.SubscriptionObserver;
 import io.github.aguther.dds.routing.dynamic.command.remote.DynamicPartitionCommander;
@@ -35,13 +42,6 @@ import io.github.aguther.dds.routing.dynamic.observer.filter.RoutingServiceGroup
 import io.github.aguther.dds.routing.dynamic.observer.filter.RtiTopicFilter;
 import io.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
 import io.github.aguther.dds.util.AutoEnableCreatedEntitiesHelper;
-import com.google.common.base.Strings;
-import com.rti.dds.domain.DomainParticipant;
-import com.rti.dds.domain.DomainParticipantFactory;
-import com.rti.dds.domain.DomainParticipantQos;
-import com.rti.dds.infrastructure.ServiceQosPolicyKind;
-import com.rti.dds.infrastructure.StatusKind;
-import com.rti.routingservice.RoutingService;
 import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -50,9 +50,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class implements a connection to provide a function to dynamically route topics based on their partition
- * without loosing their origin (this happens when using asterisk or multiple partitions).
- *
+ * This class implements a connection to provide a function to dynamically route topics based on their partition without
+ * loosing their origin (this happens when using asterisk or multiple partitions).
+ * <p>
  * This function is realized by creating a domain participant for discovery and remote administration of the target
  * routing service. Whenever a topic is discovered and a appropriate configuration is found, a session and route is
  * created accordingly. The same applies vice versa on loosing discovery.
@@ -104,10 +104,10 @@ public class DynamicRoutingManager implements Closeable {
   /**
    * Instantiates a new dynamic routing.
    *
-   * @param routingServiceName name of the routing service to command
+   * @param routingServiceName      name of the routing service to command
    * @param routingServiceGroupName group of the routing service to command
-   * @param propertiesPrefix prefix to be used for properties
-   * @param properties configuration properties
+   * @param propertiesPrefix        prefix to be used for properties
+   * @param properties              configuration properties
    */
   public DynamicRoutingManager(
     final String routingServiceName,
@@ -127,11 +127,12 @@ public class DynamicRoutingManager implements Closeable {
   /**
    * Instantiates a new dynamic routing.
    *
-   * @param routingService routing service library object (if local interface is used, otherwise provide 'null')
-   * @param routingServiceName name of the routing service to command
+   * @param routingService          routing service library object (if local interface is used, otherwise provide
+   *                                'null')
+   * @param routingServiceName      name of the routing service to command
    * @param routingServiceGroupName group of the routing service to command
-   * @param propertiesPrefix prefix to be used for properties
-   * @param properties configuration properties
+   * @param propertiesPrefix        prefix to be used for properties
+   * @param properties              configuration properties
    */
   public DynamicRoutingManager(
     final RoutingService routingService,
@@ -271,7 +272,7 @@ public class DynamicRoutingManager implements Closeable {
   /**
    * Gets a property using the correct prefix.
    *
-   * @param name name of the property
+   * @param name         name of the property
    * @param defaultValue default value to provide if property not found
    * @return property value, provided default if not found
    */
@@ -288,7 +289,7 @@ public class DynamicRoutingManager implements Closeable {
   /**
    * Creates the local administration interface (using routing service library)
    *
-   * @param routingService routing service to administrate
+   * @param routingService              routing service to administrate
    * @param configurationFilterProvider configuration filter provider
    */
   private void createLocalAdministration(
@@ -316,7 +317,7 @@ public class DynamicRoutingManager implements Closeable {
   /**
    * Creates the remote administration interface.
    *
-   * @param routingServiceName routing service name to administrate
+   * @param routingServiceName          routing service name to administrate
    * @param configurationFilterProvider configuration filter provider
    */
   private void createRemoteAdministration(
@@ -427,7 +428,7 @@ public class DynamicRoutingManager implements Closeable {
   /**
    * Creates a domain participant marked as routing service and with correct participant name.
    *
-   * @param domainId domain id
+   * @param domainId        domain id
    * @param participantName participant name
    * @return domain participant if successful, otherwise null
    */

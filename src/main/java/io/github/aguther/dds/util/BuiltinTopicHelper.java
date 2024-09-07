@@ -45,7 +45,7 @@ public class BuiltinTopicHelper {
   /**
    * Gets participant builtin topic data from publication.
    *
-   * @param domainParticipant the domain participant
+   * @param domainParticipant           the domain participant
    * @param publicationBuiltinTopicData the publication builtin topic data
    * @return the participant builtin topic data from publication
    */
@@ -62,7 +62,7 @@ public class BuiltinTopicHelper {
   /**
    * Gets participant builtin topic data from subscription.
    *
-   * @param domainParticipant the domain participant
+   * @param domainParticipant            the domain participant
    * @param subscriptionBuiltinTopicData the subscription builtin topic data
    * @return the participant builtin topic data from subscription
    */
@@ -79,7 +79,7 @@ public class BuiltinTopicHelper {
    * Gets participant builtin topic data from a participant key.
    *
    * @param domainParticipant the domain participant
-   * @param participantKey the participant key
+   * @param participantKey    the participant key
    * @return the participant builtin topic data from participant key
    */
   public static synchronized ParticipantBuiltinTopicData getParticipantBuiltinTopicData(

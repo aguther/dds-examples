@@ -26,7 +26,6 @@ package io.github.aguther.dds.routing.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.aguther.dds.util.DurationFactory;
 import com.rti.connext.infrastructure.Sample;
 import com.rti.connext.requestreply.Requester;
 import com.rti.connext.requestreply.RequesterParams;
@@ -42,6 +41,7 @@ import idl.RTI.Service.Admin.CommandReply;
 import idl.RTI.Service.Admin.CommandReplyTypeSupport;
 import idl.RTI.Service.Admin.CommandRequest;
 import idl.RTI.Service.Admin.CommandRequestTypeSupport;
+import io.github.aguther.dds.util.DurationFactory;
 import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
@@ -96,8 +96,8 @@ public class RoutingServiceCommandInterface implements Closeable {
    * Waits for a specific routing service instance to be discovered.
    *
    * @param targetRouter target routing service
-   * @param timeOut timeout
-   * @param timeOutUnit time unit of timeout
+   * @param timeOut      timeout
+   * @param timeOutUnit  time unit of timeout
    * @return true if target routing service was discovered, false if not within timeout
    */
   public boolean waitForDiscovery(
@@ -117,10 +117,10 @@ public class RoutingServiceCommandInterface implements Closeable {
   /**
    * Waits for a specific routing service instance to be discovered.
    *
-   * @param targetRouter target routing service
-   * @param timeOut timeout
-   * @param timeOutUnit time unit of timeout
-   * @param sleepTime time to sleep between checks
+   * @param targetRouter  target routing service
+   * @param timeOut       timeout
+   * @param timeOutUnit   time unit of timeout
+   * @param sleepTime     time to sleep between checks
    * @param sleepTimeUnit time unit of time to sleep
    * @return true if target routing service was discovered, false if not within timeout
    */
@@ -189,8 +189,8 @@ public class RoutingServiceCommandInterface implements Closeable {
    * Sends a request to a target routing service and returns the response when received within timeout.
    *
    * @param commandRequest request to send
-   * @param timeOut timeout
-   * @param timeUnit time unit of timeout
+   * @param timeOut        timeout
+   * @param timeUnit       time unit of timeout
    * @return response if received within timeout, otherwise null
    */
   public CommandReply sendRequest(
@@ -244,7 +244,7 @@ public class RoutingServiceCommandInterface implements Closeable {
   /**
    * Logs some important things of a command response.
    *
-   * @param reply response that should be logged
+   * @param reply         response that should be logged
    * @param replyReceived true if response is valid, otherwise false
    */
   private void logCommandResponse(

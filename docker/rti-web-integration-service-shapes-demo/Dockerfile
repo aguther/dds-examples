@@ -4,7 +4,7 @@ FROM rti-web-integration-service:6.1.0
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>"
 LABEL org.label-schema.name="rti-web-integration-service-shapes-demo"
-LABEL org.label-schema.version="6.1.0"
+LABEL org.label-schema.version="6.1.2"
 
 # add shapes demo
 ADD shapes-demo /app

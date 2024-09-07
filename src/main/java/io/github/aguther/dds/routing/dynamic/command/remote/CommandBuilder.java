@@ -24,12 +24,12 @@
 
 package io.github.aguther.dds.routing.dynamic.command.remote;
 
+import idl.RTI.Service.Admin.CommandActionKind;
+import idl.RTI.Service.Admin.CommandRequest;
 import io.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
 import io.github.aguther.dds.routing.dynamic.observer.Session;
 import io.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import io.github.aguther.dds.routing.util.RoutingServiceCommandInterface;
-import idl.RTI.Service.Admin.CommandActionKind;
-import idl.RTI.Service.Admin.CommandRequest;
 
 class CommandBuilder {
 

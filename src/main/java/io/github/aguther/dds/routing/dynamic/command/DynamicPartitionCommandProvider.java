@@ -53,8 +53,8 @@ public interface DynamicPartitionCommandProvider {
   );
 
   /**
-   * Invoked to get the full entity name of a session including the parents.
-   * Must be in-line with the routing service API.
+   * Invoked to get the full entity name of a session including the parents. Must be in-line with the routing service
+   * API.
    *
    * @param session session for which the full entity name is needed
    * @apiNote "ExampleDomainRoute::ExampleSession(Partition)"
@@ -76,7 +76,7 @@ public interface DynamicPartitionCommandProvider {
   /**
    * Invoked to get the name of a topic route.
    *
-   * @param session session of topic route
+   * @param session    session of topic route
    * @param topicRoute topic route for which the full entity name is needed
    * @apiNote "ExampleTopicRoute"
    */
@@ -86,10 +86,10 @@ public interface DynamicPartitionCommandProvider {
   );
 
   /**
-   * Invoked to get the full entity name of a topic route including the parents.
-   * Must be in-line with the routing service API.
+   * Invoked to get the full entity name of a topic route including the parents. Must be in-line with the routing
+   * service API.
    *
-   * @param session session of topic route
+   * @param session    session of topic route
    * @param topicRoute topic route for which the full entity name is needed
    * @apiNote "ExampleDomainRoute::ExampleSession(Partition)::ExampleTopicRoute"
    */
@@ -101,7 +101,7 @@ public interface DynamicPartitionCommandProvider {
   /**
    * Invoked to get the configuration of a topic route.
    *
-   * @param session session of topic route
+   * @param session    session of topic route
    * @param topicRoute topic route for which the configuration is needed
    * @apiNote "str://\"<auto_topic_route name=\"ExampleTopicRoute\">[...]</auto_topic_route>\""
    */

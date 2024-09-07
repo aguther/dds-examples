@@ -27,7 +27,6 @@ package io.github.aguther.dds.examples.shape;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.aguther.dds.examples.shape.util.ShapeAttributes;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.Cookie_t;
 import com.rti.dds.infrastructure.InstanceHandle_t;
@@ -45,6 +44,7 @@ import com.rti.dds.publication.ReliableReaderActivityChangedStatus;
 import com.rti.dds.publication.ReliableWriterCacheChangedStatus;
 import com.rti.dds.publication.ServiceRequestAcceptedStatus;
 import idl.ShapeTypeExtended;
+import io.github.aguther.dds.examples.shape.util.ShapeAttributes;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

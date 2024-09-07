@@ -26,7 +26,6 @@ package io.github.aguther.dds.examples.prometheus.monitoring.processors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.subscription.InstanceStateKind;
 import com.rti.dds.subscription.SampleInfo;
@@ -34,6 +33,7 @@ import idl.rti.dds.monitoring.DataReaderDescription;
 import idl.rti.dds.monitoring.DataReaderEntityStatistics;
 import idl.rti.dds.monitoring.DomainParticipantDescription;
 import idl.rti.dds.monitoring.SubscriberDescription;
+import io.github.aguther.dds.util.BuiltinTopicHelper;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 
@@ -161,7 +161,8 @@ public class DataReaderMetricsProcessor {
     sampleLostStatusTotalCount = Gauge.build()
       .name("dds_data_reader_sample_lost_status_total_count")
       .labelNames(getLabelNames())
-      .help("Cumulative count of all the DDS samples that have been lost, across all instances of data written for the Topic.")
+      .help(
+        "Cumulative count of all the DDS samples that have been lost, across all instances of data written for the Topic.")
       .register();
 
     sampleLostStatusLastReason = Gauge.build()

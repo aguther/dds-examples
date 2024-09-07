@@ -26,7 +26,6 @@ package io.github.aguther.dds.examples.prometheus.monitoring.processors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.aguther.dds.util.BuiltinTopicHelper;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.infrastructure.Locator_t;
 import com.rti.dds.subscription.InstanceStateKind;
@@ -35,6 +34,7 @@ import idl.rti.dds.monitoring.DataWriterDescription;
 import idl.rti.dds.monitoring.DataWriterEntityMatchedSubscriptionWithLocatorStatistics;
 import idl.rti.dds.monitoring.DomainParticipantDescription;
 import idl.rti.dds.monitoring.PublisherDescription;
+import io.github.aguther.dds.util.BuiltinTopicHelper;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 

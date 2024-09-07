@@ -90,7 +90,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   /**
    * Add listener.
    *
-   * @param listener the listener
+   * @param listener           the listener
    * @param deliverReadSamples true to deliver already read samples
    */
   public void addListener(
@@ -174,7 +174,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   /**
    * Informs the listeners about the discovery of a subscription.
    *
-   * @param sample subscription data
+   * @param sample     subscription data
    * @param sampleInfo subscription info
    */
   private void invokeSubscriptionDiscovered(
@@ -199,7 +199,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   /**
    * Informs the listeners about the modification of a subscription.
    *
-   * @param sample subscription data
+   * @param sample     subscription data
    * @param sampleInfo subscription info
    */
   private void invokeSubscriptionModified(
@@ -224,7 +224,7 @@ public class SubscriptionObserver extends BuiltinTopicObserver {
   /**
    * Informs the listeners about the loss of a subscription.
    *
-   * @param sample subscription data
+   * @param sample     subscription data
    * @param sampleInfo subscription info
    */
   private void invokeSubscriptionLost(

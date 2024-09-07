@@ -42,8 +42,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class allows the observation of a built-in topic.
- * Built-in topics are used to track discovery information like domain participants, publications and subscriptions.
+ * This class allows the observation of a built-in topic. Built-in topics are used to track discovery information like
+ * domain participants, publications and subscriptions.
  */
 class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runnable {
 
@@ -58,7 +58,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
    * Instantiates a new Builtin topic observer.
    *
    * @param domainParticipant not enabled domain participant (otherwise data will be missed)
-   * @param topicName the topic name
+   * @param topicName         the topic name
    */
   BuiltinTopicObserver(
     final DomainParticipant domainParticipant,
@@ -89,8 +89,8 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   }
 
   /**
-   * Clean-up resources of this object, in this case remove the listener from
-   * the data reader we are bound to and shutdown the executor service.
+   * Clean-up resources of this object, in this case remove the listener from the data reader we are bound to and
+   * shutdown the executor service.
    */
   public void close() {
     // remove listener from data reader
@@ -100,9 +100,9 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
   }
 
   /**
-   * This function is invoked by the middleware in a special thread whenever data is available.
-   * For this reason, it must not be blocked.
-   *
+   * This function is invoked by the middleware in a special thread whenever data is available. For this reason, it must
+   * not be blocked.
+   * <p>
    * Reading data should be done in the run method that is being invoked in a separate thread.
    */
   @Override
@@ -118,7 +118,7 @@ class BuiltinTopicObserver extends DataReaderAdapter implements Closeable, Runna
       executorService.submit(this);
     } catch (RejectedExecutionException ex) {
       // this exception can be ignored: it's enough to have at most 2 executions
-      // in the queue to read all samples, therefore more will be rejected
+      // in the queue to read all samples, therefore, more will be rejected
     }
   }
 

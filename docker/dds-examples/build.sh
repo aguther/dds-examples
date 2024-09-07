@@ -14,7 +14,7 @@ cp -f ./../../build/libs/*all.jar .
 cp -f ./../../USER_QOS_PROFILES.xml .
 
 # set version
-VERSION=6.1.0-$(git describe --always --dirty)
+VERSION=6.1.2-$(git describe --always --dirty)
 
 # start build of docker file
 docker build -t dds-examples:"${VERSION}" .

@@ -24,8 +24,8 @@
 
 package io.github.aguther.dds.examples.mutable;
 
-import io.github.aguther.dds.util.SampleHelper;
 import com.rti.dds.topic.TypeSupportImpl;
+import io.github.aguther.dds.util.SampleHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

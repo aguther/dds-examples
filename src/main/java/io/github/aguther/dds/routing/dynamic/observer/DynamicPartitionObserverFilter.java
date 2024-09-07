@@ -31,7 +31,7 @@ import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
 
 /**
  * Callback interface to get determine if a entity should be ignored.
- *
+ * <p>
  * This can be used to e.g. ignore routing service entities or wildcard partitions.
  */
 public interface DynamicPartitionObserverFilter {
@@ -40,8 +40,8 @@ public interface DynamicPartitionObserverFilter {
    * Invoked to determine if a publication should be ignored.
    *
    * @param domainParticipant domain participant for reference
-   * @param instanceHandle instance handle for identification
-   * @param data publication data
+   * @param instanceHandle    instance handle for identification
+   * @param data              publication data
    * @return true to ignore publication, false to allow
    */
   boolean ignorePublication(
@@ -54,8 +54,8 @@ public interface DynamicPartitionObserverFilter {
    * Invoked to determine if a subscription should be ignored.
    *
    * @param domainParticipant domain participant for reference
-   * @param instanceHandle instance handle for identification
-   * @param data subscription data
+   * @param instanceHandle    instance handle for identification
+   * @param data              subscription data
    * @return true to ignore publication, false to allow
    */
   boolean ignoreSubscription(

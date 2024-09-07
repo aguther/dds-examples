@@ -37,8 +37,8 @@ public interface PublicationObserverListener {
    * Invoked when a new publication has been discovered.
    *
    * @param domainParticipant domain participant used for discovery
-   * @param instanceHandle instance handle of publication for identification
-   * @param data publication data
+   * @param instanceHandle    instance handle of publication for identification
+   * @param data              publication data
    */
   void publicationDiscovered(
     final DomainParticipant domainParticipant,
@@ -50,8 +50,8 @@ public interface PublicationObserverListener {
    * Invoked when a publication has been modified (e.g. partitions changed).
    *
    * @param domainParticipant domain participant used for discovery
-   * @param instanceHandle instance handle of publication for identification
-   * @param data publication data
+   * @param instanceHandle    instance handle of publication for identification
+   * @param data              publication data
    */
   void publicationModified(
     final DomainParticipant domainParticipant,
@@ -63,8 +63,8 @@ public interface PublicationObserverListener {
    * Invoked when a publication has been lost.
    *
    * @param domainParticipant domain participant used for discovery
-   * @param instanceHandle instance handle of publication for identification
-   * @param data publication data
+   * @param instanceHandle    instance handle of publication for identification
+   * @param data              publication data
    */
   void publicationLost(
     final DomainParticipant domainParticipant,

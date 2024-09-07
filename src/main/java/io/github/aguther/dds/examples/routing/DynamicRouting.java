@@ -24,13 +24,13 @@
 
 package io.github.aguther.dds.examples.routing;
 
-import io.github.aguther.dds.logging.Slf4jDdsLogger;
-import io.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantFactoryQos;
 import com.rti.routingservice.RoutingService;
 import com.rti.routingservice.RoutingServiceProperty;
+import io.github.aguther.dds.logging.Slf4jDdsLogger;
+import io.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

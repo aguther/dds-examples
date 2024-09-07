@@ -26,74 +26,67 @@ package io.github.aguther.dds.discovery.observer;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandleSeq;
 import com.rti.dds.infrastructure.RETCODE_NOT_ENABLED;
 import com.rti.dds.subscription.DataReader;
 import com.rti.dds.subscription.Subscriber;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Executors.class, BuiltinTopicObserver.class})
 public class BuiltinTopicObserverTest {
 
   private static final String BUILTIN_TOPIC_NAME = "BuiltinTopic";
 
-  private DataReader dataReader;
-  private ThreadPoolExecutor executorService;
-  private BuiltinTopicObserver builtinTopicObserver;
+  private static DataReader dataReader;
+  private static MockedConstruction<ThreadPoolExecutor> executorService;
+  private static BuiltinTopicObserver builtinTopicObserver;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeAll
+  public static void setUp() {
     DomainParticipant domainParticipant = mock(DomainParticipant.class);
     Subscriber subscriber = mock(Subscriber.class);
     dataReader = mock(DataReader.class);
 
     doThrow(new RETCODE_NOT_ENABLED()).when(domainParticipant)
-        .get_discovered_participants(new InstanceHandleSeq());
+      .get_discovered_participants(new InstanceHandleSeq());
     when(domainParticipant.get_builtin_subscriber()).thenReturn(subscriber);
     when(subscriber.lookup_datareader(BUILTIN_TOPIC_NAME))
-        .thenReturn(dataReader);
+      .thenReturn(dataReader);
 
-    mockStatic(Executors.class);
-
-    executorService = mock(ThreadPoolExecutor.class);
-    whenNew(ThreadPoolExecutor.class).withAnyArguments().thenReturn(executorService);
+    executorService = mockConstruction(ThreadPoolExecutor.class);
 
     builtinTopicObserver = new BuiltinTopicObserver(
-        domainParticipant,
-        BUILTIN_TOPIC_NAME
+      domainParticipant,
+      BUILTIN_TOPIC_NAME
     );
+
   }
 
-  @After
-  public void tearDown() {
+  @AfterAll
+  public static void tearDown() {
     builtinTopicObserver.close();
+    executorService.close();
   }
 
   @Test
-  public void testOnDataAvailable() {
+  void testOnDataAvailable() {
     // call on_data_available
     builtinTopicObserver.on_data_available(dataReader);
     // verify that executor was triggered
-    verify(executorService, times(1)).submit(builtinTopicObserver);
+    verify(executorService.constructed().get(1), times(1)).submit(builtinTopicObserver);
   }
 
   @Test
-  public void testRun() {
+  void testRun() {
     builtinTopicObserver.run();
   }
 }

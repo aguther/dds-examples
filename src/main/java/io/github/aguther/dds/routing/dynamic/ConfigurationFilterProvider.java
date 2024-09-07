@@ -26,16 +26,16 @@ package io.github.aguther.dds.routing.dynamic;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
-import io.github.aguther.dds.routing.dynamic.observer.Direction;
-import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
-import io.github.aguther.dds.routing.dynamic.observer.Session;
-import io.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import com.google.common.base.Strings;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import com.rti.dds.publication.builtin.PublicationBuiltinTopicData;
 import com.rti.dds.subscription.builtin.SubscriptionBuiltinTopicData;
+import io.github.aguther.dds.routing.dynamic.command.DynamicPartitionCommandProvider;
+import io.github.aguther.dds.routing.dynamic.observer.Direction;
+import io.github.aguther.dds.routing.dynamic.observer.DynamicPartitionObserverFilter;
+import io.github.aguther.dds.routing.dynamic.observer.Session;
+import io.github.aguther.dds.routing.dynamic.observer.TopicRoute;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,12 +49,12 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements a filter and provider to be used with DynamicPartitionObserver and DynamicPartitionCommander.
- *
+ * <p>
  * The configuration is provided via properties in the routing service configuration. It allows multiple configurations
  * with different allow and deny filters for topic and partition.
- *
+ * <p>
  * Deny filters take precedence over allow filters.
- *
+ * <p>
  * WARNING: It must be ensured that the configuration filters are disjoint (combination of allow and deny filters)
  * otherwise the results are unpredictable.
  */
@@ -83,7 +83,7 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
    * Instantiates a new configuration filter provider.
    *
    * @param properties the properties to configure this instance
-   * @param prefix the prefix that should be used for the properties
+   * @param prefix     the prefix that should be used for the properties
    */
   public ConfigurationFilterProvider(
     final String prefix,
@@ -138,8 +138,8 @@ public class ConfigurationFilterProvider implements DynamicPartitionObserverFilt
   /**
    * Loads a configuration group from the properties.
    *
-   * @param identifier identifier of the group
-   * @param propertyName property name
+   * @param identifier    identifier of the group
+   * @param propertyName  property name
    * @param propertyValue property value
    */
   private void loadProperty(

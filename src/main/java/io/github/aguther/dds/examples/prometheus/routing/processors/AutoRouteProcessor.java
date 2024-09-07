@@ -24,11 +24,11 @@
 
 package io.github.aguther.dds.examples.prometheus.routing.processors;
 
-import io.github.aguther.dds.examples.prometheus.routing.util.ResourceIdMatcher;
 import com.rti.dds.infrastructure.InstanceHandle_t;
 import idl.RTI.RoutingService.Monitoring.AutoRouteConfig;
 import idl.RTI.RoutingService.Monitoring.AutoRouteEvent;
 import idl.RTI.RoutingService.Monitoring.AutoRoutePeriodic;
+import io.github.aguther.dds.examples.prometheus.routing.util.ResourceIdMatcher;
 import io.prometheus.client.Gauge;
 import java.util.HashMap;
 import java.util.regex.Matcher;

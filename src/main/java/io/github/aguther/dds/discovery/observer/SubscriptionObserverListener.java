@@ -37,8 +37,8 @@ public interface SubscriptionObserverListener {
    * Invoked when a new subscription has been discovered.
    *
    * @param domainParticipant domain participant used for discovery
-   * @param instanceHandle instance handle of subscription for identification
-   * @param data subscription data
+   * @param instanceHandle    instance handle of subscription for identification
+   * @param data              subscription data
    */
   void subscriptionDiscovered(
     final DomainParticipant domainParticipant,
@@ -50,8 +50,8 @@ public interface SubscriptionObserverListener {
    * Invoked when a subscription has been modified (e.g. partitions changed).
    *
    * @param domainParticipant domain participant used for discovery
-   * @param instanceHandle instance handle of publication for identification
-   * @param data publication data
+   * @param instanceHandle    instance handle of publication for identification
+   * @param data              publication data
    */
   void subscriptionModified(
     final DomainParticipant domainParticipant,
@@ -63,8 +63,8 @@ public interface SubscriptionObserverListener {
    * Invoked when a subscription has been lost.
    *
    * @param domainParticipant domain participant used for discovery
-   * @param instanceHandle instance handle of subscription for identification
-   * @param data subscription data
+   * @param instanceHandle    instance handle of subscription for identification
+   * @param data              subscription data
    */
   void subscriptionLost(
     final DomainParticipant domainParticipant,

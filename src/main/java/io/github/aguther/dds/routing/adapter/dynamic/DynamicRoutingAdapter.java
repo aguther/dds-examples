@@ -34,8 +34,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class implements an adapter to provide a function to dynamically route topics based on their partition
- * without loosing their origin (this happens when using asterisk or multiple partitions).
+ * This class implements an adapter to provide a function to dynamically route topics based on their partition without
+ * loosing their origin (this happens when using asterisk or multiple partitions).
  */
 public class DynamicRoutingAdapter implements Adapter {
 

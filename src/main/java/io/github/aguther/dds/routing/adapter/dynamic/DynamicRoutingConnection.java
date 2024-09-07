@@ -24,18 +24,18 @@
 
 package io.github.aguther.dds.routing.adapter.dynamic;
 
+import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import io.github.aguther.dds.routing.adapter.empty.EmptyConnection;
 import io.github.aguther.dds.routing.dynamic.DynamicRoutingManager;
-import com.rti.routingservice.adapter.infrastructure.AdapterException;
 import java.io.Closeable;
 import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class implements a connection to provide a function to dynamically route topics based on their partition
- * without loosing their origin (this happens when using asterisk or multiple partitions).
- *
+ * This class implements a connection to provide a function to dynamically route topics based on their partition without
+ * loosing their origin (this happens when using asterisk or multiple partitions).
+ * <p>
  * This function is realized by creating a domain participant for discovery and remote administration of the target
  * routing service. Whenever a topic is discovered and a appropriate configuration is found, a session and route is
  * created accordingly. The same applies vice versa on loosing discovery.

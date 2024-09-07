@@ -1,10 +1,10 @@
 # define parent
-FROM amazoncorretto:11
+FROM eclipse-temurin:21-alpine
 
 # define maintainer
 LABEL maintainer="Andreas Guther <andreas@guther.net>"
 LABEL org.label-schema.name="rti-routing-service"
-LABEL org.label-schema.version="6.1.0"
+LABEL org.label-schema.version="6.1.2"
 
 # add routing service
 ADD sdk/bin/rtiroutingservice /opt/rti/connext-dds/bin/

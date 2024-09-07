@@ -24,12 +24,6 @@
 
 package io.github.aguther.dds.examples.prometheus.routing;
 
-import io.github.aguther.dds.examples.prometheus.routing.processors.ConfigEventProcessorCache;
-import io.github.aguther.dds.examples.prometheus.routing.processors.PeriodicProcessor;
-import io.github.aguther.dds.logging.Slf4jDdsLogger;
-import io.github.aguther.dds.support.subscription.DataReaderWatcher;
-import io.github.aguther.dds.support.subscription.SampleTaker;
-import io.github.aguther.dds.support.subscription.SampleWithInfoCopier;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -47,6 +41,12 @@ import idl.RTI.Service.Monitoring.EventTypeSupport;
 import idl.RTI.Service.Monitoring.Periodic;
 import idl.RTI.Service.Monitoring.PeriodicSeq;
 import idl.RTI.Service.Monitoring.PeriodicTypeSupport;
+import io.github.aguther.dds.examples.prometheus.routing.processors.ConfigEventProcessorCache;
+import io.github.aguther.dds.examples.prometheus.routing.processors.PeriodicProcessor;
+import io.github.aguther.dds.logging.Slf4jDdsLogger;
+import io.github.aguther.dds.support.subscription.DataReaderWatcher;
+import io.github.aguther.dds.support.subscription.SampleTaker;
+import io.github.aguther.dds.support.subscription.SampleWithInfoCopier;
 import io.prometheus.client.exporter.HTTPServer;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;

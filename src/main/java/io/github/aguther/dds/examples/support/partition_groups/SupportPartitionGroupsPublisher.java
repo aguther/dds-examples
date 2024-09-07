@@ -26,9 +26,6 @@ package io.github.aguther.dds.examples.support.partition_groups;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.aguther.dds.logging.Slf4jDdsLogger;
-import io.github.aguther.dds.support.PartitionGroup;
-import io.github.aguther.dds.support.PartitionGroupPublisherAdapter;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
@@ -37,6 +34,9 @@ import com.rti.dds.publication.DataWriter;
 import idl.ShapeTypeExtended;
 import idl.ShapeTypeExtendedTypeSupport;
 import idl.ShapeTypeTypeSupport;
+import io.github.aguther.dds.logging.Slf4jDdsLogger;
+import io.github.aguther.dds.support.PartitionGroup;
+import io.github.aguther.dds.support.PartitionGroupPublisherAdapter;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;

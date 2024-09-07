@@ -3,9 +3,10 @@
 # copy needed files
 mkdir sdk
 cp -r ${NDDSHOME}/* sdk/
+rm -rf sdk/rti_license.dat
 
 # set version
-VERSION=6.1.0
+VERSION=6.1.2
 
 # start build of docker file
 docker build -t rti-connext-dds-runtime-slim:"${VERSION}" .
