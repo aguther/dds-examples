@@ -1,1 +1,203 @@
-/opt/rti/connext-dds/sdk/resource/idl/RecordingServiceMonitoring.idl
+/*
+
+ (c) Copyright, Real-Time Innovations, 2015-2016.
+ All rights reserved.
+ No duplications, whole or partial, manual or electronic, may be made
+ without express written permission.  Any such copies, or
+ revisions thereof, must display this notice unaltered.
+ This code contains trade secrets of Real-Time Innovations, Inc.
+
+==============================================================================*/
+
+#ifndef RTI_RECORDING_SERVICE_MONITORING_IDL
+#define RTI_RECORDING_SERVICE_MONITORING_IDL
+
+#include "ServiceCommon.idl"
+
+@autoid @allowed_data_representation(XCDR2)
+module RTI {
+    module RecordingService {
+        module Monitoring {
+
+#if defined LANGUAGE_CPP
+            //@copy using namespace ::RTI::Service;
+            //@copy using namespace ::RTI::Service::Monitoring;
+#endif
+
+            /* Topic */
+            @mutable @nested
+            struct TopicConfig : Service::Monitoring::EntityConfig {
+                Service::BoundedString topic_name;
+                Service::BoundedString registered_type_name;
+                Service::BoundedString participant_name;
+                Service::Monitoring::ResourceGuid topic_group;
+            };
+            @mutable @nested
+            struct TopicEvent : Service::Monitoring::EntityEvent {
+                //to avoid unused variable warnings
+                int32 _dummy;
+            };
+            @mutable @nested
+            struct TopicPeriodic {
+                @optional Service::Monitoring::NetworkPerformance network_performance;
+                @optional Service::Monitoring::CountStatus matched_status;
+            };
+
+            /* TopicGroup */
+            @mutable @nested
+            struct TopicGroupConfig : Service::Monitoring::EntityConfig {
+                Service::BoundedString participant_name;
+            };
+            @mutable @nested
+            struct TopicGroupEvent : Service::Monitoring::EntityEvent {
+                //to avoid unused variable warnings
+                int32 _dummy;
+            };
+            @mutable @nested
+            struct TopicGroupPeriodic {
+                @optional Service::Monitoring::NetworkPerformance network_performance;
+                int64 topic_count;
+            };
+
+            /* Session */
+            @mutable @nested
+            struct SessionConfig : Service::Monitoring::EntityConfig {
+                Service::BoundedString default_participant_name;
+            };
+            @mutable @nested
+            struct SessionEvent : Service::Monitoring::EntityEvent {
+                //to avoid unused variable warnings
+                int32 _dummy;
+            };
+            @mutable @nested
+            struct SessionPeriodic {
+                @optional Service::Monitoring::NetworkPerformance network_performance;
+                @optional @optional Service::Monitoring::ThreadPoolPeriodic thread_pool;
+            };
+
+            /* Service */
+            @mutable @nested
+            struct SqliteDatabaseConfig {
+                Service::FilePath db_directory;
+                @optional Service::FilePath execution_directory_expression;
+                @optional Service::FilePath user_data_file_expression;
+            };           
+            @mutable @nested
+            struct SqliteDatabaseEvent {
+                @optional Service::FilePath current_db_directory;
+                @optional Service::FilePath current_file;
+                @optional int32 rollover_count;
+            };
+            @mutable @nested
+            struct SqliteDatabasePeriodic {
+                @optional Service::FilePath current_file;
+                @optional uint64 current_file_size;
+                // These fields are no longer supported and carry no information.
+                // Kept only to support older version.
+                @deprecated int32 current_timestamp_sec;
+                @deprecated uint32 current_timestamp_nanosec;
+            };
+
+            @mutable @nested
+            struct ParticipantInfo {
+                Service::BoundedString name;
+            };
+
+            @mutable @nested
+            struct ServiceConfig : Service::Monitoring::EntityConfig {
+                Service::BoundedString application_name;
+                Service::Monitoring::ResourceGuid application_guid;
+                @optional Service::Monitoring::HostConfig host;
+                @optional Service::Monitoring::ProcessConfig process;
+                @optional SqliteDatabaseConfig builtin_sqlite;
+                @optional sequence<ParticipantInfo> participants;
+            };
+            @mutable @nested
+            struct ServiceEvent : Service::Monitoring::EntityEvent {
+                //to avoid unused variable warnings
+                @optional SqliteDatabaseEvent builtin_sqlite;
+            };
+            @mutable @nested
+            struct ServicePeriodic {
+                @optional Service::Monitoring::HostPeriodic host;
+                @optional Service::Monitoring::ProcessPeriodic process;
+                int64 current_timestamp_nanos;
+                @optional SqliteDatabasePeriodic builtin_sqlite;
+            };
+
+            /* --- Top-level ----------------------------------------------- */
+
+            /*
+             * Config Topic
+             */
+            @mutable @nested
+            union ConfigUnion switch (RTI::Service::Monitoring::ResourceKind) {
+                case RTI::Service::Monitoring::RECORDING_SERVICE:
+                ServiceConfig recording_service;
+                
+                case RTI::Service::Monitoring::RECORDING_SESSION:
+                SessionConfig recording_session;
+
+                case RTI::Service::Monitoring::RECORDING_TOPIC_GROUP:
+                TopicGroupConfig recording_topic_group;
+
+                case RTI::Service::Monitoring::RECORDING_TOPIC:
+                TopicConfig recording_topic;
+            };
+            @mutable
+            struct Config : Service::Monitoring::KeyedResource {
+                ConfigUnion value;
+            }; 
+            
+
+            /* 
+             * Event Topic
+             */
+            @mutable @nested
+            union EventUnion switch (RTI::Service::Monitoring::ResourceKind) {
+                case RTI::Service::Monitoring::RECORDING_SERVICE:
+                ServiceEvent recording_service;
+                
+                case RTI::Service::Monitoring::RECORDING_SESSION:
+                SessionEvent recording_session;
+
+                case RTI::Service::Monitoring::RECORDING_TOPIC_GROUP:
+                TopicGroupEvent recording_topic_group;
+
+                case RTI::Service::Monitoring::RECORDING_TOPIC:
+                TopicEvent recording_topic;
+            };
+            @mutable
+            struct Event : Service::Monitoring::KeyedResource {
+                EventUnion value;
+            }; 
+
+            /* 
+             * Periodic Topic 
+             */ 
+            @mutable @nested
+            union PeriodicUnion switch (RTI::Service::Monitoring::ResourceKind) {
+                case RTI::Service::Monitoring::RECORDING_SERVICE:
+                ServicePeriodic recording_service;
+
+                case RTI::Service::Monitoring::RECORDING_SESSION:
+                SessionPeriodic recording_session;
+
+                case RTI::Service::Monitoring::RECORDING_TOPIC_GROUP:
+                TopicGroupPeriodic recording_topic_group;
+
+                case RTI::Service::Monitoring::RECORDING_TOPIC:
+                TopicPeriodic recording_topic;
+            };
+            @mutable
+            struct Periodic : Service::Monitoring::KeyedResource {
+                PeriodicUnion value;
+            }; 
+            
+        }; /* Module Monitoring */
+
+    }; /* Module RecordingService */
+
+}; /* Module RTI */
+
+#endif

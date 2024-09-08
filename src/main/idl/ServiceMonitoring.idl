@@ -1,1 +1,157 @@
-/opt/rti/connext-dds/sdk/resource/idl/ServiceMonitoring.idl
+/* $Id$
+
+ (c) Copyright, Real-Time Innovations, 2015-2016.
+ All rights reserved.
+ No duplications, whole or partial, manual or electronic, may be made
+ without express written permission.  Any such copies, or
+ revisions thereof, must display this notice unaltered.
+ This code contains trade secrets of Real-Time Innovations, Inc.
+
+==============================================================================*/
+
+#include "RoutingServiceMonitoring.idl"
+#include "RecordingServiceMonitoring.idl"
+
+@autoid @allowed_data_representation(XCDR2)
+module RTI {
+
+    module Service {        
+        
+        module Monitoring {           
+
+            /*
+             * Config Topic
+             */
+            @mutable
+            union ConfigUnion switch (ResourceKind) {
+                case ROUTING_SERVICE:
+                RTI::RoutingService::Monitoring::ServiceConfig routing_service;
+
+                case ROUTING_DOMAIN_ROUTE:
+                RTI::RoutingService::Monitoring::DomainRouteConfig routing_domain_route;
+
+                case ROUTING_SESSION:
+                RTI::RoutingService::Monitoring::SessionConfig routing_session;
+
+                case ROUTING_AUTO_ROUTE:
+                RTI::RoutingService::Monitoring::AutoRouteConfig routing_auto_route;
+
+                case ROUTING_ROUTE:
+                RTI::RoutingService::Monitoring::RouteConfig routing_route;
+
+                case ROUTING_INPUT:
+                RTI::RoutingService::Monitoring::InputConfig routing_input;
+
+                case ROUTING_OUTPUT:
+                RTI::RoutingService::Monitoring::OutputConfig routing_output;
+
+                case RECORDING_SERVICE:
+                RTI::RecordingService::Monitoring::ServiceConfig recording_service;
+
+                case RECORDING_SESSION:
+                RTI::RecordingService::Monitoring::SessionConfig recording_session;
+
+                case RECORDING_TOPIC_GROUP:
+                RTI::RecordingService::Monitoring::TopicGroupConfig recording_topic_group;
+
+                case RECORDING_TOPIC:
+                RTI::RecordingService::Monitoring::TopicConfig recording_topic;
+            };
+            @mutable
+            struct Config : Service::Monitoring::KeyedResource {
+                ConfigUnion value;
+            };
+
+            /*
+             * Event Topic
+             */
+            @mutable
+            union EventUnion switch (ResourceKind) {
+                case ROUTING_SERVICE:
+                RTI::RoutingService::Monitoring::ServiceEvent routing_service;
+
+                case ROUTING_DOMAIN_ROUTE:
+                RTI::RoutingService::Monitoring::DomainRouteEvent routing_domain_route;
+
+                case ROUTING_SESSION:
+                RTI::RoutingService::Monitoring::SessionEvent routing_session;
+
+                case ROUTING_AUTO_ROUTE:
+                RTI::RoutingService::Monitoring::AutoRouteEvent routing_auto_route;
+
+                case ROUTING_ROUTE:
+                RTI::RoutingService::Monitoring::RouteEvent routing_route;
+
+                case ROUTING_INPUT:
+                RTI::RoutingService::Monitoring::InputEvent routing_input;
+
+                case ROUTING_OUTPUT:
+                RTI::RoutingService::Monitoring::OutputEvent routing_output;
+
+                case RECORDING_SERVICE:
+                RTI::RecordingService::Monitoring::ServiceEvent recording_service;
+
+                case RECORDING_SESSION:
+                RTI::RecordingService::Monitoring::SessionEvent recording_session;
+
+                case RECORDING_TOPIC_GROUP:
+                RTI::RecordingService::Monitoring::TopicGroupEvent recording_topic_group;
+
+                case RECORDING_TOPIC:
+                RTI::RecordingService::Monitoring::TopicEvent recording_topic;
+            };
+            @mutable
+            struct Event : Service::Monitoring::KeyedResource {
+                EventUnion value;
+            };
+
+            /*
+             * Periodic Topic
+             */
+            @mutable
+            union PeriodicUnion switch (ResourceKind) {
+                case ROUTING_SERVICE:
+                RTI::RoutingService::Monitoring::ServicePeriodic routing_service;
+
+                case ROUTING_DOMAIN_ROUTE:
+                RTI::RoutingService::Monitoring::DomainRoutePeriodic routing_domain_route;
+
+                case ROUTING_SESSION:
+                RTI::RoutingService::Monitoring::SessionPeriodic routing_session;
+
+                case ROUTING_AUTO_ROUTE:
+                RTI::RoutingService::Monitoring::AutoRoutePeriodic routing_auto_route;
+
+                case ROUTING_ROUTE:
+                RTI::RoutingService::Monitoring::RoutePeriodic routing_route;
+
+                case ROUTING_INPUT:
+                RTI::RoutingService::Monitoring::InputPeriodic routing_input;
+
+                case ROUTING_OUTPUT:
+                RTI::RoutingService::Monitoring::OutputPeriodic routing_output;
+
+                case RECORDING_SERVICE:
+                RTI::RecordingService::Monitoring::ServicePeriodic recording_service;
+
+                case RECORDING_SESSION:
+                RTI::RecordingService::Monitoring::SessionPeriodic recording_session;
+
+                case RECORDING_TOPIC_GROUP:
+                RTI::RecordingService::Monitoring::TopicGroupPeriodic recording_topic_group;
+
+                case RECORDING_TOPIC:
+                RTI::RecordingService::Monitoring::TopicPeriodic recording_topic;
+            };
+            @mutable
+            struct Periodic : Service::Monitoring::KeyedResource {
+                PeriodicUnion value;
+            };
+
+            
+        }; // Module Monitoring
+
+    }; // Module Service
+
+}; // Module RTI
+

@@ -1,1 +1,76 @@
-/opt/rti/connext-dds/sdk/resource/idl/ServiceAdmin.idl
+/* $Id$
+
+ (c) Copyright, Real-Time Innovations, 2015-2016.
+ All rights reserved.
+ No duplications, whole or partial, manual or electronic, may be made
+ without express written permission.  Any such copies, or
+ revisions thereof, must display this notice unaltered.
+ This code contains trade secrets of Real-Time Innovations, Inc.
+
+==============================================================================*/
+
+#ifndef RTI_SERVICE_ADMIN_IDL
+#define RTI_SERVICE_ADMIN_IDL
+
+#include "ServiceCommon.idl"
+
+@autoid @allowed_data_representation(XCDR2)
+module RTI {
+    module Service {
+        module Admin {
+
+            const string COMMAND_REQUEST_TOPIC_NAME =
+                "rti/service/admin/command_request";
+            const string COMMAND_REPLY_TOPIC_NAME =
+                "rti/service/admin/command_reply";
+
+            const int32 NAME_LENGTH_MAX = RTI::Service::BOUNDED_STRING_LENGTH_MAX;
+            typedef RTI::Service::BoundedString EntityName;
+            const int32 RESOURCE_IDENTIFIER_LENGTH_MAX = RTI::Service::RESOURCE_IDENTIFIER_LENGTH_MAX;
+            typedef RTI::Service::ResourceId ResourceIdentifier;
+
+
+            typedef string StringBody;
+            typedef sequence<octet> OctetBody;
+
+            @appendable
+            enum CommandActionKind {
+                CREATE_ACTION,
+                GET_ACTION,
+                UPDATE_ACTION,
+                DELETE_ACTION
+            }; //@Extensibility EXTENSIBLE_EXTENSIBILITY
+
+            @appendable
+            enum CommandReplyRetcode {
+                OK_RETCODE,
+                ERROR_RETCODE
+            };
+
+            /* CommandRequest */
+            @appendable
+            struct CommandRequest {
+                @key int32 instance_id;
+                @optional string<BOUNDED_STRING_LENGTH_MAX> application_name;
+                CommandActionKind action;
+                ResourceIdentifier resource_identifier;
+                StringBody string_body;
+                OctetBody octet_body;
+            };
+
+            /* CommandReply */
+            @appendable
+            struct CommandReply {
+                CommandReplyRetcode retcode;
+                int32 native_retcode;
+                StringBody string_body;
+                OctetBody octet_body;
+            };
+
+        }; // Module Admin
+
+    }; // Module Service
+
+}; // Module RTI
+
+#endif
