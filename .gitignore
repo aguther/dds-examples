@@ -17,3 +17,11 @@ docker/**/*.tar
 docker/**/*.tar.gz
 docker/**/sdk/
 docker/images/
+src/main/idl/dds_rtf2_dcps.idl
+src/main/idl/monitoring.idl
+src/main/idl/RecordingServiceMonitoring.idl
+src/main/idl/RequestReplyType.idl
+src/main/idl/RoutingServiceMonitoring.idl
+src/main/idl/ServiceAdmin.idl
+src/main/idl/ServiceCommon.idl
+src/main/idl/ServiceMonitoring.idl

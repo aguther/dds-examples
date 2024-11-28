@@ -581,8 +581,6 @@ public class DataWriterMatchedSubscriptionWithLocatorMetricsProcessor {
     switch (locatorKind) {
       case Locator_t.ADDRESS_LENGTH_MAX:
         return "ADDRESS_LENGTH_MAX";
-      case Locator_t.KIND_DTLS:
-        return "KIND_DTLS";
       case Locator_t.KIND_INTRA:
         return "KIND_INTRA";
       case Locator_t.KIND_INVALID:
@@ -605,8 +603,6 @@ public class DataWriterMatchedSubscriptionWithLocatorMetricsProcessor {
         return "KIND_UDPv6";
       case Locator_t.KIND_UDPv6_510:
         return "KIND_UDPv6_510";
-      case Locator_t.KIND_WAN:
-        return "KIND_WAN";
       case Locator_t.PORT_INVALID:
         return "PORT_INVALID";
       default:

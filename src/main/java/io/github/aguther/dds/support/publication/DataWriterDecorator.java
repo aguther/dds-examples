@@ -443,6 +443,16 @@ public class DataWriterDecorator implements DataWriter {
   }
 
   @Override
+  public void take_discovery_snapshot() {
+    dataWriter.take_discovery_snapshot();
+  }
+
+  @Override
+  public void take_discovery_snapshot(String s) {
+    dataWriter.take_discovery_snapshot(s);
+  }
+
+  @Override
   public void enable() {
     dataWriter.enable();
   }

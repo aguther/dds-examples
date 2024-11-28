@@ -12,6 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
+    <rti.connext-dds.version>7.3.0</rti.connext-dds.version>
   </properties>
 
   <dependencyManagement>
@@ -31,22 +32,22 @@
     <dependency>
       <groupId>com.rti</groupId>
       <artifactId>nddsjava</artifactId>
-      <version>6.1.2</version>
+      <version>${rti.connext-dds.version}</version>
     </dependency>
     <dependency>
       <groupId>com.rti</groupId>
       <artifactId>rticonnextmsg</artifactId>
-      <version>6.1.2</version>
+      <version>${rti.connext-dds.version}</version>
     </dependency>
     <dependency>
       <groupId>com.rti</groupId>
       <artifactId>rtiroutingservice</artifactId>
-      <version>6.1.2</version>
+      <version>${rti.connext-dds.version}</version>
     </dependency>
     <dependency>
       <groupId>com.rti</groupId>
       <artifactId>rtirsadapter</artifactId>
-      <version>6.1.2</version>
+      <version>${rti.connext-dds.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
