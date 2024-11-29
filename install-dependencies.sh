@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
+# prompt for version
+read -p "Enter the NDDS version: " NDDS_VERSION
+
 # define version
-export NDDS_VERSION=7.3.0
+export NDDS_VERSION
 
 # copy needed idl from SDK
 cp $NDDSHOME/resource/idl/dds_rtf2_dcps.idl ./src/main/idl/
