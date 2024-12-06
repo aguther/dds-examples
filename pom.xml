@@ -13,6 +13,9 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <rti.connext-dds.version>7.3.0</rti.connext-dds.version>
+
+    <!-- Set the example to run -->
+    <dds.example>shape.ShapePublisher</dds.example>
   </properties>
 
   <dependencyManagement>
@@ -167,6 +170,14 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.0</version>
         <configuration>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <mainClass>io.github.aguther.dds.examples.${dds.example}</mainClass>
         </configuration>
       </plugin>
     </plugins>
